@@ -173,6 +173,13 @@ export default function AccountMenu({ email }: { email: string | null }) {
                 Soon
               </span>
             </div>
+            <div className="flex items-center gap-3 px-4 py-2 text-sm text-ink-300 cursor-not-allowed select-none">
+              <BillingIcon className="h-4 w-4" />
+              <span>Billing</span>
+              <span className="ml-auto text-[10px] font-semibold text-ink-300 border border-ink-200 rounded px-1.5 py-0.5">
+                Soon
+              </span>
+            </div>
           </div>
 
           {/* Sign out */}
