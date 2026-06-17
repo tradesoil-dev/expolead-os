@@ -1,0 +1,248 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import {
+  Users,
+  MessageSquare,
+  FlaskConical,
+  FileText,
+  CircleCheck,
+} from "lucide-react";
+
+type Mode = "signin" | "signup";
+
+const stages = [
+  {
+    title: "Booth Visit",
+    subtitle: "Capture contact",
+    icon: <Users size={20} />,
+  },
+  {
+    title: "Discussion",
+    subtitle: "Explore opportunity",
+    icon: <MessageSquare size={15} strokeWidth={1.5} />,
+  },
+  {
+    title: "Sample",
+    subtitle: "Evaluate product",
+    icon: <FlaskConical size={15} />,
+  },
+  {
+    title: "Quote Review",
+    subtitle: "Review pricing",
+    icon: <FileText size={15} />,
+  },
+  {
+    title: "Order Ready",
+    subtitle: "Commercial ready",
+    icon: <CircleCheck size={15} />,
+  },
+];
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [mode, setMode] = useState<Mode>("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveStep((current) => (current === 4 ? 0 : current + 1));
+    }, 2500);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+
+    if (!isSupabaseConfigured) {
+      setError("Supabase isn't connected yet. Add your keys to .env.local to enable sign-in.");
+      return;
+    }
+
+    setLoading(true);
+    const supabase = createClient();
+
+    try {
+      if (mode === "signin") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+
+        if (data.session) {
+          router.push("/dashboard");
+          router.refresh();
+        } else {
+          setInfo("Account created. Check your email to confirm, then sign in.");
+          setMode("signin");
+        }
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="h-screen grid lg:grid-cols-[1fr_1fr] bg-white overflow-hidden">
+      <section className="hidden lg:flex h-screen flex-col items-center justify-center bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.16),transparent_34%),radial-gradient(circle_at_80%_30%,rgba(37,99,235,0.14),transparent_34%),linear-gradient(135deg,#f8fafc,#eefaf6,#f8fbff)] px-10">
+        <div className="absolute top-8 left-10">
+  <div className="inline-block text-center">
+    <h1 className="text-3xl font-bold tracking-tight text-ink-900">
+      ExpoLead OS
+    </h1>
+
+    <div className="mt-1 w-full text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-600">
+      Powered by Tradesoil
+    </div>
+  </div>
+</div>
+        <div className="w-full max-w-[520px] rounded-[2rem] bg-white/60 p-6 shadow-xl backdrop-blur">
+          <div className="flex justify-center py-10">
+  <div className="scale-[5] text-emerald-700">
+    {stages[activeStep].icon}
+  </div>
+</div>
+
+          <div className="relative mt-16 flex items-center justify-between">
+            <div className="absolute left-8 right-8 top-1/2 h-px -translate-y-1/2 bg-emerald-300" />
+
+            {stages.map((stage, index) => (
+              <div key={stage.title} className="relative z-10">
+                <div
+                  className={`grid h-14 w-14 place-items-center rounded-full border text-xl shadow-sm transition-colors duration-500 ${
+                    index < activeStep
+                      ? "border-emerald-600 bg-emerald-600 text-white"
+                      : index === activeStep
+                      ? "border-emerald-600 bg-white text-emerald-700 shadow-[0_0_0_10px_rgba(16,185,129,0.15)]"
+                      : "border-emerald-200 bg-white text-ink-700"
+                  }`}
+                >
+                  {index < activeStep ? "✓" : stage.icon}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-14 text-center">
+            <div className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
+              ExpoLead Workspace
+            </div>
+
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-ink-900">
+              {stages[activeStep].title}
+            </h2>
+
+            <p className="mt-3 text-base text-ink-500">
+              {stages[activeStep].subtitle}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="min-h-screen flex items-center justify-center px-8">
+        <div className="w-full max-w-md self-center">
+          <h1 className="text-3xl font-bold tracking-tight">
+            {mode === "signin" ? "Sign in" : "Create your account"}
+          </h1>
+
+          <p className="mt-3 text-sm text-ink-500">
+            {mode === "signin"
+              ? "Enter your credentials to access your account."
+              : "Start capturing suppliers from your next exhibition."}
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+            <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@company.com" />
+            <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="Your password" />
+
+            {error && (
+              <p className="text-sm text-rose-700 bg-rose-50 ring-1 ring-inset ring-rose-600/20 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
+
+            {info && (
+              <p className="text-sm text-emerald-700 bg-emerald-50 ring-1 ring-inset ring-emerald-600/20 rounded-lg px-3 py-2">
+                {info}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg bg-emerald-600 px-3.5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors disabled:opacity-60"
+            >
+              {loading ? "Please wait…" : mode === "signin" ? "Sign in →" : "Create account"}
+            </button>
+          </form>
+
+          <p className="text-sm text-ink-500 mt-7 text-center">
+            {mode === "signin" ? "No account yet?" : "Already have an account?"}{" "}
+            <button
+              onClick={() => {
+                setMode(mode === "signin" ? "signup" : "signin");
+                setError(null);
+                setInfo(null);
+              }}
+              className="font-semibold text-emerald-700 hover:text-emerald-800"
+            >
+              {mode === "signin" ? "Create one" : "Sign in"}
+            </button>
+          </p>
+
+          {!isSupabaseConfigured && (
+            <p className="text-xs text-ink-400 text-center mt-4">
+              Connect Supabase in <code>.env.local</code> to enable authentication.
+            </p>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  type,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  type: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <label className="block">
+      <span className="block text-xs font-bold uppercase tracking-wide text-ink-700 mb-2">
+        {label}
+      </span>
+      <input
+        type={type}
+        value={value}
+        required
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
+      />
+    </label>
+  );
+}
