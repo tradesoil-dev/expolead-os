@@ -1,9 +1,16 @@
 # ExpoLead OS
 
-Turn every exhibition visit into business intelligence.
-Capture, organize, and follow up on the suppliers you meet at trade shows.
+Turn exhibition conversations into business opportunities.
+
+ExpoLead OS helps exhibition attendees, buyers, procurement teams, sourcing professionals, business development managers, sales teams, and exhibitors capture supplier interactions, manage follow-ups, track opportunities, and convert trade-show conversations into measurable business outcomes.
+
+**Designed for any professional attending exhibitions to generate business opportunities.**
+
+Exhibition → Supplier → Opportunity → Follow-up → Revenue
 
 Built with **Next.js 15 (App Router)**, **Tailwind CSS**, and **Supabase**.
+
+**Current Status:** Prototype V1 (Pilot Ready)
 
 ## Getting started
 
