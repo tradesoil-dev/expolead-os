@@ -14,6 +14,8 @@ export default function AccountMenu({ email }: { email: string | null }) {
   const [companyName, setCompanyName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarPosY, setAvatarPosY] = useState(50);
+  const [daysLeft, setDaysLeft] = useState<number | null>(null);
+  const [isExpired, setIsExpired] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
       if (!user) return;
       supabase
         .from("profiles")
-        .select("full_name, company_name, avatar_url, avatar_position_y")
+        .select("full_name, company_name, avatar_url, avatar_position_y, trial_ends_at, subscription_status")
         .eq("id", user.id)
         .single()
         .then(({ data }) => {
@@ -39,6 +41,13 @@ export default function AccountMenu({ email }: { email: string | null }) {
             setCompanyName(data.company_name || "");
             setAvatarUrl(data.avatar_url || null);
             setAvatarPosY(data.avatar_position_y ?? 50);
+            if (data.subscription_status !== "active" && data.trial_ends_at) {
+              const days = Math.ceil(
+                (new Date(data.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+              );
+              setDaysLeft(Math.max(0, days));
+              setIsExpired(days <= 0);
+            }
           }
         });
     });
@@ -128,21 +137,38 @@ export default function AccountMenu({ email }: { email: string | null }) {
             </Link>
           </div>
 
+          {/* Trial status */}
+          {daysLeft !== null && (
+            <div className={`mx-3 my-2 rounded-lg px-3 py-2 text-xs ${isExpired ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700"}`}>
+              {isExpired
+                ? "Trial ended — upgrade to add new records."
+                : `${daysLeft} day${daysLeft === 1 ? "" : "s"} left in your free trial.`}
+              <Link
+                href="/pricing"
+                onClick={() => setOpen(false)}
+                className="ml-2 font-bold underline"
+              >
+                View Plans
+              </Link>
+            </div>
+          )}
+
           {/* Workspace */}
           <div className="py-2 border-b border-ink-100">
             <p className="px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-ink-400">
               Workspace
             </p>
+            <Link
+              href="/pricing"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
+            >
+              <BillingIcon className="h-4 w-4 text-ink-400" />
+              <span>View Plans</span>
+            </Link>
             <div className="flex items-center gap-3 px-4 py-2 text-sm text-ink-300 cursor-not-allowed select-none">
               <UsersIcon className="h-4 w-4" />
               <span>Manage Users</span>
-              <span className="ml-auto text-[10px] font-semibold text-ink-300 border border-ink-200 rounded px-1.5 py-0.5">
-                Soon
-              </span>
-            </div>
-            <div className="flex items-center gap-3 px-4 py-2 text-sm text-ink-300 cursor-not-allowed select-none">
-              <BillingIcon className="h-4 w-4" />
-              <span>Billing</span>
               <span className="ml-auto text-[10px] font-semibold text-ink-300 border border-ink-200 rounded px-1.5 py-0.5">
                 Soon
               </span>
