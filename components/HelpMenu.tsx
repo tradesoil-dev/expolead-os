@@ -53,6 +53,14 @@ export default function HelpMenu() {
             <p className="text-sm font-semibold text-ink-900">Help & Support</p>
           </div>
           <div className="py-1">
+            <Link
+              href="/getting-started"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
+            >
+              <GettingStartedIcon className="h-4 w-4 text-ink-400" />
+              Getting started
+            </Link>
             <a
               href={`mailto:support@tradesoil.com`}
               className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
@@ -78,6 +86,14 @@ export default function HelpMenu() {
         </div>
       )}
     </div>
+  );
+}
+
+function GettingStartedIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
+    </svg>
   );
 }
 

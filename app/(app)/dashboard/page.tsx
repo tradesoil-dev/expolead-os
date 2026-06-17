@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import StatCard from "@/components/StatCard";
+import WelcomeCard from "@/components/WelcomeCard";
 import { PriorityBadge } from "@/components/Badge";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -77,6 +78,7 @@ export default async function DashboardPage() {
 
       <main className="flex-1 space-y-8 p-6 md:p-8">
         {!isSupabaseConfigured && <SetupNotice />}
+        <WelcomeCard />
 
         <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatCard
