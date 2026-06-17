@@ -23,22 +23,22 @@ const stages = [
   {
     title: "Discussion",
     subtitle: "Explore opportunity",
-    icon: <MessageSquare size={15} strokeWidth={1.5} />,
+    icon: <MessageSquare size={20} strokeWidth={1.5} />,
   },
   {
     title: "Sample",
     subtitle: "Evaluate product",
-    icon: <FlaskConical size={15} />,
+    icon: <FlaskConical size={20} />,
   },
   {
     title: "Quote Review",
     subtitle: "Review pricing",
-    icon: <FileText size={15} />,
+    icon: <FileText size={20} />,
   },
   {
     title: "Order Ready",
     subtitle: "Commercial ready",
-    icon: <CircleCheck size={15} />,
+    icon: <CircleCheck size={20} />,
   },
 ];
 
@@ -119,24 +119,37 @@ export default function LoginPage() {
   </div>
 </div>
 
-          <div className="relative mt-16 flex items-center justify-between">
-            <div className="absolute left-8 right-8 top-1/2 h-px -translate-y-1/2 bg-emerald-300" />
+          <div className="relative mt-16 mx-auto w-full max-w-sm">
+            {/* Background line */}
+            <div className="absolute left-7 right-7 top-7 h-0.5 bg-emerald-100" />
+            {/* Progress line — grows left to right with each stage */}
+            <div
+              className="absolute left-7 right-7 top-7 h-0.5 bg-emerald-600 origin-left transition-transform duration-500"
+              style={{ transform: `scaleX(${activeStep / (stages.length - 1)})` }}
+            />
 
-            {stages.map((stage, index) => (
-              <div key={stage.title} className="relative z-10">
-                <div
-                  className={`grid h-14 w-14 place-items-center rounded-full border text-xl shadow-sm transition-colors duration-500 ${
-                    index < activeStep
-                      ? "border-emerald-600 bg-emerald-600 text-white"
-                      : index === activeStep
-                      ? "border-emerald-600 bg-white text-emerald-700 shadow-[0_0_0_10px_rgba(16,185,129,0.15)]"
-                      : "border-emerald-200 bg-white text-ink-700"
-                  }`}
-                >
-                  {index < activeStep ? "✓" : stage.icon}
-                </div>
-              </div>
-            ))}
+            <div className="relative flex items-start justify-between">
+              {stages.map((stage, index) => {
+                const completed = index < activeStep;
+                const active = index === activeStep;
+                return (
+                  <div key={stage.title} className="relative z-10 flex flex-col items-center gap-2">
+                    <div
+                      className={`grid h-14 w-14 place-items-center rounded-full transition-colors duration-500 ${
+                        completed || active
+                          ? "bg-emerald-600 text-white shadow-sm"
+                          : "bg-white border-2 border-emerald-200 text-ink-400"
+                      }`}
+                    >
+                      {completed
+                        ? <span className="text-lg font-bold">✓</span>
+                        : <span className={active ? "text-white" : "text-ink-400"}>{stage.icon}</span>
+                      }
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           <div className="mt-14 text-center">
@@ -186,9 +199,17 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-emerald-600 px-3.5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors disabled:opacity-60"
+              className="w-full rounded-lg bg-emerald-600 px-3.5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              {loading ? "Please wait…" : mode === "signin" ? "Sign in →" : "Create account"}
+              {loading && (
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                  <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+              )}
+              {loading
+                ? mode === "signin" ? "Signing in…" : "Creating account…"
+                : mode === "signin" ? "Sign in →" : "Create account"}
             </button>
           </form>
 

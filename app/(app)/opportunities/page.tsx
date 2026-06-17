@@ -175,7 +175,7 @@ export default async function OpportunitiesPage() {
             No opportunities created yet.
           </p>
         ) : (
-          <div className="mt-5 grid gap-4 overflow-x-auto pb-2 xl:grid-cols-6">
+          <div className="mt-5 flex gap-4 overflow-x-auto pb-3 xl:grid xl:grid-cols-6">
             {STAGES.map((stage) => {
               const stageItems = opportunities.filter(
                 (opportunity) => opportunity.status === stage.key
@@ -184,7 +184,7 @@ export default async function OpportunitiesPage() {
               return (
                 <div
                   key={stage.key}
-                  className="min-h-[260px] rounded-2xl border border-slate-200 bg-slate-50 p-3"
+                  className="min-h-[260px] w-[260px] shrink-0 rounded-2xl border border-slate-200 bg-slate-50 p-3 xl:w-auto"
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-slate-800">

@@ -120,9 +120,7 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
   const targetSuppliers = suppliers.filter((s) => s.is_target).length;
   const followUpsDue = suppliers.filter((s) => s.follow_up_date).length;
   const countries = new Set(suppliers.map((s) => s.country).filter(Boolean)).size;
-  const selectClass =
-  "rounded-lg border border-ink-200 bg-white px-2.5 py-1.5 text-sm outline-none focus:border-brand-500";
-    "rounded-lg border border-ink-200 bg-white px-2.5 py-1.5 text-sm outline-none focus:border-brand-500";
+  const selectClass = "w-full md:w-auto rounded-lg border border-ink-200 bg-white px-2.5 py-2 text-sm outline-none focus:border-brand-500";
 
     return (
     <div className="space-y-4">
@@ -148,63 +146,59 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="space-y-2">
+        {/* Search — always full width */}
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search company, country, category, booth…"
-          className="flex-1 min-w-[200px] rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-brand-500"
+          className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500"
         />
 
-        <select value={exhibition} onChange={(e) => setExhibition(e.target.value)} className={selectClass}>
-          <option value="">All exhibitions</option>
-          {exhibitions.map(([id, name]) => (
-            <option key={id} value={id}>
-              {name}
-            </option>
-          ))}
-        </select>
+        {/* Filters — 2-col grid on mobile, inline row on md+ */}
+        <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:items-center">
+          <select value={exhibition} onChange={(e) => setExhibition(e.target.value)} className={selectClass}>
+            <option value="">All exhibitions</option>
+            {exhibitions.map(([id, name]) => (
+              <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
 
-        <select value={interest} onChange={(e) => setInterest(e.target.value)} className={selectClass}>
-          <option value="">All classifications</option>
-          {INTEREST_TYPES.map((x) => (
-            <option key={x.value} value={x.value}>
-              {x.label}
-            </option>
-          ))}
-        </select>
+          <select value={interest} onChange={(e) => setInterest(e.target.value)} className={selectClass}>
+            <option value="">All classifications</option>
+            {INTEREST_TYPES.map((x) => (
+              <option key={x.value} value={x.value}>{x.label}</option>
+            ))}
+          </select>
 
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} className={selectClass}>
-          <option value="">All priorities</option>
-          {PRIORITIES.map((x) => (
-            <option key={x.value} value={x.value}>
-              {x.label}
-            </option>
-          ))}
-        </select>
+          <select value={priority} onChange={(e) => setPriority(e.target.value)} className={selectClass}>
+            <option value="">All priorities</option>
+            {PRIORITIES.map((x) => (
+              <option key={x.value} value={x.value}>{x.label}</option>
+            ))}
+          </select>
 
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className={selectClass}>
-          <option value="">All statuses</option>
-          {FOLLOW_UP_STATUSES.map((x) => (
-            <option key={x.value} value={x.value}>
-              {x.label}
-            </option>
-          ))}
-        </select>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className={selectClass}>
+            <option value="">All statuses</option>
+            {FOLLOW_UP_STATUSES.map((x) => (
+              <option key={x.value} value={x.value}>{x.label}</option>
+            ))}
+          </select>
 
-        <select value={visited} onChange={(e) => setVisited(e.target.value)} className={selectClass}>
-          <option value="">All booths</option>
-          <option value="yes">Visited</option>
-          <option value="no">Not visited</option>
-        </select>
+          <select value={visited} onChange={(e) => setVisited(e.target.value)} className={selectClass}>
+            <option value="">All booths</option>
+            <option value="yes">Visited</option>
+            <option value="no">Not visited</option>
+          </select>
 
-        <button
-          onClick={exportCsv}
-          disabled={filtered.length === 0}
-          className="rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-sm font-medium hover:bg-ink-50 disabled:opacity-50"
-        >
-          Export CSV
-        </button>
+          <button
+            onClick={exportCsv}
+            disabled={filtered.length === 0}
+            className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium hover:bg-ink-50 disabled:opacity-50 md:w-auto"
+          >
+            Export CSV
+          </button>
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-ink-200 bg-white shadow-card">

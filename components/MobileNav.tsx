@@ -2,34 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { usePathname } from "next/navigation";
+import AccountMenu from "@/components/AccountMenu";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/suppliers", label: "Suppliers" },
   { href: "/exhibitions", label: "Exhibitions" },
   { href: "/opportunities", label: "Opportunities" },
-  { href: "/profile", label: "Profile" },
 ];
 
-export default function MobileNav({
-  email,
-}: {
-  email?: string | null;
-}) {
+export default function MobileNav({ email }: { email?: string | null }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-
-  async function signOut() {
-    if (isSupabaseConfigured) {
-      await createClient().auth.signOut();
-    }
-    router.push("/login");
-    router.refresh();
-  }
 
   function isActive(href: string) {
     return pathname === href;
@@ -38,22 +23,20 @@ export default function MobileNav({
   return (
     <div className="block md:hidden">
       <div className="flex items-center justify-between h-14 px-4 border-b bg-white sticky top-0 z-30">
-        <div className="flex items-center gap-2">
-          <div className="grid place-items-center h-8 w-8 rounded-full bg-emerald-600 text-white font-bold">
-            EL
-          </div>
-          <div>
-            <p className="font-semibold text-sm">ExpoLead OS</p>
-          </div>
-        </div>
+        <span className="text-[17px] font-medium tracking-tight text-ink-900">
+          Expo<span className="text-emerald-600">Lead</span> OS
+        </span>
 
-        <button
-          onClick={() => setOpen(true)}
-          className="h-11 w-11 grid place-items-center rounded-md border"
-          aria-label="Open navigation"
-        >
-          ☰
-        </button>
+        <div className="flex items-center gap-2">
+          <AccountMenu email={email ?? null} />
+          <button
+            onClick={() => setOpen(true)}
+            className="h-11 w-11 grid place-items-center rounded-md border"
+            aria-label="Open navigation"
+          >
+            ☰
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -92,18 +75,6 @@ export default function MobileNav({
               ))}
             </nav>
 
-            <div className="border-t p-3">
-              <p className="text-xs text-slate-500 mb-3 truncate">
-                {email ?? "User"}
-              </p>
-
-              <button
-                onClick={signOut}
-                className="w-full rounded-lg border px-3 py-2 text-left"
-              >
-                Sign Out
-              </button>
-            </div>
           </div>
         </>
       )}
