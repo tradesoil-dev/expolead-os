@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export default function AddExhibitionForm() {
+export default function AddExhibitionForm({ isLocked }: { isLocked?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -44,6 +44,14 @@ export default function AddExhibitionForm() {
   }
 
   const inp = "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
+
+  if (isLocked) {
+    return (
+      <a href="/pricing" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended — upgrade to continue">
+        🔒 New exhibition
+      </a>
+    );
+  }
 
   if (!open) {
     return (

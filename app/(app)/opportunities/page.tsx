@@ -2,6 +2,7 @@ import PageHeader from "@/components/PageHeader";
 import AddOpportunityForm from "@/components/AddOpportunityForm";
 import OpportunitiesExportButton from "@/components/OpportunitiesExportButton";
 import { getOpportunities, getExhibitions } from "@/lib/data";
+import { getTrialStatus } from "@/lib/trial";
 
 const STAGES = [
   { key: "researching", label: "Qualified" },
@@ -63,8 +64,11 @@ function getFollowUpHealth(opp: any) {
 }
 
 export default async function OpportunitiesPage() {
-  const opportunities = await getOpportunities();
-  const exhibitions = await getExhibitions();
+  const [opportunities, exhibitions, trial] = await Promise.all([
+    getOpportunities(),
+    getExhibitions(),
+    getTrialStatus(),
+  ]);
 
   const pipelineCounts = {
     qualified: opportunities.filter((opportunity) => opportunity.status === "researching").length,
@@ -100,7 +104,7 @@ export default async function OpportunitiesPage() {
         subtitle="Track exhibition conversations from qualified interest to revenue"
       />
 
-      <AddOpportunityForm exhibitions={exhibitions} />
+      <AddOpportunityForm exhibitions={exhibitions} isLocked={trial.isExpired} />
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
         <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">

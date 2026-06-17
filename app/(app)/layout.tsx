@@ -1,8 +1,10 @@
 import Sidebar from "@/components/Sidebar";
 import MobileNav from "@/components/MobileNav";
 import AccountMenu from "@/components/AccountMenu";
+import TrialBanner from "@/components/TrialBanner";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { getTrialStatus } from "@/lib/trial";
 
 export default async function AppLayout({
   children,
@@ -19,6 +21,8 @@ export default async function AppLayout({
     email = user?.email ?? null;
   }
 
+  const trial = await getTrialStatus();
+
   return (
     <div className="flex min-h-screen">
       <Sidebar email={email} />
@@ -27,6 +31,11 @@ export default async function AppLayout({
         <div className="hidden md:flex items-center justify-end px-6 h-14 border-b border-ink-100 bg-white shrink-0">
           <AccountMenu email={email} />
         </div>
+        <TrialBanner
+          isExpired={trial.isExpired}
+          isWarning={trial.isWarning}
+          daysLeft={trial.daysLeft}
+        />
         {children}
       </div>
     </div>

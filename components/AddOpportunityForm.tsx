@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Exhibition } from "@/lib/types";
 
-export default function AddOpportunityForm({ exhibitions }: { exhibitions: Exhibition[] }) {
+export default function AddOpportunityForm({ exhibitions, isLocked }: { exhibitions: Exhibition[]; isLocked?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -81,6 +81,14 @@ booth: "",
     });
 
     router.refresh();
+  }
+
+  if (isLocked) {
+    return (
+      <a href="/pricing" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended — upgrade to continue">
+        🔒 New Opportunity
+      </a>
+    );
   }
 
   if (!open) {
