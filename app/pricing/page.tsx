@@ -135,7 +135,7 @@ export default function PricingPage() {
         {/* FAQ */}
         <div className="mt-14">
           <h2 className="text-xl font-bold text-slate-900 text-center mb-8">Common questions</h2>
-          <div className="space-y-6 max-w-2xl mx-auto">
+          <div className="space-y-0 max-w-2xl mx-auto rounded-2xl border border-slate-200 overflow-hidden">
             {[
               {
                 q: "What happens after my 14-day trial?",
@@ -153,10 +153,10 @@ export default function PricingPage() {
                 q: "What is the Professional team feature?",
                 a: "Multiple team members can log into the same workspace, see each other's supplier captures, and collaborate on exhibitions in real time. Launching soon.",
               },
-            ].map(({ q, a }) => (
-              <div key={q}>
+            ].map(({ q, a }, i, arr) => (
+              <div key={q} className={`px-6 py-5 bg-white ${i < arr.length - 1 ? "border-b border-slate-100" : ""}`}>
                 <p className="font-semibold text-slate-800">{q}</p>
-                <p className="mt-1 text-sm text-slate-600">{a}</p>
+                <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">{a}</p>
               </div>
             ))}
           </div>

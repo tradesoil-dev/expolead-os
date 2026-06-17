@@ -193,7 +193,22 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="mt-10 space-y-6">
             <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@company.com" />
-            <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="Your password" />
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="block text-xs font-bold uppercase tracking-wide text-ink-700">Password</span>
+                {mode === "signin" && (
+                  <a href="/reset-password" className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">Forgot password?</a>
+                )}
+              </div>
+              <input
+                type="password"
+                value={password}
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Your password"
+                className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
+              />
+            </div>
 
             {error && (
               <p className="text-sm text-rose-700 bg-rose-50 ring-1 ring-inset ring-rose-600/20 rounded-lg px-3 py-2">
