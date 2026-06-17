@@ -12,6 +12,8 @@ export default function AccountMenu({ email }: { email: string | null }) {
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarPosY, setAvatarPosY] = useState(50);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -28,13 +30,15 @@ export default function AccountMenu({ email }: { email: string | null }) {
       if (!user) return;
       supabase
         .from("profiles")
-        .select("full_name, company_name")
+        .select("full_name, company_name, avatar_url, avatar_position_y")
         .eq("id", user.id)
         .single()
         .then(({ data }) => {
           if (data) {
             setFullName(data.full_name || "");
             setCompanyName(data.company_name || "");
+            setAvatarUrl(data.avatar_url || null);
+            setAvatarPosY(data.avatar_position_y ?? 50);
           }
         });
     });
@@ -73,10 +77,12 @@ export default function AccountMenu({ email }: { email: string | null }) {
       <button
         ref={buttonRef}
         onClick={handleOpen}
-        className="h-11 w-11 grid place-items-center rounded-full bg-emerald-100 text-sm font-semibold text-emerald-700 hover:bg-emerald-200 transition-colors"
+        className="h-11 w-11 rounded-full bg-emerald-100 text-sm font-semibold text-emerald-700 hover:bg-emerald-200 transition-colors overflow-hidden grid place-items-center"
         aria-label="Account menu"
       >
-        {initials}
+        {avatarUrl
+          ? <img src={avatarUrl} alt="Avatar" style={{ width: 44, height: 44, objectFit: "cover", objectPosition: `center ${avatarPosY}%`, display: "block" }} />
+          : initials}
       </button>
 
       {open && (
