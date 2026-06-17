@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import {
@@ -44,7 +44,10 @@ const stages = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const [mode, setMode] = useState<Mode>("signin");
+  const searchParams = useSearchParams();
+  const [mode, setMode] = useState<Mode>(
+    searchParams.get("mode") === "signup" ? "signup" : "signin"
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

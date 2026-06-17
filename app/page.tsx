@@ -27,7 +27,7 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/login"
+            href="/login?mode=signup"
             className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
           >
             Start free trial
@@ -82,18 +82,11 @@ export default function HomePage() {
 
           <div className="mt-12 flex flex-col gap-4 sm:flex-row">
             <Link
-              href="/login"
+              href="/login?mode=signup"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
             >
               Start free trial
               <ArrowRight className="h-4 w-4" />
-            </Link>
-
-            <Link
-              href="/login"
-              className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
-            >
-              Log in
             </Link>
           </div>
         </div>

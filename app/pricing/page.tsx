@@ -31,7 +31,7 @@ export default function PricingPage() {
           <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
             Log in
           </Link>
-          <Link href="/login" className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+          <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
             Start free trial
           </Link>
         </div>
@@ -66,7 +66,7 @@ export default function PricingPage() {
             </p>
 
             <Link
-              href="/login"
+              href="/login?mode=signup"
               className="mt-6 block w-full rounded-xl bg-emerald-600 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
             >
               Start free trial
@@ -100,7 +100,7 @@ export default function PricingPage() {
             </p>
 
             <Link
-              href="/login"
+              href="/login?mode=signup"
               className="mt-6 block w-full rounded-xl bg-emerald-600 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
             >
               Start free trial
@@ -165,7 +165,7 @@ export default function PricingPage() {
         {/* BOTTOM CTA */}
         <div className="mt-16 text-center">
           <Link
-            href="/login"
+            href="/login?mode=signup"
             className="inline-block rounded-xl bg-emerald-600 px-8 py-4 text-base font-semibold text-white hover:bg-emerald-500 transition-colors"
           >
             Start your free 14-day trial →
