@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import {
@@ -197,7 +198,7 @@ function LoginForm() {
               <div className="flex items-center justify-between mb-2">
                 <span className="block text-xs font-bold uppercase tracking-wide text-ink-700">Password</span>
                 {mode === "signin" && (
-                  <a href="/reset-password" className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">Forgot password?</a>
+                  <Link href="/reset-password" className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">Forgot password?</Link>
                 )}
               </div>
               <input
