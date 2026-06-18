@@ -12,11 +12,13 @@ export const metadata: Metadata = {
     url: "https://expolead-os.vercel.app",
     siteName: "ExpoLead OS",
     type: "website",
+    images: [{ url: "https://expolead-os.vercel.app/opengraph-image", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ExpoLead OS",
     description: "Capture suppliers, track opportunities, and follow up faster from every exhibition you attend.",
+    images: ["https://expolead-os.vercel.app/opengraph-image"],
   },
 };
 
