@@ -40,7 +40,7 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
             <p className="text-2xl font-bold">{suppliers.length}</p>
-            <p className="text-sm text-ink-500">Suppliers Captured</p>
+            <p className="text-sm text-ink-500">Connections Captured</p>
           </div>
 
           <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
@@ -71,7 +71,7 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
     <h3 className="font-semibold">Exhibition Intelligence</h3>
     <div className="mt-3 space-y-2 text-sm">
   <div className="flex justify-between">
-    <span className="text-ink-500">Suppliers</span>
+    <span className="text-ink-500">Connections</span>
     <span className="font-medium">{suppliers.length}</span>
   </div>
 
@@ -113,12 +113,12 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
 </div>
         <div className="rounded-xl border border-ink-200 bg-white">
           <div className="border-b border-ink-100 px-4 py-3">
-            <h2 className="font-semibold">Suppliers at this Exhibition</h2>
+            <h2 className="font-semibold">Connections at this Exhibition</h2>
           </div>
 
           {suppliers.length === 0 ? (
             <p className="p-4 text-sm text-ink-400">
-              No suppliers linked to this exhibition yet.
+              No connections linked to this exhibition yet.
             </p>
           ) : (
             <div className="divide-y divide-ink-100">

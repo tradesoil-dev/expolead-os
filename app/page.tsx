@@ -241,7 +241,7 @@ export default function HomePage() {
           <div className="relative flex flex-col items-center text-center">
             <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600 text-xl font-black text-white shadow-lg">1</div>
             <h3 className="mt-6 text-lg font-bold text-slate-900">Capture at the booth</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-500">Log suppliers, buyer signals, booth location and first impressions on the spot — no paper, no chaos.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-500">Log connections, buyer signals, booth location and first impressions on the spot — no paper, no chaos.</p>
           </div>
 
           <div className="relative flex flex-col items-center text-center">
@@ -282,7 +282,7 @@ export default function HomePage() {
               <ShieldCheck className="h-5 w-5 text-emerald-600" />
             </div>
             <p className="text-base font-bold text-slate-900">Sourcing teams</p>
-            <p className="mt-2 text-sm leading-6 text-slate-500">Buyers and procurement professionals visiting exhibitions to find new suppliers and products.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-500">Buyers and procurement professionals visiting exhibitions to find new connections and products.</p>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -290,7 +290,7 @@ export default function HomePage() {
               <Globe2 className="h-5 w-5 text-emerald-600" />
             </div>
             <p className="text-base font-bold text-slate-900">International traders</p>
-            <p className="mt-2 text-sm leading-6 text-slate-500">B2B sales and trade professionals managing cross-border supplier and buyer relationships.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-500">B2B sales and trade professionals managing cross-border connections and buyer relationships.</p>
           </div>
         </div>
       </section>

@@ -4,11 +4,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ExpoLead OS",
-  description: "Capture suppliers, track opportunities, and follow up faster from every exhibition you attend.",
+  description: "Capture connections, track opportunities, and follow up faster from every exhibition you attend.",
   metadataBase: new URL("https://expolead-os.vercel.app"),
   openGraph: {
     title: "ExpoLead OS",
-    description: "Capture suppliers, track opportunities, and follow up faster from every exhibition you attend.",
+    description: "Capture connections, track opportunities, and follow up faster from every exhibition you attend.",
     url: "https://expolead-os.vercel.app",
     siteName: "ExpoLead OS",
     type: "website",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ExpoLead OS",
-    description: "Capture suppliers, track opportunities, and follow up faster from every exhibition you attend.",
+    description: "Capture connections, track opportunities, and follow up faster from every exhibition you attend.",
     images: ["https://expolead-os.vercel.app/opengraph-image"],
   },
 };

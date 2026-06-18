@@ -37,7 +37,7 @@ export default function ExhibitionsSearch({
   }, [exhibitions, query]);
 
   if (exhibitions.length === 0) {
-    return <p className="text-sm text-ink-400">No exhibitions yet. Add one to organize suppliers by show.</p>;
+    return <p className="text-sm text-ink-400">No exhibitions yet. Add one to organize connections by show.</p>;
   }
 
   return (
@@ -76,7 +76,7 @@ export default function ExhibitionsSearch({
               <div className="mt-5 grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-xl border border-ink-100 bg-ink-50 p-3">
                   <p className="text-lg font-semibold text-emerald-600">{statsFor(ex.id).total}</p>
-                  <p className="text-[11px] text-ink-400">Suppliers</p>
+                  <p className="text-[11px] text-ink-400">Connections</p>
                 </div>
 
                 <div className="rounded-xl border border-ink-100 bg-ink-50 p-3">

@@ -5,31 +5,31 @@ const STEPS = [
   {
     number: 1,
     title: "Add your first exhibition",
-    description: "Everything in ExpoLead OS starts with an exhibition. Add the show you're attending — name, location, and dates. All your suppliers and follow-ups will connect back to it.",
+    description: "Everything in ExpoLead OS starts with an exhibition. Add the show you're attending — name, location, and dates. All your connections and follow-ups will connect back to it.",
     cta: { label: "Go to Exhibitions →", href: "/exhibitions" },
     mockup: <ExhibitionMockup />,
     tip: "Tip: You can add multiple exhibitions — one for CHINACOAT, one for Canton Fair, and so on.",
   },
   {
     number: 2,
-    title: "Capture a supplier or contact",
-    description: "When you visit a booth or meet someone at the show, add them as a supplier. Record their company, country, interest type, and the booth they're at. Do it while the conversation is fresh.",
-    cta: { label: "Add a Supplier →", href: "/suppliers/new" },
+    title: "Capture a connection",
+    description: "When you visit a booth or meet someone at the show, add them as a connection. Record their company, country, interest type, and the booth they're at. Do it while the conversation is fresh.",
+    cta: { label: "Add a Connection →", href: "/suppliers/new" },
     mockup: <SupplierMockup />,
     tip: "Tip: Mark high-value contacts as High priority so they rise to the top of your follow-up list.",
   },
   {
     number: 3,
     title: "Set a follow-up date",
-    description: "After capturing a supplier, set a follow-up date. This is the most important step — it's what separates leads that convert from leads that go cold. ExpoLead OS will surface overdue follow-ups on your dashboard.",
-    cta: { label: "View your Suppliers →", href: "/suppliers" },
+    description: "After capturing a connection, set a follow-up date. This is the most important step — it's what separates leads that convert from leads that go cold. ExpoLead OS will surface overdue follow-ups on your dashboard.",
+    cta: { label: "View your Connections →", href: "/suppliers" },
     mockup: <FollowUpMockup />,
     tip: "Tip: Set follow-up dates before you leave the exhibition hall. Tomorrow is always too late.",
   },
   {
     number: 4,
     title: "Track your opportunities",
-    description: "When a supplier conversation becomes a real business opportunity — a sample request, a quotation, a negotiation — add it as an opportunity. Track it through your pipeline from Qualified to Won.",
+    description: "When a connection becomes a real business opportunity — a sample request, a quotation, a negotiation — add it as an opportunity. Track it through your pipeline from Qualified to Won.",
     cta: { label: "Go to Opportunities →", href: "/opportunities" },
     mockup: <OpportunityMockup />,
     tip: "Tip: Link your opportunity to the exhibition it came from so you know which shows deliver the best ROI.",
@@ -37,8 +37,8 @@ const STEPS = [
   {
     number: 5,
     title: "Export your data",
-    description: "When the show ends, export all your suppliers or opportunities to CSV. Share with your team, import into another system, or keep as a record of every show you've attended.",
-    cta: { label: "Go to Suppliers →", href: "/suppliers" },
+    description: "When the show ends, export all your connections or opportunities to CSV. Share with your team, import into another system, or keep as a record of every show you've attended.",
+    cta: { label: "Go to Connections →", href: "/suppliers" },
     mockup: <ExportMockup />,
     tip: "Tip: Export is available even after your trial ends — your data is always yours.",
   },
@@ -135,7 +135,7 @@ function ExhibitionMockup() {
           <p className="font-semibold text-slate-800">{ex.name}</p>
           <p className="text-slate-500 mt-0.5">{ex.location} · {ex.date}</p>
           <div className="mt-2 flex gap-3">
-            <span className="text-emerald-600 font-semibold">{ex.suppliers} suppliers</span>
+            <span className="text-emerald-600 font-semibold">{ex.suppliers} connections</span>
           </div>
         </div>
       ))}
@@ -149,12 +149,12 @@ function ExhibitionMockup() {
 function SupplierMockup() {
   return (
     <MockupShell>
-      <p className="font-bold text-slate-500 uppercase tracking-widest text-[10px] mb-3">Add Supplier</p>
+      <p className="font-bold text-slate-500 uppercase tracking-widest text-[10px] mb-3">Add Connection</p>
       <div className="space-y-2">
         {[
           { label: "Company name", value: "Guangzhou Resin Co. Ltd." },
           { label: "Country", value: "China" },
-          { label: "Interest type", value: "Supplier" },
+          { label: "Interest type", value: "Supplier / Buyer / Trader" },
           { label: "Priority", value: "High" },
           { label: "Booth", value: "Hall 3 · B204" },
         ].map(({ label, value }) => (
@@ -164,7 +164,7 @@ function SupplierMockup() {
           </div>
         ))}
         <div className="rounded-lg bg-emerald-600 py-1.5 text-center text-white font-semibold">
-          Save supplier
+          Save connection
         </div>
       </div>
     </MockupShell>

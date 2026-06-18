@@ -39,7 +39,7 @@ export default function OGImage() {
           <div style={{ fontSize: 72, fontWeight: 700, color: "#34d399", lineHeight: 1.1, display: "flex", marginBottom: 28 }}>Into Revenue.</div>
 
           {/* Subtext */}
-          <div style={{ fontSize: 23, color: "#94a3b8", display: "flex" }}>Capture suppliers. Track opportunities.</div>
+          <div style={{ fontSize: 23, color: "#94a3b8", display: "flex" }}>Capture connections. Track opportunities.</div>
           <div style={{ fontSize: 23, color: "#94a3b8", display: "flex", marginBottom: 48 }}>Follow up faster from every exhibition.</div>
 
           {/* Bottom info */}

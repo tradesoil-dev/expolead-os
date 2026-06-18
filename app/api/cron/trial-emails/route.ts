@@ -37,7 +37,7 @@ function emailDay7(name: string, trialEndDate: string) {
       <div style="padding: 32px; background: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
         <p style="font-size: 16px; margin-top: 0;">Hi ${displayName},</p>
         <p style="font-size: 15px; color: #374151;">Your free trial ends in <strong>7 days</strong> on <strong>${trialEndDate}</strong>.</p>
-        <p style="font-size: 15px; color: #374151;">Everything you have added — suppliers, opportunities, and exhibitions — stays in your account. After the trial ends you can still view and export all your data.</p>
+        <p style="font-size: 15px; color: #374151;">Everything you have added — connections, opportunities, and exhibitions — stays in your account. After the trial ends you can still view and export all your data.</p>
         <p style="font-size: 15px; color: #374151;">To keep adding new records and stay on top of your leads, choose a plan before your trial ends.</p>
         <div style="margin: 28px 0;">
           <a href="${APP_URL}/pricing" style="background: #059669; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">View Plans</a>
@@ -59,7 +59,7 @@ function emailDay1(name: string, trialEndDate: string) {
       <div style="padding: 32px; background: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
         <p style="font-size: 16px; margin-top: 0;">Hi ${displayName},</p>
         <p style="font-size: 15px; color: #374151;">Your free trial ends <strong>tomorrow</strong> on <strong>${trialEndDate}</strong>.</p>
-        <p style="font-size: 15px; color: #374151;">After that, adding new suppliers, opportunities, and exhibitions will be paused until you upgrade. Your existing data and CSV export will always be available.</p>
+        <p style="font-size: 15px; color: #374151;">After that, adding new connections, opportunities, and exhibitions will be paused until you upgrade. Your existing data and CSV export will always be available.</p>
         <p style="font-size: 15px; color: #374151;">If ExpoLead OS has helped you stay on top of your exhibition leads, now is a good time to continue with a plan.</p>
         <div style="margin: 28px 0;">
           <a href="${APP_URL}/pricing" style="background: #d97706; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">Choose a Plan</a>
@@ -83,7 +83,7 @@ function emailExpired(name: string) {
         <p style="font-size: 15px; color: #374151;">Your 14-day free trial has ended.</p>
         <p style="font-size: 15px; color: #374151;">Here is what you can still do:</p>
         <ul style="font-size: 15px; color: #374151; padding-left: 20px; line-height: 1.8;">
-          <li>View all your suppliers, opportunities, and exhibitions</li>
+          <li>View all your connections, opportunities, and exhibitions</li>
           <li>Export your data to CSV at any time</li>
           <li>Access your account settings</li>
         </ul>

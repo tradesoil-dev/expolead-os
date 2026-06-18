@@ -107,7 +107,7 @@ export default async function DashboardPage() {
 
         <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatCard
-            label="Suppliers Captured"
+            label="Connections Captured"
             value={met.length}
             hint="Captured at booths"
           />
@@ -205,9 +205,9 @@ export default async function DashboardPage() {
             )}
           </Panel>
 
-          <Panel title="Recently added suppliers" href="/suppliers" linkLabel="View all">
+          <Panel title="Recently added connections" href="/suppliers" linkLabel="View all">
             {suppliers.length === 0 ? (
-              <EmptyRow text="No suppliers yet — add your first lead." />
+              <EmptyRow text="No connections yet — add your first one." />
             ) : (
               <ul className="divide-y divide-ink-100">
                 {suppliers.slice(0, 5).map((supplier) => (

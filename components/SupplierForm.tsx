@@ -278,7 +278,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           disabled={saving}
           className="rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-ink-700 transition-colors disabled:opacity-60"
         >
-          {saving ? "Saving…" : "Save supplier"}
+          {saving ? "Saving…" : "Save connection"}
         </button>
 
         <button

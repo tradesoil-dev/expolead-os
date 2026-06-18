@@ -11,17 +11,17 @@ export default async function SuppliersPage() {
   return (
     <>
       <PageHeader
-        title="Suppliers"
+        title="Connections"
         subtitle="Everyone you've captured and saved"
         action={
           trial.isExpired ? (
-            <LockedButton label="Add supplier" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" />
+            <LockedButton label="Add connection" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" />
           ) : (
             <Link
               href="/suppliers/new"
               className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 shadow-sm px-3.5 py-2 text-sm font-medium text-white transition-colors"
             >
-              <span className="text-base leading-none">+</span> Add supplier
+              <span className="text-base leading-none">+</span> Add connection
             </Link>
           )
         }

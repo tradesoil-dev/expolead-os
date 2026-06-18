@@ -3,7 +3,7 @@ import Link from "next/link";
 const STARTER_FEATURES = [
   { text: "1 user", included: true },
   { text: "Unlimited exhibitions", included: true },
-  { text: "Unlimited suppliers", included: true },
+  { text: "Unlimited connections", included: true },
   { text: "Unlimited opportunities", included: true },
   { text: "Follow-up tracking", included: true },
   { text: "CSV export", included: true },
@@ -139,7 +139,7 @@ export default function PricingPage() {
             {[
               {
                 q: "What happens after my 14-day trial?",
-                a: "You can still log in and view all your data. To add new suppliers, exhibitions or opportunities, upgrade to a paid plan.",
+                a: "You can still log in and view all your data. To add new connections, exhibitions or opportunities, upgrade to a paid plan.",
               },
               {
                 q: "Do I need a credit card to start?",
@@ -151,7 +151,7 @@ export default function PricingPage() {
               },
               {
                 q: "What is the Professional team feature?",
-                a: "Multiple team members can log into the same workspace, see each other's supplier captures, and collaborate on exhibitions in real time. Launching soon.",
+                a: "Multiple team members can log into the same workspace, see each other's connections, and collaborate on exhibitions in real time. Launching soon.",
               },
             ].map(({ q, a }, i, arr) => (
               <div key={q} className={`px-6 py-5 bg-white ${i < arr.length - 1 ? "border-b border-slate-100" : ""}`}>

@@ -112,7 +112,7 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `expolead-suppliers-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `expolead-connections-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -126,12 +126,12 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
     <div className="space-y-4">
       <div className="grid gap-3 md:grid-cols-4">
         <div className="rounded-xl border border-ink-200 bg-white p-4 shadow-card">
-          <p className="text-xs font-medium text-ink-500">Total suppliers</p>
+          <p className="text-xs font-medium text-ink-500">Total connections</p>
           <p className="mt-2 text-2xl font-semibold text-ink-900">{totalSuppliers}</p>
         </div>
 
         <div className="rounded-xl border border-ink-200 bg-white p-4 shadow-card">
-          <p className="text-xs font-medium text-ink-500">Target suppliers</p>
+          <p className="text-xs font-medium text-ink-500">Target connections</p>
           <p className="mt-2 text-2xl font-semibold text-ink-900">{targetSuppliers}</p>
         </div>
 
@@ -221,8 +221,8 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
               <tr>
                 <td colSpan={8} className="px-4 py-12 text-center text-ink-400">
                   {suppliers.length === 0
-                    ? "No suppliers yet — add your first lead."
-                    : "No suppliers match these filters."}
+                    ? "No connections yet — add your first one."
+                    : "No connections match these filters."}
                 </td>
               </tr>
             ) : (
@@ -254,7 +254,7 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
       </div>
 
       <p className="text-xs text-ink-400">
-        Showing {filtered.length} of {suppliers.length} suppliers
+        Showing {filtered.length} of {suppliers.length} connections
       </p>
     </div>
   );
