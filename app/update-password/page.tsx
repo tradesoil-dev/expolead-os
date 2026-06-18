@@ -17,40 +17,52 @@ function UpdatePasswordForm() {
   const [sessionReady, setSessionReady] = useState(false);
 
   useEffect(() => {
-    async function exchangeToken() {
-      if (!isSupabaseConfigured) { setVerifying(false); return; }
-      const supabase = createClient();
+    if (!isSupabaseConfigured) { setVerifying(false); return; }
+    const supabase = createClient();
 
-      // PKCE flow: token_hash + type in query params
-      const tokenHash = searchParams.get("token_hash");
-      const type = searchParams.get("type");
+    // PKCE flow: token_hash + type=recovery in query params
+    const tokenHash = searchParams.get("token_hash");
+    const type = searchParams.get("type");
 
-      if (tokenHash && type === "recovery") {
-        const { error } = await supabase.auth.verifyOtp({
-          token_hash: tokenHash,
-          type: "recovery",
-        });
-        if (error) {
-          setError("This reset link has expired or already been used. Please request a new one.");
+    if (tokenHash && type === "recovery") {
+      supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" })
+        .then(({ error }) => {
+          if (error) {
+            setError("This reset link has expired or has already been used. Please request a new one.");
+          } else {
+            setSessionReady(true);
+          }
           setVerifying(false);
-          return;
-        }
-        setSessionReady(true);
-        setVerifying(false);
-        return;
-      }
-
-      // Implicit flow: check if there is already an active recovery session
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setSessionReady(true);
-      } else {
-        setError("This reset link has expired or already been used. Please request a new one.");
-      }
-      setVerifying(false);
+        });
+      return;
     }
 
-    exchangeToken();
+    // Implicit flow: Supabase processes the URL hash and fires PASSWORD_RECOVERY
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" && session) {
+        setSessionReady(true);
+        setVerifying(false);
+      }
+    });
+
+    // Also check if a recovery session already exists
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        setSessionReady(true);
+        setVerifying(false);
+      }
+    });
+
+    // Timeout: if no session after 6s, show error
+    const timeout = setTimeout(() => {
+      setVerifying(false);
+      setError("This reset link has expired or has already been used. Please request a new one.");
+    }, 6000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -77,7 +89,13 @@ function UpdatePasswordForm() {
         </p>
 
         {verifying ? (
-          <p className="mt-8 text-sm text-slate-400">Verifying your reset link...</p>
+          <div className="mt-8 flex items-center gap-3 text-sm text-slate-400">
+            <svg className="h-4 w-4 animate-spin text-emerald-500" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+              <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            Verifying your reset link...
+          </div>
         ) : !sessionReady ? (
           <div className="mt-8 rounded-xl bg-rose-50 border border-rose-200 px-5 py-4">
             <p className="text-sm font-semibold text-rose-700">Link expired</p>
