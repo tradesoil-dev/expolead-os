@@ -13,22 +13,23 @@ function UpdatePasswordForm() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [linkError, setLinkError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
 
   useEffect(() => {
     if (!isSupabaseConfigured) { setVerifying(false); return; }
     const supabase = createClient();
 
-    // PKCE flow: token_hash + type=recovery in query params
     const tokenHash = searchParams.get("token_hash");
     const type = searchParams.get("type");
 
+    // PKCE flow: token_hash in URL — verify it directly, result is immediate
     if (tokenHash && type === "recovery") {
       supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" })
         .then(({ error }) => {
           if (error) {
-            setError("This reset link has expired or has already been used. Please request a new one.");
+            setLinkError("This reset link has expired or has already been used. Please request a new one.");
           } else {
             setSessionReady(true);
           }
@@ -37,15 +38,8 @@ function UpdatePasswordForm() {
       return;
     }
 
-    // Implicit flow: Supabase processes the URL hash and fires PASSWORD_RECOVERY
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" && session) {
-        setSessionReady(true);
-        setVerifying(false);
-      }
-    });
-
-    // Also check if a recovery session already exists
+    // Implicit flow: session arrives via URL hash fragment
+    // Check if a recovery session is already active (e.g. page reload)
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         setSessionReady(true);
@@ -53,28 +47,27 @@ function UpdatePasswordForm() {
       }
     });
 
-    // Timeout: if no session after 6s, show error
-    const timeout = setTimeout(() => {
-      setVerifying(false);
-      setError("This reset link has expired or has already been used. Please request a new one.");
-    }, 6000);
+    // Listen for the PASSWORD_RECOVERY event fired by Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" && session) {
+        setSessionReady(true);
+        setVerifying(false);
+      }
+    });
 
-    return () => {
-      subscription.unsubscribe();
-      clearTimeout(timeout);
-    };
+    return () => { subscription.unsubscribe(); };
   }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
-    if (password !== confirm) { setError("Passwords do not match."); return; }
-    if (password.length < 8) { setError("Password must be at least 8 characters."); return; }
+    setSubmitError(null);
+    if (password !== confirm) { setSubmitError("Passwords do not match."); return; }
+    if (password.length < 8) { setSubmitError("Password must be at least 8 characters."); return; }
     if (!isSupabaseConfigured) return;
     setLoading(true);
     const { error } = await createClient().auth.updateUser({ password });
     setLoading(false);
-    if (error) { setError(error.message); return; }
+    if (error) { setSubmitError(error.message); return; }
     router.push("/dashboard");
   }
 
@@ -89,22 +82,30 @@ function UpdatePasswordForm() {
         </p>
 
         {verifying ? (
-          <div className="mt-8 flex items-center gap-3 text-sm text-slate-400">
-            <svg className="h-4 w-4 animate-spin text-emerald-500" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-              <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-            </svg>
-            Verifying your reset link...
+          <div className="mt-8">
+            <div className="flex items-center gap-3 text-sm text-slate-400">
+              <svg className="h-4 w-4 animate-spin text-emerald-500" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              Verifying your reset link...
+            </div>
+            <p className="mt-4 text-xs text-slate-400">
+              Taking too long?{" "}
+              <a href="/reset-password" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                Request a new link
+              </a>
+            </p>
           </div>
-        ) : !sessionReady ? (
+        ) : linkError ? (
           <div className="mt-8 rounded-xl bg-rose-50 border border-rose-200 px-5 py-4">
             <p className="text-sm font-semibold text-rose-700">Link expired</p>
-            <p className="mt-1 text-sm text-rose-600">{error}</p>
+            <p className="mt-1 text-sm text-rose-600">{linkError}</p>
             <a href="/reset-password" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">
               Request a new reset link
             </a>
           </div>
-        ) : (
+        ) : sessionReady ? (
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <label className="block">
               <span className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-2">New password</span>
@@ -126,13 +127,25 @@ function UpdatePasswordForm() {
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Repeat your password"
-                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
+                className={`w-full rounded-lg border bg-white px-4 py-3 text-sm outline-none focus:ring-2 transition ${
+                  confirm && confirm !== password
+                    ? "border-rose-400 focus:border-rose-400 focus:ring-rose-100"
+                    : confirm && confirm === password
+                    ? "border-emerald-400 focus:border-emerald-500 focus:ring-emerald-100"
+                    : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
+                }`}
               />
+              {confirm && confirm !== password && (
+                <p className="mt-2 text-xs text-rose-600 font-medium">Passwords do not match</p>
+              )}
+              {confirm && confirm === password && (
+                <p className="mt-2 text-xs text-emerald-600 font-medium">Passwords match</p>
+              )}
             </label>
 
-            {error && (
+            {submitError && (
               <p className="text-sm text-rose-700 bg-rose-50 ring-1 ring-inset ring-rose-600/20 rounded-lg px-3 py-2">
-                {error}
+                {submitError}
               </p>
             )}
 
@@ -144,6 +157,24 @@ function UpdatePasswordForm() {
               {loading ? "Updating..." : "Update password"}
             </button>
           </form>
+        ) : (
+          // Implicit flow — still waiting for PASSWORD_RECOVERY event
+          // No timeout. Show spinner with manual escape hatch.
+          <div className="mt-8">
+            <div className="flex items-center gap-3 text-sm text-slate-400">
+              <svg className="h-4 w-4 animate-spin text-emerald-500" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              Verifying your reset link...
+            </div>
+            <p className="mt-4 text-xs text-slate-400">
+              Taking too long?{" "}
+              <a href="/reset-password" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                Request a new link
+              </a>
+            </p>
+          </div>
         )}
       </div>
     </div>
