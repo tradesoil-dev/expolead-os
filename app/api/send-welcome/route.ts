@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const firstName = name?.split(" ")[0] || "there";
 
   const { error } = await resend.emails.send({
-    from: "Gladwin at ExpoLead OS <hello@tradesoil.com>",
+    from: "Gladwin at ExpoLead OS <hello.expolead@tradesoil.com>",
     to: email,
     subject: "Welcome to ExpoLead OS — your trial has started",
     html: `
