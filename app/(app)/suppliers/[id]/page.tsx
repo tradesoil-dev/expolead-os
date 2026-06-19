@@ -11,6 +11,7 @@ import AddMeetingForm from "@/components/AddMeetingForm";
 import AddProductForm from "@/components/AddProductForm";
 import { getSupplier, getExhibitions } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import DeleteConnectionButton from "@/components/DeleteConnectionButton";
 
 export default async function SupplierProfile({
   params,
@@ -250,6 +251,12 @@ export default async function SupplierProfile({
           <p className="text-sm text-ink-700 whitespace-pre-wrap">
             {supplier.notes?.trim() ? supplier.notes : <span className="text-ink-400">No notes.</span>}
           </p>
+        </div>
+
+        <div className="rounded-xl border border-rose-100 bg-rose-50 p-5">
+          <h2 className="text-sm font-semibold text-rose-700 mb-1">Danger zone</h2>
+          <p className="text-xs text-rose-500 mb-3">Permanently delete this connection and all its data.</p>
+          <DeleteConnectionButton supplierId={supplier.id} />
         </div>
       </main>
     </>

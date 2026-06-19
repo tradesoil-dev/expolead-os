@@ -125,24 +125,24 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
     return (
     <div className="space-y-4">
       <div className="grid gap-3 md:grid-cols-4">
-        <div className="rounded-xl border border-ink-200 bg-white p-4 shadow-card">
+        <div className="rounded-xl border-2 border-emerald-400 bg-white p-4 shadow-card">
           <p className="text-xs font-medium text-ink-500">Total connections</p>
-          <p className="mt-2 text-2xl font-semibold text-ink-900">{totalSuppliers}</p>
+          <p className="mt-2 text-2xl font-semibold text-emerald-600">{totalSuppliers}</p>
         </div>
 
-        <div className="rounded-xl border border-ink-200 bg-white p-4 shadow-card">
+        <div className="rounded-xl border-2 border-blue-400 bg-white p-4 shadow-card">
           <p className="text-xs font-medium text-ink-500">Target connections</p>
-          <p className="mt-2 text-2xl font-semibold text-ink-900">{targetSuppliers}</p>
+          <p className="mt-2 text-2xl font-semibold text-blue-600">{targetSuppliers}</p>
         </div>
 
-        <div className="rounded-xl border border-ink-200 bg-white p-4 shadow-card">
+        <div className="rounded-xl border-2 border-amber-400 bg-white p-4 shadow-card">
           <p className="text-xs font-medium text-ink-500">Follow-ups</p>
-          <p className="mt-2 text-2xl font-semibold text-ink-900">{followUpsDue}</p>
+          <p className="mt-2 text-2xl font-semibold text-amber-600">{followUpsDue}</p>
         </div>
 
-        <div className="rounded-xl border border-ink-200 bg-white p-4 shadow-card">
+        <div className="rounded-xl border-2 border-purple-400 bg-white p-4 shadow-card">
           <p className="text-xs font-medium text-ink-500">Countries</p>
-          <p className="mt-2 text-2xl font-semibold text-ink-900">{countries}</p>
+          <p className="mt-2 text-2xl font-semibold text-purple-600">{countries}</p>
         </div>
       </div>
 
