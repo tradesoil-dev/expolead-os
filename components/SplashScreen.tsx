@@ -8,16 +8,12 @@ export default function SplashScreen() {
 
   useEffect(() => {
     if (window.innerWidth >= 768) return;
-    const seen = localStorage.getItem("expolead_splash_seen");
-    if (!seen) setVisible(true);
+    setVisible(true);
   }, []);
 
   function dismiss() {
     setHiding(true);
-    setTimeout(() => {
-      localStorage.setItem("expolead_splash_seen", "1");
-      setVisible(false);
-    }, 400);
+    setTimeout(() => setVisible(false), 400);
   }
 
   if (!visible) return null;
