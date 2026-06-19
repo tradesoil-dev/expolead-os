@@ -32,7 +32,7 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
   return (
     <>
       <div className="px-6 md:px-8 pt-6">
-        <Link href="/exhibitions" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-900 transition-colors">
+        <Link href="/exhibitions" className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
           ← Back to Exhibitions
         </Link>
       </div>
@@ -43,24 +43,25 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
 
       <main className="flex-1 p-6 md:p-8 space-y-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
-            <p className="text-2xl font-bold">{suppliers.length}</p>
+          <div className="rounded-xl border-2 border-emerald-400 bg-white p-4 text-center">
+            <p className="text-2xl font-bold text-emerald-600">{suppliers.length}</p>
             <p className="text-sm text-ink-500">Connections Captured</p>
           </div>
 
-          <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
-            <p className="text-2xl font-bold">{visited}</p>
+          <div className="rounded-xl border-2 border-blue-400 bg-white p-4 text-center">
+            <p className="text-2xl font-bold text-blue-600">{visited}</p>
             <p className="text-sm text-ink-500">Booths Visited</p>
           </div>
 
-          <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
-            <p className="text-2xl font-bold">{remaining}</p>
+          <div className="rounded-xl border-2 border-amber-400 bg-white p-4 text-center">
+            <p className="text-2xl font-bold text-amber-600">{remaining}</p>
             <p className="text-sm text-ink-500">Remaining Booths</p>
           </div>
-    <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
-  <p className="text-sm font-semibold text-ink-400">Not tracked yet</p>
-  <p className="text-sm text-ink-500">Opportunities</p>
-</div>
+
+          <div className="rounded-xl border-2 border-purple-400 bg-white p-4 text-center">
+            <p className="text-sm font-semibold text-ink-400">Not tracked yet</p>
+            <p className="text-sm text-ink-500">Opportunities</p>
+          </div>
         </div>
 <div className="grid gap-4 lg:grid-cols-4">
   <div className="rounded-xl border border-ink-200 bg-white p-4">
