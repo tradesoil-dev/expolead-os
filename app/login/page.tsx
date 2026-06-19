@@ -96,7 +96,7 @@ function LoginForm() {
         if (error) throw error;
 
         // Send welcome email (fire and forget — don't block the user)
-        fetch("/api/send-welcome", {
+        fetch(`${window.location.origin}/api/send-welcome`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
