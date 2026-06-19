@@ -31,6 +31,11 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
 
   return (
     <>
+      <div className="px-6 md:px-8 pt-6">
+        <Link href="/exhibitions" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-900 transition-colors">
+          ← Back to Exhibitions
+        </Link>
+      </div>
       <PageHeader
         title={exhibition.name}
         subtitle={exhibition.location ?? "Exhibition"}

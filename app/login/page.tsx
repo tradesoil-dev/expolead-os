@@ -189,7 +189,7 @@ function LoginForm() {
           <p className="mt-3 text-sm text-ink-500">
             {mode === "signin"
               ? "Enter your credentials to access your account."
-              : "Start capturing suppliers from your next exhibition."}
+              : "Start capturing connections from your next exhibition."}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-10 space-y-6">
