@@ -13,23 +13,23 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-white via-emerald-50/60 to-sky-50 text-slate-950">
       {/* HEADER */}
-      <header className="flex items-center justify-between bg-slate-800 px-8 py-4 lg:px-16">
-        <div className="flex items-center gap-2.5">
-          <svg width="30" height="30" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <header className="flex items-center justify-between bg-slate-800 px-4 py-3 lg:px-16 lg:py-4">
+        <div className="flex items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
             <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
             <rect x="22" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
             <rect x="1" y="22" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
             <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
           </svg>
-          <span className="flex items-center text-[18px] font-semibold tracking-tight leading-none">
-            <span className="text-white">Expo</span><span className="text-emerald-400">Lead</span><span className="text-slate-400 text-[13px] font-normal ml-1">OS</span>
+          <span className="flex items-center text-[16px] font-semibold tracking-tight leading-none">
+            <span className="text-white">Expo</span><span className="text-emerald-400">Lead</span><span className="hidden sm:inline text-slate-400 text-[11px] font-normal ml-1">OS</span>
           </span>
         </div>
 
         <div className="flex items-center gap-4">
           <Link
             href="/pricing"
-            className="hidden sm:block text-sm font-medium text-slate-400 hover:text-white transition-colors"
+            className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
           >
             Pricing
           </Link>
