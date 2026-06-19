@@ -333,19 +333,17 @@ export default function HomePage() {
   </div>
 </section>
 {/* FOUNDER NOTE */}
-<section className="bg-slate-900 px-8 py-16 lg:px-16">
+<section className="bg-slate-900 px-8 py-10 lg:px-16">
   <div className="max-w-2xl mx-auto">
-    <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-500 mb-6">A note from the founder</p>
-    <div className="text-5xl leading-none text-emerald-500 font-serif mb-4">&ldquo;</div>
-    <p className="text-[17px] leading-[1.85] text-slate-300 italic mb-6">
+    <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-500 mb-3">A note from the founder</p>
+    <div className="text-4xl leading-none text-emerald-500 font-serif mb-2">&ldquo;</div>
+    <p className="text-[15px] leading-[1.8] text-slate-300 italic mb-5">
       ExpoLead OS was built by someone who has worked in international trade, understands the exhibition floor, and believes that serious professionals deserve serious tools.
-      <br /><br />
-      This is not a generic CRM adapted for exhibitions. It was designed specifically for the way trade professionals work — on the floor, across borders, under time pressure.
-      <br /><br />
+      This is not a generic CRM adapted for exhibitions — it was designed specifically for the way trade professionals work, on the floor, across borders, under time pressure.
       Built with conviction. Designed for results.
     </p>
-    <div className="flex items-center gap-4 pt-6 border-t border-slate-800">
-      <div className="w-12 h-12 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center text-sm font-semibold text-emerald-500 shrink-0">
+    <div className="flex items-center gap-3 pt-5 border-t border-slate-800">
+      <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center text-xs font-semibold text-emerald-500 shrink-0">
         GG
       </div>
       <div>
