@@ -29,14 +29,14 @@ export default function HomePage() {
         <div className="flex items-center gap-4">
           <Link
             href="/pricing"
-            className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
+            className="hidden sm:block text-sm font-medium text-slate-400 hover:text-white transition-colors"
           >
             Pricing
           </Link>
 
           <Link
             href="/login"
-            className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
+            className="hidden sm:block text-sm font-medium text-slate-400 hover:text-white transition-colors"
           >
             Log in
           </Link>
