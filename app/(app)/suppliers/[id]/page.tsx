@@ -168,7 +168,7 @@ export default async function SupplierProfile({
 
   <div className="space-y-3 text-sm">
     <div>
-      <p className="font-medium">✓ Supplier Added</p>
+      <p className="font-medium">✓ Connection Added</p>
       <p className="text-ink-400">Company profile created</p>
     </div>
 
