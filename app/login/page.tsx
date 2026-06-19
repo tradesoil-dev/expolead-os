@@ -95,6 +95,13 @@ function LoginForm() {
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
 
+        // Send welcome email (fire and forget — don't block the user)
+        fetch("/api/send-welcome", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }).catch(() => {});
+
         if (data.session) {
           router.push("/dashboard");
           router.refresh();
