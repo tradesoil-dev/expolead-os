@@ -43,9 +43,12 @@ export default async function SupplierProfile({
         title={supplier.company_name}
         subtitle={supplier.country ?? "—"}
         action={
-          <Link href="/suppliers" className="text-sm font-medium text-ink-500 hover:text-ink-900">
-            ← Back
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/suppliers" className="text-sm font-medium text-ink-500 hover:text-ink-900">
+              ← Back
+            </Link>
+            <DeleteConnectionButton supplierId={supplier.id} />
+          </div>
         }
       />
 
@@ -254,9 +257,8 @@ export default async function SupplierProfile({
         </div>
 
         <div className="rounded-xl border border-rose-100 bg-rose-50 p-5">
-          <h2 className="text-sm font-semibold text-rose-700 mb-1">Danger zone</h2>
-          <p className="text-xs text-rose-500 mb-3">Permanently delete this connection and all its data.</p>
-          <DeleteConnectionButton supplierId={supplier.id} />
+          <h2 className="text-sm font-semibold text-rose-700 mb-1">Sample data?</h2>
+          <p className="text-xs text-rose-500">This may be sample data added to help you see how ExpoLead works. Once you&apos;re ready, delete it and replace it with your own connections from the show floor.</p>
         </div>
       </main>
     </>
