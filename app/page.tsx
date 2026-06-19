@@ -332,6 +332,44 @@ export default function HomePage() {
 </h2>
   </div>
 </section>
+{/* SECURITY SECTION */}
+<section className="bg-white px-8 py-14 lg:px-16 border-t border-slate-100">
+  <div className="mx-auto max-w-4xl text-center mb-10">
+    <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">Security & trust</p>
+    <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-900">Your data is safe with us</h2>
+  </div>
+  <div className="mx-auto max-w-4xl grid gap-6 md:grid-cols-4">
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 mx-auto mb-4">
+        <ShieldCheck className="h-5 w-5 text-emerald-700" />
+      </div>
+      <p className="text-sm font-bold text-slate-900">Data isolation</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">Your data is strictly isolated — no other user can ever access your records.</p>
+    </div>
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 mx-auto mb-4">
+        <svg className="h-5 w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+      </div>
+      <p className="text-sm font-bold text-slate-900">Encrypted in transit</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">All data is protected with HTTPS/TLS encryption between your browser and our servers.</p>
+    </div>
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 mx-auto mb-4">
+        <svg className="h-5 w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+      </div>
+      <p className="text-sm font-bold text-slate-900">Secure authentication</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">Powered by Supabase — industry-standard auth used by thousands of production apps.</p>
+    </div>
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 mx-auto mb-4">
+        <svg className="h-5 w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636a9 9 0 010 12.728M15.536 8.464a5 5 0 010 7.072M6.343 6.343a9 9 0 000 12.728m2.829-2.829a5 5 0 000-7.072" /></svg>
+      </div>
+      <p className="text-sm font-bold text-slate-900">No data sharing</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">We never sell or share your business data. Your connections stay yours, always.</p>
+    </div>
+  </div>
+</section>
+
 {/* FOUNDER NOTE */}
 <section className="bg-slate-900 px-8 py-10 lg:px-16">
   <div className="max-w-2xl mx-auto">
@@ -404,8 +442,8 @@ export default function HomePage() {
       <div className="space-y-3 text-sm text-slate-600">
         <a href="https://www.tradesoil.com" target="_blank" rel="noreferrer" className="hover:underline">Tradesoil</a>
         <p>Contact</p>
-        <p>Privacy Notice</p>
-        <p>Terms of Service</p>
+        <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+        <Link href="/terms" className="hover:underline">Terms of Service</Link>
       </div>
     </div>
   </div>
@@ -422,13 +460,9 @@ export default function HomePage() {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
         <span>© 2026 ExpoLead OS</span>
         <span>|</span>
-        <a href="#" className="hover:text-emerald-700">Terms of Service</a>
+        <Link href="/terms" className="hover:text-emerald-700">Terms of Service</Link>
         <span>|</span>
-        <a href="#" className="hover:text-emerald-700">Privacy Notice</a>
-        <span>|</span>
-        <a href="#" className="hover:text-emerald-700">Site map</a>
-        <span>|</span>
-        <a href="#" className="hover:text-emerald-700">Cookie Notice</a>
+        <Link href="/privacy" className="hover:text-emerald-700">Privacy Policy</Link>
       </div>
     </div>
 
