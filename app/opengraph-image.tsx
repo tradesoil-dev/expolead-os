@@ -26,10 +26,23 @@ export default function OGImage() {
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", paddingLeft: 60, paddingTop: 60, width: 680 }}>
 
           {/* Logo */}
-          <div style={{ display: "flex", flexDirection: "row", alignItems: "baseline", marginBottom: 6 }}>
-            <span style={{ fontSize: 34, fontWeight: 700, color: "#ffffff" }}>Expo</span>
-            <span style={{ fontSize: 34, fontWeight: 700, color: "#34d399" }}>Lead</span>
-            <span style={{ fontSize: 34, fontWeight: 700, color: "#ffffff" }}> OS</span>
+          <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 6 }}>
+            {/* Floor plan icon */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, width: 36, height: 36 }}>
+              <div style={{ display: "flex", flexDirection: "row", gap: 4 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 3, border: "2px solid white", backgroundColor: "transparent", display: "flex" }} />
+                <div style={{ width: 16, height: 16, borderRadius: 3, border: "2px solid white", backgroundColor: "transparent", display: "flex" }} />
+              </div>
+              <div style={{ display: "flex", flexDirection: "row", gap: 4 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 3, border: "2px solid white", backgroundColor: "transparent", display: "flex" }} />
+                <div style={{ width: 16, height: 16, borderRadius: 3, backgroundColor: "#10b981", display: "flex" }} />
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", alignItems: "baseline" }}>
+              <span style={{ fontSize: 34, fontWeight: 700, color: "#ffffff" }}>Expo</span>
+              <span style={{ fontSize: 34, fontWeight: 700, color: "#34d399" }}>Lead</span>
+              <span style={{ fontSize: 22, fontWeight: 400, color: "#64748b", marginLeft: 6 }}>OS</span>
+            </div>
           </div>
           <div style={{ fontSize: 13, color: "#475569", marginBottom: 60, display: "flex" }}>Powered by Tradesoil</div>
 
@@ -118,7 +131,7 @@ export default function OGImage() {
           {/* Stats */}
           <div style={{ display: "flex", flexDirection: "row", gap: 10, margin: "14px 16px 0" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#0f172a", borderRadius: 8, padding: "10px 0", flex: 1 }}>
-              <span style={{ fontSize: 11, color: "#64748b" }}>Suppliers</span>
+              <span style={{ fontSize: 11, color: "#64748b" }}>Connections</span>
               <span style={{ fontSize: 26, fontWeight: 700, color: "#ffffff" }}>24</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#0f172a", borderRadius: 8, padding: "10px 0", flex: 1 }}>
