@@ -114,12 +114,20 @@ function LoginForm() {
     <div className="h-screen grid lg:grid-cols-[1fr_1fr] bg-white overflow-hidden">
       <section className="hidden lg:flex h-screen flex-col items-center justify-center bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.16),transparent_34%),radial-gradient(circle_at_80%_30%,rgba(37,99,235,0.14),transparent_34%),linear-gradient(135deg,#f8fafc,#eefaf6,#f8fbff)] px-10">
         <div className="absolute top-8 left-10">
-  <div className="inline-block text-center">
-    <h1 className="text-3xl font-bold tracking-tight text-ink-900">
-      ExpoLead OS
-    </h1>
-
-    <div className="mt-1 w-full text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-600">
+  <div className="inline-block">
+    <div className="flex items-center gap-3">
+      {/* Floor plan icon */}
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="14" height="14" rx="2.5" stroke="#1e293b" strokeWidth="2.2" fill="none"/>
+        <rect x="20" y="2" width="14" height="14" rx="2.5" stroke="#1e293b" strokeWidth="2.2" fill="none"/>
+        <rect x="2" y="20" width="14" height="14" rx="2.5" stroke="#1e293b" strokeWidth="2.2" fill="none"/>
+        <rect x="20" y="20" width="14" height="14" rx="2.5" fill="#6366f1"/>
+      </svg>
+      <h1 className="text-3xl font-bold tracking-tight">
+        <span className="text-ink-900">Expo</span><span className="text-emerald-500">Lead</span><span className="text-ink-900"> OS</span>
+      </h1>
+    </div>
+    <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-600">
       Powered by Tradesoil
     </div>
   </div>
