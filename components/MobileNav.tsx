@@ -23,9 +23,17 @@ export default function MobileNav({ email }: { email?: string | null }) {
   return (
     <div className="block md:hidden">
       <div className="flex items-center justify-between h-14 px-4 border-b bg-white sticky top-0 z-30">
-        <span className="text-[17px] font-medium tracking-tight text-ink-900">
-          Expo<span className="text-emerald-600">Lead</span> OS
-        </span>
+        <div className="flex items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none"/>
+            <rect x="22" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none"/>
+            <rect x="1" y="22" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none"/>
+            <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
+          </svg>
+          <span className="flex items-center text-[17px] font-semibold tracking-tight leading-none">
+            <span className="text-slate-900">Expo</span><span className="text-emerald-500">Lead</span><span className="text-slate-400 text-[12px] font-normal ml-1">OS</span>
+          </span>
+        </div>
 
         <div className="flex items-center gap-2">
           <AccountMenu email={email ?? null} />
@@ -48,7 +56,17 @@ export default function MobileNav({ email }: { email?: string | null }) {
 
           <div className="fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-xl flex flex-col">
             <div className="flex items-center justify-between p-4 border-b">
-              <span className="font-semibold">ExpoLead OS</span>
+              <div className="flex items-center gap-2">
+                <svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none"/>
+                  <rect x="22" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none"/>
+                  <rect x="1" y="22" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none"/>
+                  <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
+                </svg>
+                <span className="flex items-center text-[16px] font-semibold tracking-tight leading-none">
+                  <span className="text-slate-900">Expo</span><span className="text-emerald-500">Lead</span><span className="text-slate-400 text-[11px] font-normal ml-1">OS</span>
+                </span>
+              </div>
 
               <button
                 onClick={() => setOpen(false)}
