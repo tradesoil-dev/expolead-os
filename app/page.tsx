@@ -14,9 +14,17 @@ export default function HomePage() {
     <main className="min-h-screen bg-gradient-to-br from-white via-emerald-50/60 to-sky-50 text-slate-950">
       {/* HEADER */}
       <header className="flex items-center justify-between bg-slate-800 px-8 py-4 lg:px-16">
-        <span className="text-[17px] font-medium tracking-tight text-white">
-          Expo<span className="text-emerald-400">Lead</span> OS
-        </span>
+        <div className="flex items-center gap-2.5">
+          <svg width="30" height="30" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
+            <rect x="22" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
+            <rect x="1" y="22" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
+            <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
+          </svg>
+          <span className="flex items-center text-[18px] font-semibold tracking-tight leading-none">
+            <span className="text-white">Expo</span><span className="text-emerald-400">Lead</span><span className="text-slate-400 text-[13px] font-normal ml-1">OS</span>
+          </span>
+        </div>
 
         <div className="flex items-center gap-4">
           <Link

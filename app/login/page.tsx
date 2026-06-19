@@ -116,19 +116,18 @@ function LoginForm() {
         <div className="absolute top-8 left-10">
   <div className="inline-block">
     <div className="flex items-center gap-3">
-      {/* Floor plan icon */}
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="14" height="14" rx="2.5" stroke="#1e293b" strokeWidth="2.2" fill="none"/>
-        <rect x="20" y="2" width="14" height="14" rx="2.5" stroke="#1e293b" strokeWidth="2.2" fill="none"/>
-        <rect x="2" y="20" width="14" height="14" rx="2.5" stroke="#1e293b" strokeWidth="2.2" fill="none"/>
-        <rect x="20" y="20" width="14" height="14" rx="2.5" fill="#6366f1"/>
+      <svg width="42" height="42" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2" fill="none"/>
+        <rect x="22" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2" fill="none"/>
+        <rect x="1" y="22" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2" fill="none"/>
+        <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
       </svg>
-      <h1 className="text-3xl font-bold tracking-tight">
-        <span className="text-ink-900">Expo</span><span className="text-emerald-500">Lead</span><span className="text-ink-900"> OS</span>
-      </h1>
-    </div>
-    <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-600">
-      Powered by Tradesoil
+      <div>
+        <h1 className="flex items-center text-[26px] font-semibold tracking-tight leading-none">
+          <span className="text-slate-900">Expo</span><span className="text-emerald-500">Lead</span><span className="text-slate-400 text-[18px] font-normal ml-1">OS</span>
+        </h1>
+        <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-600">Powered by Tradesoil</p>
+      </div>
     </div>
   </div>
 </div>
