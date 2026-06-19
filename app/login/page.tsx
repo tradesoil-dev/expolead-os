@@ -95,17 +95,22 @@ function LoginForm() {
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
 
-        // Send welcome email (fire and forget — don't block the user)
-        fetch(`${window.location.origin}/api/send-welcome`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }).catch(() => {});
-
         if (data.session) {
+          // Signed in immediately — send welcome email then redirect
+          fetch(`${window.location.origin}/api/send-welcome`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          }).catch(() => {});
           router.push("/dashboard");
           router.refresh();
         } else {
+          // Email confirmation required — send welcome email now
+          fetch(`${window.location.origin}/api/send-welcome`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          }).catch(() => {});
           setInfo("Account created. Check your email to confirm, then sign in.");
           setMode("signin");
         }
