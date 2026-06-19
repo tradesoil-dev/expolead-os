@@ -353,7 +353,7 @@ export default function HomePage() {
       </h3>
 
       <div className="space-y-3 text-sm text-slate-600">
-        <p>Tradesoil</p>
+        <a href="https://www.tradesoil.com" target="_blank" rel="noreferrer" className="hover:underline">Tradesoil</a>
         <p>Contact</p>
         <p>Privacy Notice</p>
         <p>Terms of Service</p>
