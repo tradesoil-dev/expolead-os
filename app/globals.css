@@ -2,6 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Splash screen & hero animations */
+@keyframes splash-sq1 {
+  0%, 10%  { opacity: 0; transform: scale(0.3); }
+  28%      { opacity: 1; transform: scale(1); }
+  100%     { opacity: 1; transform: scale(1); }
+}
+@keyframes splash-sq2 {
+  0%, 28%  { opacity: 0; transform: scale(0.3); }
+  46%      { opacity: 1; transform: scale(1); }
+  100%     { opacity: 1; transform: scale(1); }
+}
+@keyframes splash-sq3 {
+  0%, 46%  { opacity: 0; transform: scale(0.3); }
+  64%      { opacity: 1; transform: scale(1); }
+  100%     { opacity: 1; transform: scale(1); }
+}
+@keyframes splash-sq4 {
+  0%, 64%  { opacity: 0; transform: scale(0.3); }
+  80%      { opacity: 1; transform: scale(1.12); }
+  90%      { transform: scale(0.96); }
+  100%     { opacity: 1; transform: scale(1); }
+}
+@keyframes splash-fade-up {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes splash-pulse-hint {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+@keyframes hero-fade-up {
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.anim-sq1 { animation: splash-sq1 2.6s cubic-bezier(.4,0,.2,1) forwards; opacity: 0; }
+.anim-sq2 { animation: splash-sq2 2.6s cubic-bezier(.4,0,.2,1) forwards; opacity: 0; }
+.anim-sq3 { animation: splash-sq3 2.6s cubic-bezier(.4,0,.2,1) forwards; opacity: 0; }
+.anim-sq4 { animation: splash-sq4 2.6s cubic-bezier(.4,0,.2,1) forwards; opacity: 0; }
+.anim-logo-text  { animation: splash-fade-up 0.55s ease forwards; animation-delay: 2s;   opacity: 0; }
+.anim-tagline    { animation: splash-fade-up 0.55s ease forwards; animation-delay: 2.35s; opacity: 0; }
+.anim-tap-hint   { animation: splash-pulse-hint 1.8s ease-in-out infinite; animation-delay: 2.8s; opacity: 0; }
+
+.anim-nav-links  { animation: splash-fade-up 0.5s ease forwards; animation-delay: 1.5s; opacity: 0; }
+.anim-hero-badge { animation: hero-fade-up 0.55s ease forwards; animation-delay: 1.7s; opacity: 0; }
+.anim-hero-title { animation: hero-fade-up 0.55s ease forwards; animation-delay: 2.0s; opacity: 0; }
+.anim-hero-sub   { animation: hero-fade-up 0.55s ease forwards; animation-delay: 2.25s; opacity: 0; }
+.anim-hero-btn   { animation: hero-fade-up 0.55s ease forwards; animation-delay: 2.45s; opacity: 0; }
+
 :root {
   color-scheme: light;
 }

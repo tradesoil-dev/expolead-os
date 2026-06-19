@@ -8,14 +8,26 @@ import {
   FileText,
   FlaskConical,
 } from "lucide-react";
+import SplashScreen from "@/components/SplashScreen";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-white via-emerald-50/60 to-sky-50 text-slate-950">
+      <SplashScreen />
       {/* HEADER */}
       <header className="flex items-center justify-between bg-slate-800 px-4 py-3 lg:px-16 lg:py-4">
         <div className="flex items-center gap-2">
-          <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+          <div className="hidden md:flex flex-col gap-[3.5px] shrink-0">
+            <div className="flex gap-[3.5px]">
+              <div className="anim-sq1 w-[11px] h-[11px] rounded-[2.5px] border-[1.8px] border-white" />
+              <div className="anim-sq2 w-[11px] h-[11px] rounded-[2.5px] border-[1.8px] border-white" />
+            </div>
+            <div className="flex gap-[3.5px]">
+              <div className="anim-sq3 w-[11px] h-[11px] rounded-[2.5px] border-[1.8px] border-white" />
+              <div className="anim-sq4 w-[11px] h-[11px] rounded-[2.5px] bg-emerald-500" />
+            </div>
+          </div>
+          <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="md:hidden shrink-0">
             <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
             <rect x="22" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
             <rect x="1" y="22" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
@@ -26,7 +38,7 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="anim-nav-links flex items-center gap-4">
           <Link
             href="/pricing"
             className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
@@ -54,21 +66,21 @@ export default function HomePage() {
       <section className="grid min-h-[calc(100vh-96px)] items-center gap-12 px-8 pb-16 pt-10 lg:grid-cols-2 lg:px-16">
         {/* LEFT CONTENT */}
         <div className="max-w-3xl">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">Exhibition Lead Management</p>
+          <p className="anim-hero-badge mb-4 text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">Exhibition Lead Management</p>
 
-          <h1 className="max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-slate-900 md:text-5xl lg:text-4xl">
+          <h1 className="anim-hero-title max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-slate-900 md:text-5xl lg:text-4xl">
             Turn Expo Conversations
             <br />
             Into Revenue
           </h1>
 
-          <p className="mt-8 max-w-2xl text-xl leading-9 text-slate-700">
+          <p className="anim-hero-sub mt-8 max-w-2xl text-xl leading-9 text-slate-700">
             Capture booth visits, buyer signals, samples, quotations and
             follow-ups in one workspace built for exhibitors, sourcing teams and
             international trade professionals.
           </p>
 
-          <div className="mt-8 space-y-5 text-lg text-slate-700">
+          <div className="anim-hero-sub mt-8 space-y-5 text-lg text-slate-700">
             <div className="flex items-center gap-3">
               <CheckCircle2 className="h-7 w-7 text-emerald-600 shrink-0" />
               <span>Track every booth visit and business connection</span>
@@ -95,7 +107,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+          <div className="anim-hero-btn mt-12 flex flex-col gap-4 sm:flex-row">
             <Link
               href="/login?mode=signup"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
