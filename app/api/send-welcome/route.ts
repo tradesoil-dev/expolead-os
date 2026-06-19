@@ -4,6 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
+  const secret = req.headers.get("x-internal-secret");
+  if (secret !== process.env.INTERNAL_API_SECRET) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { email, name } = await req.json();
 
   if (!email) {

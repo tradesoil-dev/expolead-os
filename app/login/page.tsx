@@ -99,7 +99,7 @@ function LoginForm() {
           // Signed in immediately — send welcome email then redirect
           fetch(`${window.location.origin}/api/send-welcome`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "x-internal-secret": process.env.NEXT_PUBLIC_INTERNAL_API_SECRET ?? "" },
             body: JSON.stringify({ email }),
           }).catch(() => {});
           router.push("/dashboard");
@@ -108,7 +108,7 @@ function LoginForm() {
           // Email confirmation required — send welcome email now
           fetch(`${window.location.origin}/api/send-welcome`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "x-internal-secret": process.env.NEXT_PUBLIC_INTERNAL_API_SECRET ?? "" },
             body: JSON.stringify({ email }),
           }).catch(() => {});
           setInfo("Account created. Check your email to confirm, then sign in.");
