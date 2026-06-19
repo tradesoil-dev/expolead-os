@@ -344,7 +344,7 @@ export default function HomePage() {
         <ShieldCheck className="h-5 w-5 text-emerald-700" />
       </div>
       <p className="text-sm font-bold text-slate-900">Data isolation</p>
-      <p className="mt-1 text-xs leading-5 text-slate-500">Your data is strictly isolated — no other user can ever access your records.</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">Your data is strictly isolated. No other user can ever access your records.</p>
     </div>
     <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 mx-auto mb-4">
@@ -358,7 +358,7 @@ export default function HomePage() {
         <svg className="h-5 w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
       </div>
       <p className="text-sm font-bold text-slate-900">Secure authentication</p>
-      <p className="mt-1 text-xs leading-5 text-slate-500">Powered by Supabase — industry-standard auth used by thousands of production apps.</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">Powered by Supabase, industry-standard auth used by thousands of production apps.</p>
     </div>
     <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 mx-auto mb-4">
