@@ -5,10 +5,10 @@ const STEPS = [
   {
     number: 1,
     title: "Add your first exhibition",
-    description: "Everything in ExpoLead OS starts with an exhibition. Add the show you're attending — name, location, and dates. All your connections and follow-ups will connect back to it.",
+    description: "Everything in ExpoLead OS starts with an exhibition. Add the show you're attending, including the name, location, and dates. All your connections and follow-ups will connect back to it.",
     cta: { label: "Go to Exhibitions →", href: "/exhibitions" },
     mockup: <ExhibitionMockup />,
-    tip: "Tip: You can add multiple exhibitions — one for CHINACOAT, one for Canton Fair, and so on.",
+    tip: "Tip: You can add multiple exhibitions, one for CHINACOAT, one for Canton Fair, and so on.",
   },
   {
     number: 2,
@@ -29,7 +29,7 @@ const STEPS = [
   {
     number: 4,
     title: "Track your opportunities",
-    description: "When a connection becomes a real business opportunity — a sample request, a quotation, a negotiation — add it as an opportunity. Track it through your pipeline from Qualified to Won.",
+    description: "When a connection becomes a real business opportunity, such as a sample request, a quotation, or a negotiation, add it as an opportunity. Track it through your pipeline from Qualified to Won.",
     cta: { label: "Go to Opportunities →", href: "/opportunities" },
     mockup: <OpportunityMockup />,
     tip: "Tip: Link your opportunity to the exhibition it came from so you know which shows deliver the best ROI.",
@@ -57,7 +57,7 @@ export default function GettingStartedPage() {
         <div className="rounded-2xl bg-emerald-50 border border-emerald-100 px-6 py-5">
           <p className="text-sm font-semibold text-emerald-800">Welcome to ExpoLead OS</p>
           <p className="mt-1 text-sm text-emerald-700 leading-relaxed">
-            ExpoLead OS is built for one thing — helping you turn exhibition conversations into revenue.
+            ExpoLead OS is built to help you turn exhibition conversations into revenue.
             Follow the 5 steps below and you'll be set up in under 10 minutes.
           </p>
         </div>
