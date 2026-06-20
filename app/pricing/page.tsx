@@ -24,8 +24,18 @@ export default function PricingPage() {
     <main className="min-h-screen bg-gradient-to-br from-white via-emerald-50/60 to-sky-50 text-slate-950">
       {/* HEADER */}
       <header className="flex items-center justify-between bg-slate-800 px-8 py-4 lg:px-16">
-        <Link href="/" className="text-[17px] font-medium tracking-tight text-white">
-          Expo<span className="text-emerald-400">Lead</span> OS
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
+          </div>
+          <span className="flex items-center text-[16px] tracking-tight leading-none">
+            <span className="font-semibold text-white">Expo</span>
+            <span className="font-semibold text-emerald-400">Lead</span>
+            <span className="font-normal text-slate-400"> OS</span>
+          </span>
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
