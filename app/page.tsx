@@ -16,25 +16,15 @@ export default function HomePage() {
       <SplashScreen />
       {/* HEADER */}
       <header className="flex items-center justify-between bg-slate-800 px-4 py-3 lg:px-16 lg:py-4">
-        <div className="flex items-center gap-2">
-          <div className="hidden md:flex flex-col gap-[3.5px] shrink-0">
-            <div className="flex gap-[3.5px]">
-              <div className="anim-sq1 w-[11px] h-[11px] rounded-[2.5px] border-[1.8px] border-white" />
-              <div className="anim-sq2 w-[11px] h-[11px] rounded-[2.5px] border-[1.8px] border-white" />
-            </div>
-            <div className="flex gap-[3.5px]">
-              <div className="anim-sq3 w-[11px] h-[11px] rounded-[2.5px] border-[1.8px] border-white" />
-              <div className="anim-sq4 w-[11px] h-[11px] rounded-[2.5px] bg-emerald-500" />
-            </div>
+        <div className="flex items-center gap-2.5">
+          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
+            <div className="logo-sq1 w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="logo-sq2 w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="logo-sq3 w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="logo-sq4 w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
           </div>
-          <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="md:hidden shrink-0">
-            <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
-            <rect x="22" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
-            <rect x="1" y="22" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
-            <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
-          </svg>
-          <span className="flex items-center text-[16px] font-semibold tracking-tight leading-none">
-            <span className="text-white">Expo</span><span className="text-emerald-400">Lead</span><span className="hidden sm:inline text-slate-400 text-[11px] font-normal ml-1">OS</span>
+          <span className="flex items-center text-[16px] tracking-tight leading-none">
+            <span className="font-semibold text-white">Expo</span><span className="font-semibold text-emerald-400">Lead</span><span className="font-normal text-slate-400"> OS</span>
           </span>
         </div>
 
