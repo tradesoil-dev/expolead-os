@@ -7,12 +7,31 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="min-h-screen bg-white px-6 py-16 lg:px-16">
+    <main className="min-h-screen bg-white">
+
+      {/* HEADER */}
+      <header className="flex items-center justify-between bg-slate-800 px-6 py-4 lg:px-16">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
+          </div>
+          <span className="flex items-center text-[16px] tracking-tight leading-none">
+            <span className="font-semibold text-white">Expo</span>
+            <span className="font-semibold text-emerald-400">Lead</span>
+            <span className="font-normal text-slate-400"> OS</span>
+          </span>
+        </Link>
+        <span className="text-sm font-semibold text-emerald-400">Terms of Service</span>
+      </header>
+
+      <div className="px-6 py-16 lg:px-16">
       <div className="mx-auto max-w-3xl">
         <Link href="/" className="text-sm text-emerald-600 hover:underline">← Back to home</Link>
 
-        <h1 className="mt-8 text-3xl font-black tracking-tight text-slate-900">Terms of Service</h1>
-        <p className="mt-2 text-sm text-slate-500">Last updated: 19 June 2026</p>
+        <p className="mt-4 text-sm text-slate-500">Last updated: 19 June 2026</p>
 
         <div className="mt-10 space-y-8 text-sm leading-7 text-slate-700">
 
@@ -84,6 +103,7 @@ export default function TermsPage() {
           </section>
 
         </div>
+      </div>
       </div>
     </main>
   );

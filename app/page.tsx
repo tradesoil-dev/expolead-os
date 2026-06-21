@@ -432,7 +432,7 @@ export default function HomePage() {
       <div className="space-y-3 text-sm text-slate-600">
         <a href="https://www.tradesoil.com" target="_blank" rel="noreferrer" className="hover:underline">Tradesoil</a>
         <p>Contact</p>
-        <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+        <Link href="/privacy" className="hover:underline">Privacy Notice</Link>
         <Link href="/terms" className="hover:underline">Terms of Service</Link>
       </div>
     </div>
@@ -452,7 +452,7 @@ export default function HomePage() {
         <span>|</span>
         <Link href="/terms" className="hover:text-emerald-700">Terms of Service</Link>
         <span>|</span>
-        <Link href="/privacy" className="hover:text-emerald-700">Privacy Policy</Link>
+        <Link href="/privacy" className="hover:text-emerald-700">Privacy Notice</Link>
       </div>
     </div>
 
