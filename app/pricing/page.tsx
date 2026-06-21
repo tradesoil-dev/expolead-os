@@ -1,5 +1,12 @@
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Pricing — ExpoLead OS",
+  description: "Start free for 14 days, no credit card required. Starter at $19/month for solo traders. Professional at $49/month for teams. One missed lead at an exhibition pays for months.",
+};
+
 const STARTER_FEATURES = [
   { text: "1 user", included: true },
   { text: "Unlimited exhibitions", included: true },
