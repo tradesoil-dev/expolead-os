@@ -32,7 +32,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
       if (!user) return;
       supabase
         .from("profiles")
-        .select("full_name, company_name, avatar_url, avatar_position_y, trial_ends_at, subscription_status")
+        .select("full_name, company_name, avatar_url, avatar_position_y, trial_ends_at, subscription_status, early_access")
         .eq("id", user.id)
         .single()
         .then(({ data }) => {
@@ -41,7 +41,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
             setCompanyName(data.company_name || "");
             setAvatarUrl(data.avatar_url || null);
             setAvatarPosY(data.avatar_position_y ?? 50);
-            if (data.subscription_status !== "active" && data.trial_ends_at) {
+            if (!data.early_access && data.subscription_status !== "active" && data.trial_ends_at) {
               const days = Math.ceil(
                 (new Date(data.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
               );
