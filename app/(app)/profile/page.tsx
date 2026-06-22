@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const [adjusting, setAdjusting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragState = useRef<{ startY: number; startPosY: number } | null>(null);
 
@@ -53,7 +54,7 @@ export default function ProfilePage() {
     const ext = file.name.split(".").pop();
     const path = `${user.id}/avatar.${ext}`;
     const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (uploadError) { alert(uploadError.message); setUploading(false); return; }
+    if (uploadError) { showToast(uploadError.message, "error"); setUploading(false); return; }
     const { data } = supabase.storage.from("avatars").getPublicUrl(path);
     const url = `${data.publicUrl}?t=${Date.now()}`;
     setAvatarUrl(url);
@@ -110,15 +111,20 @@ export default function ProfilePage() {
   async function saveProfile() {
     setSaving(true);
     const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) { alert("Please login again."); setSaving(false); return; }
+    if (userError || !user) { showToast("Please login again.", "error"); setSaving(false); return; }
     const { error } = await supabase.from("profiles").upsert({
       id: user.id, full_name: fullName, company_name: companyName,
       role, country, linkedin_url: linkedinUrl, about,
       avatar_url: avatarUrl, avatar_position_y: Math.round(posY),
     });
     setSaving(false);
-    if (error) { alert(error.message); return; }
-    alert("Profile saved successfully.");
+    if (error) { showToast(error.message, "error"); return; }
+    showToast("Profile saved successfully.", "success");
+  }
+
+  function showToast(message: string, type: "success" | "error") {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
   }
 
   const avatarStyle: React.CSSProperties = {
@@ -148,6 +154,17 @@ export default function ProfilePage() {
 
   return (
     <main className="p-5 max-w-6xl">
+      {toast && (
+        <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3 rounded-xl px-5 py-3.5 shadow-lg text-sm font-medium transition-all ${toast.type === "success" ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"}`}>
+          {toast.type === "success" ? (
+            <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          ) : (
+            <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          )}
+          {toast.message}
+        </div>
+      )}
+
       <div className="mb-4">
         <h1 className="text-3xl font-bold text-slate-900">My Profile</h1>
         <p className="mt-1 text-sm text-slate-600">Manage your ExpoLead OS account, workspace and preferences.</p>
