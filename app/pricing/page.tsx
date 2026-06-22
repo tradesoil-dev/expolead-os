@@ -1,6 +1,6 @@
 import Link from "next/link";
-
 import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
@@ -26,7 +26,10 @@ const PRO_FEATURES = [
   { text: "Priority support", included: true },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-white via-emerald-50/60 to-sky-50 text-slate-950">
       {/* HEADER */}
@@ -45,12 +48,20 @@ export default function PricingPage() {
           </span>
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-            Log in
-          </Link>
-          <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
-            Start free trial
-          </Link>
+          {user ? (
+            <Link href="/dashboard" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              ← Back to dashboard
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+                Log in
+              </Link>
+              <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+                Start free trial
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
