@@ -26,7 +26,7 @@ export async function getTrialStatus(): Promise<TrialStatus> {
 
   const { data } = await supabase
     .from("profiles")
-    .select("plan, trial_ends_at, subscription_status")
+    .select("plan, trial_ends_at, subscription_status, early_access")
     .eq("id", user.id)
     .single();
 
@@ -35,6 +35,11 @@ export async function getTrialStatus(): Promise<TrialStatus> {
   // Active paid plan — never locked
   if (data.subscription_status === "active") {
     return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "active" };
+  }
+
+  // Early access granted — bypass trial lock entirely
+  if (data.early_access) {
+    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "early_access" };
   }
 
   const now = new Date();
