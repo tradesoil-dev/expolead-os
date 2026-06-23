@@ -102,7 +102,14 @@ export default function AddExhibitionForm({
   }
 
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-3 max-w-xl">
+    <div className="flex flex-col lg:flex-row gap-4 items-start">
+    <div className="w-full max-w-xl rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-3">
+      <button
+        onClick={() => { reset(); setOpen(false); }}
+        className="inline-flex items-center gap-1 text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors"
+      >
+        ← Back to exhibitions
+      </button>
       {error && <p className="text-sm text-rose-700">{error}</p>}
 
       {/* Library search — pick a known show to pre-fill the form */}
@@ -166,6 +173,26 @@ export default function AddExhibitionForm({
         </button>
         <button onClick={() => { reset(); setOpen(false); }} className="text-sm text-ink-500 hover:text-ink-900">Cancel</button>
       </div>
+    </div>
+
+    {/* Guide note — coaches first-time users */}
+    <div className="w-full max-w-md rounded-xl border border-emerald-100 bg-emerald-50 p-5">
+      <p className="text-sm font-bold text-emerald-900 mb-3">New here? Start with your shows</p>
+      <div className="space-y-2.5">
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">1</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Search the library for an exhibition you attend (e.g. SIAL, CHINACOAT) — it fills in the details for you.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">2</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Not listed? Type the name, location and dates manually.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">3</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Save it — then add your connections and opportunities under that show.</p>
+        </div>
+      </div>
+    </div>
     </div>
   );
 }

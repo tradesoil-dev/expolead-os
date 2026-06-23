@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Exhibition, Supplier } from "@/lib/types";
 
 function relativeLabel(diffDays: number): string {
@@ -43,6 +46,19 @@ export default function ExhibitionsSearch({
   suppliers: Supplier[];
 }) {
   const [query, setQuery] = useState("");
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const router = useRouter();
+
+  async function remove(e: React.MouseEvent, ex: Exhibition) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isSupabaseConfigured) return;
+    if (!window.confirm(`Delete "${ex.name}"? Your connections stay safe but will be unlinked from this show.`)) return;
+    setDeleting(ex.id);
+    const { error } = await createClient().from("exhibitions").delete().eq("id", ex.id);
+    setDeleting(null);
+    if (!error) router.refresh();
+  }
 
   const statsFor = (exId: string | null) => {
     const related = suppliers.filter((s) => s.exhibition_id === exId);
@@ -68,7 +84,16 @@ export default function ExhibitionsSearch({
   }, [exhibitions, query]);
 
   if (exhibitions.length === 0) {
-    return <p className="text-sm text-ink-400">No exhibitions yet. Add one to organize connections by show.</p>;
+    return (
+      <div className="rounded-2xl border border-dashed border-ink-200 bg-ink-50/50 p-8 text-center">
+        <p className="text-base font-semibold text-ink-700">Start by adding the shows you attend</p>
+        <p className="mx-auto mt-2 max-w-md text-sm text-ink-500">
+          Click <span className="font-semibold text-ink-700">+ New exhibition</span> above and search the library
+          for a show (e.g. SIAL, CHINACOAT), or add your own. Your connections and opportunities are then
+          organized under each show.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -91,9 +116,18 @@ export default function ExhibitionsSearch({
             <Link
               key={ex.id}
               href={`/exhibitions/${ex.id}`}
-              className={`block rounded-2xl border border-ink-200 bg-white p-5 shadow-card hover:border-emerald-200 hover:shadow-lg transition-all ${status.dim ? "opacity-80" : ""}`}
+              className={`relative block rounded-2xl border border-ink-200 bg-white p-5 shadow-card hover:border-emerald-200 hover:shadow-lg transition-all ${status.dim ? "opacity-80" : ""}`}
             >
-              <div className="flex items-center justify-between gap-2">
+              <button
+                onClick={(e) => remove(e, ex)}
+                disabled={deleting === ex.id}
+                aria-label={`Delete ${ex.name}`}
+                title="Delete exhibition"
+                className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-lg border border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:border-rose-200 transition-colors disabled:opacity-50"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              </button>
+              <div className="flex items-center justify-between gap-2 pr-9">
                 <h3 className="text-xl font-semibold text-ink-900">
                   {ex.name}
                 </h3>
