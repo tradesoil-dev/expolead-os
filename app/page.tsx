@@ -207,6 +207,7 @@ const mockupItems = [
 
 export default function HomePage() {
   const [lang, setLang] = useState<"en" | "zh">("en");
+  const [menuOpen, setMenuOpen] = useState(false);
   const t = translations[lang];
 
   return (
@@ -226,15 +227,19 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="anim-nav-links flex items-center gap-4">
+        <div className="anim-nav-links flex items-center gap-3">
+          {/* Desktop nav */}
           <Link href="/pricing" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
             {t.nav.pricing}
           </Link>
-          <Link href="/login" className="hidden lg:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
+          <Link href="/login" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
             {t.nav.login}
           </Link>
+          <Link href="/login?mode=signup" className="hidden md:block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">
+            {t.nav.trial}
+          </Link>
 
-          {/* Language toggle */}
+          {/* Language toggle — always visible */}
           <button
             onClick={() => setLang(lang === "en" ? "zh" : "en")}
             className="flex items-center gap-1 rounded-md border border-slate-600 px-2 py-1.5 text-xs font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors shrink-0"
@@ -243,11 +248,33 @@ export default function HomePage() {
             {lang === "en" ? "中文" : "EN"}
           </button>
 
-          <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">
+          {/* Hamburger — mobile only */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden flex flex-col gap-[5px] p-1.5 shrink-0"
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-5 h-0.5 bg-slate-300 transition-all ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-slate-300 transition-all ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-slate-300 transition-all ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile dropdown menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-slate-800 border-t border-slate-700 px-4 py-3 flex flex-col gap-1">
+          <Link href="/pricing" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
+            {t.nav.pricing}
+          </Link>
+          <Link href="/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
+            {t.nav.login}
+          </Link>
+          <Link href="/login?mode=signup" onClick={() => setMenuOpen(false)} className="mt-1 block w-full rounded-lg bg-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
             {t.nav.trial}
           </Link>
         </div>
-      </header>
+      )}
 
       {/* HERO */}
       <section className="grid min-h-[calc(100vh-96px)] items-center gap-12 px-8 pb-16 pt-10 lg:grid-cols-2 lg:px-16">
