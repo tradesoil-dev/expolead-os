@@ -24,7 +24,7 @@ create policy "library readable by authenticated" on exhibition_library
 
 -- ─── Seed verified shows (dates/venues confirmed from official sites) ───────
 insert into exhibition_library (name, location, start_date, end_date, sector) values
-  ('CHINACOAT 2026',                'Guangzhou, China',                                   '2026-11-18', '2026-11-20', 'Coatings & Chemicals'),
+  ('CHINACOAT 2026',                'Guangzhou, China',                                   '2026-11-11', '2026-11-13', 'Coatings & Chemicals'),
   ('ICIF China 2026',               'Shanghai New International Expo Centre, Shanghai, China', '2026-09-15', '2026-09-17', 'Fertilizer & Agrochemicals'),
   ('SIAL China 2026',               'Poly World Trade Center Expo, Guangzhou, China',     '2026-09-03', '2026-09-05', 'Food & Beverage'),
   ('Private Label Middle East 2026','Dubai World Trade Centre, Dubai, UAE',               '2026-11-03', '2026-11-05', 'Private Label / FMCG'),
