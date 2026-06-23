@@ -88,7 +88,7 @@ const translations = {
     },
     founder: {
       label: "A note from the founder",
-      quote: "ExpoLead OS was built by someone who has worked in international trade, understands the exhibition floor, and believes that serious professionals deserve serious tools. This is not a generic CRM adapted for exhibitions — it was designed specifically for the way trade professionals work, on the floor, across borders, under time pressure. Built with conviction. Designed for results.",
+      quote: "ExpoLead OS was built by someone who has worked in international trade, understands the exhibition floor, and believes that serious professionals deserve serious tools. This is not a generic CRM adapted for exhibitions, it was designed specifically for the way trade professionals work, on the floor, across borders, under time pressure. Built with conviction. Designed for results.",
       name: "Gladwin Gerald",
       title: "Founder, ExpoLead OS · Tradesoil International",
     },
@@ -279,7 +279,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="grid min-h-[calc(100vh-96px)] items-center gap-12 px-8 pb-16 pt-10 lg:grid-cols-2 lg:px-16">
         <div className="max-w-3xl">
-          <p className="anim-hero-badge mb-4 text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">{t.hero.badge}</p>
+          <p className="anim-hero-badge mb-4 text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.hero.badge}</p>
           <h1 className="anim-hero-title max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-slate-900 md:text-5xl lg:text-4xl">
             {t.hero.h1a}<br />{t.hero.h1b}
           </h1>
@@ -366,7 +366,7 @@ export default function HomePage() {
       <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100">
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600 mb-2">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 mb-2">
               {lang === "en" ? "The exhibition reality" : "展会现实"}
             </p>
             <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
@@ -420,8 +420,8 @@ export default function HomePage() {
 
           <p className="mt-10 text-center text-sm italic text-slate-500 max-w-lg mx-auto leading-relaxed">
             {lang === "en"
-              ? "\"90% of exhibition leads are wasted — not because the leads were bad, but because there was no system.\""
-              : "\"90%的展会线索被浪费——不是因为线索质量差，而是因为没有系统。\""}
+              ? "\"90% of exhibition leads are wasted, not because the leads were bad, but because there was no system.\""
+              : "\"90%的展会线索被浪费，不是因为线索质量差，而是因为没有系统。\""}
           </p>
         </div>
       </section>
@@ -467,7 +467,7 @@ export default function HomePage() {
       {/* HOW IT WORKS */}
       <section className="bg-white px-8 py-12 lg:px-16">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">{t.how.label}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.how.label}</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 md:text-4xl">{t.how.title}</h2>
         </div>
         <style>{`
@@ -491,7 +491,7 @@ export default function HomePage() {
       {/* WHO IT'S FOR */}
       <section className="bg-slate-50 px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">{t.who.label}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.who.label}</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 md:text-4xl">{t.who.title}</h2>
         </div>
         <div className="mx-auto mt-12 grid max-w-5xl gap-5 md:grid-cols-3">
@@ -522,7 +522,7 @@ export default function HomePage() {
       {/* SECURITY SECTION */}
       <section className="bg-white px-8 py-14 lg:px-16 border-t border-slate-100">
         <div className="mx-auto max-w-4xl text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">{t.security.label}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.security.label}</p>
           <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-900">{t.security.title}</h2>
         </div>
         <div className="mx-auto max-w-4xl grid gap-6 md:grid-cols-4">
@@ -550,13 +550,27 @@ export default function HomePage() {
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-500 mb-3">{t.founder.label}</p>
           <div className="text-4xl leading-none text-emerald-500 font-serif mb-2">&ldquo;</div>
           <p className="text-[15px] leading-[1.8] text-slate-300 italic mb-5">{t.founder.quote}</p>
-          <div className="flex items-center gap-3 pt-5 border-t border-slate-800">
-            <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center text-xs font-semibold text-emerald-500 shrink-0">GG</div>
-            <div>
-              <p className="text-sm font-semibold text-white">{t.founder.name}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{t.founder.title}</p>
+          <div className="flex flex-col sm:flex-row gap-5 pt-5 border-t border-slate-800">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center text-xs font-semibold text-emerald-500 shrink-0">GG</div>
+              <div>
+                <p className="text-sm font-semibold text-white">{t.founder.name}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{t.founder.title}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 sm:border-l sm:border-slate-800 sm:pl-5">
+              <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-xs font-semibold text-slate-400 shrink-0">GD</div>
+              <div>
+                <p className="text-sm font-semibold text-white">Gayan Dias</p>
+                <p className="text-xs text-slate-500 mt-0.5">Co-Founder, ExpoLead OS · Strategic Adviser</p>
+              </div>
             </div>
           </div>
+          <p className="mt-5 text-[13px] leading-[1.8] text-slate-500">
+            {lang === "en"
+              ? "Gayan Dias is the strategic mind behind ExpoLead OS's business model. A business analyst and strategic adviser by background, Gayan ensures that every product decision is grounded in commercial reality, from how we price, to how we grow, to who we serve."
+              : "Gayan Dias 是 ExpoLead OS 商业模式背后的战略智囊。作为商业分析师和战略顾问，他确保每一个产品决策都立足于商业现实。"}
+          </p>
         </div>
       </section>
 
