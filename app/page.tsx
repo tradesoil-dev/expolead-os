@@ -666,55 +666,77 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FOOTER LINKS */}
-      <section className="border-t border-emerald-900/10 bg-white px-8 py-12 lg:px-12">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <h3 className="mb-4 text-sm font-bold text-slate-950">{t.footerLinks.col1.heading}</h3>
-            <div className="space-y-3 text-sm text-slate-600">{t.footerLinks.col1.items.map((item) => <p key={item}>{item}</p>)}</div>
+      {/* FOOTER */}
+      <footer className="bg-slate-900 px-8 pt-12 pb-8 lg:px-16">
+        {/* Top row: logo + columns */}
+        <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-16 pb-10 border-b border-slate-800">
+          {/* Logo + tagline */}
+          <div className="shrink-0">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="grid grid-cols-2 gap-[3px] w-[18px] h-[18px] shrink-0">
+                <div className="rounded-[2px] border-[1.5px] border-white" />
+                <div className="rounded-[2px] border-[1.5px] border-white" />
+                <div className="rounded-[2px] border-[1.5px] border-white" />
+                <div className="rounded-[2px] bg-emerald-500" />
+              </div>
+              <span className="text-[15px] tracking-tight leading-none">
+                <span className="font-semibold text-white">Expo</span>
+                <span className="font-semibold text-emerald-400">Lead</span>
+                <span className="font-normal text-slate-400"> OS</span>
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed max-w-[180px]">{t.footer.tagline}</p>
           </div>
-          <div>
-            <h3 className="mb-4 text-sm font-bold text-slate-950">{t.footerLinks.col2.heading}</h3>
-            <div className="space-y-3 text-sm text-slate-600">{t.footerLinks.col2.items.map((item) => <p key={item}>{item}</p>)}</div>
-          </div>
-          <div>
-            <h3 className="mb-4 text-sm font-bold text-slate-950">{t.footerLinks.col3.heading}</h3>
-            <div className="space-y-3 text-sm text-slate-600">{t.footerLinks.col3.items.map((item) => <p key={item}>{item}</p>)}</div>
-          </div>
-          <div>
-            <h3 className="mb-4 text-sm font-bold text-slate-950">{t.footerLinks.col4.heading}</h3>
-            <div className="space-y-3 text-sm text-slate-600">
-              <a href="https://www.tradesoil.com" target="_blank" rel="noreferrer" className="hover:underline block">{t.footerLinks.col4.tradesoil}</a>
-              <p>{t.footerLinks.col4.contact}</p>
+
+          {/* Columns */}
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:gap-16">
+            {/* ExpoLead OS */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col1.heading}</p>
+              <div className="flex flex-col gap-3">
+                <a href="#how-it-works" className="text-sm text-slate-500 hover:text-white transition-colors">
+                  {lang === "en" ? "About" : "关于我们"}
+                </a>
+                <a href="#how-it-works" className="text-sm text-slate-500 hover:text-white transition-colors">
+                  {lang === "en" ? "Product Overview" : "产品概览"}
+                </a>
+              </div>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col3.heading}</p>
+              <div className="flex flex-col gap-3">
+                <a href={`mailto:hello.expolead@tradesoil.com`} className="text-sm text-slate-500 hover:text-white transition-colors">
+                  {lang === "en" ? "Help Center" : "帮助中心"}
+                </a>
+                <a href={`mailto:hello.expolead@tradesoil.com`} className="text-sm text-slate-500 hover:text-white transition-colors">
+                  {lang === "en" ? "Support" : "支持"}
+                </a>
+              </div>
+            </div>
+
+            {/* Company */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col4.heading}</p>
+              <div className="flex flex-col gap-3">
+                <a href="https://www.tradesoil.com" target="_blank" rel="noreferrer" className="text-sm text-slate-500 hover:text-white transition-colors">
+                  {t.footerLinks.col4.tradesoil}
+                </a>
+                <a href="mailto:hello.expolead@tradesoil.com" className="text-sm text-slate-500 hover:text-white transition-colors">
+                  {t.footerLinks.col4.contact}
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* FOOTER */}
-      <footer className="border-t border-emerald-900/10 bg-white px-8 py-10 lg:px-16">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="mb-5 flex items-center gap-2 text-sm font-medium text-slate-700">
-              <Globe2 className="h-5 w-5" />
-              {t.footer.lang}
-            </div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
-              <span>© 2026 ExpoLead OS</span>
-              <span>|</span>
-              <Link href="/terms" className="hover:text-emerald-700">{t.footer.terms}</Link>
-              <span>|</span>
-              <Link href="/privacy" className="hover:text-emerald-700">{t.footer.privacy}</Link>
-            </div>
-          </div>
-          <div className="flex flex-col gap-5 lg:items-end">
-            <div className="flex items-center gap-4 text-slate-500">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-bold">f</span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-bold">IG</span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-bold">X</span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-bold">in</span>
-            </div>
-            <p className="text-sm text-slate-700">{t.footer.tagline}</p>
+        {/* Bottom bar */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-6">
+          <p className="text-xs text-slate-600">© 2026 Tradesoil International. All rights reserved.</p>
+          <div className="flex flex-wrap gap-4">
+            <Link href="/terms" className="text-xs text-slate-500 hover:text-white transition-colors">{t.footer.terms}</Link>
+            <Link href="/privacy" className="text-xs text-slate-500 hover:text-white transition-colors">{t.footer.privacy}</Link>
           </div>
         </div>
       </footer>
