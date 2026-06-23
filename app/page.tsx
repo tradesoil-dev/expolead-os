@@ -359,6 +359,45 @@ export default function HomePage() {
             <p className="text-sm font-bold text-slate-800">{t.mockup.next}</p>
             <p className="mt-1 text-xs text-slate-500">{t.mockup.nextSub}</p>
           </div>
+
+          {/* Phone mockup — bottom right, overlapping */}
+          <div className="absolute -bottom-6 right-0 w-[110px]" style={{ zIndex: 10 }}>
+            <div className="rounded-[18px] border-[5px] border-slate-950 bg-white overflow-hidden shadow-2xl">
+              {/* Phone nav */}
+              <div className="bg-slate-800 px-2 py-1.5 flex items-center justify-between">
+                <div className="grid grid-cols-2 gap-[2px] w-[11px] h-[11px] shrink-0">
+                  <div className="rounded-[1.5px] border-[1.2px] border-white" />
+                  <div className="rounded-[1.5px] border-[1.2px] border-white" />
+                  <div className="rounded-[1.5px] border-[1.2px] border-white" />
+                  <div className="rounded-[1.5px] bg-emerald-500" />
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="rounded border border-slate-600 px-1 py-0.5 flex items-center gap-0.5">
+                    <span className="text-[6px] font-semibold text-slate-300">中文</span>
+                  </div>
+                  <div className="flex flex-col gap-[3px]">
+                    <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
+                    <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
+                    <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
+                  </div>
+                </div>
+              </div>
+              {/* Phone content */}
+              <div className="bg-slate-50 p-1.5">
+                <p className="text-[7px] font-bold text-slate-800 mb-1.5">Connections</p>
+                {[
+                  { name: "KENP Korea", label: "High priority", color: "#10b981" },
+                  { name: "UCO China", label: "Follow up", color: "#f59e0b" },
+                  { name: "Hanwha Bio", label: "New", color: "#94a3b8" },
+                ].map((item) => (
+                  <div key={item.name} className="bg-white border border-slate-100 rounded-[4px] px-1.5 py-1 mb-1">
+                    <p className="text-[7px] font-semibold text-slate-800">{item.name}</p>
+                    <p className="text-[6px]" style={{ color: item.color }}>{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
