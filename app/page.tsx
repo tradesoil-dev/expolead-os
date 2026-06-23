@@ -545,22 +545,20 @@ export default function HomePage() {
       </section>
 
       {/* FOUNDER NOTE */}
-      <section className="bg-slate-900 px-8 py-10 lg:px-16">
-        <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-500 mb-3">{t.founder.label}</p>
-          <div className="text-4xl leading-none text-emerald-500 font-serif mb-2">&ldquo;</div>
-          <p className="text-[15px] leading-[1.8] text-slate-300 italic mb-5">{t.founder.quote}</p>
-          <div className="flex flex-col gap-6 pt-5 border-t border-slate-800">
+      <section className="bg-slate-900 px-8 py-12 lg:px-16">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-500 mb-8 text-center">{t.founder.label}</p>
+          <div className="grid gap-6 md:grid-cols-2">
             {/* Gladwin */}
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center text-xs font-semibold text-emerald-500 shrink-0">GG</div>
+            <div className="bg-slate-800 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-slate-900 border-2 border-emerald-500 flex items-center justify-center text-xs font-semibold text-emerald-500 shrink-0">GG</div>
                 <div>
                   <p className="text-sm font-semibold text-white">{t.founder.name}</p>
                   <p className="text-xs text-slate-500 mt-0.5">{t.founder.title}</p>
                 </div>
               </div>
-              <p className="text-[13px] leading-[1.8] text-slate-500">
+              <p className="text-[13px] leading-[1.8] text-slate-400">
                 {lang === "en"
                   ? "ExpoLead OS was built by someone who has worked in international trade, understands the exhibition floor, and believes that serious professionals deserve serious tools. This is not a generic CRM adapted for exhibitions, it was designed specifically for the way trade professionals work, on the floor, across borders, under time pressure."
                   : "ExpoLead OS由一位深耕国际贸易、了解展会现场的人创建。这不是一个为展会改造的通用CRM，它专为贸易专业人士的工作方式而设计。"}
@@ -568,15 +566,15 @@ export default function HomePage() {
             </div>
 
             {/* Gayan */}
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center text-xs font-semibold text-emerald-500 shrink-0">GD</div>
+            <div className="bg-slate-800 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-slate-900 border-2 border-emerald-500 flex items-center justify-center text-xs font-semibold text-emerald-500 shrink-0">GD</div>
                 <div>
                   <p className="text-sm font-semibold text-white">Gayan Dias</p>
                   <p className="text-xs text-slate-500 mt-0.5">{lang === "en" ? "Co-Founder, ExpoLead OS · Strategic Adviser" : "联合创始人，ExpoLead OS · 战略顾问"}</p>
                 </div>
               </div>
-              <p className="text-[13px] leading-[1.8] text-slate-500">
+              <p className="text-[13px] leading-[1.8] text-slate-400">
                 {lang === "en"
                   ? "Gayan Dias is the strategic mind behind ExpoLead OS's business model. A business analyst and strategic adviser by background, Gayan ensures that every product decision is grounded in commercial reality, from how we price, to how we grow, to who we serve."
                   : "Gayan Dias 是 ExpoLead OS 商业模式背后的战略智囊。作为商业分析师和战略顾问，他确保每一个产品决策都立足于商业现实，从定价到增长，再到目标用户。"}
