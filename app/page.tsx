@@ -41,7 +41,7 @@ const translations = {
     },
     expoStrip: {
       label: "Built for the world's leading trade exhibitions",
-      shows: ["CHINACOAT", "ICIF", "CPHI", "CANTON FAIR", "GULFOOD"],
+      shows: ["ANUGA", "SIAL CHINA", "CHINACOAT", "ICIF", "CANTON FAIR", "GULFOOD"],
     },
     testimonials: {
       label: "What early users say",
@@ -152,7 +152,7 @@ const translations = {
     },
     expoStrip: {
       label: "专为全球领先的贸易展会打造",
-      shows: ["CHINACOAT", "ICIF", "CPHI", "CANTON FAIR", "GULFOOD"],
+      shows: ["ANUGA", "SIAL CHINA", "CHINACOAT", "ICIF", "CANTON FAIR", "GULFOOD"],
     },
     testimonials: {
       label: "早期用户评价",
