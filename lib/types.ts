@@ -28,6 +28,16 @@ export interface Exhibition {
   created_at: string;
 }
 
+export interface ExhibitionLibraryItem {
+  id: string;
+  name: string;
+  location: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  sector: string | null;
+  created_at: string;
+}
+
 export interface Contact {
   id: string;
   user_id: string;

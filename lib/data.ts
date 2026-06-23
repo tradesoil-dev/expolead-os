@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import type { Supplier, Exhibition, Opportunity, Meeting } from "@/lib/types";
+import type { Supplier, Exhibition, ExhibitionLibraryItem, Opportunity, Meeting } from "@/lib/types";
 
 export async function getSuppliers(): Promise<Supplier[]> {
   if (!isSupabaseConfigured) return [];
@@ -58,6 +58,20 @@ export async function getExhibitions(): Promise<Exhibition[]> {
       .order("start_date", { ascending: false });
     if (error) return [];
     return (data ?? []) as Exhibition[];
+  } catch {
+    return [];
+  }
+}
+export async function getExhibitionLibrary(): Promise<ExhibitionLibraryItem[]> {
+  if (!isSupabaseConfigured) return [];
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("exhibition_library")
+      .select("*")
+      .order("start_date", { ascending: true });
+    if (error) return [];
+    return (data ?? []) as ExhibitionLibraryItem[];
   } catch {
     return [];
   }
