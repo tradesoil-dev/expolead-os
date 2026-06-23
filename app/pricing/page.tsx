@@ -151,11 +151,11 @@ export default async function PricingPage() {
         </div>
 
         {/* TRUST LINE */}
-        <div className="mt-12 rounded-2xl bg-emerald-50 border border-emerald-100 px-8 py-6 text-center">
-          <p className="text-sm font-semibold text-slate-700">
-            A return flight to CHINACOAT costs $800+. One recovered lead pays for ExpoLead OS for years.
+        <div className="mt-12 rounded-2xl bg-slate-800 border border-slate-700 px-8 py-6 text-center">
+          <p className="text-sm font-semibold text-white">
+            A return flight to any major trade show costs $800+. One recovered lead pays for ExpoLead OS for years.
           </p>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-400">
             No annual lock-in. Cancel anytime. Your data is always exportable.
           </p>
         </div>
