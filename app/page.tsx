@@ -78,13 +78,15 @@ const translations = {
     growth: "Driving revenue growth",
     security: {
       label: "Security & trust",
-      title: "Your data is safe with us",
-      items: [
-        { title: "Data isolation", desc: "Your data is strictly isolated. No other user can ever access your records." },
-        { title: "Encrypted in transit", desc: "All data is protected with HTTPS/TLS encryption between your browser and our servers." },
-        { title: "Secure authentication", desc: "Powered by Supabase, industry-standard auth used by thousands of production apps." },
-        { title: "No data sharing", desc: "We never sell or share your business data. Your connections stay yours, always." },
+      title: "Security, control and your data",
+      intro: "We take data privacy and security as seriously as you do. ExpoLead OS is designed around three principles:",
+      principles: [
+        { title: "Isolation & privacy", desc: "Your connections, leads and notes are strictly private. No other user on ExpoLead OS can ever access your records." },
+        { title: "Encryption & secure auth", desc: "All data is protected with HTTPS/TLS in transit and stored securely via Supabase, the same infrastructure used by thousands of production apps." },
+        { title: "You own your data", desc: "We never sell or share your business data with third parties. Export everything as CSV and leave anytime. No lock-in." },
       ],
+      footer: "Built on Supabase with row-level security enforced at the database level.",
+      badge: "Your data is protected",
     },
     founder: {
       label: "A note from the founder",
@@ -169,13 +171,15 @@ const translations = {
     growth: "驱动营收增长",
     security: {
       label: "安全与信任",
-      title: "您的数据安全有保障",
-      items: [
-        { title: "数据隔离", desc: "您的数据严格隔离。其他用户永远无法访问您的记录。" },
-        { title: "传输加密", desc: "所有数据通过HTTPS/TLS加密在您的浏览器和服务器之间传输。" },
-        { title: "安全认证", desc: "由Supabase提供支持，这是数千个生产应用所使用的行业标准认证方案。" },
-        { title: "不共享数据", desc: "我们绝不出售或共享您的业务数据。您的联系人始终属于您自己。" },
+      title: "安全、控制与您的数据",
+      intro: "我们与您一样重视数据隐私和安全。ExpoLead OS围绕三个原则构建：",
+      principles: [
+        { title: "隔离与隐私", desc: "您的联系人、线索和备注严格私密。ExpoLead OS上的其他用户永远无法访问您的记录。" },
+        { title: "加密与安全认证", desc: "所有数据通过HTTPS/TLS加密传输，并通过Supabase安全存储，这是数千个生产应用所使用的基础设施。" },
+        { title: "数据归您所有", desc: "我们绝不向第三方出售或共享您的业务数据。随时以CSV格式导出全部数据，随时离开，无锁定。" },
       ],
+      footer: "基于Supabase构建，在数据库层面强制执行行级安全。",
+      badge: "您的数据受到保护",
     },
     founder: {
       label: "创始人寄语",
@@ -566,27 +570,59 @@ export default function HomePage() {
       </section>
 
       {/* SECURITY SECTION */}
-      <section className="bg-white px-8 py-14 lg:px-16 border-t border-slate-100">
-        <div className="mx-auto max-w-4xl text-center mb-10">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.security.label}</p>
-          <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-900">{t.security.title}</h2>
-        </div>
-        <div className="mx-auto max-w-4xl grid gap-6 md:grid-cols-4">
-          {t.security.items.map((item, i) => {
-            const secIcons = [
-              <ShieldCheck key={0} className="h-5 w-5 text-emerald-700" />,
-              <svg key={1} className="h-5 w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>,
-              <svg key={2} className="h-5 w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
-              <svg key={3} className="h-5 w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636a9 9 0 010 12.728M15.536 8.464a5 5 0 010 7.072M6.343 6.343a9 9 0 000 12.728m2.829-2.829a5 5 0 000-7.072" /></svg>,
-            ];
-            return (
-              <div key={i} className="rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 mx-auto mb-4">{secIcons[i]}</div>
-                <p className="text-sm font-bold text-slate-900">{item.title}</p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">{item.desc}</p>
+      <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100">
+        <div className="mx-auto max-w-5xl flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+
+          {/* Left: text */}
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 mb-3">{t.security.label}</p>
+            <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl mb-4">{t.security.title}</h2>
+            <p className="text-sm text-slate-500 leading-relaxed mb-7">{t.security.intro}</p>
+            <div className="flex flex-col gap-5 mb-6">
+              {t.security.principles.map((p, i) => (
+                <div key={i} className="flex gap-3 items-start">
+                  <svg className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <p className="text-sm text-slate-700 leading-relaxed">
+                    <span className="font-bold text-slate-900">{p.title}</span> — {p.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">{t.security.footer}</p>
+          </div>
+
+          {/* Right: shield + lock illustration */}
+          <div className="shrink-0 w-full lg:w-[220px] flex justify-center">
+            <div className="relative w-[220px] h-[240px] rounded-2xl flex items-center justify-center overflow-hidden"
+              style={{ background: "linear-gradient(145deg, #064e3b, #065f46, #047857)" }}>
+              {/* Glow rings */}
+              <div className="absolute w-40 h-40 rounded-full" style={{ background: "rgba(16,185,129,0.18)" }} />
+              <div className="absolute w-56 h-56 rounded-full" style={{ background: "rgba(16,185,129,0.07)" }} />
+              {/* Sparkles */}
+              <div className="absolute top-4 right-5 w-1.5 h-1.5 rounded-full bg-emerald-300 opacity-80" />
+              <div className="absolute bottom-6 left-5 w-1 h-1 rounded-full bg-emerald-200 opacity-60" />
+              <div className="absolute top-12 left-5 w-1 h-1 rounded-full bg-emerald-400 opacity-50" />
+              {/* SVG shield + lock */}
+              <svg width="140" height="158" viewBox="0 0 140 158" fill="none">
+                <path d="M70 8 L124 30 L124 78 C124 114 100 138 70 152 C40 138 16 114 16 78 L16 30 Z"
+                  fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.6)" strokeWidth="2"/>
+                <path d="M70 22 L110 38 L110 78 C110 106 92 126 70 138 C48 126 30 106 30 78 L30 38 Z"
+                  fill="rgba(16,185,129,0.10)" stroke="rgba(52,211,153,0.4)" strokeWidth="1.5"/>
+                <rect x="46" y="80" width="48" height="38" rx="8" fill="rgba(16,185,129,0.25)" stroke="#34d399" strokeWidth="2"/>
+                <path d="M56 80 L56 64 C56 54 84 54 84 64 L84 80" fill="none" stroke="#34d399" strokeWidth="3.5" strokeLinecap="round"/>
+                <path d="M60 80 L60 66 C60 59 80 59 80 66 L80 80" fill="none" stroke="rgba(167,243,208,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
+                <circle cx="70" cy="97" r="5" fill="#065f46" stroke="#34d399" strokeWidth="1.5"/>
+                <rect x="68" y="100" width="4" height="7" rx="1" fill="#34d399"/>
+                <line x1="46" y1="93" x2="94" y2="93" stroke="rgba(52,211,153,0.2)" strokeWidth="1"/>
+              </svg>
+              {/* Badge */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border px-3 py-1"
+                style={{ background: "rgba(6,78,59,0.85)", borderColor: "rgba(52,211,153,0.4)" }}>
+                <p className="text-[10px] font-bold text-emerald-300 tracking-wide">{t.security.badge}</p>
               </div>
-            );
-          })}
+            </div>
+          </div>
+
         </div>
       </section>
 
