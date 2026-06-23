@@ -431,7 +431,14 @@ export default function HomePage() {
           function drawDonut() {
             var canvas = document.getElementById('reality-donut');
             if (!canvas) { setTimeout(drawDonut, 100); return; }
+            var dpr = window.devicePixelRatio || 1;
+            var size = 220;
+            canvas.width = size * dpr;
+            canvas.height = size * dpr;
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
             var ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
             var cx = 110, cy = 110, r = 80, thickness = 30;
             var segments = [
               { pct: 0.70, color: '#f87171' },
