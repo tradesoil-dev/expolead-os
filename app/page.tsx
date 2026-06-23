@@ -360,41 +360,53 @@ export default function HomePage() {
             <p className="mt-1 text-xs text-slate-500">{t.mockup.nextSub}</p>
           </div>
 
-          {/* Phone mockup — bottom right, overlapping */}
-          <div className="absolute bottom-0 -right-8 w-[110px]" style={{ zIndex: 10 }}>
-            <div className="rounded-[18px] border-[5px] border-slate-950 bg-white overflow-hidden shadow-2xl">
-              {/* Phone nav */}
-              <div className="bg-slate-800 px-2 py-1.5 flex items-center justify-between">
-                <div className="grid grid-cols-2 gap-[2px] w-[11px] h-[11px] shrink-0">
-                  <div className="rounded-[1.5px] border-[1.2px] border-white" />
-                  <div className="rounded-[1.5px] border-[1.2px] border-white" />
-                  <div className="rounded-[1.5px] border-[1.2px] border-white" />
-                  <div className="rounded-[1.5px] bg-emerald-500" />
+          {/* Phone mockup — bottom right */}
+          <div className="absolute bottom-0 -right-6 w-[120px]" style={{ zIndex: 10 }}>
+            {/* Phone outer shell */}
+            <div className="relative rounded-[28px] border-[6px] border-slate-950 bg-slate-950 shadow-2xl overflow-hidden" style={{ paddingBottom: 8 }}>
+              {/* Notch */}
+              <div className="flex justify-center pt-2 pb-1">
+                <div className="w-8 h-1.5 rounded-full bg-slate-800" />
+              </div>
+              {/* Screen */}
+              <div className="rounded-[18px] overflow-hidden mx-0.5">
+                {/* Nav bar */}
+                <div className="bg-slate-800 px-2 py-1.5 flex items-center justify-between">
+                  <div className="grid grid-cols-2 gap-[2px] w-[11px] h-[11px] shrink-0">
+                    <div className="rounded-[1.5px] border-[1.2px] border-white" />
+                    <div className="rounded-[1.5px] border-[1.2px] border-white" />
+                    <div className="rounded-[1.5px] border-[1.2px] border-white" />
+                    <div className="rounded-[1.5px] bg-emerald-500" />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="rounded border border-slate-600 px-1 py-0.5">
+                      <span className="text-[6px] font-semibold text-slate-300">中文</span>
+                    </div>
+                    <div className="flex flex-col gap-[3px]">
+                      <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
+                      <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
+                      <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="rounded border border-slate-600 px-1 py-0.5 flex items-center gap-0.5">
-                    <span className="text-[6px] font-semibold text-slate-300">中文</span>
-                  </div>
-                  <div className="flex flex-col gap-[3px]">
-                    <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
-                    <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
-                    <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
-                  </div>
+                {/* App content */}
+                <div className="bg-slate-50 px-2 py-2">
+                  <p className="text-[7px] font-bold text-slate-800 mb-1.5">Connections</p>
+                  {[
+                    { name: "KENP Korea", label: "High priority", color: "#10b981" },
+                    { name: "UCO China", label: "Follow up", color: "#f59e0b" },
+                    { name: "Hanwha Bio", label: "New", color: "#94a3b8" },
+                  ].map((item) => (
+                    <div key={item.name} className="bg-white border border-slate-100 rounded-[5px] px-1.5 py-1 mb-1">
+                      <p className="text-[7px] font-semibold text-slate-800">{item.name}</p>
+                      <p className="text-[6px]" style={{ color: item.color }}>{item.label}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-              {/* Phone content */}
-              <div className="bg-slate-50 p-1.5">
-                <p className="text-[7px] font-bold text-slate-800 mb-1.5">Connections</p>
-                {[
-                  { name: "KENP Korea", label: "High priority", color: "#10b981" },
-                  { name: "UCO China", label: "Follow up", color: "#f59e0b" },
-                  { name: "Hanwha Bio", label: "New", color: "#94a3b8" },
-                ].map((item) => (
-                  <div key={item.name} className="bg-white border border-slate-100 rounded-[4px] px-1.5 py-1 mb-1">
-                    <p className="text-[7px] font-semibold text-slate-800">{item.name}</p>
-                    <p className="text-[6px]" style={{ color: item.color }}>{item.label}</p>
-                  </div>
-                ))}
+              {/* Home bar */}
+              <div className="flex justify-center pt-1.5">
+                <div className="w-8 h-1 rounded-full bg-slate-700" />
               </div>
             </div>
           </div>
