@@ -360,52 +360,50 @@ export default function HomePage() {
             <p className="mt-1 text-xs text-slate-500">{t.mockup.nextSub}</p>
           </div>
 
-          {/* Phone mockup — bottom right */}
-          <div className="absolute bottom-0 -right-6 w-[115px]" style={{ zIndex: 10 }}>
-            <div className="relative rounded-[24px] border-[5px] border-slate-950 bg-slate-950 shadow-2xl overflow-hidden">
-              {/* Screen with punch-hole camera */}
-              <div className="relative bg-slate-800">
-                {/* Punch-hole dot */}
-                <div className="flex justify-center pt-2 pb-1">
-                  <div className="w-2 h-2 rounded-full bg-slate-950" />
+          {/* Phone mockup — bottom left, overlapping desktop card */}
+          <div className="absolute -bottom-8 -left-10 w-[140px]" style={{ zIndex: 10 }}>
+            <div className="relative bg-slate-950 rounded-[32px] border-[6px] border-slate-950 shadow-2xl overflow-hidden" style={{ height: 280 }}>
+              {/* Status bar with punch-hole */}
+              <div className="bg-slate-900 flex justify-center pt-2 pb-1">
+                <div className="w-[8px] h-[8px] rounded-full bg-slate-950" />
+              </div>
+              {/* App nav */}
+              <div className="bg-slate-800 px-3 py-2 flex items-center justify-between">
+                <div className="grid grid-cols-2 gap-[2.5px] w-[13px] h-[13px] shrink-0">
+                  <div className="rounded-[2px] border-[1.5px] border-white" />
+                  <div className="rounded-[2px] border-[1.5px] border-white" />
+                  <div className="rounded-[2px] border-[1.5px] border-white" />
+                  <div className="rounded-[2px] bg-emerald-500" />
                 </div>
-                {/* Nav bar */}
-                <div className="bg-slate-800 px-2 py-1.5 flex items-center justify-between">
-                  <div className="grid grid-cols-2 gap-[2px] w-[11px] h-[11px] shrink-0">
-                    <div className="rounded-[1.5px] border-[1.2px] border-white" />
-                    <div className="rounded-[1.5px] border-[1.2px] border-white" />
-                    <div className="rounded-[1.5px] border-[1.2px] border-white" />
-                    <div className="rounded-[1.5px] bg-emerald-500" />
+                <div className="flex items-center gap-1.5">
+                  <div className="rounded border border-slate-600 px-1.5 py-0.5">
+                    <span className="text-[7px] font-semibold text-slate-300">中文</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <div className="rounded border border-slate-600 px-1 py-0.5">
-                      <span className="text-[6px] font-semibold text-slate-300">中文</span>
-                    </div>
-                    <div className="flex flex-col gap-[3px]">
-                      <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
-                      <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
-                      <div className="w-[9px] h-[1.2px] bg-slate-400 rounded" />
-                    </div>
+                  <div className="flex flex-col gap-[3.5px]">
+                    <div className="w-[11px] h-[1.5px] bg-slate-400 rounded" />
+                    <div className="w-[11px] h-[1.5px] bg-slate-400 rounded" />
+                    <div className="w-[11px] h-[1.5px] bg-slate-400 rounded" />
                   </div>
                 </div>
               </div>
               {/* App content */}
-              <div className="bg-slate-50 px-2 py-2">
-                <p className="text-[7px] font-bold text-slate-800 mb-1.5">Connections</p>
+              <div className="bg-slate-50 px-3 py-3 flex-1">
+                <p className="text-[8px] font-bold text-slate-700 mb-2">Connections</p>
                 {[
                   { name: "KENP Korea", label: "High priority", color: "#10b981" },
                   { name: "UCO China", label: "Follow up", color: "#f59e0b" },
                   { name: "Hanwha Bio", label: "New", color: "#94a3b8" },
+                  { name: "Palm Supplier", label: "Qualified", color: "#6366f1" },
                 ].map((item) => (
-                  <div key={item.name} className="bg-white border border-slate-100 rounded-[5px] px-1.5 py-1 mb-1">
-                    <p className="text-[7px] font-semibold text-slate-800">{item.name}</p>
-                    <p className="text-[6px]" style={{ color: item.color }}>{item.label}</p>
+                  <div key={item.name} className="bg-white border border-slate-100 rounded-lg px-2 py-1.5 mb-1.5 shadow-sm">
+                    <p className="text-[8px] font-semibold text-slate-800">{item.name}</p>
+                    <p className="text-[7px] mt-0.5" style={{ color: item.color }}>{item.label}</p>
                   </div>
                 ))}
               </div>
               {/* Home bar */}
-              <div className="flex justify-center py-1.5 bg-slate-50">
-                <div className="w-8 h-[3px] rounded-full bg-slate-300" />
+              <div className="absolute bottom-2 left-0 right-0 flex justify-center">
+                <div className="w-10 h-[3px] rounded-full bg-slate-600" />
               </div>
             </div>
           </div>
