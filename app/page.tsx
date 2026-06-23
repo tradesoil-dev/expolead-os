@@ -362,6 +362,101 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* EXHIBITION REALITY — DONUT CHART */}
+      <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-10">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600 mb-2">
+              {lang === "en" ? "The exhibition reality" : "展会现实"}
+            </p>
+            <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
+              {lang === "en"
+                ? "What happens to your connections and leads after the show ends?"
+                : "展会结束后，您的联系人和线索去哪了？"}
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">
+              {lang === "en"
+                ? "Based on industry research across trade show professionals"
+                : "基于展会专业人士的行业研究"}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            {/* Donut chart */}
+            <div className="relative shrink-0" style={{ width: 220, height: 220 }}>
+              <canvas id="reality-donut" width={220} height={220} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-4xl font-black text-red-400 leading-none">70%</span>
+                <span className="text-xs text-slate-400 mt-1">{lang === "en" ? "never" : "从未"}</span>
+                <span className="text-xs text-slate-400">{lang === "en" ? "followed up" : "跟进"}</span>
+              </div>
+            </div>
+
+            {/* Cards */}
+            <div className="flex flex-col gap-3 flex-1 min-w-[220px] max-w-sm">
+              <div className="bg-red-50 border-l-[3px] border-red-400 rounded-xl px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-bold text-red-800">{lang === "en" ? "Never followed up" : "从未跟进"}</p>
+                  <span className="text-xl font-black text-red-400">70%</span>
+                </div>
+                <p className="mt-1 text-xs text-red-400 leading-relaxed">{lang === "en" ? "Slipped through after the show ended" : "展会结束后流失"}</p>
+              </div>
+              <div className="bg-amber-50 border-l-[3px] border-amber-400 rounded-xl px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-bold text-amber-800">{lang === "en" ? "Followed up, went cold" : "跟进后冷却"}</p>
+                  <span className="text-xl font-black text-amber-400">20%</span>
+                </div>
+                <p className="mt-1 text-xs text-amber-500 leading-relaxed">{lang === "en" ? "Too late or lost context from the booth" : "太晚或失去展台背景"}</p>
+              </div>
+              <div className="bg-emerald-50 border-l-[3px] border-emerald-400 rounded-xl px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-bold text-emerald-800">{lang === "en" ? "Converted to revenue" : "转化为收入"}</p>
+                  <span className="text-xl font-black text-emerald-500">10%</span>
+                </div>
+                <p className="mt-1 text-xs text-emerald-500 leading-relaxed">{lang === "en" ? "Actually materialised into business" : "真正转化为业务"}</p>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-10 text-center text-sm italic text-slate-500 max-w-lg mx-auto leading-relaxed">
+            {lang === "en"
+              ? "\"90% of exhibition leads are wasted — not because the leads were bad, but because there was no system.\""
+              : "\"90%的展会线索被浪费——不是因为线索质量差，而是因为没有系统。\""}
+          </p>
+        </div>
+      </section>
+
+      <script dangerouslySetInnerHTML={{ __html: `
+        (function() {
+          function drawDonut() {
+            var canvas = document.getElementById('reality-donut');
+            if (!canvas) { setTimeout(drawDonut, 100); return; }
+            var ctx = canvas.getContext('2d');
+            var cx = 110, cy = 110, r = 80, thickness = 30;
+            var segments = [
+              { pct: 0.70, color: '#f87171' },
+              { pct: 0.20, color: '#fbbf24' },
+              { pct: 0.10, color: '#10b981' },
+            ];
+            var start = -Math.PI / 2;
+            segments.forEach(function(seg) {
+              var end = start + seg.pct * 2 * Math.PI;
+              ctx.beginPath();
+              ctx.arc(cx, cy, r, start, end);
+              ctx.lineWidth = thickness;
+              ctx.strokeStyle = seg.color;
+              ctx.stroke();
+              start = end;
+            });
+          }
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', drawDonut);
+          } else {
+            drawDonut();
+          }
+        })();
+      ` }} />
+
       {/* HOW IT WORKS */}
       <section className="bg-white px-8 py-12 lg:px-16">
         <div className="mx-auto max-w-4xl text-center">
