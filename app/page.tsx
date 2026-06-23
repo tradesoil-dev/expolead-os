@@ -89,7 +89,7 @@ const translations = {
       badge: "Your data is protected",
     },
     founder: {
-      label: "A note from the founder",
+      label: "A note from the founders",
       quote: "ExpoLead OS was built by someone who has worked in international trade, understands the exhibition floor, and believes that serious professionals deserve serious tools. This is not a generic CRM adapted for exhibitions, it was designed specifically for the way trade professionals work, on the floor, across borders, under time pressure. Built with conviction. Designed for results.",
       name: "Gladwin Gerald",
       title: "Founder, ExpoLead OS · Tradesoil International",
@@ -182,7 +182,7 @@ const translations = {
       badge: "您的数据受到保护",
     },
     founder: {
-      label: "创始人寄语",
+      label: "联合创始人寄语",
       quote: "ExpoLead OS由一位深耕国际贸易、了解展会现场的人创建，他相信专业人士值得拥有专业工具。这不是一个为展会改造的通用CRM——它专为贸易专业人士的工作方式而设计：在展台上、跨越国界、在时间压力下。以信念打造，为成果而生。",
       name: "Gladwin Gerald",
       title: "创始人，ExpoLead OS · Tradesoil International",
@@ -215,7 +215,7 @@ export default function HomePage() {
   const t = translations[lang];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-white via-emerald-50/60 to-sky-50 text-slate-950">
+    <main className="min-h-screen bg-white text-slate-950">
       <SplashScreen />
       {/* HEADER */}
       <header className="flex items-center justify-between bg-slate-800 px-4 py-3 lg:px-16 lg:py-4">
@@ -413,7 +413,7 @@ export default function HomePage() {
       </section>
 
       {/* EXHIBITION REALITY — DONUT CHART */}
-      <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100">
+      <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100" id="exhibition-reality">
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-10">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 mb-2">
@@ -563,71 +563,69 @@ export default function HomePage() {
 
       {/* GROWTH SECTION */}
       <section className="grid min-h-[300px] bg-white lg:grid-cols-2">
-        <div className="min-h-[240px] bg-cover bg-left" style={{ backgroundImage: "url('/growth-meeting.jpg.jpg')" }} />
-        <div className="flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-sky-50 px-8 py-20 text-center">
+        <div className="min-h-[240px] bg-cover bg-left" style={{ backgroundImage: "url('/growth-meeting.jpg')" }} />
+        <div className="flex items-center justify-center bg-white px-8 py-20 text-center">
           <h2 className="text-4xl font-black leading-[1.05] tracking-tight text-emerald-800 md:text-5xl lg:text-5xl">{t.growth}</h2>
         </div>
       </section>
 
       {/* SECURITY SECTION */}
-      <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100">
-        <div className="mx-auto max-w-5xl flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
-
-          {/* Left: text */}
-          <div className="flex-1 min-w-0">
+      <section className="bg-white px-8 py-14 lg:px-16 border-t border-slate-100">
+        <div className="mx-auto max-w-5xl">
+          {/* Centered title */}
+          <div className="text-center mb-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 mb-3">{t.security.label}</p>
-            <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl mb-4">{t.security.title}</h2>
-            <p className="text-sm text-slate-500 leading-relaxed mb-7">{t.security.intro}</p>
-            <div className="flex flex-col gap-5 mb-6">
-              {t.security.principles.map((p, i) => (
-                <div key={i} className="flex gap-3 items-start">
-                  <svg className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  <p className="text-sm text-slate-700 leading-relaxed">
-                    <span className="font-bold text-slate-900">{p.title}</span> — {p.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">{t.security.footer}</p>
+            <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl mb-3">{t.security.title}</h2>
+            <p className="text-sm text-slate-500 leading-relaxed max-w-xl mx-auto">{t.security.intro}</p>
           </div>
 
-          {/* Right: shield + lock illustration */}
-          <div className="shrink-0 w-full lg:w-[220px] flex justify-center">
-            <div className="relative w-[220px] h-[240px] rounded-2xl flex items-center justify-center overflow-hidden"
-              style={{ background: "linear-gradient(145deg, #064e3b, #065f46, #047857)" }}>
-              {/* Glow rings */}
-              <div className="absolute w-40 h-40 rounded-full" style={{ background: "rgba(16,185,129,0.18)" }} />
-              <div className="absolute w-56 h-56 rounded-full" style={{ background: "rgba(16,185,129,0.07)" }} />
-              {/* Sparkles */}
-              <div className="absolute top-4 right-5 w-1.5 h-1.5 rounded-full bg-emerald-300 opacity-80" />
-              <div className="absolute bottom-6 left-5 w-1 h-1 rounded-full bg-emerald-200 opacity-60" />
-              <div className="absolute top-12 left-5 w-1 h-1 rounded-full bg-emerald-400 opacity-50" />
-              {/* SVG shield + lock */}
-              <svg width="140" height="158" viewBox="0 0 140 158" fill="none">
-                <path d="M70 8 L124 30 L124 78 C124 114 100 138 70 152 C40 138 16 114 16 78 L16 30 Z"
-                  fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.6)" strokeWidth="2"/>
-                <path d="M70 22 L110 38 L110 78 C110 106 92 126 70 138 C48 126 30 106 30 78 L30 38 Z"
-                  fill="rgba(16,185,129,0.10)" stroke="rgba(52,211,153,0.4)" strokeWidth="1.5"/>
-                <rect x="46" y="80" width="48" height="38" rx="8" fill="rgba(16,185,129,0.25)" stroke="#34d399" strokeWidth="2"/>
-                <path d="M56 80 L56 64 C56 54 84 54 84 64 L84 80" fill="none" stroke="#34d399" strokeWidth="3.5" strokeLinecap="round"/>
-                <path d="M60 80 L60 66 C60 59 80 59 80 66 L80 80" fill="none" stroke="rgba(167,243,208,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
-                <circle cx="70" cy="97" r="5" fill="#065f46" stroke="#34d399" strokeWidth="1.5"/>
-                <rect x="68" y="100" width="4" height="7" rx="1" fill="#34d399"/>
-                <line x1="46" y1="93" x2="94" y2="93" stroke="rgba(52,211,153,0.2)" strokeWidth="1"/>
-              </svg>
-              {/* Badge */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border px-3 py-1"
-                style={{ background: "rgba(6,78,59,0.85)", borderColor: "rgba(52,211,153,0.4)" }}>
-                <p className="text-[10px] font-bold text-emerald-300 tracking-wide">{t.security.badge}</p>
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+            {/* Left: numbered principles */}
+            <div className="flex-1 min-w-0 flex flex-col gap-6">
+              {t.security.principles.map((p, i) => (
+                <div key={i} className="flex gap-4 items-start">
+                  <span className="text-lg font-black text-emerald-200 shrink-0 w-8 leading-snug">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="text-sm text-slate-600 leading-relaxed">{p.desc}</p>
+                </div>
+              ))}
+              <p className="text-xs text-slate-400 leading-relaxed pl-12">{t.security.footer}</p>
+            </div>
+
+            {/* Right: shield + lock illustration */}
+            <div className="shrink-0 w-full lg:w-[220px] flex justify-center">
+              <div className="relative w-[220px] h-[240px] rounded-2xl flex items-center justify-center overflow-hidden"
+                style={{ background: "linear-gradient(145deg, #064e3b, #065f46, #047857)" }}>
+                <div className="absolute w-40 h-40 rounded-full" style={{ background: "rgba(16,185,129,0.18)" }} />
+                <div className="absolute w-56 h-56 rounded-full" style={{ background: "rgba(16,185,129,0.07)" }} />
+                <div className="absolute top-4 right-5 w-1.5 h-1.5 rounded-full bg-emerald-300 opacity-80" />
+                <div className="absolute bottom-6 left-5 w-1 h-1 rounded-full bg-emerald-200 opacity-60" />
+                <div className="absolute top-12 left-5 w-1 h-1 rounded-full bg-emerald-400 opacity-50" />
+                <svg width="140" height="158" viewBox="0 0 140 158" fill="none">
+                  <path d="M70 8 L124 30 L124 78 C124 114 100 138 70 152 C40 138 16 114 16 78 L16 30 Z"
+                    fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.6)" strokeWidth="2"/>
+                  <path d="M70 22 L110 38 L110 78 C110 106 92 126 70 138 C48 126 30 106 30 78 L30 38 Z"
+                    fill="rgba(16,185,129,0.10)" stroke="rgba(52,211,153,0.4)" strokeWidth="1.5"/>
+                  <rect x="46" y="80" width="48" height="38" rx="8" fill="rgba(16,185,129,0.25)" stroke="#34d399" strokeWidth="2"/>
+                  <path d="M56 80 L56 64 C56 54 84 54 84 64 L84 80" fill="none" stroke="#34d399" strokeWidth="3.5" strokeLinecap="round"/>
+                  <path d="M60 80 L60 66 C60 59 80 59 80 66 L80 80" fill="none" stroke="rgba(167,243,208,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
+                  <circle cx="70" cy="97" r="5" fill="#065f46" stroke="#34d399" strokeWidth="1.5"/>
+                  <rect x="68" y="100" width="4" height="7" rx="1" fill="#34d399"/>
+                  <line x1="46" y1="93" x2="94" y2="93" stroke="rgba(52,211,153,0.2)" strokeWidth="1"/>
+                </svg>
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border px-3 py-1"
+                  style={{ background: "rgba(6,78,59,0.85)", borderColor: "rgba(52,211,153,0.4)" }}>
+                  <p className="text-[10px] font-bold text-emerald-300 tracking-wide">{t.security.badge}</p>
+                </div>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
       {/* FOUNDER NOTE */}
-      <section className="bg-slate-900 px-8 py-12 lg:px-16">
+      <section className="bg-slate-800 px-8 py-12 lg:px-16">
         <div className="max-w-4xl mx-auto">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-500 mb-8 text-center">{t.founder.label}</p>
           <div className="grid gap-6 md:grid-cols-2">
