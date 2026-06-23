@@ -48,6 +48,15 @@ const translations = {
       title: "Trusted by trade professionals",
       items: [] as { quote: string; initials: string; name: string; role: string }[],
     },
+    pricingAnchor: {
+      label: "Simple, honest pricing",
+      priceLead: "Plans from",
+      price: "$19",
+      priceTail: "/month",
+      sub: "One recovered lead pays for ExpoLead OS for years. 14-day free trial, no credit card required.",
+      cta: "Start free trial",
+      secondary: "See full pricing",
+    },
     how: {
       label: "How it works",
       title: "From booth to closed deal, in three steps",
@@ -149,6 +158,15 @@ const translations = {
       label: "早期用户评价",
       title: "深受贸易专业人士信赖",
       items: [] as { quote: string; initials: string; name: string; role: string }[],
+    },
+    pricingAnchor: {
+      label: "简单、透明的定价",
+      priceLead: "套餐低至",
+      price: "$19",
+      priceTail: "/月",
+      sub: "挽回一条线索即可让 ExpoLead OS 物超所值多年。14 天免费试用，无需信用卡。",
+      cta: "免费试用",
+      secondary: "查看完整定价",
     },
     how: {
       label: "工作原理",
@@ -431,12 +449,12 @@ export default function HomePage() {
       </section>
 
       {/* EXHIBITION STRIP — social proof (honest, association-by-design) */}
-      <section className="bg-white px-8 py-8 lg:px-16 border-t border-slate-100">
+      <section className="bg-white px-8 py-10 lg:px-16 border-t border-slate-100">
         <div className="mx-auto max-w-5xl text-center">
-          <p className="text-xs text-slate-500 mb-5">{t.expoStrip.label}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 mb-6">{t.expoStrip.label}</p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 lg:gap-x-12">
             {t.expoStrip.shows.map((show) => (
-              <span key={show} className="text-sm font-black tracking-tight text-slate-300 md:text-base">
+              <span key={show} className="text-base font-black tracking-tight text-slate-300 md:text-lg">
                 {show}
               </span>
             ))}
@@ -625,6 +643,26 @@ export default function HomePage() {
         <div className="min-h-[240px] bg-cover bg-left" style={{ backgroundImage: "url('/growth-meeting.jpg')" }} />
         <div className="flex items-center justify-center bg-white px-8 py-20 text-center">
           <h2 className="text-4xl font-black leading-[1.05] tracking-tight text-emerald-800 md:text-5xl lg:text-5xl">{t.growth}</h2>
+        </div>
+      </section>
+
+      {/* PRICING ANCHOR */}
+      <section className="bg-slate-900 px-8 py-16 lg:px-16">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-4">{t.pricingAnchor.label}</p>
+          <p className="text-3xl font-black tracking-tight text-white md:text-4xl">
+            {t.pricingAnchor.priceLead} <span className="text-emerald-400">{t.pricingAnchor.price}</span>{t.pricingAnchor.priceTail}
+          </p>
+          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-400">{t.pricingAnchor.sub}</p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+              {t.pricingAnchor.cta}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link href="/pricing" className="inline-flex items-center justify-center rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-300 hover:border-slate-500 hover:text-white transition-colors">
+              {t.pricingAnchor.secondary}
+            </Link>
+          </div>
         </div>
       </section>
 
