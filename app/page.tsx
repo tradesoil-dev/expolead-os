@@ -39,6 +39,15 @@ const translations = {
       next: "Next best action",
       nextSub: "Send quotation reminder to qualified buyer",
     },
+    expoStrip: {
+      label: "Built for the world's leading trade exhibitions",
+      shows: ["CHINACOAT", "ICIF", "CPHI", "CANTON FAIR", "GULFOOD"],
+    },
+    testimonials: {
+      label: "What early users say",
+      title: "Trusted by trade professionals",
+      items: [] as { quote: string; initials: string; name: string; role: string }[],
+    },
     how: {
       label: "How it works",
       title: "From booth to closed deal, in three steps",
@@ -131,6 +140,15 @@ const translations = {
       followup: "需要跟进",
       next: "下一步最佳行动",
       nextSub: "向已资质买家发送报价提醒",
+    },
+    expoStrip: {
+      label: "专为全球领先的贸易展会打造",
+      shows: ["CHINACOAT", "ICIF", "CPHI", "CANTON FAIR", "GULFOOD"],
+    },
+    testimonials: {
+      label: "早期用户评价",
+      title: "深受贸易专业人士信赖",
+      items: [] as { quote: string; initials: string; name: string; role: string }[],
     },
     how: {
       label: "工作原理",
@@ -411,6 +429,47 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* EXHIBITION STRIP — social proof (honest, association-by-design) */}
+      <section className="bg-white px-8 py-8 lg:px-16 border-t border-slate-100">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-xs text-slate-500 mb-5">{t.expoStrip.label}</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 lg:gap-x-12">
+            {t.expoStrip.shows.map((show) => (
+              <span key={show} className="text-sm font-black tracking-tight text-slate-300 md:text-base">
+                {show}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS — renders only when real quotes exist */}
+      {t.testimonials.items.length > 0 && (
+        <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center mb-10">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 mb-2">{t.testimonials.label}</p>
+              <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">{t.testimonials.title}</h2>
+            </div>
+            <div className="grid gap-5 md:grid-cols-3">
+              {t.testimonials.items.map((item, i) => (
+                <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6">
+                  <div className="flex gap-0.5 text-amber-400 mb-3 text-sm">★★★★★</div>
+                  <p className="text-sm leading-relaxed text-slate-700 italic mb-5">&ldquo;{item.quote}&rdquo;</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700 shrink-0">{item.initials}</div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">{item.name}</p>
+                      <p className="text-xs text-slate-500">{item.role}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* EXHIBITION REALITY — DONUT CHART */}
       <section className="bg-slate-50 px-8 py-14 lg:px-16 border-t border-slate-100" id="exhibition-reality">
