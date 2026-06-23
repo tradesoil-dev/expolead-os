@@ -93,12 +93,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-base font-bold text-slate-900 mb-2">11. Governing law</h2>
-            <p>These terms are governed by the laws of Singapore. Any disputes shall be subject to the exclusive jurisdiction of the courts of Singapore.</p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-bold text-slate-900 mb-2">12. Contact</h2>
+            <h2 className="text-base font-bold text-slate-900 mb-2">11. Contact</h2>
             <p>Questions about these terms? Email us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>.</p>
           </section>
 
