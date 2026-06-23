@@ -361,7 +361,7 @@ export default function HomePage() {
           </div>
 
           {/* Phone mockup — bottom right, overlapping */}
-          <div className="absolute -bottom-6 right-0 w-[110px]" style={{ zIndex: 10 }}>
+          <div className="absolute bottom-0 -right-8 w-[110px]" style={{ zIndex: 10 }}>
             <div className="rounded-[18px] border-[5px] border-slate-950 bg-white overflow-hidden shadow-2xl">
               {/* Phone nav */}
               <div className="bg-slate-800 px-2 py-1.5 flex items-center justify-between">
