@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -46,58 +46,111 @@ export default function ExhibitionsSearch({
   suppliers: Supplier[];
 }) {
   const [query, setQuery] = useState("");
-  const [deleting, setDeleting] = useState<string | null>(null);
+  const [rows, setRows] = useState<Exhibition[]>(exhibitions);
+  const [confirmTarget, setConfirmTarget] = useState<Exhibition | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const router = useRouter();
 
-  async function remove(e: React.MouseEvent, ex: Exhibition) {
+  // Keep local list in sync when the server re-sends data.
+  useEffect(() => { setRows(exhibitions); }, [exhibitions]);
+
+  function showToast(message: string, type: "success" | "error") {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  }
+
+  function askDelete(e: React.MouseEvent, ex: Exhibition) {
     e.preventDefault();
     e.stopPropagation();
-    if (!isSupabaseConfigured) return;
-    if (!window.confirm(`Delete "${ex.name}"? Your connections stay safe but will be unlinked from this show.`)) return;
-    setDeleting(ex.id);
+    setConfirmTarget(ex);
+  }
+
+  async function confirmDelete() {
+    if (!confirmTarget) return;
+    if (!isSupabaseConfigured) { setConfirmTarget(null); return; }
+    const ex = confirmTarget;
+    setDeleting(true);
     const { error } = await createClient().from("exhibitions").delete().eq("id", ex.id);
-    setDeleting(null);
-    if (!error) router.refresh();
+    setDeleting(false);
+    setConfirmTarget(null);
+    if (error) {
+      showToast(error.message || "Could not delete exhibition.", "error");
+      return;
+    }
+    setRows((prev) => prev.filter((r) => r.id !== ex.id)); // optimistic removal
+    showToast(`"${ex.name}" deleted.`, "success");
+    router.refresh();
   }
 
   const statsFor = (exId: string | null) => {
     const related = suppliers.filter((s) => s.exhibition_id === exId);
     const visited = related.filter((s) => s.visited).length;
     const remaining = related.filter((s) => !s.visited).length;
-
-    return {
-      total: related.length,
-      visited,
-      remaining,
-    };
+    return { total: related.length, visited, remaining };
   };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return exhibitions;
-
-    return exhibitions.filter((ex) => {
+    if (!q) return rows;
+    return rows.filter((ex) => {
       const name = ex.name?.toLowerCase() ?? "";
       const location = ex.location?.toLowerCase() ?? "";
       return name.includes(q) || location.includes(q);
     });
-  }, [exhibitions, query]);
+  }, [rows, query]);
 
-  if (exhibitions.length === 0) {
+  if (rows.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-ink-200 bg-ink-50/50 p-8 text-center">
-        <p className="text-base font-semibold text-ink-700">Start by adding the shows you attend</p>
-        <p className="mx-auto mt-2 max-w-md text-sm text-ink-500">
-          Click <span className="font-semibold text-ink-700">+ New exhibition</span> above and search the library
-          for a show (e.g. SIAL, CHINACOAT), or add your own. Your connections and opportunities are then
-          organized under each show.
-        </p>
-      </div>
+      <>
+        <Toast toast={toast} />
+        <div className="rounded-2xl border border-dashed border-ink-200 bg-ink-50/50 p-8 text-center">
+          <p className="text-base font-semibold text-ink-700">Start by adding the shows you attend</p>
+          <p className="mx-auto mt-2 max-w-md text-sm text-ink-500">
+            Click <span className="font-semibold text-ink-700">+ New exhibition</span> above and search the library
+            for a show (e.g. SIAL, CHINACOAT), or add your own. Your connections and opportunities are then
+            organized under each show.
+          </p>
+        </div>
+      </>
     );
   }
 
   return (
     <div className="space-y-4">
+      <Toast toast={toast} />
+
+      {/* Delete confirmation dialog */}
+      {confirmTarget && (
+        <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-rose-50">
+              <svg className="h-5 w-5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </div>
+            <h3 className="text-center text-base font-bold text-ink-900">Delete &ldquo;{confirmTarget.name}&rdquo;?</h3>
+            <p className="mt-2 text-center text-sm text-ink-500">
+              Your connections stay safe, but they&rsquo;ll be unlinked from this show. This can&rsquo;t be undone.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setConfirmTarget(null)}
+                disabled={deleting}
+                className="flex-1 rounded-lg border border-ink-200 px-4 py-2.5 text-sm font-semibold text-ink-600 hover:bg-ink-50 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting}
+                className="flex-1 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition-colors disabled:opacity-50"
+              >
+                {deleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <input
         type="text"
         value={query}
@@ -119,11 +172,10 @@ export default function ExhibitionsSearch({
               className={`relative block rounded-2xl border border-ink-200 bg-white p-5 shadow-card hover:border-emerald-200 hover:shadow-lg transition-all ${status.dim ? "opacity-80" : ""}`}
             >
               <button
-                onClick={(e) => remove(e, ex)}
-                disabled={deleting === ex.id}
+                onClick={(e) => askDelete(e, ex)}
                 aria-label={`Delete ${ex.name}`}
                 title="Delete exhibition"
-                className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-lg border border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:border-rose-200 transition-colors disabled:opacity-50"
+                className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-lg border border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:border-rose-200 transition-colors"
               >
                 <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
               </button>
@@ -168,6 +220,20 @@ export default function ExhibitionsSearch({
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+function Toast({ toast }: { toast: { message: string; type: "success" | "error" } | null }) {
+  if (!toast) return null;
+  return (
+    <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3 rounded-xl px-5 py-3.5 shadow-lg text-sm font-medium w-max max-w-[calc(100vw-2rem)] ${toast.type === "success" ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"}`}>
+      {toast.type === "success" ? (
+        <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      ) : (
+        <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      )}
+      {toast.message}
     </div>
   );
 }
