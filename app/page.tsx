@@ -227,23 +227,23 @@ export default function HomePage() {
         </div>
 
         <div className="anim-nav-links flex items-center gap-4">
-          <Link href="/pricing" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+          <Link href="/pricing" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
             {t.nav.pricing}
           </Link>
-          <Link href="/login" className="hidden sm:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
+          <Link href="/login" className="hidden lg:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
             {t.nav.login}
           </Link>
 
           {/* Language toggle */}
           <button
             onClick={() => setLang(lang === "en" ? "zh" : "en")}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-1 rounded-md border border-slate-600 px-2 py-1.5 text-xs font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors shrink-0"
           >
-            <Globe2 className="h-3.5 w-3.5" />
+            <Globe2 className="h-3 w-3" />
             {lang === "en" ? "中文" : "EN"}
           </button>
 
-          <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+          <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">
             {t.nav.trial}
           </Link>
         </div>
