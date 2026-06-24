@@ -1,0 +1,199 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import type { ExhibitionLibraryItem } from "@/lib/types";
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function fmt(start: string | null, end: string | null): string {
+  if (!start) return "—";
+  const s = new Date(start);
+  const e = end ? new Date(end) : s;
+  const sMon = MONTHS[s.getUTCMonth()];
+  const eMon = MONTHS[e.getUTCMonth()];
+  const year = e.getUTCFullYear();
+  return sMon === eMon
+    ? `${sMon} ${s.getUTCDate()}–${e.getUTCDate()}, ${year}`
+    : `${sMon} ${s.getUTCDate()} – ${eMon} ${e.getUTCDate()}, ${year}`;
+}
+
+const EMPTY = { name: "", location: "", start_date: "", end_date: "", sector: "" };
+
+export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibraryItem[] }) {
+  const router = useRouter();
+  const [rows, setRows] = useState<ExhibitionLibraryItem[]>(shows);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [f, setF] = useState(EMPTY);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  useEffect(() => { setRows(shows); }, [shows]);
+
+  const sectors = useMemo(() => {
+    const set = new Set<string>();
+    rows.forEach((r) => { if (r.sector) set.add(r.sector); });
+    return Array.from(set).sort();
+  }, [rows]);
+
+  function notify(message: string, type: "success" | "error") {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  }
+
+  function set<K extends keyof typeof f>(k: K, v: string) {
+    setF((p) => ({ ...p, [k]: v }));
+  }
+
+  function openAdd() {
+    setEditingId(null);
+    setF(EMPTY);
+    setShowForm(true);
+  }
+
+  function openEdit(r: ExhibitionLibraryItem) {
+    setEditingId(r.id);
+    setF({
+      name: r.name,
+      location: r.location ?? "",
+      start_date: r.start_date ?? "",
+      end_date: r.end_date ?? "",
+      sector: r.sector ?? "",
+    });
+    setShowForm(true);
+  }
+
+  function cancel() {
+    setShowForm(false);
+    setEditingId(null);
+    setF(EMPTY);
+  }
+
+  async function save() {
+    if (!f.name.trim()) { notify("Name is required.", "error"); return; }
+    setSaving(true);
+    const supabase = createClient();
+    const payload = {
+      name: f.name.trim(),
+      location: f.location || null,
+      start_date: f.start_date || null,
+      end_date: f.end_date || null,
+      sector: f.sector || null,
+    };
+    if (editingId) {
+      const { data, error } = await supabase.from("exhibition_library").update(payload).eq("id", editingId).select().single();
+      setSaving(false);
+      if (error || !data) { notify(error?.message || "Update failed.", "error"); return; }
+      setRows((p) => p.map((r) => (r.id === editingId ? (data as ExhibitionLibraryItem) : r)));
+      notify("Exhibition updated.", "success");
+    } else {
+      const { data, error } = await supabase.from("exhibition_library").insert(payload).select().single();
+      setSaving(false);
+      if (error || !data) { notify(error?.message || "Could not add. Are you signed in as admin?", "error"); return; }
+      setRows((p) => [...p, data as ExhibitionLibraryItem]);
+      notify("Exhibition added.", "success");
+    }
+    cancel();
+    router.refresh();
+  }
+
+  async function remove(r: ExhibitionLibraryItem) {
+    if (!window.confirm(`Delete "${r.name}" from the library? It will disappear from /trade-shows and the picker.`)) return;
+    const { data, error } = await createClient().from("exhibition_library").delete().eq("id", r.id).select();
+    if (error) { notify(error.message, "error"); return; }
+    if (!data || data.length === 0) { notify("Couldn't delete — admin permission required.", "error"); return; }
+    setRows((p) => p.filter((x) => x.id !== r.id));
+    notify(`"${r.name}" removed.`, "success");
+    router.refresh();
+  }
+
+  const inp = "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500";
+
+  return (
+    <div className="space-y-5">
+      {toast && (
+        <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3 rounded-xl px-5 py-3.5 shadow-lg text-sm font-medium w-max max-w-[calc(100vw-2rem)] ${toast.type === "success" ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"}`}>
+          {toast.message}
+        </div>
+      )}
+
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-slate-900">Exhibition Library</h1>
+            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">Admin only</span>
+          </div>
+          <p className="mt-1 text-sm text-slate-500">Shows here appear on /trade-shows and in every user&rsquo;s library picker.</p>
+        </div>
+        {!showForm && (
+          <button onClick={openAdd} className="shrink-0 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+            + Add exhibition
+          </button>
+        )}
+      </div>
+
+      {showForm && (
+        <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-sm">
+          <p className="mb-3 text-sm font-bold text-slate-900">{editingId ? "Edit exhibition" : "Add exhibition"}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-semibold text-slate-600">Name</label>
+              <input className={inp} value={f.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. Gulfood 2027" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-semibold text-slate-600">Location</label>
+              <input className={inp} value={f.location} onChange={(e) => set("location", e.target.value)} placeholder="Dubai World Trade Centre, Dubai, UAE" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-slate-600">Start date</label>
+              <input type="date" className={inp} value={f.start_date} onChange={(e) => set("start_date", e.target.value)} />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-slate-600">End date</label>
+              <input type="date" className={inp} value={f.end_date} onChange={(e) => set("end_date", e.target.value)} />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-semibold text-slate-600">Sector</label>
+              <input className={inp} list="sector-options" value={f.sector} onChange={(e) => set("sector", e.target.value)} placeholder="Pick existing or type a new one" />
+              <datalist id="sector-options">
+                {sectors.map((s) => <option key={s} value={s} />)}
+              </datalist>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <button onClick={save} disabled={saving} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60">
+              {saving ? "Saving…" : "Save"}
+            </button>
+            <button onClick={cancel} className="text-sm font-medium text-slate-500 hover:text-slate-900">Cancel</button>
+          </div>
+        </div>
+      )}
+
+      <div className="overflow-hidden rounded-xl border border-ink-200 bg-white">
+        <div className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-100 bg-slate-50 px-4 py-2.5">
+          {["Name", "Location", "Dates", "Sector", ""].map((h, i) => (
+            <span key={i} className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{h}</span>
+          ))}
+        </div>
+        {rows.length === 0 ? (
+          <p className="px-4 py-6 text-center text-sm text-slate-400">No exhibitions yet. Add the first one.</p>
+        ) : (
+          rows.map((r) => (
+            <div key={r.id} className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-50 px-4 py-3 last:border-0 items-center">
+              <span className="text-sm font-semibold text-slate-900">{r.name}</span>
+              <span className="text-xs text-slate-500">{r.location ?? "—"}</span>
+              <span className="text-xs text-slate-500">{fmt(r.start_date, r.end_date)}</span>
+              <span>{r.sector && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{r.sector}</span>}</span>
+              <span className="flex justify-end gap-3">
+                <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
+                <button onClick={() => remove(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}

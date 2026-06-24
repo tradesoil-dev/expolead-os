@@ -16,6 +16,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
   const [avatarPosY, setAvatarPosY] = useState(50);
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [isExpired, setIsExpired] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -32,7 +33,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
       if (!user) return;
       supabase
         .from("profiles")
-        .select("full_name, company_name, avatar_url, avatar_position_y, trial_ends_at, subscription_status, early_access")
+        .select("full_name, company_name, avatar_url, avatar_position_y, trial_ends_at, subscription_status, early_access, is_admin")
         .eq("id", user.id)
         .single()
         .then(({ data }) => {
@@ -41,6 +42,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
             setCompanyName(data.company_name || "");
             setAvatarUrl(data.avatar_url || null);
             setAvatarPosY(data.avatar_position_y ?? 50);
+            setIsAdmin(!!data.is_admin);
             if (!data.early_access && data.subscription_status !== "active" && data.trial_ends_at) {
               const days = Math.ceil(
                 (new Date(data.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
@@ -136,6 +138,27 @@ export default function AccountMenu({ email }: { email: string | null }) {
               My Profile
             </Link>
           </div>
+
+          {/* Admin (only for admins) */}
+          {isAdmin && (
+            <div className="py-2 border-b border-ink-100 bg-emerald-50/60">
+              <p className="px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600">
+                Admin
+              </p>
+              <Link
+                href="/admin/library"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-100 transition-colors"
+              >
+                <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M4 5a2 2 0 012-2h13a1 1 0 011 1v15a1 1 0 01-1 1H6a2 2 0 01-2-2V5z" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8 3v16" strokeLinecap="round" />
+                </svg>
+                Exhibition Library
+                <span className="ml-auto rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">Admin</span>
+              </Link>
+            </div>
+          )}
 
           {/* Trial status */}
           {daysLeft !== null && (
