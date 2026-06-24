@@ -6,10 +6,11 @@ import { usePathname } from "next/navigation";
 import AccountMenu from "@/components/AccountMenu";
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/suppliers", label: "Connections" },
-  { href: "/exhibitions", label: "Exhibitions" },
-  { href: "/opportunities", label: "Opportunities" },
+  { href: "/dashboard", label: "Dashboard", soon: false },
+  { href: "/suppliers", label: "Connections", soon: false },
+  { href: "/exhibitions", label: "Exhibitions", soon: false },
+  { href: "/opportunities", label: "Opportunities", soon: false },
+  { href: "/reports", label: "Reports", soon: true },
 ];
 
 export default function MobileNav({ email }: { email?: string | null }) {
@@ -82,13 +83,18 @@ export default function MobileNav({ email }: { email?: string | null }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className={`block rounded-lg px-3 py-2 ${
+                  className={`flex items-center justify-between rounded-lg px-3 py-2 ${
                     isActive(item.href)
                       ? "bg-emerald-600 text-white"
                       : "hover:bg-slate-100"
                   }`}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {item.soon && (
+                    <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-slate-500">
+                      Soon
+                    </span>
+                  )}
                 </Link>
               ))}
             </nav>

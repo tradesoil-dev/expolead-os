@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: GridIcon },
-  { href: "/suppliers", label: "Connections", icon: TableIcon },
-  { href: "/exhibitions", label: "Exhibitions", icon: CalendarIcon },
-  { href: "/opportunities", label: "Opportunities", icon: GridIcon },
+  { href: "/dashboard", label: "Dashboard", icon: GridIcon, soon: false },
+  { href: "/suppliers", label: "Connections", icon: TableIcon, soon: false },
+  { href: "/exhibitions", label: "Exhibitions", icon: CalendarIcon, soon: false },
+  { href: "/opportunities", label: "Opportunities", icon: GridIcon, soon: false },
+  { href: "/reports", label: "Reports", icon: ChartIcon, soon: true },
 ];
 
 export default function Sidebar({ email: _email }: { email: string | null }) {
@@ -28,7 +29,7 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {NAV.map(({ href, label, icon: Icon }) => {
+        {NAV.map(({ href, label, icon: Icon, soon }) => {
           const active =
             href === "/dashboard"
               ? pathname === href
@@ -46,6 +47,11 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
             >
               <Icon className="h-4 w-4" />
               {label}
+              {soon && (
+                <span className="ml-auto rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-slate-300">
+                  Soon
+                </span>
+              )}
             </Link>
           );
         })}
@@ -79,6 +85,15 @@ function CalendarIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <rect x="3" y="4" width="18" height="17" rx="2" />
       <path d="M3 9h18M8 2v4M16 2v4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ChartIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 3v18h18" />
+      <path d="M7 14l3-3 3 3 4-5" />
     </svg>
   );
 }
