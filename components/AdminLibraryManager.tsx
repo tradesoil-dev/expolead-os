@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ExhibitionLibraryItem } from "@/lib/types";
 
@@ -22,13 +21,14 @@ function fmt(start: string | null, end: string | null): string {
 const EMPTY = { name: "", location: "", start_date: "", end_date: "", sector: "" };
 
 export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibraryItem[] }) {
-  const router = useRouter();
   const [rows, setRows] = useState<ExhibitionLibraryItem[]>(shows);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [f, setF] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<ExhibitionLibraryItem | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => { setRows(shows); }, [shows]);
 
@@ -96,17 +96,19 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
       notify("Exhibition added.", "success");
     }
     cancel();
-    router.refresh();
   }
 
-  async function remove(r: ExhibitionLibraryItem) {
-    if (!window.confirm(`Delete "${r.name}" from the library? It will disappear from /trade-shows and the picker.`)) return;
+  async function confirmDelete() {
+    if (!confirmTarget) return;
+    const r = confirmTarget;
+    setDeleting(true);
     const { data, error } = await createClient().from("exhibition_library").delete().eq("id", r.id).select();
+    setDeleting(false);
+    setConfirmTarget(null);
     if (error) { notify(error.message, "error"); return; }
     if (!data || data.length === 0) { notify("Couldn't delete — admin permission required.", "error"); return; }
     setRows((p) => p.filter((x) => x.id !== r.id));
     notify(`"${r.name}" removed.`, "success");
-    router.refresh();
   }
 
   const inp = "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500";
@@ -116,6 +118,28 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
       {toast && (
         <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3 rounded-xl px-5 py-3.5 shadow-lg text-sm font-medium w-max max-w-[calc(100vw-2rem)] ${toast.type === "success" ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"}`}>
           {toast.message}
+        </div>
+      )}
+
+      {confirmTarget && (
+        <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-rose-50">
+              <svg className="h-5 w-5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </div>
+            <h3 className="text-center text-base font-bold text-slate-900">Delete &ldquo;{confirmTarget.name}&rdquo;?</h3>
+            <p className="mt-2 text-center text-sm text-slate-500">
+              It will disappear from /trade-shows and every user&rsquo;s library picker. This can&rsquo;t be undone.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button onClick={() => setConfirmTarget(null)} disabled={deleting} className="flex-1 rounded-lg border border-ink-200 px-4 py-2.5 text-sm font-semibold text-ink-600 hover:bg-ink-50 transition-colors disabled:opacity-50">
+                Cancel
+              </button>
+              <button onClick={confirmDelete} disabled={deleting} className="flex-1 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition-colors disabled:opacity-50">
+                {deleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -188,7 +212,7 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
               <span>{r.sector && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{r.sector}</span>}</span>
               <span className="flex justify-end gap-3">
                 <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
-                <button onClick={() => remove(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
+                <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
               </span>
             </div>
           ))
