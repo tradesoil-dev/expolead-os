@@ -169,7 +169,7 @@ export default function AddExhibitionForm({
         <label className="text-sm text-ink-500">End<input type="date" className={inp} value={f.end_date} onChange={(e) => set("end_date", e.target.value)} /></label>
       </div>
       <div className="flex items-center gap-2">
-        <button onClick={save} disabled={saving} className="rounded-lg bg-ink-900 px-3.5 py-2 text-sm font-medium text-white hover:bg-ink-700 disabled:opacity-60">
+        <button onClick={save} disabled={saving} className="rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60">
           {saving ? "Saving…" : "Save exhibition"}
         </button>
         <button onClick={() => { reset(); setOpen(false); }} className="text-sm text-ink-500 hover:text-ink-900">Cancel</button>
