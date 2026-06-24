@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -12,6 +12,26 @@ import {
   FlaskConical,
 } from "lucide-react";
 import SplashScreen from "@/components/SplashScreen";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+
+const MARQUEE_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+type MarqueeShow = { mon: string; day: string; year: string; name: string; loc: string; sector: string };
+
+function toMarqueeCard(ex: { name: string; location: string | null; start_date: string | null; end_date: string | null; sector: string | null }): MarqueeShow | null {
+  if (!ex.start_date) return null;
+  const s = new Date(ex.start_date);
+  const e = ex.end_date ? new Date(ex.end_date) : s;
+  return {
+    mon: MARQUEE_MONTHS[s.getUTCMonth()],
+    day: `${s.getUTCDate()}–${e.getUTCDate()}`,
+    year: String(e.getUTCFullYear()),
+    name: ex.name,
+    loc: ex.location ?? "",
+    sector: ex.sector ?? "",
+  };
+}
 
 const translations = {
   en: {
@@ -268,7 +288,23 @@ const mockupItems = [
 export default function HomePage() {
   const [lang, setLang] = useState<"en" | "zh">("en");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [marqueeShows, setMarqueeShows] = useState<MarqueeShow[]>(upcomingShows);
   const t = translations[lang];
+
+  // Pull the live exhibition library so the marquee reflects what admins add.
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    createClient()
+      .from("exhibition_library")
+      .select("name, location, start_date, end_date, sector")
+      .order("start_date", { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length) {
+          const cards = data.map(toMarqueeCard).filter((c): c is MarqueeShow => c !== null);
+          if (cards.length) setMarqueeShows(cards);
+        }
+      });
+  }, []);
 
   return (
     <main className="min-h-screen bg-white text-slate-950">
@@ -682,7 +718,7 @@ export default function HomePage() {
           }}
         >
           <div className="expo-track">
-            {[...upcomingShows, ...upcomingShows].map((s, i) => (
+            {[...marqueeShows, ...marqueeShows].map((s, i) => (
               <div key={i} className="w-[180px] shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="mb-1.5 flex items-baseline gap-1.5">
                   <span className="text-[11px] font-bold uppercase text-amber-500">{s.mon}</span>
