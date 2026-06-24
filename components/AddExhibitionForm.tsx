@@ -105,7 +105,7 @@ export default function AddExhibitionForm({
     <div className="space-y-3">
       <button
         onClick={() => { reset(); setOpen(false); }}
-        className="inline-flex items-center gap-1 text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors"
+        className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
       >
         ← Back to exhibitions
       </button>
