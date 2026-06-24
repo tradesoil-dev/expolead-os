@@ -102,14 +102,15 @@ export default function AddExhibitionForm({
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 items-start">
-    <div className="w-full max-w-xl rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-3">
+    <div className="space-y-3">
       <button
         onClick={() => { reset(); setOpen(false); }}
         className="inline-flex items-center gap-1 text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors"
       >
         ← Back to exhibitions
       </button>
+      <div className="flex flex-col lg:flex-row gap-4 items-start">
+    <div className="w-full max-w-xl rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-3">
       {error && <p className="text-sm text-rose-700">{error}</p>}
 
       {/* Library search — pick a known show to pre-fill the form */}
@@ -192,6 +193,7 @@ export default function AddExhibitionForm({
           <p className="text-xs leading-relaxed text-emerald-800">Save it — then add your connections and opportunities under that show.</p>
         </div>
       </div>
+    </div>
     </div>
     </div>
   );
