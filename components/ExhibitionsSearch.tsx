@@ -71,11 +71,22 @@ export default function ExhibitionsSearch({
     if (!isSupabaseConfigured) { setConfirmTarget(null); return; }
     const ex = confirmTarget;
     setDeleting(true);
-    const { error } = await createClient().from("exhibitions").delete().eq("id", ex.id);
+    // .select() returns the rows actually deleted — lets us confirm it really happened
+    // instead of falsely reporting success when RLS removes 0 rows.
+    const { data, error } = await createClient()
+      .from("exhibitions")
+      .delete()
+      .eq("id", ex.id)
+      .select();
     setDeleting(false);
     setConfirmTarget(null);
     if (error) {
       showToast(error.message || "Could not delete exhibition.", "error");
+      return;
+    }
+    if (!data || data.length === 0) {
+      showToast("Couldn't delete this exhibition — it may already be removed, or you don't have permission.", "error");
+      router.refresh();
       return;
     }
     setRows((prev) => prev.filter((r) => r.id !== ex.id)); // optimistic removal
