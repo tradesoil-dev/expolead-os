@@ -195,29 +195,54 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-ink-200 bg-white">
-        <div className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-100 bg-slate-50 px-4 py-2.5">
-          {["Name", "Location", "Dates", "Sector", ""].map((h, i) => (
-            <span key={i} className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{h}</span>
-          ))}
+      {rows.length === 0 ? (
+        <div className="rounded-xl border border-ink-200 bg-white px-4 py-6 text-center text-sm text-slate-400">
+          No exhibitions yet. Add the first one.
         </div>
-        {rows.length === 0 ? (
-          <p className="px-4 py-6 text-center text-sm text-slate-400">No exhibitions yet. Add the first one.</p>
-        ) : (
-          rows.map((r) => (
-            <div key={r.id} className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-50 px-4 py-3 last:border-0 items-center">
-              <span className="text-sm font-semibold text-slate-900">{r.name}</span>
-              <span className="text-xs text-slate-500">{r.location ?? "—"}</span>
-              <span className="text-xs text-slate-500">{fmt(r.start_date, r.end_date)}</span>
-              <span>{r.sector && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{r.sector}</span>}</span>
-              <span className="flex justify-end gap-3">
-                <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
-                <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
-              </span>
+      ) : (
+        <>
+          {/* Desktop table */}
+          <div className="hidden overflow-hidden rounded-xl border border-ink-200 bg-white lg:block">
+            <div className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-100 bg-slate-50 px-4 py-2.5">
+              {["Name", "Location", "Dates", "Sector", ""].map((h, i) => (
+                <span key={i} className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{h}</span>
+              ))}
             </div>
-          ))
-        )}
-      </div>
+            {rows.map((r) => (
+              <div key={r.id} className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-50 px-4 py-3 last:border-0 items-center">
+                <span className="text-sm font-semibold text-slate-900">{r.name}</span>
+                <span className="text-xs text-slate-500">{r.location ?? "—"}</span>
+                <span className="text-xs text-slate-500">{fmt(r.start_date, r.end_date)}</span>
+                <span>{r.sector && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{r.sector}</span>}</span>
+                <span className="flex justify-end gap-3">
+                  <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
+                  <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile cards */}
+          <div className="flex flex-col gap-3 lg:hidden">
+            {rows.map((r) => (
+              <div key={r.id} className="rounded-xl border border-ink-200 bg-white p-4">
+                <div className="mb-1.5 flex items-start justify-between gap-2">
+                  <span className="text-[15px] font-bold text-slate-900">{r.name}</span>
+                  {r.sector && (
+                    <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-semibold text-emerald-700">{r.sector}</span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500">{r.location ?? "—"}</p>
+                <p className="mt-0.5 text-xs font-semibold text-slate-600">{fmt(r.start_date, r.end_date)}</p>
+                <div className="mt-2.5 flex gap-4 border-t border-ink-50 pt-2.5">
+                  <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
+                  <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
