@@ -472,11 +472,15 @@ export default function HomePage() {
       <section className="bg-white px-8 py-10 lg:px-16 border-t border-slate-100">
         <div className="mx-auto max-w-5xl text-center">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 mb-6">{t.expoStrip.label}</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 lg:gap-x-12">
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
             {t.expoStrip.shows.map((show) => (
-              <span key={show} className="text-base font-black tracking-tight text-slate-300 md:text-lg">
+              <Link
+                key={show}
+                href="/trade-shows"
+                className="rounded-full bg-slate-100 px-5 py-2 text-sm font-bold tracking-tight text-slate-600 hover:bg-slate-200 hover:text-slate-800 transition-colors md:text-[15px]"
+              >
                 {show}
-              </span>
+              </Link>
             ))}
           </div>
         </div>
