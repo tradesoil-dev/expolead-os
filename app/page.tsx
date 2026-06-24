@@ -94,6 +94,12 @@ const translations = {
       ],
     },
     growth: "Driving revenue growth",
+    upcoming: {
+      label: "Plan your year",
+      title: "The shows you attend, ready on day one",
+      sub: "ExpoLead OS comes pre-loaded with major trade exhibitions — correct dates and venues already filled in.",
+      cta: "Browse upcoming shows",
+    },
     security: {
       label: "Security & trust",
       title: "Security, control and your data",
@@ -205,6 +211,12 @@ const translations = {
       ],
     },
     growth: "驱动营收增长",
+    upcoming: {
+      label: "规划您的全年",
+      title: "您参加的展会，开通即用",
+      sub: "ExpoLead OS 预装了主要贸易展会，日期和地点已为您填好。",
+      cta: "浏览即将举行的展会",
+    },
     security: {
       label: "安全与信任",
       title: "安全、控制与您的数据",
@@ -237,6 +249,14 @@ const translations = {
     },
   },
 };
+
+const upcomingShows = [
+  { mon: "Sep", day: "3–5", year: "2026", name: "SIAL China", loc: "Guangzhou, China", sector: "Food & Beverage" },
+  { mon: "Sep", day: "15–17", year: "2026", name: "ICIF China", loc: "Shanghai, China", sector: "Fertilizer & Agrochem" },
+  { mon: "Nov", day: "3–5", year: "2026", name: "Private Label ME", loc: "Dubai, UAE", sector: "Private Label / FMCG" },
+  { mon: "Nov", day: "11–13", year: "2026", name: "CHINACOAT", loc: "Guangzhou, China", sector: "Coatings & Chemicals" },
+  { mon: "Oct", day: "9–13", year: "2027", name: "Anuga", loc: "Cologne, Germany", sector: "Food & Beverage" },
+];
 
 const mockupItems = [
   { items: ["KENP Korea", "Hanwha Bio", "SK Eco"], icon: Users },
@@ -638,11 +658,48 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* GROWTH SECTION */}
-      <section className="grid min-h-[300px] bg-white lg:grid-cols-2">
-        <div className="min-h-[240px] bg-cover bg-left" style={{ backgroundImage: "url('/growth-meeting.jpg')" }} />
-        <div className="flex items-center justify-center bg-white px-8 py-20 text-center">
-          <h2 className="text-4xl font-black leading-[1.05] tracking-tight text-emerald-800 md:text-5xl lg:text-5xl">{t.growth}</h2>
+      {/* UPCOMING EXHIBITIONS — scrolling marquee */}
+      <section className="bg-white py-14 border-t border-slate-100 overflow-hidden">
+        <style>{`
+          @keyframes expoScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+          .expo-track { display: flex; gap: 12px; width: max-content; animation: expoScroll 30s linear infinite; }
+          .expo-track:hover { animation-play-state: paused; }
+        `}</style>
+        <div className="mb-8 px-8 text-center lg:px-16">
+          <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.upcoming.label}</p>
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">{t.upcoming.title}</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-slate-500">{t.upcoming.sub}</p>
+        </div>
+        <div
+          className="relative"
+          style={{
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+            maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+          }}
+        >
+          <div className="expo-track">
+            {[...upcomingShows, ...upcomingShows].map((s, i) => (
+              <div key={i} className="w-[180px] shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="mb-1.5 flex items-baseline gap-1.5">
+                  <span className="text-[11px] font-bold uppercase text-amber-500">{s.mon}</span>
+                  <span className="text-base font-black text-slate-900">{s.day}</span>
+                  <span className="text-[11px] text-slate-400">{s.year}</span>
+                </div>
+                <p className="text-[13px] font-bold text-slate-900">{s.name}</p>
+                <p className="mb-2 text-[11px] text-slate-400">{s.loc}</p>
+                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-semibold text-emerald-700">{s.sector}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mt-8 px-8 text-center">
+          <Link
+            href="/trade-shows"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
+          >
+            {t.upcoming.cta}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
