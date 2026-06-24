@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import {
@@ -122,7 +123,12 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+    <div className="space-y-3">
+      <Link href="/suppliers" className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+        ← Back to connections
+      </Link>
+      <div className="flex flex-col lg:flex-row gap-4 items-start">
+    <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-6">
       {error && (
         <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700 ring-1 ring-inset ring-rose-600/20">
           {error}
@@ -276,7 +282,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-ink-700 transition-colors disabled:opacity-60"
+          className="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save connection"}
         </button>
@@ -290,6 +296,27 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </button>
       </div>
     </form>
+
+    {/* Guide note — coaches first-time users */}
+    <div className="w-full max-w-sm rounded-xl border border-emerald-100 bg-emerald-50 p-5">
+      <p className="text-sm font-bold text-emerald-900 mb-3">New here? Capturing a connection</p>
+      <div className="space-y-2.5">
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">1</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Capture the company you met — name, country, and what they trade. Tick &ldquo;target&rdquo; if it&rsquo;s one you plan to visit.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">2</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Classify &amp; prioritise — supplier or buyer, priority, and a follow-up date so no lead slips after the show.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">3</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Add the contact person and notes from your conversation, then save — it&rsquo;s filed under the right exhibition.</p>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
   );
 }
 
