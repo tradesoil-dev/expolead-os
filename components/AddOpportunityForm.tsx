@@ -106,7 +106,15 @@ booth: "",
     "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
 
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
+    <div className="space-y-3">
+      <button
+        onClick={() => setOpen(false)}
+        className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
+      >
+        ← Back to opportunities
+      </button>
+      <div className="flex flex-col lg:flex-row gap-4 items-start">
+    <div className="w-full max-w-2xl rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
       <h2 className="text-sm font-semibold">New Opportunity</h2>
 
       <input
@@ -202,6 +210,27 @@ booth: "",
           Cancel
         </button>
       </div>
+    </div>
+
+    {/* Guide note — coaches first-time users */}
+    <div className="w-full max-w-sm rounded-xl border border-emerald-100 bg-emerald-50 p-5">
+      <p className="text-sm font-bold text-emerald-900 mb-3">New here? Tracking an opportunity</p>
+      <div className="space-y-2.5">
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">1</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Name the opportunity and product — e.g. &ldquo;UCO Korea Program&rdquo;, Used Cooking Oil.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">2</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Add quantity and destination market, and link the exhibition where it started.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">3</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Set priority and stage, add notes (target price, buyer expectations), then save.</p>
+        </div>
+      </div>
+    </div>
+    </div>
     </div>
   );
 }
