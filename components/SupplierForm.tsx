@@ -62,6 +62,11 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
       return;
     }
 
+    if (!contact.full_name.trim()) {
+      setError("Contact name is required.");
+      return;
+    }
+
     if (!form.company_name.trim()) {
       setError("Company name is required.");
       return;
@@ -134,6 +139,34 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           {error}
         </p>
       )}
+
+      <Section title="Primary contact">
+        <Grid>
+          <Field label="Full name *">
+            <Input value={contact.full_name} onChange={(v) => setC("full_name", v)} placeholder="Li Wei" />
+          </Field>
+
+          <Field label="Position">
+            <Input value={contact.position} onChange={(v) => setC("position", v)} placeholder="Sales Manager" />
+          </Field>
+
+          <Field label="Email">
+            <Input type="email" value={contact.email} onChange={(v) => setC("email", v)} placeholder="li@company.com" />
+          </Field>
+
+          <Field label="Phone">
+            <Input value={contact.phone} onChange={(v) => setC("phone", v)} />
+          </Field>
+
+          <Field label="WhatsApp">
+            <Input value={contact.whatsapp} onChange={(v) => setC("whatsapp", v)} />
+          </Field>
+
+          <Field label="WeChat">
+            <Input value={contact.wechat} onChange={(v) => setC("wechat", v)} />
+          </Field>
+        </Grid>
+      </Section>
 
       <Section title="Company">
         <Grid>
@@ -240,34 +273,6 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </Grid>
       </Section>
 
-      <Section title="Primary contact (optional)">
-        <Grid>
-          <Field label="Full name">
-            <Input value={contact.full_name} onChange={(v) => setC("full_name", v)} placeholder="Li Wei" />
-          </Field>
-
-          <Field label="Position">
-            <Input value={contact.position} onChange={(v) => setC("position", v)} placeholder="Sales Manager" />
-          </Field>
-
-          <Field label="Email">
-            <Input type="email" value={contact.email} onChange={(v) => setC("email", v)} placeholder="li@company.com" />
-          </Field>
-
-          <Field label="Phone">
-            <Input value={contact.phone} onChange={(v) => setC("phone", v)} />
-          </Field>
-
-          <Field label="WhatsApp">
-            <Input value={contact.whatsapp} onChange={(v) => setC("whatsapp", v)} />
-          </Field>
-
-          <Field label="WeChat">
-            <Input value={contact.wechat} onChange={(v) => setC("wechat", v)} />
-          </Field>
-        </Grid>
-      </Section>
-
       <Section title="Notes">
         <textarea
           value={form.notes}
@@ -303,15 +308,15 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
       <div className="space-y-2.5">
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">1</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Capture the company you met — name, country, and what they trade. Tick &ldquo;target&rdquo; if it&rsquo;s one you plan to visit.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Start with the person you met — their name (required), role, and how to reach them: email, WhatsApp or WeChat.</p>
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">2</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Classify &amp; prioritise — supplier or buyer, priority, and a follow-up date so no lead slips after the show.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Add their company — name, country and what they trade. Tick &ldquo;target&rdquo; if it&rsquo;s one you plan to visit.</p>
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">3</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Add the contact person and notes from your conversation, then save — it&rsquo;s filed under the right exhibition.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Classify, set a follow-up date, link the exhibition and add notes — then save.</p>
         </div>
       </div>
     </div>
