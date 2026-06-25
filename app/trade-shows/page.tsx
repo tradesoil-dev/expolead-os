@@ -15,7 +15,7 @@ export default async function TradeShowsPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-white via-emerald-50/40 to-sky-50/40 text-slate-950">
       {/* HEADER */}
-      <header className="flex items-center justify-between bg-slate-800 px-6 py-4 lg:px-16">
+      <header className="sticky top-0 z-50 flex items-center justify-between bg-slate-900 px-6 py-4 shadow-sm shadow-black/20 lg:px-16">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
             <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />

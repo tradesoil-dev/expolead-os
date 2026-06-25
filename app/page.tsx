@@ -309,8 +309,9 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white text-slate-950">
       <SplashScreen />
-      {/* HEADER */}
-      <header className="flex items-center justify-between bg-slate-800 px-4 py-3 lg:px-16 lg:py-4">
+      {/* HEADER (sticky) */}
+      <div className="sticky top-0 z-50">
+      <header className="flex items-center justify-between bg-slate-900 px-4 py-3 shadow-sm shadow-black/20 lg:px-16 lg:py-4">
         <div className="flex items-center gap-2.5">
           <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
             <div className="logo-sq1 w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
@@ -359,7 +360,7 @@ export default function HomePage() {
 
       {/* Mobile dropdown menu */}
       {menuOpen && (
-        <div className="md:hidden bg-slate-800 border-t border-slate-700 px-4 py-3 flex flex-col gap-1">
+        <div className="md:hidden bg-slate-900 border-t border-slate-700 px-4 py-3 flex flex-col gap-1">
           <Link href="/pricing" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
             {t.nav.pricing}
           </Link>
@@ -371,6 +372,7 @@ export default function HomePage() {
           </Link>
         </div>
       )}
+      </div>
 
       {/* HERO */}
       <section className="grid min-h-[calc(100vh-96px)] items-center gap-12 px-8 pb-16 pt-10 lg:grid-cols-2 lg:px-16">

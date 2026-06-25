@@ -34,34 +34,35 @@ export default async function PricingPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
-      {/* GRADIENT HERO */}
-      <div style={{ background: GRADIENT }} className="pb-16">
-        <header className="flex items-center justify-between px-6 py-4 lg:px-16">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
-              <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-              <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-              <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-              <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-300" />
-            </div>
-            <span className="flex items-center text-[16px] tracking-tight leading-none">
-              <span className="font-semibold text-white">Expo</span>
-              <span className="font-semibold text-emerald-300">Lead</span>
-              <span className="font-normal text-white/60"> OS</span>
-            </span>
+      {/* STICKY HEADER */}
+      <header className="sticky top-0 z-50 flex items-center justify-between bg-slate-900 px-6 py-4 shadow-sm shadow-black/20 lg:px-16">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
+            <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
+          </div>
+          <span className="flex items-center text-[16px] tracking-tight leading-none">
+            <span className="font-semibold text-white">Expo</span>
+            <span className="font-semibold text-emerald-400">Lead</span>
+            <span className="font-normal text-slate-400"> OS</span>
+          </span>
+        </Link>
+        {user ? (
+          <Link href="/dashboard" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+            ← Back to dashboard
           </Link>
-          {user ? (
-            <Link href="/dashboard" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors">
-              ← Back to dashboard
-            </Link>
-          ) : (
-            <Link href="/login?mode=signup" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors">
-              Start free trial
-            </Link>
-          )}
-        </header>
+        ) : (
+          <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+            Start free trial
+          </Link>
+        )}
+      </header>
 
-        <div className="px-6 pt-10 text-center lg:px-16">
+      {/* GRADIENT HERO */}
+      <div style={{ background: GRADIENT }} className="pb-16 pt-12">
+        <div className="px-6 text-center lg:px-16">
           <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-white md:text-5xl">
             Pricing built for the<br />exhibition floor
           </h1>
