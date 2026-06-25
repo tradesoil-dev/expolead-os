@@ -5,7 +5,7 @@ import PricingPlans from "@/components/PricingPlans";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
-  description: "Start free for 14 days, no credit card. Solo from $19/month (or $190/year). One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
+  description: "Start free for 14 days, no credit card. Solo from $15/month billed annually ($190/year), or $19 monthly. One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
 };
 
 const TRUST = [
