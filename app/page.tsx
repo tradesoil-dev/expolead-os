@@ -42,11 +42,9 @@ const translations = {
       h1b: "Into Revenue",
       sub: "Capture booth visits, buyer signals, samples, quotations and follow-ups in one workspace built for exhibitors, sourcing teams and international trade professionals.",
       checks: [
-        "Track every booth visit and business connection",
         "Capture buyer intent and qualification signals instantly",
         "Manage samples, quotations and follow-ups in one place",
         "Never lose opportunities after an exhibition ends",
-        "Built for international trade, sourcing and B2B sales teams",
       ],
       cta: "Start free trial",
     },
@@ -159,11 +157,9 @@ const translations = {
       h1b: "转化为收入",
       sub: "在一个专为参展商、采购团队和国际贸易专业人士打造的工作空间中，捕捉展位访客、买家意向、样品、报价和跟进事项。",
       checks: [
-        "追踪每一次展位访问和商业联系",
         "即时捕捉买家意向和资质信号",
         "在一处管理样品、报价和跟进",
         "展会结束后不再错失任何商机",
-        "专为国际贸易、采购和B2B销售团队打造",
       ],
       cta: "免费试用",
     },
@@ -375,23 +371,26 @@ export default function HomePage() {
       </div>
 
       {/* HERO */}
-      <section className="grid min-h-[calc(100vh-96px)] items-center gap-12 px-8 pb-16 pt-10 lg:grid-cols-2 lg:px-16">
+      <section
+        className="grid min-h-[calc(100vh-96px)] items-center gap-12 px-8 pb-16 pt-10 lg:grid-cols-2 lg:px-16"
+        style={{ background: "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)" }}
+      >
         <div className="max-w-3xl">
-          <p className="anim-hero-badge mb-4 text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.hero.badge}</p>
-          <h1 className="anim-hero-title max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-slate-900 md:text-5xl lg:text-4xl">
+          <p className="anim-hero-badge mb-4 text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">{t.hero.badge}</p>
+          <h1 className="anim-hero-title max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-white md:text-5xl lg:text-4xl">
             {t.hero.h1a}<br />{t.hero.h1b}
           </h1>
-          <p className="anim-hero-sub mt-8 max-w-2xl text-xl leading-9 text-slate-700">{t.hero.sub}</p>
-          <div className="anim-hero-sub mt-8 space-y-5 text-lg text-slate-700">
+          <p className="anim-hero-sub mt-8 max-w-2xl text-xl leading-9 text-white/85">{t.hero.sub}</p>
+          <div className="anim-hero-sub mt-8 space-y-5 text-lg text-white/90">
             {t.hero.checks.map((check) => (
               <div key={check} className="flex items-center gap-3">
-                <CheckCircle2 className="h-7 w-7 text-emerald-600 shrink-0" />
+                <CheckCircle2 className="h-7 w-7 text-emerald-300 shrink-0" />
                 <span>{check}</span>
               </div>
             ))}
           </div>
           <div className="anim-hero-btn mt-12 flex flex-col gap-4 sm:flex-row">
-            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-2.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors">
               {t.hero.cta}
               <ArrowRight className="h-4 w-4" />
             </Link>
