@@ -124,38 +124,39 @@ function LoginForm() {
 
   return (
     <div className="h-screen grid lg:grid-cols-[1fr_1fr] bg-white overflow-hidden">
-      <section className="hidden lg:flex h-screen flex-col items-center justify-center bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.16),transparent_34%),radial-gradient(circle_at_80%_30%,rgba(37,99,235,0.14),transparent_34%),linear-gradient(135deg,#f8fafc,#eefaf6,#f8fbff)] px-10">
-        <div className="absolute top-8 left-10">
-  <div className="inline-block">
+      <section
+        className="hidden lg:flex h-screen flex-col items-center justify-center px-10"
+        style={{ background: "linear-gradient(150deg, #0f172a 0%, #065f46 50%, #10b981 100%)" }}
+      >
+        <Link href="/" className="absolute top-8 left-10 inline-block" aria-label="Go to ExpoLead OS home">
     <div className="flex items-center gap-3">
       <svg width="42" height="42" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2" fill="none"/>
-        <rect x="22" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2" fill="none"/>
-        <rect x="1" y="22" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2" fill="none"/>
-        <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
+        <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
+        <rect x="22" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
+        <rect x="1" y="22" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
+        <rect x="22" y="22" width="17" height="17" rx="3" fill="#34d399"/>
       </svg>
       <div>
         <h1 className="flex items-center text-[26px] font-semibold tracking-tight leading-none">
-          <span className="text-slate-900">Expo</span><span className="text-emerald-500">Lead</span><span className="text-slate-400 text-[18px] font-normal ml-1">OS</span>
+          <span className="text-white">Expo</span><span className="text-emerald-300">Lead</span><span className="text-white/60 text-[18px] font-normal ml-1">OS</span>
         </h1>
-        <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-600">Powered by Tradesoil</p>
+        <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-200">Powered by Tradesoil</p>
       </div>
     </div>
-  </div>
-</div>
-        <div className="w-full max-w-[520px] rounded-[2rem] bg-white/60 p-6 shadow-xl backdrop-blur">
+</Link>
+        <div className="w-full max-w-[520px] rounded-[2rem] border border-white/15 bg-white/10 p-6 shadow-xl backdrop-blur">
           <div className="flex justify-center py-10">
-  <div className="scale-[5] text-emerald-700">
+  <div className="scale-[5] text-emerald-300">
     {stages[activeStep].icon}
   </div>
 </div>
 
           <div className="relative mt-16 mx-auto w-full max-w-sm">
             {/* Background line */}
-            <div className="absolute left-7 right-7 top-7 h-0.5 bg-emerald-100" />
+            <div className="absolute left-7 right-7 top-7 h-0.5 bg-white/20" />
             {/* Progress line — grows left to right with each stage */}
             <div
-              className="absolute left-7 right-7 top-7 h-0.5 bg-emerald-600 origin-left transition-transform duration-500"
+              className="absolute left-7 right-7 top-7 h-0.5 bg-white origin-left transition-transform duration-500"
               style={{ transform: `scaleX(${activeStep / (stages.length - 1)})` }}
             />
 
@@ -168,13 +169,13 @@ function LoginForm() {
                     <div
                       className={`grid h-14 w-14 place-items-center rounded-full transition-colors duration-500 ${
                         completed || active
-                          ? "bg-emerald-600 text-white shadow-sm"
-                          : "bg-white border-2 border-emerald-200 text-ink-400"
+                          ? "bg-white text-emerald-700 shadow-sm"
+                          : "bg-white/10 border-2 border-white/30 text-white/50"
                       }`}
                     >
                       {completed
                         ? <span className="text-lg font-bold">✓</span>
-                        : <span className={active ? "text-white" : "text-ink-400"}>{stage.icon}</span>
+                        : <span className={active ? "text-emerald-700" : "text-white/50"}>{stage.icon}</span>
                       }
                     </div>
                   </div>
@@ -184,15 +185,15 @@ function LoginForm() {
           </div>
 
           <div className="mt-14 text-center">
-            <div className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
+            <div className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
               ExpoLead Workspace
             </div>
 
-            <h2 className="mt-4 text-4xl font-bold tracking-tight text-ink-900">
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-white">
               {stages[activeStep].title}
             </h2>
 
-            <p className="mt-3 text-base text-ink-500">
+            <p className="mt-3 text-base text-white/70">
               {stages[activeStep].subtitle}
             </p>
           </div>
