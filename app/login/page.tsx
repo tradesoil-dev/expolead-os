@@ -170,7 +170,7 @@ function LoginForm() {
                       className={`grid h-14 w-14 place-items-center rounded-full transition-colors duration-500 ${
                         completed || active
                           ? "bg-white text-emerald-700 shadow-sm"
-                          : "bg-white/10 border-2 border-white/30 text-white/50"
+                          : "bg-emerald-900 border-2 border-white/25 text-white/60"
                       }`}
                     >
                       {completed
