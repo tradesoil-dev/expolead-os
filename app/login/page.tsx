@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, Fragment } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -151,37 +151,30 @@ function LoginForm() {
   </div>
 </div>
 
-          <div className="relative mt-16 mx-auto w-full max-w-sm">
-            {/* Background line */}
-            <div className="absolute left-7 right-7 top-7 h-0.5 bg-white/20" />
-            {/* Progress line — grows left to right with each stage */}
-            <div
-              className="absolute left-7 right-7 top-7 h-0.5 bg-white origin-left transition-transform duration-500"
-              style={{ transform: `scaleX(${activeStep / (stages.length - 1)})` }}
-            />
-
-            <div className="relative flex items-start justify-between">
-              {stages.map((stage, index) => {
-                const completed = index < activeStep;
-                const active = index === activeStep;
-                return (
-                  <div key={stage.title} className="relative z-10 flex flex-col items-center gap-2">
-                    <div
-                      className={`grid h-14 w-14 place-items-center rounded-full transition-colors duration-500 ${
-                        completed || active
-                          ? "bg-white text-emerald-700 shadow-sm"
-                          : "bg-emerald-900 border-2 border-white/25 text-white/60"
-                      }`}
-                    >
-                      {completed
-                        ? <span className="text-lg font-bold">✓</span>
-                        : <span className={active ? "text-emerald-700" : "text-white/50"}>{stage.icon}</span>
-                      }
-                    </div>
+          <div className="mt-16 mx-auto flex w-full max-w-sm items-center justify-center gap-2">
+            {stages.map((stage, index) => {
+              const completed = index < activeStep;
+              const active = index === activeStep;
+              return (
+                <Fragment key={stage.title}>
+                  <div
+                    className={`grid h-14 w-14 shrink-0 place-items-center rounded-full transition-colors duration-500 ${
+                      completed || active
+                        ? "bg-white text-emerald-700 shadow-sm"
+                        : "border-2 border-white/40 text-white/70"
+                    }`}
+                  >
+                    {completed
+                      ? <span className="text-lg font-bold">✓</span>
+                      : <span className={active ? "text-emerald-700" : "text-white/70"}>{stage.icon}</span>
+                    }
                   </div>
-                );
-              })}
-            </div>
+                  {index < stages.length - 1 && (
+                    <span className={`h-0.5 flex-1 transition-colors duration-500 ${index < activeStep ? "bg-white" : "bg-white/30"}`} />
+                  )}
+                </Fragment>
+              );
+            })}
           </div>
 
           <div className="mt-14 text-center">
