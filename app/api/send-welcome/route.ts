@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
         <tr>
           <td style="background:#f8fafc;padding:24px 40px;border-top:1px solid #e2e8f0;">
             <p style="margin:0 0 4px;font-size:13px;color:#94a3b8;">Questions? Just reply to this email.</p>
-            <p style="margin:0;font-size:13px;color:#94a3b8;">— Gladwin, Founder of ExpoLead OS · <a href="https://www.tradesoil.com" style="color:#10b981;text-decoration:none;">Tradesoil</a></p>
+            <p style="margin:0;font-size:13px;color:#94a3b8;">— Gladwin, Founder of ExpoLead OS</p>
           </td>
         </tr>
 
