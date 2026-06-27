@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  const publicRoutes = ["/", "/login", "/reset-password", "/update-password", "/pricing", "/privacy", "/terms", "/trade-shows", "/getting-started", "/opengraph-image"];
+  const publicRoutes = ["/", "/login", "/reset-password", "/update-password", "/pricing", "/privacy", "/terms", "/trade-shows", "/getting-started", "/opengraph-image", "/email-logo"];
   const isPublicRoute = publicRoutes.includes(path);
   const isAuthRoute = path === "/login";
 
