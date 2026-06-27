@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/components/useToast";
 
 export default function AddOpportunityFollowUp({
   opportunityId,
@@ -10,6 +11,7 @@ export default function AddOpportunityFollowUp({
   opportunityId: string;
 }) {
   const router = useRouter();
+  const { showToast, ToastUI } = useToast();
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -28,16 +30,18 @@ export default function AddOpportunityFollowUp({
     setSaving(false);
 
     if (error) {
-      alert(error.message);
+      showToast(error.message, "error");
       return;
     }
 
     setNote("");
+    showToast("Follow-up added.", "success");
     router.refresh();
   }
 
   return (
     <div className="space-y-3">
+      {ToastUI}
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}

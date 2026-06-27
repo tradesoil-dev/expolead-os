@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/components/useToast";
 
 export default function NextFollowUpForm({
   opportunityId,
@@ -14,6 +15,7 @@ export default function NextFollowUpForm({
   initialNote?: string | null;
 }) {
   const router = useRouter();
+  const { showToast, ToastUI } = useToast();
 
   const [date, setDate] = useState(initialDate || "");
   const [note, setNote] = useState(initialNote || "");
@@ -36,16 +38,17 @@ export default function NextFollowUpForm({
     setSaving(false);
 
     if (error) {
-      alert(error.message);
+      showToast(error.message, "error");
       return;
     }
 
-    alert("Reminder saved.");
+    showToast("Reminder saved.", "success");
     router.refresh();
   }
 
   return (
     <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+      {ToastUI}
       <h2 className="mb-3 font-semibold">Next Follow-up</h2>
 
       <div className="grid gap-3 md:grid-cols-[220px_1fr_auto] md:items-center">

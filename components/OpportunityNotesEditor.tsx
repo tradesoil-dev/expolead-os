@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/components/useToast";
 
 export default function OpportunityNotesEditor({
   opportunityId,
@@ -12,6 +13,7 @@ export default function OpportunityNotesEditor({
   initialNotes: string | null;
 }) {
   const router = useRouter();
+  const { showToast, ToastUI } = useToast();
   const [editing, setEditing] = useState(false);
   const [notes, setNotes] = useState(initialNotes ?? "");
   const [saving, setSaving] = useState(false);
@@ -29,17 +31,19 @@ export default function OpportunityNotesEditor({
     setSaving(false);
 
     if (error) {
-      alert(error.message);
+      showToast(error.message, "error");
       return;
     }
 
     setEditing(false);
+    showToast("Notes saved.", "success");
     router.refresh();
   }
 
   if (editing) {
     return (
       <div className="space-y-3">
+        {ToastUI}
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -71,6 +75,7 @@ export default function OpportunityNotesEditor({
 
   return (
     <div>
+      {ToastUI}
       <div className="mb-3 flex items-center justify-between">
         <h2 className="font-semibold">Discussion Notes</h2>
 

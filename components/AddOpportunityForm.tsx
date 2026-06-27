@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { useToast } from "@/components/useToast";
 import type { Exhibition } from "@/lib/types";
 
 export default function AddOpportunityForm({ exhibitions, isLocked }: { exhibitions: Exhibition[]; isLocked?: boolean }) {
   const router = useRouter();
+  const { showToast, ToastUI } = useToast();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -41,7 +43,7 @@ const {
 } = await supabase.auth.getUser();
 
 if (!user) {
-  alert("Please login again.");
+  showToast("Please login again.", "error");
   setSaving(false);
   return;
 }
@@ -60,7 +62,7 @@ booth: form.booth || null,
 });
 
 if (error) {
-  alert(error.message);
+  showToast(error.message, "error");
   setSaving(false);
   return;
 }
@@ -107,6 +109,7 @@ booth: "",
 
   return (
     <div className="space-y-3">
+      {ToastUI}
       <button
         onClick={() => setOpen(false)}
         className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"

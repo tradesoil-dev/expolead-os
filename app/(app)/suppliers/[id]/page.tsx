@@ -255,11 +255,6 @@ export default async function SupplierProfile({
             {supplier.notes?.trim() ? supplier.notes : <span className="text-ink-400">No notes.</span>}
           </p>
         </div>
-
-        <div className="rounded-xl border border-rose-100 bg-rose-50 p-5">
-          <h2 className="text-sm font-semibold text-rose-700 mb-1">Sample data?</h2>
-          <p className="text-xs text-rose-500">This may be sample data added to help you see how ExpoLead works. Once you&apos;re ready, delete it and replace it with your own connections from the show floor.</p>
-        </div>
       </main>
     </>
   );

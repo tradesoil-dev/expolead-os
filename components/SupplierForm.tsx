@@ -34,6 +34,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     visit_date: "",
     is_target: false,
     notes: "",
+    products: "",
   });
 
   const [contact, setContact] = useState({
@@ -119,6 +120,17 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         });
       }
 
+      // Products discussed at the booth (comma-separated) → one row each
+      const productNames = form.products
+        .split(",")
+        .map((p) => p.trim())
+        .filter(Boolean);
+      if (productNames.length > 0) {
+        await supabase.from("products").insert(
+          productNames.map((name) => ({ supplier_id: supplierId, name }))
+        );
+      }
+
       router.push(`/suppliers/${supplierId}`);
       router.refresh();
     } catch (err) {
@@ -191,6 +203,14 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
               value={form.categories}
               onChange={(v) => set("categories", v)}
               placeholder="Oleochemicals, Fatty Acids, Coatings"
+            />
+          </Field>
+
+          <Field label="Products discussed (comma-separated)" span2>
+            <Input
+              value={form.products}
+              onChange={(v) => set("products", v)}
+              placeholder="e.g. Oleic Acid, Stearic Acid, Glycerine"
             />
           </Field>
         </Grid>
