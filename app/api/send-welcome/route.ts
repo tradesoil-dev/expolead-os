@@ -32,34 +32,8 @@ export async function POST(req: NextRequest) {
 
         <!-- Header -->
         <tr>
-          <td style="background:#0f172a;padding:32px 40px;">
-            <table cellpadding="0" cellspacing="0">
-              <tr>
-                <td style="padding-right:12px;">
-                  <table cellpadding="0" cellspacing="0" style="width:36px;">
-                    <tr>
-                      <td style="padding-bottom:4px;padding-right:4px;">
-                        <div style="width:16px;height:16px;border:2px solid #ffffff;border-radius:3px;"></div>
-                      </td>
-                      <td style="padding-bottom:4px;">
-                        <div style="width:16px;height:16px;border:2px solid #ffffff;border-radius:3px;"></div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding-right:4px;">
-                        <div style="width:16px;height:16px;border:2px solid #ffffff;border-radius:3px;"></div>
-                      </td>
-                      <td>
-                        <div style="width:16px;height:16px;background:#10b981;border-radius:3px;"></div>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-                <td>
-                  <span style="font-size:22px;font-weight:600;color:#ffffff;letter-spacing:-0.5px;">Expo<span style="color:#10b981;">Lead</span> <span style="color:#64748b;font-size:15px;font-weight:400;">OS</span></span>
-                </td>
-              </tr>
-            </table>
+          <td style="background-color:#065f46;background-image:linear-gradient(115deg,#0f172a 0%,#065f46 48%,#10b981 100%);padding:32px 40px;">
+            <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;">Expo<span style="color:#34d399;">Lead</span> <span style="color:rgba(255,255,255,0.65);font-size:15px;font-weight:400;">OS</span></span>
           </td>
         </tr>
 
