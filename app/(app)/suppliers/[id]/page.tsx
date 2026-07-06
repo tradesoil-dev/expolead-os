@@ -71,7 +71,6 @@ export default async function SupplierProfile({
               ) : "—"}
             </Row>
             <Row label="Exhibition">{supplier.exhibition?.name ?? "—"}</Row>
-            <Row label="Categories">{supplier.categories.length ? supplier.categories.join(", ") : "—"}</Row>
             <Row label="Follow-up date">{supplier.follow_up_date ?? "—"}</Row>
           </dl>
 

@@ -25,7 +25,6 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     priority: "medium",
     follow_up_status: "new",
     follow_up_date: "",
-    categories: "",
     exhibition_id: "",
     booth_number: "",
     hall: "",
@@ -87,9 +86,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           priority: form.priority,
           follow_up_status: form.follow_up_status,
           follow_up_date: form.follow_up_date || null,
-          categories: form.categories
-            ? form.categories.split(",").map((c) => c.trim()).filter(Boolean)
-            : [],
+          categories: [],
           exhibition_id: form.exhibition_id || null,
           booth_number: form.booth_number || null,
           hall: form.hall || null,
@@ -196,14 +193,6 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 
           <Field label="Website">
             <Input value={form.website} onChange={(v) => set("website", v)} placeholder="https://…" />
-          </Field>
-
-          <Field label="Categories (comma-separated)" span2>
-            <Input
-              value={form.categories}
-              onChange={(v) => set("categories", v)}
-              placeholder="Oleochemicals, Fatty Acids, Coatings"
-            />
           </Field>
 
           <Field label="Products discussed (comma-separated)" span2>

@@ -43,7 +43,7 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
       if (exhibition && s.exhibition_id !== exhibition) return false;
 
       if (q) {
-        const hay = `${s.company_name} ${s.country ?? ""} ${s.categories.join(" ")} ${s.exhibition?.name ?? ""} ${s.hall ?? ""} ${s.booth_number ?? ""}`.toLowerCase();
+        const hay = `${s.company_name} ${s.country ?? ""} ${s.exhibition?.name ?? ""} ${s.hall ?? ""} ${s.booth_number ?? ""}`.toLowerCase();
         if (!hay.includes(q.toLowerCase())) return false;
       }
 
@@ -66,7 +66,6 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
       "Priority",
       "Follow-up status",
       "Follow-up date",
-      "Categories",
       "Target",
       "Notes",
       "Contact Name",
@@ -93,7 +92,6 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
         priorityLabel(s.priority),
         statusLabel(s.follow_up_status),
         s.follow_up_date ?? "",
-        s.categories.join("; "),
         s.is_target ? "Yes" : "No",
         (s.notes ?? "").replace(/\n/g, " "),
         contact?.full_name ?? "",
@@ -151,7 +149,7 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search company, country, category, booth…"
+          placeholder="Search company, country, booth…"
           className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500"
         />
 
