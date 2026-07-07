@@ -10,6 +10,11 @@ import {
   Users,
   FileText,
   FlaskConical,
+  UserPlus,
+  Package,
+  CalendarCheck,
+  BarChart3,
+  Store,
 } from "lucide-react";
 import SplashScreen from "@/components/SplashScreen";
 import { createClient } from "@/lib/supabase/client";
@@ -99,19 +104,30 @@ const translations = {
       cards: [
         {
           title: "Exhibitors",
-          desc: "Teams exhibiting at trade shows who need to capture and qualify leads on the show floor.",
+          desc: "You worked the booth for three days and came home with 80 cards. Two weeks later, half are cold. Capture every lead the moment you meet them, so none go stale.",
         },
         {
           title: "Sourcing teams",
-          desc: "Buyers and procurement professionals visiting exhibitions to find new connections and products.",
+          desc: "Ten halls, forty suppliers, one blurred notebook of booth numbers. Log each supplier, product, and quantity on the floor, not on the flight home.",
         },
         {
           title: "International traders",
-          desc: "B2B sales and trade professionals managing cross-border connections and buyer relationships.",
+          desc: "Buyers across three time zones, follow-ups slipping through the cracks. Keep every conversation, sample, and next step in one place, ready when they reply.",
         },
       ],
     },
     growth: "Driving revenue growth",
+    features: {
+      label: "Everything in one workspace",
+      title: "Everything you need to turn booth conversations into orders",
+      items: [
+        { title: "Capture at the booth", desc: "Log every connection, contact and product the moment you meet.", icon: "user" },
+        { title: "Products & quantity", desc: "Track what they deal in and the quantities discussed, not just names.", icon: "package" },
+        { title: "Follow-ups that don't slip", desc: "Due-date reminders and at-risk flags so no lead goes cold.", icon: "calendar" },
+        { title: "Opportunity pipeline", desc: "Move conversations from qualified to won across a clear board.", icon: "chart" },
+        { title: "Exhibition library", desc: "Your shows pre-loaded with correct dates and venues, ready day one.", icon: "store" },
+      ],
+    },
     upcoming: {
       label: "Plan your year",
       title: "The shows you attend, ready on day one",
@@ -214,19 +230,30 @@ const translations = {
       cards: [
         {
           title: "参展商",
-          desc: "在贸易展上参展的团队，需要在展台现场捕捉和筛选线索。",
+          desc: "您在展台忙了三天，带回80张名片。两周后，一半线索已经变冷。在见到对方的那一刻就记录每条线索，让它们不再流失。",
         },
         {
           title: "采购团队",
-          desc: "参观展会寻找新联系人和产品的买家及采购专业人士。",
+          desc: "十个展馆，四十家供应商，一本写满展位号却看不懂的笔记。在现场记下每家供应商、产品和数量，而不是等到回程的飞机上。",
         },
         {
           title: "国际贸易商",
-          desc: "管理跨境联系和买家关系的B2B销售及贸易专业人士。",
+          desc: "买家分布在三个时区，跟进总在缝隙中漏掉。把每次对话、样品和下一步都集中在一处，对方回复时随时可用。",
         },
       ],
     },
     growth: "驱动营收增长",
+    features: {
+      label: "一体化工作空间",
+      title: "将展台对话变成订单所需的一切",
+      items: [
+        { title: "展台现场捕捉", desc: "在见面的那一刻记录每个联系人、联系方式和产品。", icon: "user" },
+        { title: "产品与数量", desc: "记录他们经营的产品和洽谈的数量，而不只是名字。", icon: "package" },
+        { title: "不漏掉的跟进", desc: "到期提醒和风险标记，让每条线索都不会变冷。", icon: "calendar" },
+        { title: "商机管道", desc: "在清晰的看板上，把对话从合格推进到成交。", icon: "chart" },
+        { title: "展会库", desc: "您的展会已预装正确的日期和地点，开通即用。", icon: "store" },
+      ],
+    },
     upcoming: {
       label: "规划您的全年",
       title: "您参加的展会，开通即用",
@@ -503,6 +530,44 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
+        {/* MOBILE PRODUCT MOCKUP — phone only, so mobile visitors see the product */}
+        <div className="mt-4 flex justify-center lg:hidden">
+          <div className="w-[220px] rounded-[28px] border-[7px] border-slate-950 bg-white shadow-2xl overflow-hidden flex flex-col">
+            <div className="bg-slate-900 flex justify-center pt-2 pb-1.5 shrink-0">
+              <div className="w-2.5 h-2.5 rounded-full bg-slate-950" />
+            </div>
+            <div className="bg-slate-50 flex flex-col gap-2 px-3 py-3">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                  <span className="text-[10px] font-bold text-emerald-700">KK</span>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-900 leading-none">KENP Korea</p>
+                  <p className="text-[9px] text-emerald-500 mt-1">● High priority</p>
+                </div>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-lg px-3 py-2">
+                <p className="text-[8px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">Stage</p>
+                <p className="text-[11px] font-semibold text-slate-800">Qualified</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-lg px-3 py-2">
+                <p className="text-[8px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">Follow-up</p>
+                <p className="text-[11px] font-semibold text-amber-500">Due tomorrow</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-lg px-3 py-2">
+                <p className="text-[8px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">Notes</p>
+                <p className="text-[10px] text-slate-600 leading-snug">Interested in 500MT UCO. Send spec sheet.</p>
+              </div>
+              <div className="bg-emerald-600 rounded-lg px-3 py-2 text-center">
+                <p className="text-[11px] font-bold text-white">Mark followed up ✓</p>
+              </div>
+            </div>
+            <div className="bg-slate-50 flex justify-center py-1.5 shrink-0">
+              <div className="w-10 h-1 rounded-full bg-slate-300" />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* EXHIBITION STRIP — social proof (honest, association-by-design) */}
@@ -693,6 +758,35 @@ export default function HomePage() {
                 </div>
                 <p className="text-base font-bold text-slate-900">{card.title}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-500">{card.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* FEATURE STRIP — everything in one workspace */}
+      <section className="bg-white px-8 py-20 lg:px-16">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.features.label}</p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 md:text-4xl">{t.features.title}</h2>
+        </div>
+        <div className="mx-auto mt-12 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {t.features.items.map((item, i) => {
+            const icons: Record<string, typeof UserPlus> = {
+              user: UserPlus,
+              package: Package,
+              calendar: CalendarCheck,
+              chart: BarChart3,
+              store: Store,
+            };
+            const Icon = icons[item.icon] ?? UserPlus;
+            return (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 mb-3">
+                  <Icon className="h-5 w-5 text-emerald-600" />
+                </div>
+                <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                <p className="mt-1.5 text-[13px] leading-6 text-slate-500">{item.desc}</p>
               </div>
             );
           })}
