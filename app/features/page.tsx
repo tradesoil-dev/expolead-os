@@ -173,7 +173,12 @@ export default function FeaturesPage() {
                 </div>
               </div>
             </div>
-            <div className="mx-auto h-3.5 w-[106%] -translate-x-[3%] rounded-b-2xl bg-gradient-to-b from-slate-300 to-slate-400" />
+            {/* Laptop base — desktop only; on mobile the frame above reads as a clean browser window */}
+            <div className="mx-auto hidden w-[116%] -translate-x-[8%] lg:block">
+              <div className="relative h-4 w-full rounded-b-xl bg-gradient-to-b from-slate-300 to-slate-400">
+                <div className="absolute left-1/2 top-0 h-2 w-28 -translate-x-1/2 rounded-b-lg bg-slate-500/60" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
