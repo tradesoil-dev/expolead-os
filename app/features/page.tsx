@@ -84,7 +84,7 @@ export default function FeaturesPage() {
   const active = TABS[tab];
 
   return (
-    <main className="min-h-screen bg-white text-slate-950">
+    <main className="min-h-screen overflow-x-hidden bg-white text-slate-950">
       <style>{`
         @keyframes spinOrbit { to { transform: rotate(360deg); } }
         @keyframes counterOrbit { to { transform: rotate(-360deg); } }
@@ -173,7 +173,7 @@ export default function FeaturesPage() {
                 </div>
               </div>
             </div>
-            <div className="mx-auto h-3.5 w-[112%] -translate-x-[5.3%] rounded-b-2xl bg-gradient-to-b from-slate-300 to-slate-400" />
+            <div className="mx-auto h-3.5 w-[106%] -translate-x-[3%] rounded-b-2xl bg-gradient-to-b from-slate-300 to-slate-400" />
           </div>
         </div>
       </section>
@@ -185,11 +185,11 @@ export default function FeaturesPage() {
             <p className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">It all starts at the booth</p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 md:text-4xl">connect with every booth visitor</h2>
             <p className="mt-3 max-w-md text-base text-slate-600">At a busy exhibition, the difference between a won deal and a lost one is whether you captured the conversation while it was still fresh. ExpoLead OS makes that effortless.</p>
-            <div className="relative mx-auto mt-8 h-[400px] w-[400px] max-w-full">
+            <div className="relative mx-auto mt-8 aspect-square w-full max-w-[380px]">
               <div className="absolute inset-9 rounded-full border border-dashed border-slate-300" />
               <div className="spin-orbit absolute inset-0">
                 {AVATARS.map((a) => (
-                  <div key={a.src} className="counter-orbit absolute -m-[31px] h-[62px] w-[62px] overflow-hidden rounded-full border-[3px] border-white shadow-lg" style={a.pos}>
+                  <div key={a.src} className="counter-orbit absolute -m-[31px] h-[62px] w-[62px] overflow-hidden rounded-full border-[3px] border-white shadow-lg [will-change:transform] [backface-visibility:hidden]" style={a.pos}>
                     <img src={a.src} alt="" className="absolute left-1/2 top-1/2 h-[165%] w-[165%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain" />
                   </div>
                 ))}
