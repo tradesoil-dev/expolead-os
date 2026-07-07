@@ -40,7 +40,7 @@ function toMarqueeCard(ex: { name: string; location: string | null; start_date: 
 
 const translations = {
   en: {
-    nav: { pricing: "Pricing", login: "Log in", trial: "Start free trial" },
+    nav: { product: "Product", pricing: "Pricing", login: "Log in", trial: "Start free trial" },
     hero: {
       badge: "Exhibition Lead Management",
       h1a: "Turn Expo Conversations",
@@ -166,7 +166,7 @@ const translations = {
     },
   },
   zh: {
-    nav: { pricing: "定价", login: "登录", trial: "免费试用" },
+    nav: { product: "产品", pricing: "定价", login: "登录", trial: "免费试用" },
     hero: {
       badge: "展会线索管理",
       h1a: "将展会对话",
@@ -349,6 +349,9 @@ export default function HomePage() {
 
         <div className="anim-nav-links flex items-center gap-3">
           {/* Desktop nav */}
+          <Link href="/features" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
+            {t.nav.product}
+          </Link>
           <Link href="/pricing" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
             {t.nav.pricing}
           </Link>
@@ -384,6 +387,9 @@ export default function HomePage() {
       {/* Mobile dropdown menu */}
       {menuOpen && (
         <div className="md:hidden bg-slate-900 border-t border-slate-700 px-4 py-3 flex flex-col gap-1">
+          <Link href="/features" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
+            {t.nav.product}
+          </Link>
           <Link href="/pricing" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
             {t.nav.pricing}
           </Link>
