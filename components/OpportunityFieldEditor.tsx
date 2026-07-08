@@ -60,12 +60,9 @@ export function OpportunityStatusEditor({
     <div>
       <Select
         value={value}
-        onChange={(e) => handleChange(e.target.value as Opportunity["status"])}
-      >
-        {OPPORTUNITY_STATUSES.map((opt) => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
-        ))}
-      </Select>
+        onChange={(v) => handleChange(v as Opportunity["status"])}
+        options={OPPORTUNITY_STATUSES.map((opt) => ({ value: opt.value, label: opt.label }))}
+      />
       {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
     </div>
   );
@@ -100,12 +97,9 @@ export function OpportunityPriorityEditor({
     <div>
       <Select
         value={value}
-        onChange={(e) => handleChange(e.target.value as Opportunity["priority"])}
-      >
-        {PRIORITY_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
-        ))}
-      </Select>
+        onChange={(v) => handleChange(v as Opportunity["priority"])}
+        options={PRIORITY_OPTIONS.map((opt) => ({ value: opt.value, label: opt.label }))}
+      />
       {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
     </div>
   );
