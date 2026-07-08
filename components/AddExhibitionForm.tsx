@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { ExhibitionLibraryItem } from "@/lib/types";
+import DatePicker from "@/components/DatePicker";
 
 export default function AddExhibitionForm({
   isLocked,
@@ -165,8 +166,14 @@ export default function AddExhibitionForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input className={`${inp} sm:col-span-2`} placeholder="Exhibition name (e.g. CHINACOAT 2026)" value={f.name} onChange={(e) => set("name", e.target.value)} />
         <input className={`${inp} sm:col-span-2`} placeholder="Location (e.g. Shanghai, China)" value={f.location} onChange={(e) => set("location", e.target.value)} />
-        <label className="text-sm text-ink-500">Start<input type="date" className={inp} value={f.start_date} onChange={(e) => set("start_date", e.target.value)} /></label>
-        <label className="text-sm text-ink-500">End<input type="date" className={inp} value={f.end_date} onChange={(e) => set("end_date", e.target.value)} /></label>
+        <div className="text-sm text-ink-500">
+          <span className="mb-1 block font-medium">Start</span>
+          <DatePicker value={f.start_date} onChange={(v) => set("start_date", v)} />
+        </div>
+        <div className="text-sm text-ink-500">
+          <span className="mb-1 block font-medium">End</span>
+          <DatePicker value={f.end_date} onChange={(v) => set("end_date", v)} />
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <button onClick={save} disabled={saving} className="rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60">

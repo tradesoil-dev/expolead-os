@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ExhibitionLibraryItem } from "@/lib/types";
+import DatePicker from "@/components/DatePicker";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -193,11 +194,11 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-600">Start date</label>
-              <input type="date" className={inp} value={f.start_date} onChange={(e) => set("start_date", e.target.value)} />
+              <DatePicker value={f.start_date} onChange={(v) => set("start_date", v)} />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-600">End date</label>
-              <input type="date" className={inp} value={f.end_date} onChange={(e) => set("end_date", e.target.value)} />
+              <DatePicker value={f.end_date} onChange={(v) => set("end_date", v)} />
             </div>
             <div className="sm:col-span-2">
               <label className="mb-1 block text-xs font-semibold text-slate-600">Sector</label>

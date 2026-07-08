@@ -153,38 +153,45 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
           className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500"
         />
 
-        {/* Filters — 2-col grid on mobile, inline row on md+ */}
-        <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:items-center">
+        {/* Filters — compact grid: 2 cols on mobile, one row of 5 on desktop */}
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
           <Select
             value={exhibition}
             onChange={setExhibition}
+            className="py-2"
             options={[{ value: "", label: "All exhibitions" }, ...exhibitions.map(([id, name]) => ({ value: id, label: name }))]}
           />
 
           <Select
             value={interest}
             onChange={setInterest}
+            className="py-2"
             options={[{ value: "", label: "All classifications" }, ...INTEREST_TYPES.map((x) => ({ value: x.value, label: x.label }))]}
           />
 
           <Select
             value={priority}
             onChange={setPriority}
+            className="py-2"
             options={[{ value: "", label: "All priorities" }, ...PRIORITIES.map((x) => ({ value: x.value, label: x.label }))]}
           />
 
           <Select
             value={status}
             onChange={setStatus}
+            className="py-2"
             options={[{ value: "", label: "All statuses" }, ...FOLLOW_UP_STATUSES.map((x) => ({ value: x.value, label: x.label }))]}
           />
 
           <Select
             value={visited}
             onChange={setVisited}
+            className="py-2"
             options={[{ value: "", label: "All booths" }, { value: "yes", label: "Visited" }, { value: "no", label: "Not visited" }]}
           />
+        </div>
 
+        <div className="flex justify-end">
           <button
             onClick={exportCsv}
             disabled={filtered.length === 0}
