@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/useToast";
+import DatePicker from "@/components/DatePicker";
 
 export default function NextFollowUpForm({
   opportunityId,
@@ -56,12 +57,7 @@ export default function NextFollowUpForm({
           <label className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-500">
             Date
           </label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full rounded-lg border px-3 py-2 text-sm"
-          />
+          <DatePicker value={date} onChange={setDate} />
         </div>
 
         <div>

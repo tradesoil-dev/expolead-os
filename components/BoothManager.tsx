@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import Select from "@/components/Select";
+import DatePicker from "@/components/DatePicker";
 import type { Exhibition } from "@/lib/types";
 
 type BoothManagerProps = {
@@ -88,23 +90,16 @@ export default function BoothManager({
         <h2 className="text-sm font-semibold mb-4">Booth & Exhibition</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <label className="block">
+          <div className="block">
             <span className="block text-sm font-medium text-ink-700 mb-1.5">
               Exhibition
             </span>
-            <select
+            <Select
               value={form.exhibition_id}
-              onChange={(e) => set("exhibition_id", e.target.value)}
-              className={inputClass}
-            >
-              <option value="">— None —</option>
-              {exhibitions.map((ex) => (
-                <option key={ex.id} value={ex.id}>
-                  {ex.name}
-                </option>
-              ))}
-            </select>
-          </label>
+              onChange={(v) => set("exhibition_id", v)}
+              options={[{ value: "", label: "— None —" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
+            />
+          </div>
 
           <Field label="Hall">
             <Input
@@ -186,12 +181,12 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
+    <div className="block">
       <span className="block text-sm font-medium text-ink-700 mb-1.5">
         {label}
       </span>
       {children}
-    </label>
+    </div>
   );
 }
 
@@ -206,6 +201,9 @@ function Input({
   placeholder?: string;
   type?: string;
 }) {
+  if (type === "date") {
+    return <DatePicker value={value} onChange={onChange} />;
+  }
   return (
     <input
       type={type}

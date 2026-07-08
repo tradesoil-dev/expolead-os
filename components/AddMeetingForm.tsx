@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import Select from "@/components/Select";
+import DatePicker from "@/components/DatePicker";
 import type { Exhibition } from "@/lib/types";
 
 export default function AddMeetingForm({
@@ -51,15 +53,18 @@ export default function AddMeetingForm({
   return (
     <div className="rounded-lg border border-ink-200 p-3 space-y-2 w-full">
       <div className="grid grid-cols-2 gap-2">
-        <label className="text-xs text-ink-500">Date
-          <input type="date" className={inp} value={m.met_on} onChange={(e) => set("met_on", e.target.value)} />
-        </label>
-        <label className="text-xs text-ink-500">Exhibition
-          <select className={inp} value={m.exhibition_id} onChange={(e) => set("exhibition_id", e.target.value)}>
-            <option value="">— None —</option>
-            {exhibitions.map((ex) => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
-          </select>
-        </label>
+        <div className="text-xs text-ink-500">
+          <span className="mb-1 block">Date</span>
+          <DatePicker value={m.met_on} onChange={(v) => set("met_on", v)} />
+        </div>
+        <div className="text-xs text-ink-500">
+          <span className="mb-1 block">Exhibition</span>
+          <Select
+            value={m.exhibition_id}
+            onChange={(v) => set("exhibition_id", v)}
+            options={[{ value: "", label: "— None —" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
+          />
+        </div>
       </div>
       <textarea
         className={`${inp} resize-y`}

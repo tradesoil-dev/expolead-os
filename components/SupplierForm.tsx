@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import ModernSelect from "@/components/Select";
+import DatePicker from "@/components/DatePicker";
 import {
   INTEREST_TYPES,
   PRIORITIES,
@@ -240,16 +242,11 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
       <Section title="Booth & exhibition">
         <Grid>
           <Field label="Exhibition">
-            <select
+            <Select
               value={form.exhibition_id}
-              onChange={(e) => set("exhibition_id", e.target.value)}
-              className={inputClass}
-            >
-              <option value="">— None —</option>
-              {exhibitions.map((ex) => (
-                <option key={ex.id} value={ex.id}>{ex.name}</option>
-              ))}
-            </select>
+              onChange={(v) => set("exhibition_id", v)}
+              options={[{ value: "", label: "— None —" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
+            />
           </Field>
 
           <Field label="Hall">
@@ -360,10 +357,10 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className={`block ${span2 ? "sm:col-span-2" : ""}`}>
+    <div className={`block ${span2 ? "sm:col-span-2" : ""}`}>
       <span className="block text-sm font-medium text-ink-700 mb-1.5">{label}</span>
       {children}
-    </label>
+    </div>
   );
 }
 
@@ -378,6 +375,9 @@ function Input({
   placeholder?: string;
   type?: string;
 }) {
+  if (type === "date") {
+    return <DatePicker value={value} onChange={onChange} />;
+  }
   return (
     <input
       type={type}
@@ -398,13 +398,5 @@ function Select({
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
 }) {
-  return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className={inputClass}>
-      {options.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
-  );
+  return <ModernSelect value={value} onChange={onChange} options={options} />;
 }

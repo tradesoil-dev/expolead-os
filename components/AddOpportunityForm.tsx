@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useToast } from "@/components/useToast";
+import Select from "@/components/Select";
 import type { Exhibition } from "@/lib/types";
 
 export default function AddOpportunityForm({ exhibitions, isLocked }: { exhibitions: Exhibition[]; isLocked?: boolean }) {
@@ -142,16 +143,12 @@ booth: "",
           className={inputClass}
         />
 
-<select
+<Select
   value={form.exhibition}
-  onChange={(e) => set("exhibition", e.target.value)}
-  className={inputClass}
->
-  <option value="">Select exhibition</option>
-  {exhibitions.map((ex) => (
-    <option key={ex.id} value={ex.name}>{ex.name}</option>
-  ))}
-</select>
+  onChange={(v) => set("exhibition", v)}
+  placeholder="Select exhibition"
+  options={[{ value: "", label: "Select exhibition" }, ...exhibitions.map((ex) => ({ value: ex.name, label: ex.name }))]}
+/>
         <input
           value={form.destination_market}
           onChange={(e) => set("destination_market", e.target.value)}
@@ -165,28 +162,28 @@ booth: "",
   className={inputClass}
 />
       
-        <select
+        <Select
           value={form.priority}
-          onChange={(e) => set("priority", e.target.value)}
-          className={inputClass}
-        >
-          <option value="high">High priority</option>
-          <option value="medium">Medium priority</option>
-          <option value="low">Low priority</option>
-        </select>
+          onChange={(v) => set("priority", v)}
+          options={[
+            { value: "high", label: "High priority" },
+            { value: "medium", label: "Medium priority" },
+            { value: "low", label: "Low priority" },
+          ]}
+        />
 
-        <select
+        <Select
           value={form.status}
-          onChange={(e) => set("status", e.target.value)}
-          className={inputClass}
-        >
-          <option value="researching">Qualified</option>
-<option value="contacted">Pricing</option>
-<option value="evaluating">Evaluation</option>
-<option value="negotiating">Negotiating</option>
-<option value="won">Won</option>
-<option value="lost">Lost</option>
-        </select>
+          onChange={(v) => set("status", v)}
+          options={[
+            { value: "researching", label: "Qualified" },
+            { value: "contacted", label: "Pricing" },
+            { value: "evaluating", label: "Evaluation" },
+            { value: "negotiating", label: "Negotiating" },
+            { value: "won", label: "Won" },
+            { value: "lost", label: "Lost" },
+          ]}
+        />
       </div>
 
       <textarea
