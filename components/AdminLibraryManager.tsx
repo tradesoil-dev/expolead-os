@@ -29,6 +29,9 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [confirmTarget, setConfirmTarget] = useState<ExhibitionLibraryItem | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   useEffect(() => { setRows(shows); }, [shows]);
 
@@ -37,6 +40,24 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
     rows.forEach((r) => { if (r.sector) set.add(r.sector); });
     return Array.from(set).sort();
   }, [rows]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((r) =>
+      `${r.name} ${r.location ?? ""} ${r.sector ?? ""}`.toLowerCase().includes(q)
+    );
+  }, [rows, query]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = useMemo(
+    () => filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE),
+    [filtered, currentPage]
+  );
+
+  useEffect(() => { setPage(1); }, [query]);
+  useEffect(() => { if (page > totalPages) setPage(totalPages); }, [page, totalPages]);
 
   function notify(message: string, type: "success" | "error") {
     setToast({ message, type });
@@ -201,46 +222,81 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
         </div>
       ) : (
         <>
-          {/* Desktop table */}
-          <div className="hidden overflow-hidden rounded-xl border border-ink-200 bg-white lg:block">
-            <div className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-100 bg-slate-50 px-4 py-2.5">
-              {["Name", "Location", "Dates", "Sector", ""].map((h, i) => (
-                <span key={i} className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{h}</span>
-              ))}
-            </div>
-            {rows.map((r) => (
-              <div key={r.id} className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-50 px-4 py-3 last:border-0 items-center">
-                <span className="text-sm font-semibold text-slate-900">{r.name}</span>
-                <span className="text-xs text-slate-500">{r.location ?? "—"}</span>
-                <span className="text-xs text-slate-500">{fmt(r.start_date, r.end_date)}</span>
-                <span>{r.sector && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{r.sector}</span>}</span>
-                <span className="flex justify-end gap-3">
-                  <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
-                  <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
-                </span>
-              </div>
-            ))}
+          {/* Search */}
+          <div className="relative">
+            <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by name, location or sector…"
+              className="w-full rounded-lg border border-ink-200 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-emerald-500 sm:max-w-sm"
+            />
           </div>
 
-          {/* Mobile cards */}
-          <div className="flex flex-col gap-3 lg:hidden">
-            {rows.map((r) => (
-              <div key={r.id} className="rounded-xl border border-ink-200 bg-white p-4">
-                <div className="mb-1.5 flex items-start justify-between gap-2">
-                  <span className="text-[15px] font-bold text-slate-900">{r.name}</span>
-                  {r.sector && (
-                    <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-semibold text-emerald-700">{r.sector}</span>
-                  )}
+          {filtered.length === 0 ? (
+            <div className="rounded-xl border border-ink-200 bg-white px-4 py-6 text-center text-sm text-slate-400">
+              No exhibitions match &ldquo;{query}&rdquo;.
+            </div>
+          ) : (
+            <>
+              {/* Desktop table */}
+              <div className="hidden overflow-hidden rounded-xl border border-ink-200 bg-white lg:block">
+                <div className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-100 bg-slate-50 px-4 py-2.5">
+                  {["Name", "Location", "Dates", "Sector", ""].map((h, i) => (
+                    <span key={i} className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{h}</span>
+                  ))}
                 </div>
-                <p className="text-xs text-slate-500">{r.location ?? "—"}</p>
-                <p className="mt-0.5 text-xs font-semibold text-slate-600">{fmt(r.start_date, r.end_date)}</p>
-                <div className="mt-2.5 flex gap-4 border-t border-ink-50 pt-2.5">
-                  <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
-                  <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
-                </div>
+                {paged.map((r) => (
+                  <div key={r.id} className="grid grid-cols-[2fr_2fr_1.4fr_1.4fr_0.9fr] gap-2 border-b border-ink-50 px-4 py-3 last:border-0 items-center">
+                    <span className="text-sm font-semibold text-slate-900">{r.name}</span>
+                    <span className="text-xs text-slate-500">{r.location ?? "—"}</span>
+                    <span className="text-xs text-slate-500">{fmt(r.start_date, r.end_date)}</span>
+                    <span>{r.sector && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{r.sector}</span>}</span>
+                    <span className="flex justify-end gap-3">
+                      <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
+                      <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+
+              {/* Mobile cards */}
+              <div className="flex flex-col gap-3 lg:hidden">
+                {paged.map((r) => (
+                  <div key={r.id} className="rounded-xl border border-ink-200 bg-white p-4">
+                    <div className="mb-1.5 flex items-start justify-between gap-2">
+                      <span className="text-[15px] font-bold text-slate-900">{r.name}</span>
+                      {r.sector && (
+                        <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-semibold text-emerald-700">{r.sector}</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-500">{r.location ?? "—"}</p>
+                    <p className="mt-0.5 text-xs font-semibold text-slate-600">{fmt(r.start_date, r.end_date)}</p>
+                    <div className="mt-2.5 flex gap-4 border-t border-ink-50 pt-2.5">
+                      <button onClick={() => openEdit(r)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
+                      <button onClick={() => setConfirmTarget(r)} className="text-xs font-semibold text-rose-600 hover:text-rose-700">Delete</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="flex flex-col items-center justify-between gap-3 pt-1 sm:flex-row">
+                <p className="text-xs text-slate-500">
+                  Showing {(currentPage - 1) * PER_PAGE + 1}–{Math.min(currentPage * PER_PAGE, filtered.length)} of {filtered.length}
+                </p>
+                {totalPages > 1 && (
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="rounded-md border border-ink-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40">Prev</button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                      <button key={n} onClick={() => setPage(n)} className={`rounded-md px-3 py-1.5 text-xs font-semibold ${n === currentPage ? "bg-emerald-600 text-white" : "border border-ink-200 text-slate-600 hover:bg-slate-50"}`}>{n}</button>
+                    ))}
+                    <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="rounded-md border border-ink-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40">Next</button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
