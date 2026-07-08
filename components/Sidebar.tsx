@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: GridIcon, soon: false },
-  { href: "/suppliers", label: "Connections", icon: TableIcon, soon: false },
   { href: "/exhibitions", label: "Exhibitions", icon: CalendarIcon, soon: false },
-  { href: "/opportunities", label: "Opportunities", icon: GridIcon, soon: false },
+  { href: "/suppliers", label: "Connections", icon: TableIcon, soon: false },
+  { href: "/opportunities", label: "Opportunities", icon: TargetIcon, soon: false },
   { href: "/reports", label: "Reports", icon: ChartIcon, soon: true },
 ];
 
@@ -85,6 +85,16 @@ function CalendarIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <rect x="3" y="4" width="18" height="17" rx="2" />
       <path d="M3 9h18M8 2v4M16 2v4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function TargetIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="5" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
     </svg>
   );
 }

@@ -7,8 +7,8 @@ import AccountMenu from "@/components/AccountMenu";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", soon: false },
-  { href: "/suppliers", label: "Connections", soon: false },
   { href: "/exhibitions", label: "Exhibitions", soon: false },
+  { href: "/suppliers", label: "Connections", soon: false },
   { href: "/opportunities", label: "Opportunities", soon: false },
   { href: "/reports", label: "Reports", soon: true },
 ];
