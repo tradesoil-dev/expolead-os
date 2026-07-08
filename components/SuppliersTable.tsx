@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { PriorityBadge, StatusBadge, InterestBadge } from "@/components/Badge";
+import Select from "@/components/Select";
 import {
   FOLLOW_UP_STATUSES,
   INTEREST_TYPES,
@@ -118,7 +119,6 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
   const targetSuppliers = suppliers.filter((s) => s.is_target).length;
   const followUpsDue = suppliers.filter((s) => s.follow_up_date).length;
   const countries = new Set(suppliers.map((s) => s.country).filter(Boolean)).size;
-  const selectClass = "w-full md:w-auto rounded-lg border border-ink-200 bg-white px-2.5 py-2 text-sm outline-none focus:border-brand-500";
 
     return (
     <div className="space-y-4">
@@ -155,39 +155,35 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
 
         {/* Filters — 2-col grid on mobile, inline row on md+ */}
         <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:items-center">
-          <select value={exhibition} onChange={(e) => setExhibition(e.target.value)} className={selectClass}>
-            <option value="">All exhibitions</option>
-            {exhibitions.map(([id, name]) => (
-              <option key={id} value={id}>{name}</option>
-            ))}
-          </select>
+          <Select
+            value={exhibition}
+            onChange={setExhibition}
+            options={[{ value: "", label: "All exhibitions" }, ...exhibitions.map(([id, name]) => ({ value: id, label: name }))]}
+          />
 
-          <select value={interest} onChange={(e) => setInterest(e.target.value)} className={selectClass}>
-            <option value="">All classifications</option>
-            {INTEREST_TYPES.map((x) => (
-              <option key={x.value} value={x.value}>{x.label}</option>
-            ))}
-          </select>
+          <Select
+            value={interest}
+            onChange={setInterest}
+            options={[{ value: "", label: "All classifications" }, ...INTEREST_TYPES.map((x) => ({ value: x.value, label: x.label }))]}
+          />
 
-          <select value={priority} onChange={(e) => setPriority(e.target.value)} className={selectClass}>
-            <option value="">All priorities</option>
-            {PRIORITIES.map((x) => (
-              <option key={x.value} value={x.value}>{x.label}</option>
-            ))}
-          </select>
+          <Select
+            value={priority}
+            onChange={setPriority}
+            options={[{ value: "", label: "All priorities" }, ...PRIORITIES.map((x) => ({ value: x.value, label: x.label }))]}
+          />
 
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className={selectClass}>
-            <option value="">All statuses</option>
-            {FOLLOW_UP_STATUSES.map((x) => (
-              <option key={x.value} value={x.value}>{x.label}</option>
-            ))}
-          </select>
+          <Select
+            value={status}
+            onChange={setStatus}
+            options={[{ value: "", label: "All statuses" }, ...FOLLOW_UP_STATUSES.map((x) => ({ value: x.value, label: x.label }))]}
+          />
 
-          <select value={visited} onChange={(e) => setVisited(e.target.value)} className={selectClass}>
-            <option value="">All booths</option>
-            <option value="yes">Visited</option>
-            <option value="no">Not visited</option>
-          </select>
+          <Select
+            value={visited}
+            onChange={setVisited}
+            options={[{ value: "", label: "All booths" }, { value: "yes", label: "Visited" }, { value: "no", label: "Not visited" }]}
+          />
 
           <button
             onClick={exportCsv}
