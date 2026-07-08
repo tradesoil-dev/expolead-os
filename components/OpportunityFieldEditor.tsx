@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { OPPORTUNITY_STATUSES, type Opportunity } from "@/lib/types";
+import Select from "./Select";
 
 const PRIORITY_OPTIONS: { value: Opportunity["priority"]; label: string }[] = [
   { value: "high", label: "High" },
@@ -57,15 +58,14 @@ export function OpportunityStatusEditor({
 
   return (
     <div>
-      <select
+      <Select
         value={value}
         onChange={(e) => handleChange(e.target.value as Opportunity["status"])}
-        className="w-full rounded-lg border border-ink-200 bg-white px-2 py-2.5 text-sm font-semibold outline-none focus:border-brand-500"
       >
         {OPPORTUNITY_STATUSES.map((opt) => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
-      </select>
+      </Select>
       {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
     </div>
   );
@@ -98,15 +98,14 @@ export function OpportunityPriorityEditor({
 
   return (
     <div>
-      <select
+      <Select
         value={value}
         onChange={(e) => handleChange(e.target.value as Opportunity["priority"])}
-        className="w-full rounded-lg border border-ink-200 bg-white px-2 py-2.5 text-sm font-semibold outline-none focus:border-brand-500"
       >
         {PRIORITY_OPTIONS.map((opt) => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
-      </select>
+      </Select>
       {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
     </div>
   );
