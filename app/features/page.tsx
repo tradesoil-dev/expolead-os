@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 const AVATARS = [
@@ -83,6 +83,26 @@ export default function FeaturesPage() {
   const [tab, setTab] = useState(0);
   const active = TABS[tab];
 
+  // Scale the laptop mockup to fit its column so it stays a real laptop
+  // (same proportions as desktop) even on a narrow phone, content in order.
+  const lapWrapRef = useRef<HTMLDivElement>(null);
+  const lapInnerRef = useRef<HTMLDivElement>(null);
+  const [lap, setLap] = useState({ scale: 1, h: 0 });
+  useEffect(() => {
+    const wrap = lapWrapRef.current;
+    const inner = lapInnerRef.current;
+    if (!wrap || !inner) return;
+    const DESIGN = 540;
+    const compute = () => {
+      const s = Math.min(1, wrap.clientWidth / DESIGN);
+      setLap({ scale: s, h: inner.offsetHeight * s });
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(wrap);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-slate-950">
       <style>{`
@@ -118,18 +138,16 @@ export default function FeaturesPage() {
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">The exhibition workspace</p>
             <h1 className="mt-3 text-4xl font-black leading-[1.02] tracking-tight text-slate-900 md:text-5xl lg:text-[3.4rem]">capture every booth lead and follow it to a closed deal</h1>
-            <div className="mt-6 flex max-w-xl gap-4">
-              <span className="pt-1 text-sm font-semibold tracking-wide text-slate-400">/001</span>
-              <p className="text-base leading-7 text-slate-600">From the first handshake at your booth to the signed order months later, ExpoLead OS keeps every conversation, product, and follow-up in one place.</p>
-            </div>
+            <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">From the first handshake at your booth to the signed order months later, ExpoLead OS keeps every conversation, product, and follow-up in one place.</p>
             <div className="mt-7 flex gap-3">
               <Link href="/login?mode=signup" className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">Start free trial</Link>
               <Link href="/pricing" className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">See pricing</Link>
             </div>
           </div>
 
-          {/* Laptop */}
-          <div className="relative">
+          {/* Laptop — fixed design width scaled to fit, so it stays a real laptop on mobile too */}
+          <div ref={lapWrapRef} className="relative w-full" style={{ height: lap.h || undefined, minHeight: lap.h ? undefined : 320 }}>
+          <div ref={lapInnerRef} className="absolute left-1/2 top-0 w-[540px] origin-top" style={{ transform: `translateX(-50%) scale(${lap.scale})` }}>
             <div className="rounded-2xl bg-slate-950 p-3 shadow-2xl">
               <div className="overflow-hidden rounded-lg bg-white">
                 <div className="flex items-center gap-1.5 border-b border-slate-200 bg-slate-100 px-3 py-2">
@@ -173,12 +191,13 @@ export default function FeaturesPage() {
                 </div>
               </div>
             </div>
-            {/* Laptop base — desktop only; on mobile the frame above reads as a clean browser window */}
-            <div className="mx-auto hidden w-[116%] -translate-x-[8%] lg:block">
+            {/* Laptop base — wider deck with a trackpad notch */}
+            <div className="mx-auto w-[112%] -translate-x-[5.3%]">
               <div className="relative h-4 w-full rounded-b-xl bg-gradient-to-b from-slate-300 to-slate-400">
                 <div className="absolute left-1/2 top-0 h-2 w-28 -translate-x-1/2 rounded-b-lg bg-slate-500/60" />
               </div>
             </div>
+          </div>
           </div>
         </div>
       </section>

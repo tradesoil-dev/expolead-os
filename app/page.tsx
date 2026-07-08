@@ -539,11 +539,17 @@ export default function HomePage() {
 
         {/* MOBILE PRODUCT MOCKUP — phone only, so mobile visitors see the product */}
         <div className="mt-4 flex justify-center lg:hidden">
-          <div className="w-[220px] rounded-[28px] border-[7px] border-slate-950 bg-white shadow-2xl overflow-hidden flex flex-col">
-            <div className="bg-slate-900 flex justify-center pt-2 pb-1.5 shrink-0">
-              <div className="w-2.5 h-2.5 rounded-full bg-slate-950" />
+          <div className="w-[196px] rounded-[34px] border-[8px] border-slate-950 bg-slate-950 shadow-2xl overflow-hidden flex flex-col">
+            {/* Status bar + dynamic island */}
+            <div className="relative bg-slate-50 flex items-center justify-between px-4 pt-2 pb-1.5 shrink-0">
+              <span className="text-[8px] font-semibold text-slate-700">9:41</span>
+              <div className="absolute left-1/2 top-2 -translate-x-1/2 w-11 h-3.5 rounded-full bg-slate-950" />
+              <div className="flex items-center gap-1">
+                <div className="w-2.5 h-1.5 rounded-[1px] bg-slate-400" />
+                <div className="w-2.5 h-1.5 rounded-[1px] bg-slate-700" />
+              </div>
             </div>
-            <div className="bg-slate-50 flex flex-col gap-2 px-3 py-3">
+            <div className="bg-slate-50 flex flex-col gap-2.5 px-3 pt-3 pb-4">
               <div className="flex items-center gap-2">
                 <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
                   <span className="text-[10px] font-bold text-emerald-700">KK</span>
@@ -558,6 +564,10 @@ export default function HomePage() {
                 <p className="text-[11px] font-semibold text-slate-800">Qualified</p>
               </div>
               <div className="bg-white border border-slate-200 rounded-lg px-3 py-2">
+                <p className="text-[8px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">Products</p>
+                <p className="text-[11px] font-semibold text-slate-800">Used Cooking Oil · 500 MT</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-lg px-3 py-2">
                 <p className="text-[8px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">Follow-up</p>
                 <p className="text-[11px] font-semibold text-amber-500">Due tomorrow</p>
               </div>
@@ -565,12 +575,12 @@ export default function HomePage() {
                 <p className="text-[8px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">Notes</p>
                 <p className="text-[10px] text-slate-600 leading-snug">Interested in 500MT UCO. Send spec sheet.</p>
               </div>
-              <div className="bg-emerald-600 rounded-lg px-3 py-2 text-center">
+              <div className="bg-emerald-600 rounded-lg px-3 py-2.5 text-center">
                 <p className="text-[11px] font-bold text-white">Mark followed up ✓</p>
               </div>
             </div>
-            <div className="bg-slate-50 flex justify-center py-1.5 shrink-0">
-              <div className="w-10 h-1 rounded-full bg-slate-300" />
+            <div className="bg-slate-50 flex justify-center py-2 shrink-0">
+              <div className="w-12 h-1 rounded-full bg-slate-300" />
             </div>
           </div>
         </div>
