@@ -5,12 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-type FollowUp = {
-  id: string;
-  company_name: string;
-  follow_up_date: string;
-  follow_up_status: string;
-};
+type NotItem = { key: string; label: string; date: string; href: string };
 
 type Props = {
   daysLeft: number;
@@ -20,11 +15,11 @@ type Props = {
 export default function NotificationsMenu({ daysLeft, isExpired }: Props) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, right: 0 });
-  const [followUps, setFollowUps] = useState<FollowUp[]>([]);
+  const [items, setItems] = useState<NotItem[]>([]);
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const hasAlert = isExpired || daysLeft <= 7 || followUps.length > 0;
+  const hasAlert = isExpired || daysLeft <= 7 || items.length > 0;
 
   function handleOpen() {
     if (btnRef.current) {
@@ -38,16 +33,32 @@ export default function NotificationsMenu({ daysLeft, isExpired }: Props) {
     if (!isSupabaseConfigured) return;
     const supabase = createClient();
     const today = new Date().toISOString().slice(0, 10);
-    supabase
-      .from("suppliers")
-      .select("id, company_name, follow_up_date, follow_up_status")
-      .lte("follow_up_date", today)
-      .neq("follow_up_status", "closed")
-      .order("follow_up_date", { ascending: true })
-      .limit(5)
-      .then(({ data }) => {
-        if (data) setFollowUps(data);
-      });
+    Promise.all([
+      supabase
+        .from("suppliers")
+        .select("id, company_name, follow_up_date, follow_up_status")
+        .lte("follow_up_date", today)
+        .neq("follow_up_status", "closed")
+        .order("follow_up_date", { ascending: true })
+        .limit(10),
+      supabase
+        .from("opportunities")
+        .select("id, name, next_follow_up_date, next_follow_up_completed")
+        .lte("next_follow_up_date", today)
+        .order("next_follow_up_date", { ascending: true })
+        .limit(10),
+    ]).then(([sup, opp]) => {
+      const fromConnections: NotItem[] = (sup.data ?? [])
+        .filter((s) => s.follow_up_date)
+        .map((s) => ({ key: `s-${s.id}`, label: s.company_name, date: s.follow_up_date, href: `/suppliers/${s.id}` }));
+      const fromOpportunities: NotItem[] = (opp.data ?? [])
+        .filter((o) => o.next_follow_up_date && !o.next_follow_up_completed)
+        .map((o) => ({ key: `o-${o.id}`, label: o.name, date: o.next_follow_up_date as string, href: `/opportunities/${o.id}` }));
+      const merged = [...fromConnections, ...fromOpportunities]
+        .sort((a, b) => (a.date < b.date ? -1 : 1))
+        .slice(0, 6);
+      setItems(merged);
+    });
   }, []);
 
   useEffect(() => {
@@ -110,21 +121,21 @@ export default function NotificationsMenu({ daysLeft, isExpired }: Props) {
               </div>
             )}
 
-            {/* Follow-ups due */}
-            {followUps.length > 0 ? (
+            {/* Follow-ups due — connections + opportunities */}
+            {items.length > 0 ? (
               <div className="px-4 py-2">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-ink-400 py-1">
                   Follow-ups due
                 </p>
-                {followUps.map((f) => (
+                {items.map((it) => (
                   <Link
-                    key={f.id}
-                    href={`/suppliers/${f.id}`}
+                    key={it.key}
+                    href={it.href}
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-between py-2 text-sm text-ink-700 hover:text-emerald-700 transition-colors"
                   >
-                    <span className="font-medium truncate">{f.company_name}</span>
-                    <span className="ml-2 shrink-0 text-xs text-ink-400">{f.follow_up_date}</span>
+                    <span className="font-medium truncate">{it.label}</span>
+                    <span className="ml-2 shrink-0 text-xs text-ink-400">{it.date}</span>
                   </Link>
                 ))}
               </div>

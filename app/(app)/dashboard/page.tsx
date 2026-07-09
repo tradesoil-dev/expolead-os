@@ -5,10 +5,21 @@ import WelcomeCard from "@/components/WelcomeCard";
 import { PriorityBadge } from "@/components/Badge";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
   const suppliers = await getSuppliers();
   const opportunities = await getOpportunities();
+
+  let firstName = "";
+  if (isSupabaseConfigured) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+      firstName = (profile?.full_name ?? "").trim().split(" ")[0] ?? "";
+    }
+  }
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -73,7 +84,7 @@ export default async function DashboardPage() {
     <>
       <PageHeader
         title="Dashboard"
-        subtitle="Your exhibition pipeline and follow-up command center"
+        subtitle={firstName ? `Welcome back, ${firstName}. Here's your exhibition pipeline and follow-up command center.` : "Your exhibition pipeline and follow-up command center"}
       />
 
       <main className="flex-1 space-y-8 p-6 md:p-8">

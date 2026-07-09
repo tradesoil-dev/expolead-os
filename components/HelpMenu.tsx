@@ -62,7 +62,7 @@ export default function HelpMenu() {
               Getting started
             </Link>
             <a
-              href={`mailto:support@tradesoil.com`}
+              href="mailto:hello.expolead@tradesoil.com?subject=ExpoLead%20OS%20support%20request"
               className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
               onClick={() => setOpen(false)}
             >
