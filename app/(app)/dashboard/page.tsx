@@ -82,49 +82,49 @@ export default async function DashboardPage() {
 
         <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatCard
-            label="Active Opportunities"
-            value={activeOpportunities}
-            hint="Open business opportunities"
-          />
-          <StatCard
-            label="Pipeline Volume"
-            value={`${pipelineVolume.toLocaleString()} MT`}
-            hint="Total potential volume"
+            label="Active Exhibitions"
+            value={exhibitionsCount}
+            hint="Shows with saved leads"
             accent="emerald"
           />
-          <StatCard
-            label="Due Today"
-            value={dueTodayFollowUps.length}
-            hint="Follow-ups requiring action"
-            accent="emerald"
-          />
-          <StatCard
-            label="Overdue"
-            value={overdueFollowUps.length}
-            hint="Missed follow-up actions"
-          />
-        </section>
-
-        <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatCard
             label="Connections Captured"
             value={met.length}
             hint="Captured at booths"
           />
           <StatCard
-            label="Active Exhibitions"
-            value={exhibitionsCount}
-            hint="Shows with saved leads"
+            label="Active Opportunities"
+            value={activeOpportunities}
+            hint="Open business opportunities"
+            accent="emerald"
           />
           <StatCard
             label="Visited Booths"
             value={visitedBooths}
             hint="Booths already visited"
           />
+        </section>
+
+        <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <StatCard
+            label="Due Today"
+            value={dueTodayFollowUps.length}
+            hint="Follow-ups requiring action"
+          />
+          <StatCard
+            label="Overdue"
+            value={overdueFollowUps.length}
+            hint="Missed follow-up actions"
+          />
           <StatCard
             label="Unvisited Booths"
             value={unvisitedBooths}
             hint="Booths still to visit"
+          />
+          <StatCard
+            label="Pipeline Volume"
+            value={`${pipelineVolume.toLocaleString()} MT`}
+            hint="Total potential volume"
             accent="emerald"
           />
         </section>
