@@ -146,6 +146,19 @@ export default function AccountMenu({ email }: { email: string | null }) {
                 Admin
               </p>
               <Link
+                href="/admin/people"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-100 transition-colors"
+              >
+                <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="7" r="3" />
+                  <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+                  <path d="M16 3.5a4 4 0 010 7M21 20c0-2.7-1.6-5-4-5.7" />
+                </svg>
+                People
+                <span className="ml-auto rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">Admin</span>
+              </Link>
+              <Link
                 href="/admin/library"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-100 transition-colors"
