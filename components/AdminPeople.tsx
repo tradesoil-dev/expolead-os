@@ -55,7 +55,7 @@ function trialWindow(p: Person): string {
   if (p.is_admin) return "Unlimited";
   if (p.subscription_status === "active") return "Subscribed";
   if (!p.trial_ends_at) return "—";
-  return `${fmtShort(p.created_at)} → ${fmtShort(p.trial_ends_at)}`;
+  return fmtDate(p.trial_ends_at);
 }
 
 export default function AdminPeople({ people }: { people: Person[] }) {
@@ -134,18 +134,18 @@ export default function AdminPeople({ people }: { people: Person[] }) {
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-ink-200 bg-white shadow-card">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[980px] text-sm">
           <thead>
             <tr className="border-b border-ink-200 bg-ink-50 text-left text-xs font-medium text-ink-500">
-              <th className="px-4 py-2.5">Email</th>
-              <th className="px-4 py-2.5">Name / Company</th>
-              <th className="px-4 py-2.5">Type</th>
-              <th className="px-4 py-2.5">Country</th>
-              <th className="px-4 py-2.5">Signed up</th>
-              <th className="px-4 py-2.5">Trial</th>
-              <th className="px-4 py-2.5">Last active</th>
-              <th className="px-4 py-2.5">Status</th>
-              <th className="px-4 py-2.5">Plan</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Email</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Name / Company</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Type</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Country</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Signed up</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Trial ends</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Last active</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Status</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Plan</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-ink-100">
@@ -157,7 +157,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
                 const company = isCompany(p.email);
                 return (
                   <tr key={p.id} className={`transition-colors hover:bg-ink-50 ${!p.confirmed_at ? "bg-amber-50/40" : ""}`}>
-                    <td className="px-4 py-3">
+                    <td className="whitespace-nowrap px-4 py-3">
                       <span className="font-medium text-ink-900">{p.email}</span>
                       {p.is_admin && <span className="ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">ADMIN</span>}
                     </td>
@@ -173,9 +173,9 @@ export default function AdminPeople({ people }: { people: Person[] }) {
                     <td className="px-4 py-3 text-ink-700">
                       {p.signup_country ? <span>{flag(p.signup_country)} {p.signup_country}</span> : <span className="text-ink-400">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-ink-600">{fmtDate(p.created_at)}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-ink-600">{trialWindow(p)}</td>
-                    <td className="px-4 py-3">
+                    <td className="whitespace-nowrap px-4 py-3 text-ink-600">{fmtDate(p.created_at)}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-ink-600">{trialWindow(p)}</td>
+                    <td className="whitespace-nowrap px-4 py-3">
                       {p.last_sign_in_at ? (
                         <span className="text-ink-600">{fmtDate(p.last_sign_in_at)}</span>
                       ) : (
