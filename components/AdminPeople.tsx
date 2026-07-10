@@ -7,6 +7,7 @@ type Person = {
   email: string;
   created_at: string | null;
   confirmed_at: string | null;
+  last_sign_in_at: string | null;
   full_name: string | null;
   company_name: string | null;
   trial_ends_at: string | null;
@@ -44,16 +45,17 @@ function planOf(p: Person): { label: string; cls: string } {
 
 export default function AdminPeople({ people }: { people: Person[] }) {
   const [q, setQ] = useState("");
-  const [filter, setFilter] = useState<"all" | "confirmed" | "pending" | "company">("all");
+  const [filter, setFilter] = useState<"all" | "confirmed" | "pending" | "company" | "never">("all");
 
   const stats = useMemo(() => {
     const total = people.length;
     const confirmed = people.filter((p) => p.confirmed_at).length;
     const pending = total - confirmed;
     const company = people.filter((p) => isCompany(p.email)).length;
+    const never = people.filter((p) => !p.last_sign_in_at).length;
     const week = people.filter((p) => daysAgo(p.created_at) <= 7).length;
     const month = people.filter((p) => daysAgo(p.created_at) <= 30).length;
-    return { total, confirmed, pending, company, companyPct: total ? Math.round((company / total) * 100) : 0, week, month };
+    return { total, confirmed, pending, company, never, companyPct: total ? Math.round((company / total) * 100) : 0, week, month };
   }, [people]);
 
   const rows = useMemo(() => {
@@ -62,6 +64,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
       if (filter === "confirmed" && !p.confirmed_at) return false;
       if (filter === "pending" && p.confirmed_at) return false;
       if (filter === "company" && !isCompany(p.email)) return false;
+      if (filter === "never" && p.last_sign_in_at) return false;
       if (term) {
         const hay = `${p.email} ${p.full_name ?? ""} ${p.company_name ?? ""}`.toLowerCase();
         if (!hay.includes(term)) return false;
@@ -78,7 +81,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
         <Stat label="Not confirmed" value={stats.pending} tone={stats.pending > 0 ? "amber" : undefined} />
         <Stat label="Company emails" value={`${stats.companyPct}%`} sub={`${stats.company} of ${stats.total}`} tone="emerald" />
         <Stat label="New this month" value={stats.month} />
-        <Stat label="Personal emails" value={stats.total - stats.company} />
+        <Stat label="Never signed in" value={stats.never} tone={stats.never > 0 ? "amber" : undefined} />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -92,7 +95,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
           />
         </div>
         <div className="inline-flex rounded-lg bg-slate-100 p-0.5">
-          {([["all", "All"], ["confirmed", "Confirmed"], ["pending", "Not confirmed"], ["company", "Company"]] as const).map(([k, label]) => (
+          {([["all", "All"], ["confirmed", "Confirmed"], ["pending", "Not confirmed"], ["never", "Never signed in"], ["company", "Company"]] as const).map(([k, label]) => (
             <button key={k} onClick={() => setFilter(k)} className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${filter === k ? "bg-white text-emerald-700 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>{label}</button>
           ))}
         </div>
@@ -106,13 +109,14 @@ export default function AdminPeople({ people }: { people: Person[] }) {
               <th className="px-4 py-2.5">Name / Company</th>
               <th className="px-4 py-2.5">Type</th>
               <th className="px-4 py-2.5">Signed up</th>
+              <th className="px-4 py-2.5">Last active</th>
               <th className="px-4 py-2.5">Status</th>
               <th className="px-4 py-2.5">Plan</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-ink-100">
             {rows.length === 0 ? (
-              <tr><td colSpan={6} className="px-4 py-12 text-center text-ink-400">No people match.</td></tr>
+              <tr><td colSpan={7} className="px-4 py-12 text-center text-ink-400">No people match.</td></tr>
             ) : (
               rows.map((p) => {
                 const plan = planOf(p);
@@ -133,6 +137,13 @@ export default function AdminPeople({ people }: { people: Person[] }) {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-ink-600">{fmtDate(p.created_at)}</td>
+                    <td className="px-4 py-3">
+                      {p.last_sign_in_at ? (
+                        <span className="text-ink-600">{fmtDate(p.last_sign_in_at)}</span>
+                      ) : (
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Never</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       {p.confirmed_at ? (
                         <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">Confirmed</span>
