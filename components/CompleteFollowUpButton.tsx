@@ -34,6 +34,7 @@ export default function CompleteFollowUpButton({
     }
 
     showToast("Follow-up marked as completed.", "success");
+    window.dispatchEvent(new Event("expolead:followups-changed"));
     router.refresh();
   }
 
