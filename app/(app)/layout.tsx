@@ -32,13 +32,15 @@ export default async function AppLayout({
       <div className="flex-1 min-w-0 flex flex-col">
         <MobileNav email={email} />
         <div className="hidden md:flex items-center gap-3 px-6 h-14 border-b border-ink-100 bg-white shrink-0">
-          <div className="flex-1 max-w-md">
+          <div className="w-full max-w-md">
             <GlobalSearch />
           </div>
-          <HelpMenu />
-          <NotificationsMenu daysLeft={trial.daysLeft} isExpired={trial.isExpired} />
-          <div className="ml-2">
-            <AccountMenu email={email} />
+          <div className="ml-auto flex items-center gap-1">
+            <HelpMenu />
+            <NotificationsMenu daysLeft={trial.daysLeft} isExpired={trial.isExpired} />
+            <div className="ml-2">
+              <AccountMenu email={email} />
+            </div>
           </div>
         </div>
         <TrialBanner
