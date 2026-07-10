@@ -5,6 +5,7 @@ import TrialBanner from "@/components/TrialBanner";
 import HelpMenu from "@/components/HelpMenu";
 import NotificationsMenu from "@/components/NotificationsMenu";
 import GlobalSearch from "@/components/GlobalSearch";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getTrialStatus } from "@/lib/trial";
@@ -22,6 +23,17 @@ export default async function AppLayout({
       data: { user },
     } = await supabase.auth.getUser();
     email = user?.email ?? null;
+
+    // Stamp the user's country from Vercel's geo header on first visit.
+    if (user) {
+      const { data: prof } = await supabase.from("profiles").select("signup_country").eq("id", user.id).single();
+      if (prof && !prof.signup_country) {
+        const country = (await headers()).get("x-vercel-ip-country");
+        if (country) {
+          await supabase.from("profiles").update({ signup_country: country }).eq("id", user.id);
+        }
+      }
+    }
   }
 
   const trial = await getTrialStatus();

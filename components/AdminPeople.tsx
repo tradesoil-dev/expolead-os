@@ -8,6 +8,7 @@ type Person = {
   created_at: string | null;
   confirmed_at: string | null;
   last_sign_in_at: string | null;
+  signup_country: string | null;
   full_name: string | null;
   company_name: string | null;
   trial_ends_at: string | null;
@@ -31,6 +32,10 @@ function isCompany(email: string) {
 }
 function fmtDate(s: string | null) {
   return s ? new Date(s).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "—";
+}
+function flag(cc: string | null) {
+  if (!cc || cc.length !== 2) return "";
+  return String.fromCodePoint(...[...cc.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)));
 }
 function daysAgo(s: string | null) {
   if (!s) return Infinity;
@@ -56,6 +61,12 @@ export default function AdminPeople({ people }: { people: Person[] }) {
     const week = people.filter((p) => daysAgo(p.created_at) <= 7).length;
     const month = people.filter((p) => daysAgo(p.created_at) <= 30).length;
     return { total, confirmed, pending, company, never, companyPct: total ? Math.round((company / total) * 100) : 0, week, month };
+  }, [people]);
+
+  const topCountries = useMemo(() => {
+    const m = new Map<string, number>();
+    people.forEach((p) => { if (p.signup_country) m.set(p.signup_country, (m.get(p.signup_country) ?? 0) + 1); });
+    return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6);
   }, [people]);
 
   const rows = useMemo(() => {
@@ -84,6 +95,17 @@ export default function AdminPeople({ people }: { people: Person[] }) {
         <Stat label="Never signed in" value={stats.never} tone={stats.never > 0 ? "amber" : undefined} />
       </div>
 
+      {topCountries.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-3">
+          <span className="text-xs font-semibold text-slate-500">Top countries</span>
+          {topCountries.map(([cc, n]) => (
+            <span key={cc} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
+              {flag(cc)} {cc} · {n}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[220px] flex-1">
           <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -108,6 +130,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
               <th className="px-4 py-2.5">Email</th>
               <th className="px-4 py-2.5">Name / Company</th>
               <th className="px-4 py-2.5">Type</th>
+              <th className="px-4 py-2.5">Country</th>
               <th className="px-4 py-2.5">Signed up</th>
               <th className="px-4 py-2.5">Last active</th>
               <th className="px-4 py-2.5">Status</th>
@@ -116,7 +139,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
           </thead>
           <tbody className="divide-y divide-ink-100">
             {rows.length === 0 ? (
-              <tr><td colSpan={7} className="px-4 py-12 text-center text-ink-400">No people match.</td></tr>
+              <tr><td colSpan={8} className="px-4 py-12 text-center text-ink-400">No people match.</td></tr>
             ) : (
               rows.map((p) => {
                 const plan = planOf(p);
@@ -135,6 +158,9 @@ export default function AdminPeople({ people }: { people: Person[] }) {
                       <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${company ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
                         {company ? "Company" : "Personal"}
                       </span>
+                    </td>
+                    <td className="px-4 py-3 text-ink-700">
+                      {p.signup_country ? <span>{flag(p.signup_country)} {p.signup_country}</span> : <span className="text-ink-400">—</span>}
                     </td>
                     <td className="px-4 py-3 text-ink-600">{fmtDate(p.created_at)}</td>
                     <td className="px-4 py-3">
