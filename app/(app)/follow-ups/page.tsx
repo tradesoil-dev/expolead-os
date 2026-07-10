@@ -1,11 +1,13 @@
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+import MarkFollowUpDone from "@/components/MarkFollowUpDone";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 
 export const metadata = { title: "Follow-ups — ExpoLead OS" };
 
 type Item = {
   key: string;
+  rawId: string;
   label: string;
   note: string;
   date: string;
@@ -30,6 +32,7 @@ export default async function FollowUpsPage() {
     if (!s.follow_up_date || s.follow_up_status === "closed") continue;
     items.push({
       key: `s-${s.id}`,
+      rawId: s.id,
       label: s.company_name,
       note: s.country ?? "Connection follow-up",
       date: s.follow_up_date,
@@ -42,6 +45,7 @@ export default async function FollowUpsPage() {
     if (!o.next_follow_up_date || o.next_follow_up_completed) continue;
     items.push({
       key: `o-${o.id}`,
+      rawId: o.id,
       label: o.name,
       note: o.next_follow_up_note || o.product || "Opportunity follow-up",
       date: o.next_follow_up_date,
@@ -122,8 +126,8 @@ function Group({ title, items, tone, empty }: { title: string; items: Item[]; to
       ) : (
         <ul className="divide-y divide-ink-100">
           {items.map((it) => (
-            <li key={it.key}>
-              <Link href={it.href} className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-ink-50">
+            <li key={it.key} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-ink-50">
+              <Link href={it.href} className="flex min-w-0 flex-1 items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="truncate text-sm font-medium text-slate-900">{it.label}</p>
@@ -135,6 +139,7 @@ function Group({ title, items, tone, empty }: { title: string; items: Item[]; to
                   {new Date(it.date).toLocaleDateString()}
                 </span>
               </Link>
+              <MarkFollowUpDone kind={it.kind} id={it.rawId} />
             </li>
           ))}
         </ul>

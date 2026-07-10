@@ -11,6 +11,7 @@ import AddMeetingForm from "@/components/AddMeetingForm";
 import AddProductForm from "@/components/AddProductForm";
 import { getSupplier, getExhibitions } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
 import DeleteConnectionButton from "@/components/DeleteConnectionButton";
 
 export default async function SupplierProfile({
@@ -37,6 +38,20 @@ export default async function SupplierProfile({
     a.met_on < b.met_on ? 1 : -1
   );
 
+  // "Met before" — other records for the same company (year over year, other shows)
+  let priorMeets: any[] = [];
+  if (isSupabaseConfigured) {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("suppliers")
+      .select("id, company_name, created_at, exhibition:exhibitions(name, start_date)")
+      .ilike("company_name", supplier.company_name)
+      .neq("id", supplier.id)
+      .order("created_at", { ascending: false })
+      .limit(5);
+    priorMeets = data ?? [];
+  }
+
   return (
     <>
       <PageHeader
@@ -53,6 +68,37 @@ export default async function SupplierProfile({
       />
 
       <main className="flex-1 p-6 md:p-8 space-y-6 max-w-3xl">
+        {priorMeets.length > 0 && (
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+            <div className="mb-1 flex items-center gap-2">
+              <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /><path d="M12 7v5l3 2" /></svg>
+              <p className="text-sm font-bold text-emerald-800">You&rsquo;ve met {supplier.company_name} before</p>
+            </div>
+            <p className="mb-3 text-xs text-emerald-700">
+              {priorMeets.length} earlier record{priorMeets.length > 1 ? "s" : ""} for this company. Pick up where you left off instead of starting cold.
+            </p>
+            <ul className="space-y-1.5">
+              {priorMeets.map((p) => (
+                <li key={p.id}>
+                  <Link
+                    href={`/suppliers/${p.id}`}
+                    className="flex items-center justify-between gap-3 rounded-lg border border-emerald-100 bg-white px-3 py-2 text-sm transition-colors hover:bg-emerald-100/50"
+                  >
+                    <span className="truncate font-medium text-slate-800">{p.exhibition?.name ?? "No exhibition on record"}</span>
+                    <span className="shrink-0 text-xs text-slate-500">
+                      {p.exhibition?.start_date
+                        ? new Date(p.exhibition.start_date).getFullYear()
+                        : p.created_at
+                        ? new Date(p.created_at).toLocaleDateString()
+                        : ""}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <InterestBadge interest={supplier.interest_type} />
