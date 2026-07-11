@@ -991,7 +991,7 @@ export default function HomePage() {
             <p className="text-xs text-slate-500 leading-relaxed max-w-[180px]">{t.footer.tagline}</p>
             <div className="mt-4 flex items-center gap-2.5">
               <a
-                href="https://www.linkedin.com/company/expolead-os"
+                href="https://www.linkedin.com/company/expolead-os/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="ExpoLead OS on LinkedIn"
