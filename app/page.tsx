@@ -989,6 +989,26 @@ export default function HomePage() {
               </span>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed max-w-[180px]">{t.footer.tagline}</p>
+            <div className="mt-4 flex items-center gap-2.5">
+              <a
+                href="https://www.linkedin.com/company/expolead-os"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="ExpoLead OS on LinkedIn"
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition-colors hover:bg-emerald-600 hover:text-white"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM8 8h3.83v2.19h.05c.53-1 1.84-2.19 3.79-2.19 4.05 0 4.8 2.67 4.8 6.14V24h-4v-7.03c0-1.68-.03-3.84-2.34-3.84-2.34 0-2.7 1.83-2.7 3.72V24H8V8z" /></svg>
+              </a>
+              <a
+                href="https://x.com/expoleados"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="ExpoLead OS on X"
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition-colors hover:bg-emerald-600 hover:text-white"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5"><path d="M18.9 2H22l-7.64 8.73L23.5 22h-7.02l-5.5-7.19L4.7 22H1.58l8.18-9.34L.5 2h7.2l4.97 6.57L18.9 2zm-1.23 18h1.94L6.4 3.9H4.32L17.67 20z" /></svg>
+              </a>
+            </div>
           </div>
 
           {/* Columns */}
@@ -997,12 +1017,12 @@ export default function HomePage() {
             <div>
               <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col1.heading}</p>
               <div className="flex flex-col gap-3">
-                <a href="#how-it-works" className="text-sm text-slate-500 hover:text-white transition-colors">
+                <Link href="/about" className="text-sm text-slate-500 hover:text-white transition-colors">
                   {lang === "en" ? "About" : "关于我们"}
-                </a>
-                <a href="#how-it-works" className="text-sm text-slate-500 hover:text-white transition-colors">
+                </Link>
+                <Link href="/features" className="text-sm text-slate-500 hover:text-white transition-colors">
                   {lang === "en" ? "Product Overview" : "产品概览"}
-                </a>
+                </Link>
               </div>
             </div>
 
