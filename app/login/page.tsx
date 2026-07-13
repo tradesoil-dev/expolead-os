@@ -8,7 +8,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import {
   Users,
   MessageSquare,
-  FlaskConical,
+  Package,
   FileText,
   CircleCheck,
 } from "lucide-react";
@@ -29,7 +29,7 @@ const stages = [
   {
     title: "Sample",
     subtitle: "Evaluate product",
-    icon: <FlaskConical size={20} />,
+    icon: <Package size={20} />,
   },
   {
     title: "Quote Review",
