@@ -352,6 +352,9 @@ export default function HomePage() {
           <Link href="/features" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
             {t.nav.product}
           </Link>
+          <Link href="/resources" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
+            {lang === "en" ? "Resources" : "资源"}
+          </Link>
           <Link href="/pricing" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
             {t.nav.pricing}
           </Link>
@@ -389,6 +392,9 @@ export default function HomePage() {
         <div className="md:hidden bg-slate-900 border-t border-slate-700 px-4 py-3 flex flex-col gap-1">
           <Link href="/features" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
             {t.nav.product}
+          </Link>
+          <Link href="/resources" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
+            {lang === "en" ? "Resources" : "资源"}
           </Link>
           <Link href="/pricing" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
             {t.nav.pricing}
@@ -1030,6 +1036,9 @@ export default function HomePage() {
             <div>
               <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col3.heading}</p>
               <div className="flex flex-col gap-3">
+                <Link href="/resources" className="text-sm text-slate-500 hover:text-white transition-colors">
+                  {lang === "en" ? "Exhibition Playbook" : "参展指南"}
+                </Link>
                 <a href={`mailto:hello.expolead@tradesoil.com`} className="text-sm text-slate-500 hover:text-white transition-colors">
                   {lang === "en" ? "Help Center" : "帮助中心"}
                 </a>
