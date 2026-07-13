@@ -9,6 +9,7 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getTrialStatus } from "@/lib/trial";
+import { sendWelcomeEmail } from "@/lib/welcome-email";
 
 export default async function AppLayout({
   children,
@@ -24,13 +25,29 @@ export default async function AppLayout({
     } = await supabase.auth.getUser();
     email = user?.email ?? null;
 
-    // Stamp the user's country from Vercel's geo header on first visit.
     if (user) {
-      const { data: prof } = await supabase.from("profiles").select("signup_country").eq("id", user.id).single();
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("signup_country, welcome_sent, full_name")
+        .eq("id", user.id)
+        .single();
+
+      // Stamp the user's country from Vercel's geo header on first visit.
       if (prof && !prof.signup_country) {
         const country = (await headers()).get("x-vercel-ip-country");
         if (country) {
           await supabase.from("profiles").update({ signup_country: country }).eq("id", user.id);
+        }
+      }
+
+      // Send the welcome email exactly once — after email is confirmed and the
+      // user first lands in the app (not at signup).
+      if (prof && !prof.welcome_sent && user.email_confirmed_at && user.email) {
+        await supabase.from("profiles").update({ welcome_sent: true }).eq("id", user.id);
+        try {
+          await sendWelcomeEmail(user.email, (prof.full_name ?? "").split(" ")[0] || "there");
+        } catch {
+          // non-fatal — never block the app render on email delivery
         }
       }
     }

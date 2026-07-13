@@ -96,21 +96,13 @@ function LoginForm() {
         if (error) throw error;
 
         if (data.session) {
-          // Signed in immediately — send welcome email then redirect
-          fetch(`${window.location.origin}/api/send-welcome`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "x-internal-secret": process.env.NEXT_PUBLIC_INTERNAL_API_SECRET ?? "" },
-            body: JSON.stringify({ email }),
-          }).catch(() => {});
+          // Signed in immediately (no email confirmation). The welcome email
+          // fires from the app layout on first authenticated load.
           router.push("/dashboard");
           router.refresh();
         } else {
-          // Email confirmation required — send welcome email now
-          fetch(`${window.location.origin}/api/send-welcome`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "x-internal-secret": process.env.NEXT_PUBLIC_INTERNAL_API_SECRET ?? "" },
-            body: JSON.stringify({ email }),
-          }).catch(() => {});
+          // Email confirmation required. Do NOT send the welcome email here —
+          // it fires only after the user confirms and lands in the app.
           setInfo("Account created. Check your email to confirm, then sign in.");
           setMode("signin");
         }
