@@ -61,7 +61,9 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(
+    searchParams.get("confirmed") === "1" ? "Email confirmed. Please sign in to continue." : null
+  );
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {

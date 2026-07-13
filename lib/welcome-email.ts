@@ -61,7 +61,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
             <table cellpadding="0" cellspacing="0">
               <tr>
                 <td style="background:#10b981;border-radius:8px;">
-                  <a href="https://expolead.tradesoil.com" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">Open ExpoLead OS</a>
+                  <a href="https://expolead.tradesoil.com/dashboard" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">Open ExpoLead OS</a>
                 </td>
               </tr>
             </table>

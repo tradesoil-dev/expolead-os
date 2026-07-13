@@ -7,13 +7,15 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
 
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      // Email is now confirmed. Don't auto-login — sign out and send the user
+      // to the sign-in page to log in themselves.
+      await supabase.auth.signOut();
+      return NextResponse.redirect(`${origin}/login?confirmed=1`);
     }
   }
 
