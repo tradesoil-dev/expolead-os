@@ -41,13 +41,22 @@ export default async function AppLayout({
       }
 
       // Send the welcome email exactly once — after email is confirmed and the
-      // user first lands in the app (not at signup).
+      // user first lands in the app (not at signup). The update is atomic
+      // (only flips false -> true) so concurrent page loads can't double-send:
+      // only the request that actually claimed the flag sends the email.
       if (prof && !prof.welcome_sent && user.email_confirmed_at && user.email) {
-        await supabase.from("profiles").update({ welcome_sent: true }).eq("id", user.id);
-        try {
-          await sendWelcomeEmail(user.email, (prof.full_name ?? "").split(" ")[0] || "there");
-        } catch {
-          // non-fatal — never block the app render on email delivery
+        const { data: claimed } = await supabase
+          .from("profiles")
+          .update({ welcome_sent: true })
+          .eq("id", user.id)
+          .eq("welcome_sent", false)
+          .select("id");
+        if (claimed && claimed.length > 0) {
+          try {
+            await sendWelcomeEmail(user.email, (prof.full_name ?? "").split(" ")[0] || "there");
+          } catch {
+            // non-fatal — never block the app render on email delivery
+          }
         }
       }
     }
