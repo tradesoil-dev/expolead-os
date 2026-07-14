@@ -349,18 +349,20 @@ export default function HomePage() {
 
         <div className="anim-nav-links flex items-center gap-3">
           {/* Desktop nav */}
-          <Link href="/features" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
-            {t.nav.product}
-          </Link>
-          <Link href="/resources" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
-            {lang === "en" ? "Resources" : "资源"}
-          </Link>
-          <Link href="/pricing" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
-            {t.nav.pricing}
-          </Link>
-          <Link href="/login" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">
-            {t.nav.login}
-          </Link>
+          <div className="hidden md:flex items-center gap-7 lg:gap-8 mr-3">
+            <Link href="/features" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              {t.nav.product}
+            </Link>
+            <Link href="/resources" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              {lang === "en" ? "Resources" : "资源"}
+            </Link>
+            <Link href="/pricing" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              {t.nav.pricing}
+            </Link>
+            <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              {t.nav.login}
+            </Link>
+          </div>
           <Link href="/login?mode=signup" className="hidden md:block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">
             {t.nav.trial}
           </Link>
