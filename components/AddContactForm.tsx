@@ -73,17 +73,36 @@ export default function AddContactForm({ supplierId }: { supplierId: string }) {
   }
 
   const inp =
-    "rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
+    "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
+  const lbl = "mb-1 block text-xs font-bold uppercase tracking-wide text-ink-500";
 
   return (
     <div className="rounded-lg border border-ink-200 p-3 space-y-3">
-      <div className="grid grid-cols-2 gap-2">
-        <input className={inp} placeholder="Full name" value={c.full_name} onChange={(e) => set("full_name", e.target.value)} />
-        <input className={inp} placeholder="Position" value={c.position} onChange={(e) => set("position", e.target.value)} />
-        <input className={inp} placeholder="Email" value={c.email} onChange={(e) => set("email", e.target.value)} />
-        <input className={inp} placeholder="Phone" value={c.phone} onChange={(e) => set("phone", e.target.value)} />
-        <input className={inp} placeholder="WhatsApp" value={c.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} />
-        <input className={inp} placeholder="WeChat" value={c.wechat} onChange={(e) => set("wechat", e.target.value)} />
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className={lbl}>Full name</label>
+          <input className={inp} placeholder="Gerald Perera" value={c.full_name} onChange={(e) => set("full_name", e.target.value)} />
+        </div>
+        <div>
+          <label className={lbl}>Position</label>
+          <input className={inp} placeholder="Sales Manager" value={c.position} onChange={(e) => set("position", e.target.value)} />
+        </div>
+        <div>
+          <label className={lbl}>Email</label>
+          <input className={inp} placeholder="name@company.com" value={c.email} onChange={(e) => set("email", e.target.value)} />
+        </div>
+        <div>
+          <label className={lbl}>Phone</label>
+          <input className={inp} placeholder="+94 77 123 4567" value={c.phone} onChange={(e) => set("phone", e.target.value)} />
+        </div>
+        <div>
+          <label className={lbl}>WhatsApp</label>
+          <input className={inp} placeholder="+94 77 123 4567" value={c.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} />
+        </div>
+        <div>
+          <label className={lbl}>WeChat</label>
+          <input className={inp} placeholder="WeChat ID" value={c.wechat} onChange={(e) => set("wechat", e.target.value)} />
+        </div>
       </div>
 
       <label className="flex items-center gap-2 text-sm text-ink-600">
