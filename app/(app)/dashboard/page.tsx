@@ -42,12 +42,16 @@ export default async function DashboardPage() {
     suppliers.filter((s) => s.exhibition_id).map((s) => s.exhibition_id)
   ).size;
 
-  const pipelineVolume = formatGroupedVolume(opportunities, quantityUnit);
-
-  const activeOpportunities = opportunities.filter(
+  // Open pipeline only: exclude won (already closed) and lost deals, so the
+  // volume matches the Reports page and the "active opportunities" count.
+  const activeOpps = opportunities.filter(
     (opportunity) =>
       opportunity.status !== "won" && opportunity.status !== "lost"
-  ).length;
+  );
+
+  const pipelineVolume = formatGroupedVolume(activeOpps, quantityUnit);
+
+  const activeOpportunities = activeOpps.length;
 
   const opportunityFollowUps = opportunities.filter(
     (opportunity) =>

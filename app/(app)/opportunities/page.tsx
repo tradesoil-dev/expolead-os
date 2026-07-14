@@ -31,7 +31,14 @@ export default async function OpportunitiesPage() {
       ? 0
       : Math.round((pipelineCounts.won / totalClosed) * 100);
 
-  const potentialVolume = formatGroupedVolume(opportunities, quantityUnit);
+  // Open pipeline only: exclude won and lost so this matches the "active
+  // opportunities" count beside it and the Dashboard and Reports volumes.
+  const activeOpps = opportunities.filter(
+    (opportunity) =>
+      opportunity.status !== "won" && opportunity.status !== "lost"
+  );
+
+  const potentialVolume = formatGroupedVolume(activeOpps, quantityUnit);
 
   const activeCount =
     pipelineCounts.qualified +
