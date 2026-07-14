@@ -1,11 +1,12 @@
 import PageHeader from "@/components/PageHeader";
 import ReportsView from "@/components/ReportsView";
 import { getSuppliers, getOpportunities } from "@/lib/data";
+import { getQuantityUnit } from "@/lib/quantity-unit";
 
 export const metadata = { title: "Reports — ExpoLead OS" };
 
 export default async function ReportsPage() {
-  const [suppliers, opportunities] = await Promise.all([getSuppliers(), getOpportunities()]);
+  const [suppliers, opportunities, quantityUnit] = await Promise.all([getSuppliers(), getOpportunities(), getQuantityUnit()]);
 
   const connections = suppliers.map((s) => ({
     id: s.id,
@@ -28,7 +29,7 @@ export default async function ReportsPage() {
     <>
       <PageHeader title="Reports" subtitle="How your exhibitions are performing" />
       <main className="flex-1 p-6 md:p-8">
-        <ReportsView connections={connections} opportunities={opps} />
+        <ReportsView connections={connections} opportunities={opps} quantityUnit={quantityUnit} />
       </main>
     </>
   );

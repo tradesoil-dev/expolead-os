@@ -43,7 +43,7 @@ function getFollowUpHealth(opp: any) {
   return { label: "Healthy", dueText: `Due in ${daysUntil} days`, className: "bg-emerald-50 text-emerald-700", dotClassName: "bg-emerald-500" };
 }
 
-export default function OpportunityBoard({ opportunities }: { opportunities: any[] }) {
+export default function OpportunityBoard({ opportunities, quantityUnit = "MT" }: { opportunities: any[]; quantityUnit?: string }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
   const [items, setItems] = useState(opportunities);
@@ -147,7 +147,7 @@ export default function OpportunityBoard({ opportunities }: { opportunities: any
                         </div>
 
                         <div className="mt-3 space-y-1 text-xs text-slate-600">
-                          <p><span className="font-semibold">Volume:</span> {opp.quantity || "-"} MT</p>
+                          <p><span className="font-semibold">Volume:</span> {opp.quantity || "-"} {quantityUnit}</p>
                           <p><span className="font-semibold">Market:</span> {opp.destination_market || "-"}</p>
                         </div>
                       </div>

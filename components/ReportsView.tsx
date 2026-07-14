@@ -36,7 +36,7 @@ function withinRange(dateStr: string | null, range: string): boolean {
   return d >= now - days * 86400000;
 }
 
-export default function ReportsView({ connections, opportunities }: { connections: Conn[]; opportunities: Opp[] }) {
+export default function ReportsView({ connections, opportunities, quantityUnit = "MT" }: { connections: Conn[]; opportunities: Opp[]; quantityUnit?: string }) {
   const [exhibition, setExhibition] = useState("");
   const [range, setRange] = useState("year");
   const [tStage, setTStage] = useState<"bar" | "line" | "pie">("bar");
@@ -145,7 +145,7 @@ export default function ReportsView({ connections, opportunities }: { connection
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             <Kpi label="Connections" value={kpis.connections} sub={kpis.newConns > 0 ? `+${kpis.newConns} in 30d` : undefined} />
             <Kpi label="Active opportunities" value={kpis.active} sub={kpis.newOpps > 0 ? `+${kpis.newOpps} in 30d` : undefined} />
-            <Kpi label="Pipeline volume" value={`${kpis.volume.toLocaleString()}`} unit="MT" />
+            <Kpi label="Pipeline volume" value={`${kpis.volume.toLocaleString()}`} unit={quantityUnit} />
             <Kpi label="Win rate" value={kpis.winRate === null ? "—" : `${kpis.winRate}%`} />
             <Kpi label="Follow-up rate" value={kpis.followUpRate === null ? "—" : `${kpis.followUpRate}%`} />
             <Kpi label="Exhibitions" value={kpis.exhibitions} />

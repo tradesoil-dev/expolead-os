@@ -6,18 +6,21 @@ import { PriorityBadge } from "@/components/Badge";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
+import { DEFAULT_QUANTITY_UNIT } from "@/lib/quantity-units";
 
 export default async function DashboardPage() {
   const suppliers = await getSuppliers();
   const opportunities = await getOpportunities();
 
   let firstName = "";
+  let quantityUnit = DEFAULT_QUANTITY_UNIT;
   if (isSupabaseConfigured) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+      const { data: profile } = await supabase.from("profiles").select("full_name, quantity_unit").eq("id", user.id).single();
       firstName = (profile?.full_name ?? "").trim().split(" ")[0] ?? "";
+      quantityUnit = profile?.quantity_unit || DEFAULT_QUANTITY_UNIT;
     }
   }
 
@@ -134,7 +137,7 @@ export default async function DashboardPage() {
           />
           <StatCard
             label="Pipeline Volume"
-            value={`${pipelineVolume.toLocaleString()} MT`}
+            value={`${pipelineVolume.toLocaleString()} ${quantityUnit}`}
             hint="Total potential volume"
             accent="emerald"
           />

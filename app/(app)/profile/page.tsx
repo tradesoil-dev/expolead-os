@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Select from "@/components/Select";
+import { QUANTITY_UNITS, DEFAULT_QUANTITY_UNIT } from "@/lib/quantity-units";
 
 export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
@@ -10,6 +12,8 @@ export default function ProfilePage() {
   const [country, setCountry] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [about, setAbout] = useState("");
+  const [quantityUnit, setQuantityUnit] = useState(DEFAULT_QUANTITY_UNIT);
+  const [savingUnit, setSavingUnit] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [posY, setPosY] = useState(50);
   const [adjusting, setAdjusting] = useState(false);
@@ -32,7 +36,7 @@ export default function ProfilePage() {
     if (!user) return;
     const { data } = await supabase
       .from("profiles")
-      .select("full_name, company_name, role, country, linkedin_url, about, avatar_url, avatar_position_y")
+      .select("full_name, company_name, role, country, linkedin_url, about, avatar_url, avatar_position_y, quantity_unit")
       .eq("id", user.id)
       .single();
     if (data) {
@@ -44,7 +48,18 @@ export default function ProfilePage() {
       setAbout(data.about || "");
       setAvatarUrl(data.avatar_url || null);
       setPosY(data.avatar_position_y ?? 50);
+      setQuantityUnit(data.quantity_unit || DEFAULT_QUANTITY_UNIT);
     }
+  }
+
+  async function saveQuantityUnit(unit: string) {
+    setQuantityUnit(unit);
+    setSavingUnit(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSavingUnit(false); return; }
+    const { error } = await supabase.from("profiles").upsert({ id: user.id, quantity_unit: unit });
+    setSavingUnit(false);
+    showToast(error ? error.message : "Quantity unit saved.", error ? "error" : "success");
   }
 
   async function uploadAvatar(file: File) {
@@ -278,6 +293,21 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="rounded-2xl border bg-white p-5 shadow-sm">
+            <h3 className="text-lg font-bold text-slate-900">Workspace Preferences</h3>
+            <p className="mt-1 text-sm text-slate-600">The unit your deals are measured in. Applies across your dashboard, opportunities, and reports.</p>
+            <div className="mt-3">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-500">Quantity unit</label>
+              <Select
+                value={quantityUnit}
+                onChange={saveQuantityUnit}
+                options={QUANTITY_UNITS}
+                disabled={savingUnit}
+              />
+              <p className="mt-2 text-xs text-slate-500">Pick MT for bulk commodities, or cartons, units, kg, and more for packaged goods.</p>
+            </div>
           </div>
 
           <div className="rounded-2xl border bg-white p-5 shadow-sm">

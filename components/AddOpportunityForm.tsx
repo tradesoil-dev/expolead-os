@@ -8,7 +8,7 @@ import { useToast } from "@/components/useToast";
 import Select from "@/components/Select";
 import type { Exhibition } from "@/lib/types";
 
-export default function AddOpportunityForm({ exhibitions, isLocked }: { exhibitions: Exhibition[]; isLocked?: boolean }) {
+export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit = "MT" }: { exhibitions: Exhibition[]; isLocked?: boolean; quantityUnit?: string }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
   const [open, setOpen] = useState(false);
@@ -139,7 +139,7 @@ booth: "",
         <input
           value={form.quantity}
           onChange={(e) => set("quantity", e.target.value)}
-          placeholder="Quantity, e.g. 500 MT/month"
+          placeholder={`Quantity, e.g. 500 ${quantityUnit}/month`}
           className={inputClass}
         />
 
