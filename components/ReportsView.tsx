@@ -5,8 +5,8 @@ import ReportChart from "@/components/ReportChart";
 import Select from "@/components/Select";
 import { formatGroupedVolume } from "@/lib/quantity-units";
 
-type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null };
-type Opp = { id: string; created_at: string | null; status: string | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
+type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null };
+type Opp = { id: string; created_at: string | null; status: string | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
 
 const STAGE_ORDER: { key: string; label: string; color: string }[] = [
   { key: "researching", label: "Qualified", color: "#64748b" },
@@ -44,6 +44,8 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
   const [tType, setTType] = useState<"doughnut" | "pie" | "bar">("doughnut");
   const [tExh, setTExh] = useState<"bar" | "line">("bar");
   const [tTime, setTTime] = useState<"line" | "bar">("line");
+  const [tCountry, setTCountry] = useState<"bar" | "pie">("bar");
+  const [tMarket, setTMarket] = useState<"bar" | "pie">("bar");
 
   const exhibitionOptions = useMemo(() => {
     const set = new Set<string>();
@@ -122,6 +124,44 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
     };
   }, [fConns]);
 
+  const country = useMemo(() => {
+    const map = new Map<string, number>();
+    fConns.forEach((c) => { const k = (c.country || "").trim() || "Unknown"; map.set(k, (map.get(k) ?? 0) + 1); });
+    const sorted = Array.from(map.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    return { labels: sorted.map(([n]) => n), data: sorted.map(([, v]) => v), colors: sorted.map((_, i) => EXH_COLORS[i % EXH_COLORS.length]) };
+  }, [fConns]);
+
+  const market = useMemo(() => {
+    const map = new Map<string, number>();
+    fOpps.forEach((o) => { const k = (o.market || "").trim(); if (k) map.set(k, (map.get(k) ?? 0) + 1); });
+    const sorted = Array.from(map.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    return { labels: sorted.map(([n]) => n), data: sorted.map(([, v]) => v), colors: sorted.map((_, i) => EXH_COLORS[i % EXH_COLORS.length]) };
+  }, [fOpps]);
+
+  const funnel = useMemo(() => {
+    const c = fConns.length;
+    const o = fOpps.length;
+    const w = fOpps.filter((x) => x.status === "won").length;
+    return { c, o, w };
+  }, [fConns, fOpps]);
+
+  const perExhibition = useMemo(() => {
+    const names = new Set<string>();
+    fConns.forEach((c) => c.exhibition && names.add(c.exhibition));
+    fOpps.forEach((o) => o.exhibition && names.add(o.exhibition));
+    return Array.from(names)
+      .map((name) => {
+        const conns = fConns.filter((c) => c.exhibition === name).length;
+        const opps = fOpps.filter((o) => o.exhibition === name);
+        const won = opps.filter((o) => o.status === "won").length;
+        const lost = opps.filter((o) => o.status === "lost").length;
+        const active = opps.filter((o) => o.status !== "won" && o.status !== "lost");
+        const winRate = won + lost === 0 ? null : Math.round((won / (won + lost)) * 100);
+        return { name, conns, opps: opps.length, won, winRate, volume: formatGroupedVolume(active, quantityUnit) };
+      })
+      .sort((a, b) => b.conns - a.conns);
+  }, [fConns, fOpps, quantityUnit]);
+
   const hasData = connections.length > 0 || opportunities.length > 0;
 
   return (
@@ -165,9 +205,77 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             <Card title="Connections added over time" seg={<Seg value={tTime} onChange={(v) => setTTime(v as any)} options={["line", "bar"]} labels={["Line", "Bar"]} />}>
               <ReportChart type={tTime} labels={time.labels} data={time.data} colors={time.colors} />
             </Card>
+            {country.labels.length > 0 && (
+              <Card title="Connections by country" seg={<Seg value={tCountry} onChange={(v) => setTCountry(v as any)} options={["bar", "pie"]} labels={["Bar", "Pie"]} />}>
+                <ReportChart type={tCountry} labels={country.labels} data={country.data} colors={country.colors} />
+              </Card>
+            )}
+            {market.labels.length > 0 && (
+              <Card title="Opportunities by market" seg={<Seg value={tMarket} onChange={(v) => setTMarket(v as any)} options={["bar", "pie"]} labels={["Bar", "Pie"]} />}>
+                <ReportChart type={tMarket} labels={market.labels} data={market.data} colors={market.colors} />
+              </Card>
+            )}
+          </div>
+
+          <div className="rounded-2xl border border-ink-200 bg-white p-4">
+            <h3 className="mb-3 text-sm font-bold text-slate-900">Conversion funnel</h3>
+            <FunnelBar label="Connections captured" value={funnel.c} max={funnel.c} color="#10b981" />
+            <FunnelBar label="Opportunities created" value={funnel.o} max={funnel.c} color="#38bdf8" pct={funnel.c ? Math.round((funnel.o / funnel.c) * 100) : null} />
+            <FunnelBar label="Deals won" value={funnel.w} max={funnel.c} color="#8b5cf6" pct={funnel.c ? Math.round((funnel.w / funnel.c) * 100) : null} />
+          </div>
+
+          <div className="rounded-2xl border border-ink-200 bg-white p-4">
+            <h3 className="mb-3 text-sm font-bold text-slate-900">Performance by exhibition</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-sm">
+                <thead>
+                  <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                    <th className="py-2 pr-3">Exhibition</th>
+                    <th className="py-2 pr-3 text-right">Connections</th>
+                    <th className="py-2 pr-3 text-right">Opportunities</th>
+                    <th className="py-2 pr-3 text-right">Won</th>
+                    <th className="py-2 pr-3 text-right">Win rate</th>
+                    <th className="py-2 text-right">Pipeline volume</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {perExhibition.length === 0 ? (
+                    <tr><td colSpan={6} className="py-6 text-center text-slate-400">No exhibition data in this range.</td></tr>
+                  ) : (
+                    perExhibition.map((r) => (
+                      <tr key={r.name} className="border-b border-ink-50 last:border-0">
+                        <td className="py-2.5 pr-3 font-semibold text-slate-900">{r.name}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-slate-700">{r.conns}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-slate-700">{r.opps}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-emerald-700 font-semibold">{r.won}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-slate-700">{r.winRate === null ? "—" : `${r.winRate}%`}</td>
+                        <td className="py-2.5 text-right tabular-nums text-slate-700">{r.volume}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+function FunnelBar({ label, value, max, color, pct }: { label: string; value: number; max: number; color: string; pct?: number | null }) {
+  const width = max > 0 ? Math.max((value / max) * 100, value > 0 ? 6 : 0) : 0;
+  return (
+    <div className="mb-2.5 last:mb-0">
+      <div className="mb-1 flex items-center justify-between text-xs">
+        <span className="font-semibold text-slate-700">{label}</span>
+        <span className="tabular-nums text-slate-500">
+          {value.toLocaleString()}{pct !== undefined && pct !== null && <span className="ml-2 font-semibold text-slate-400">{pct}%</span>}
+        </span>
+      </div>
+      <div className="h-6 w-full overflow-hidden rounded-lg bg-slate-100">
+        <div className="h-full rounded-lg transition-all" style={{ width: `${width}%`, backgroundColor: color }} />
+      </div>
     </div>
   );
 }

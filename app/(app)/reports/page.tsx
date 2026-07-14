@@ -13,6 +13,7 @@ export default async function ReportsPage() {
     created_at: (s as any).created_at ?? null,
     interest_type: s.interest_type ?? null,
     exhibition: s.exhibition?.name ?? null,
+    country: s.country ?? null,
   }));
 
   const opps = opportunities.map((o: any) => ({
@@ -22,6 +23,7 @@ export default async function ReportsPage() {
     quantity: Number(o.quantity) || 0,
     quantity_unit: o.quantity_unit ?? null,
     exhibition: o.exhibition ?? null,
+    market: o.destination_market ?? null,
     next_follow_up_date: o.next_follow_up_date ?? null,
     next_follow_up_completed: o.next_follow_up_completed ?? null,
   }));
