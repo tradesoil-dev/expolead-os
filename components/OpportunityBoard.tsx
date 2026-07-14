@@ -147,7 +147,7 @@ export default function OpportunityBoard({ opportunities, quantityUnit = "MT" }:
                         </div>
 
                         <div className="mt-3 space-y-1 text-xs text-slate-600">
-                          <p><span className="font-semibold">Volume:</span> {opp.quantity || "-"} {quantityUnit}</p>
+                          <p><span className="font-semibold">Volume:</span> {opp.quantity || "-"} {opp.quantity_unit || quantityUnit}</p>
                           <p><span className="font-semibold">Market:</span> {opp.destination_market || "-"}</p>
                         </div>
                       </div>

@@ -5,6 +5,7 @@ import OpportunityBoard from "@/components/OpportunityBoard";
 import { getOpportunities, getExhibitions } from "@/lib/data";
 import { getTrialStatus } from "@/lib/trial";
 import { getQuantityUnit } from "@/lib/quantity-unit";
+import { formatGroupedVolume } from "@/lib/quantity-units";
 
 export default async function OpportunitiesPage() {
   const [opportunities, exhibitions, trial, quantityUnit] = await Promise.all([
@@ -30,10 +31,7 @@ export default async function OpportunitiesPage() {
       ? 0
       : Math.round((pipelineCounts.won / totalClosed) * 100);
 
-  const potentialVolume = opportunities.reduce(
-    (total, opportunity) => total + Number(opportunity.quantity || 0),
-    0
-  );
+  const potentialVolume = formatGroupedVolume(opportunities, quantityUnit);
 
   const activeCount =
     pipelineCounts.qualified +
@@ -94,7 +92,7 @@ export default async function OpportunitiesPage() {
               Pipeline Volume
             </p>
             <p className="text-2xl font-bold text-emerald-600">
-              {potentialVolume.toLocaleString()} {quantityUnit}
+              {potentialVolume}
             </p>
           </div>
 

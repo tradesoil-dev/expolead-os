@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useToast } from "@/components/useToast";
 import Select from "@/components/Select";
+import { QUANTITY_UNITS } from "@/lib/quantity-units";
 import type { Exhibition } from "@/lib/types";
 
 export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit = "MT" }: { exhibitions: Exhibition[]; isLocked?: boolean; quantityUnit?: string }) {
@@ -18,13 +19,14 @@ export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit
     name: "",
     product: "",
     quantity: "",
+    quantity_unit: quantityUnit,
     destination_market: "",
     priority: "medium",
     status: "researching",
     notes: "",
 exhibition: "",
 booth: "",
-    
+
   });
 
   function set<K extends keyof typeof form>(key: K, value: string) {
@@ -54,6 +56,7 @@ const { error } = await supabase.from("opportunities").insert({
   name: form.name.trim(),
   product: form.product.trim(),
   quantity: form.quantity || null,
+  quantity_unit: form.quantity_unit || null,
   destination_market: form.destination_market || null,
   priority: form.priority,
   status: form.status,
@@ -74,13 +77,14 @@ if (error) {
       name: "",
       product: "",
       quantity: "",
+      quantity_unit: quantityUnit,
       destination_market: "",
       priority: "medium",
       status: "researching",
       notes: "",
 exhibition: "",
 booth: "",
-    
+
     });
 
     router.refresh();
@@ -136,12 +140,21 @@ booth: "",
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <input
-          value={form.quantity}
-          onChange={(e) => set("quantity", e.target.value)}
-          placeholder={`Quantity, e.g. 500 ${quantityUnit}/month`}
-          className={inputClass}
-        />
+        <div className="flex gap-2">
+          <input
+            value={form.quantity}
+            onChange={(e) => set("quantity", e.target.value)}
+            placeholder="Quantity, e.g. 500"
+            className={`${inputClass} flex-1`}
+          />
+          <div className="w-32 shrink-0">
+            <Select
+              value={form.quantity_unit}
+              onChange={(v) => set("quantity_unit", v)}
+              options={QUANTITY_UNITS.map((u) => ({ value: u.value, label: u.value }))}
+            />
+          </div>
+        </div>
 
 <Select
   value={form.exhibition}

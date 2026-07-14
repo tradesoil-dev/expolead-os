@@ -20,6 +20,7 @@ export default async function ReportsPage() {
     created_at: o.created_at ?? null,
     status: o.status ?? null,
     quantity: Number(o.quantity) || 0,
+    quantity_unit: o.quantity_unit ?? null,
     exhibition: o.exhibition ?? null,
     next_follow_up_date: o.next_follow_up_date ?? null,
     next_follow_up_completed: o.next_follow_up_completed ?? null,

@@ -6,7 +6,7 @@ import { PriorityBadge } from "@/components/Badge";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
-import { DEFAULT_QUANTITY_UNIT } from "@/lib/quantity-units";
+import { DEFAULT_QUANTITY_UNIT, formatGroupedVolume } from "@/lib/quantity-units";
 
 export default async function DashboardPage() {
   const suppliers = await getSuppliers();
@@ -42,10 +42,7 @@ export default async function DashboardPage() {
     suppliers.filter((s) => s.exhibition_id).map((s) => s.exhibition_id)
   ).size;
 
-  const pipelineVolume = opportunities.reduce(
-    (total, opportunity) => total + Number(opportunity.quantity || 0),
-    0
-  );
+  const pipelineVolume = formatGroupedVolume(opportunities, quantityUnit);
 
   const activeOpportunities = opportunities.filter(
     (opportunity) =>
@@ -137,7 +134,7 @@ export default async function DashboardPage() {
           />
           <StatCard
             label="Pipeline Volume"
-            value={`${pipelineVolume.toLocaleString()} ${quantityUnit}`}
+            value={pipelineVolume}
             hint="Total potential volume"
             accent="emerald"
           />

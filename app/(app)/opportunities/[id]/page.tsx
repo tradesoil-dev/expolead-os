@@ -8,8 +8,10 @@ import {
   OpportunityStatusEditor,
   OpportunityPriorityEditor,
   OpportunityTextFieldEditor,
+  OpportunityUnitEditor,
 } from "@/components/OpportunityFieldEditor";
 import { opportunityStatusLabel } from "@/lib/types";
+import { getQuantityUnit } from "@/lib/quantity-unit";
 
 export default async function OpportunityDetailPage({
   params,
@@ -20,6 +22,7 @@ export default async function OpportunityDetailPage({
   const opportunity = await getOpportunity(id);
   const followUps = await getOpportunityFollowUps(id);
   const statusHistory = await getOpportunityStatusHistory(id);
+  const workspaceUnit = await getQuantityUnit();
 
   if (!opportunity) notFound();
 
@@ -62,6 +65,12 @@ export default async function OpportunityDetailPage({
             opportunityId={opportunity.id}
             field="quantity"
             current={opportunity.quantity}
+          />
+          <p className="text-xs text-gray-500 mb-1 mt-3">Unit</p>
+          <OpportunityUnitEditor
+            opportunityId={opportunity.id}
+            current={opportunity.quantity_unit}
+            workspaceDefault={workspaceUnit}
           />
         </div>
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { OPPORTUNITY_STATUSES, type Opportunity } from "@/lib/types";
 import Select from "./Select";
+import { QUANTITY_UNITS } from "@/lib/quantity-units";
 
 const PRIORITY_OPTIONS: { value: Opportunity["priority"]; label: string }[] = [
   { value: "high", label: "High" },
@@ -99,6 +100,44 @@ export function OpportunityPriorityEditor({
         value={value}
         onChange={(v) => handleChange(v as Opportunity["priority"])}
         options={PRIORITY_OPTIONS.map((opt) => ({ value: opt.value, label: opt.label }))}
+      />
+      {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
+    </div>
+  );
+}
+
+export function OpportunityUnitEditor({
+  opportunityId,
+  current,
+  workspaceDefault,
+}: {
+  opportunityId: string;
+  current: string | null;
+  workspaceDefault: string;
+}) {
+  const router = useRouter();
+  const [value, setValue] = useState(current || workspaceDefault);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleChange(next: string) {
+    const previous = value;
+    setValue(next);
+    setError(null);
+    const { error } = await updateOpportunity(opportunityId, "quantity_unit", next);
+    if (error) {
+      setValue(previous);
+      setError(error.message);
+      return;
+    }
+    router.refresh();
+  }
+
+  return (
+    <div>
+      <Select
+        value={value}
+        onChange={handleChange}
+        options={QUANTITY_UNITS.map((u) => ({ value: u.value, label: u.value }))}
       />
       {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
     </div>

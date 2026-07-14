@@ -3,9 +3,10 @@
 import { useMemo, useState } from "react";
 import ReportChart from "@/components/ReportChart";
 import Select from "@/components/Select";
+import { formatGroupedVolume } from "@/lib/quantity-units";
 
 type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null };
-type Opp = { id: string; created_at: string | null; status: string | null; quantity: number; exhibition: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
+type Opp = { id: string; created_at: string | null; status: string | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
 
 const STAGE_ORDER: { key: string; label: string; color: string }[] = [
   { key: "researching", label: "Qualified", color: "#64748b" },
@@ -64,7 +65,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
     const active = fOpps.filter((o) => o.status !== "won" && o.status !== "lost");
     const won = fOpps.filter((o) => o.status === "won").length;
     const lost = fOpps.filter((o) => o.status === "lost").length;
-    const volume = active.reduce((t, o) => t + (Number(o.quantity) || 0), 0);
+    const volume = formatGroupedVolume(active, quantityUnit);
     const withFu = fOpps.filter((o) => o.next_follow_up_date);
     const doneFu = withFu.filter((o) => o.next_follow_up_completed);
     const exhibitions = new Set(fConns.map((c) => c.exhibition).filter(Boolean)).size;
@@ -81,7 +82,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
       followUpRate: withFu.length === 0 ? null : Math.round((doneFu.length / withFu.length) * 100),
       exhibitions,
     };
-  }, [fConns, fOpps]);
+  }, [fConns, fOpps, quantityUnit]);
 
   const stage = useMemo(() => {
     const counts = STAGE_ORDER.map((s) => fOpps.filter((o) => o.status === s.key).length);
@@ -145,7 +146,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             <Kpi label="Connections" value={kpis.connections} sub={kpis.newConns > 0 ? `+${kpis.newConns} in 30d` : undefined} />
             <Kpi label="Active opportunities" value={kpis.active} sub={kpis.newOpps > 0 ? `+${kpis.newOpps} in 30d` : undefined} />
-            <Kpi label="Pipeline volume" value={`${kpis.volume.toLocaleString()}`} unit={quantityUnit} />
+            <Kpi label="Pipeline volume" value={kpis.volume} />
             <Kpi label="Win rate" value={kpis.winRate === null ? "—" : `${kpis.winRate}%`} />
             <Kpi label="Follow-up rate" value={kpis.followUpRate === null ? "—" : `${kpis.followUpRate}%`} />
             <Kpi label="Exhibitions" value={kpis.exhibitions} />

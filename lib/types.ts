@@ -168,6 +168,7 @@ export type Opportunity = {
   name: string;
   product: string;
   quantity: string | null;
+  quantity_unit: string | null;
   destination_market: string | null;
 exhibition: string | null;
 booth: string | null;
