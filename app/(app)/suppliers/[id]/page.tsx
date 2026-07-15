@@ -8,7 +8,9 @@ import AddContactForm from "@/components/AddContactForm";
 import ContactManager from "@/components/ContactManager";
 
 import AddMeetingForm from "@/components/AddMeetingForm";
+import MeetingManager from "@/components/MeetingManager";
 import AddProductForm from "@/components/AddProductForm";
+import SupplierNotesEditor from "@/components/SupplierNotesEditor";
 import { getSupplier, getExhibitions } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
@@ -172,86 +174,62 @@ export default async function SupplierProfile({
         </div>
         
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-          <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-  <div className="flex items-center justify-between gap-4">
-  <h2 className="text-sm font-semibold">Products Discussed</h2>
-  <AddProductForm supplierId={supplier.id} />
-</div>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-sm font-semibold">Products Discussed</h2>
+            <AddProductForm supplierId={supplier.id} />
+          </div>
 
-  {!supplier.products || supplier.products.length === 0 ? (
-    <p className="text-sm text-ink-400">No products added yet.</p>
-  ) : (
-    <ul className="space-y-3">
-      {supplier.products.map((p) => (
-        <li key={p.id} className="rounded-lg border border-ink-100 p-3">
-          <p className="font-medium">{p.name}</p>
-
-          {p.application && (
-            <p className="text-sm text-ink-500 mt-1">
-              {p.application}
-            </p>
-          )}
-
-          {p.certifications.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {p.certifications.map((c) => (
-                <span
-                  key={c}
-                  className="rounded-full bg-ink-100 px-2 py-1 text-xs"
-                >
-                  {c}
-                </span>
+          {!supplier.products || supplier.products.length === 0 ? (
+            <p className="text-sm text-ink-400">No products added yet.</p>
+          ) : (
+            <ul className="divide-y divide-ink-100">
+              {supplier.products.map((p) => (
+                <li key={p.id} className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0">
+                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12" /></svg>
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-ink-900">{p.name}</p>
+                    {p.application && <p className="text-xs text-ink-500">{p.application}</p>}
+                    {p.certifications.length > 0 && (
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {p.certifications.map((c) => (
+                          <span key={c} className="rounded-full bg-ink-100 px-2 py-0.5 text-[11px] font-medium text-ink-600">{c}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-  <h2 className="text-sm font-semibold">Activity Timeline</h2>
+        </div>
 
-  <div className="space-y-3 text-sm">
-    <div>
-      <p className="font-medium">✓ Connection Added</p>
-      <p className="text-ink-400">Company profile created</p>
-    </div>
+        <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
+          <h2 className="mb-4 text-sm font-semibold">Activity Timeline</h2>
+          <ol className="relative space-y-5 border-l border-ink-100 pl-6">
+            {[
+              { done: true, title: "Connection added", sub: "Company profile created" },
+              supplier.visited ? { done: true, title: "Booth visited", sub: supplier.visit_date ?? "Visit date not recorded" } : null,
+              contacts.length > 0 ? { done: true, title: "Contact captured", sub: `${contacts.length} contact${contacts.length === 1 ? "" : "s"} saved` } : null,
+              meetings.length > 0 ? { done: true, title: "Meeting logged", sub: `${meetings.length} meeting${meetings.length === 1 ? "" : "s"} recorded` } : null,
+              supplier.follow_up_date ? { done: false, title: "Follow-up scheduled", sub: supplier.follow_up_date } : null,
+            ].filter(Boolean).map((ev: any, i) => (
+              <li key={i} className="relative">
+                <span className={`absolute -left-[31px] grid h-5 w-5 place-items-center rounded-full ring-4 ring-white ${ev.done ? "bg-emerald-500 text-white" : "bg-amber-400 text-white"}`}>
+                  {ev.done ? (
+                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                  ) : (
+                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v4l2.5 1.5" /></svg>
+                  )}
+                </span>
+                <p className="text-sm font-medium text-ink-900">{ev.title}</p>
+                <p className="text-xs text-ink-400">{ev.sub}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
 
-    {supplier.visited && (
-      <div>
-        <p className="font-medium">✓ Booth Visited</p>
-        <p className="text-ink-400">
-          {supplier.visit_date ?? "Visit date not recorded"}
-        </p>
-      </div>
-    )}
-
-    {contacts.length > 0 && (
-      <div>
-        <p className="font-medium">✓ Contact Captured</p>
-        <p className="text-ink-400">
-          {contacts.length} contact{contacts.length === 1 ? "" : "s"} saved
-        </p>
-      </div>
-    )}
-
-    {meetings.length > 0 && (
-      <div>
-        <p className="font-medium">✓ Meeting Logged</p>
-        <p className="text-ink-400">
-          {meetings.length} meeting{meetings.length === 1 ? "" : "s"} recorded
-        </p>
-      </div>
-    )}
-
-    {supplier.follow_up_date && (
-      <div>
-        <p className="font-medium">⏳ Follow-up Scheduled</p>
-        <p className="text-ink-400">{supplier.follow_up_date}</p>
-      </div>
-    )}
-  </div>
-</div>
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-sm font-semibold">Meetings</h2>
@@ -263,15 +241,7 @@ export default async function SupplierProfile({
           ) : (
             <ul className="space-y-3">
               {meetings.map((mt) => (
-                <li key={mt.id} className="rounded-lg border border-ink-100 p-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{mt.met_on}</span>
-                    {mt.exhibition?.name && (
-                      <span className="text-xs text-ink-500">{mt.exhibition.name}</span>
-                    )}
-                  </div>
-                  {mt.notes && <p className="text-sm text-ink-700 mt-1 whitespace-pre-wrap">{mt.notes}</p>}
-                </li>
+                <MeetingManager key={mt.id} meeting={mt} exhibitions={exhibitions} />
               ))}
             </ul>
           )}
@@ -295,10 +265,7 @@ export default async function SupplierProfile({
         </div>
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
-          <h2 className="text-sm font-semibold mb-2">Notes</h2>
-          <p className="text-sm text-ink-700 whitespace-pre-wrap">
-            {supplier.notes?.trim() ? supplier.notes : <span className="text-ink-400">No notes.</span>}
-          </p>
+          <SupplierNotesEditor supplierId={supplier.id} initialNotes={supplier.notes} />
         </div>
       </main>
     </>

@@ -33,7 +33,7 @@ export default function ClassificationUpdater({
         <Select
           value={value}
           onChange={(v) => update(v as InterestType)}
-          className="py-2"
+          size="sm"
           options={INTEREST_TYPES.map((c) => ({ value: c.value, label: c.label }))}
         />
       </div>

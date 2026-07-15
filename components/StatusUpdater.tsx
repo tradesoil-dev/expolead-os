@@ -33,7 +33,7 @@ export default function StatusUpdater({
         <Select
           value={status}
           onChange={(v) => update(v as FollowUpStatus)}
-          className="py-2"
+          size="sm"
           options={FOLLOW_UP_STATUSES.map((s) => ({ value: s.value, label: s.label }))}
         />
       </div>

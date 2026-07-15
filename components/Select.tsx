@@ -15,6 +15,7 @@ export default function Select({
   placeholder = "Select…",
   disabled = false,
   className = "",
+  size = "md",
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -22,6 +23,7 @@ export default function Select({
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  size?: "sm" | "md";
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -80,7 +82,7 @@ export default function Select({
         ref={btnRef}
         onClick={toggle}
         disabled={disabled}
-        className={`flex w-full items-center justify-between gap-2 rounded-xl border bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 transition-colors disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 ${open ? "border-emerald-500 ring-2 ring-emerald-500/20" : "border-ink-200 hover:border-slate-300"} ${className}`}
+        className={`flex w-full items-center justify-between gap-2 rounded-xl border bg-white ${size === "sm" ? "px-3 py-2" : "px-4 py-3"} text-left text-sm font-semibold text-slate-800 transition-colors disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 ${open ? "border-emerald-500 ring-2 ring-emerald-500/20" : "border-ink-200 hover:border-slate-300"} ${className}`}
       >
         <span className={selected ? "truncate" : "truncate text-slate-400"}>{selected ? selected.label : placeholder}</span>
         <svg className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
