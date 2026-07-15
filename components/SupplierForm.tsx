@@ -13,6 +13,9 @@ import {
   FOLLOW_UP_STATUSES,
   type Exhibition,
 } from "@/lib/types";
+import { User, Building2, Tag, MapPin, StickyNote } from "lucide-react";
+
+const SI = { size: 15, strokeWidth: 2 } as const;
 
 export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[] }) {
   const router = useRouter();
@@ -151,7 +154,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </p>
       )}
 
-      <Section title="Primary contact">
+      <Section title="Primary contact" icon={<User {...SI} />}>
         <Grid>
           <Field label="Full name *">
             <Input value={contact.full_name} onChange={(v) => setC("full_name", v)} placeholder="Li Wei" />
@@ -179,7 +182,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </Grid>
       </Section>
 
-      <Section title="Company">
+      <Section title="Company" icon={<Building2 {...SI} />}>
         <Grid>
           <Field label="Company name *" span2>
             <Input
@@ -207,7 +210,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </Grid>
       </Section>
 
-      <Section title="Classification">
+      <Section title="Classification" icon={<Tag {...SI} />}>
         <Grid>
           <Field label="Classification">
             <Select value={form.interest_type} onChange={(v) => set("interest_type", v)} options={INTEREST_TYPES} />
@@ -239,7 +242,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </Grid>
       </Section>
 
-      <Section title="Booth & exhibition">
+      <Section title="Booth & exhibition" icon={<MapPin {...SI} />}>
         <Grid>
           <Field label="Exhibition">
             <Select
@@ -279,7 +282,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </Grid>
       </Section>
 
-      <Section title="Notes">
+      <Section title="Notes" icon={<StickyNote {...SI} />}>
         <textarea
           value={form.notes}
           onChange={(e) => set("notes", e.target.value)}
@@ -334,10 +337,13 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 const inputClass =
   "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition";
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, icon, children }: { title: string; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
-      <h2 className="text-sm font-semibold mb-4">{title}</h2>
+      <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold">
+        {icon && <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">{icon}</span>}
+        {title}
+      </h2>
       {children}
     </div>
   );
