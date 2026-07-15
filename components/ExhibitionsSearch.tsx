@@ -182,23 +182,25 @@ export default function ExhibitionsSearch({
               href={`/exhibitions/${ex.id}`}
               className={`relative block rounded-2xl border border-ink-200 bg-white p-5 shadow-card hover:border-emerald-200 hover:shadow-lg transition-all ${status.dim ? "opacity-80" : ""}`}
             >
-              <button
-                onClick={(e) => askDelete(e, ex)}
-                aria-label={`Delete ${ex.name}`}
-                title="Delete exhibition"
-                className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-lg border border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:border-rose-200 transition-colors"
-              >
-                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-              </button>
-              <div className="flex items-center justify-between gap-2 pr-9">
+              <div className="flex items-start justify-between gap-2">
                 <h3 className="text-xl font-semibold text-ink-900">
                   {ex.name}
                 </h3>
 
-                <span className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${status.badge}`}>
-                  {status.live && <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />}
-                  {status.label}
-                </span>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${status.badge}`}>
+                    {status.live && <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />}
+                    {status.label}
+                  </span>
+                  <button
+                    onClick={(e) => askDelete(e, ex)}
+                    aria-label={`Delete ${ex.name}`}
+                    title="Delete exhibition"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:border-rose-200 transition-colors"
+                  >
+                    <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                  </button>
+                </div>
               </div>
               <p className="text-sm text-ink-500 mt-0.5">{ex.location ?? "—"}</p>
               <p className="text-xs text-ink-400 mt-2">

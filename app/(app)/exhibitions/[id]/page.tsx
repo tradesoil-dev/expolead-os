@@ -91,11 +91,11 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
     <span className="font-medium">{remaining}</span>
   </div>
 
-  <div className="flex justify-between">
-    <span className="text-ink-500">Location</span>
-    <span className="font-medium">
+  <div className="mt-1 border-t border-ink-100 pt-2">
+    <p className="text-ink-500">Location</p>
+    <p className="mt-0.5 font-medium leading-snug">
       {exhibition.location ?? "-"}
-    </span>
+    </p>
   </div>
 </div>
     
@@ -142,9 +142,17 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
                     </p>
                   </div>
 
-                  <span className="text-sm">
-                    {supplier.visited ? "✓ Visited" : "○ Pending"}
-                  </span>
+                  {supplier.visited ? (
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      Visited
+                    </span>
+                  ) : (
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ink-100 px-2.5 py-1 text-xs font-medium text-ink-500">
+                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                      Pending
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
