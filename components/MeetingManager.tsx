@@ -65,7 +65,6 @@ export default function MeetingManager({
             <Select
               value={form.exhibition_id}
               onChange={(v) => set("exhibition_id", v)}
-              size="sm"
               options={[{ value: "", label: "— None —" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
             />
           </div>
