@@ -11,6 +11,7 @@ import AddMeetingForm from "@/components/AddMeetingForm";
 import MeetingManager from "@/components/MeetingManager";
 import AddProductForm from "@/components/AddProductForm";
 import SupplierNotesEditor from "@/components/SupplierNotesEditor";
+import EditButton from "@/components/EditButton";
 import { getSupplier, getExhibitions } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
@@ -134,16 +135,28 @@ export default async function SupplierProfile({
           </div>
         </div>
 
+        <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-sm font-semibold">Contacts</h2>
+            <AddContactForm supplierId={supplier.id} />
+          </div>
+
+          {contacts.length === 0 ? (
+            <p className="text-sm text-ink-400">No contacts yet.</p>
+          ) : (
+            <ul className="divide-y divide-ink-100">
+              {contacts.map((ct) => (
+                <ContactManager key={ct.id} contact={ct} />
+              ))}
+            </ul>
+          )}
+        </div>
+
                 <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
           <div className="flex items-center justify-between">
   <h2 className="text-sm font-semibold">Booth & Exhibition</h2>
 
-  <Link
-    href={`/suppliers/${supplier.id}/booth/edit`}
-    className="text-sm text-blue-600 hover:underline"
-  >
-    Edit
-  </Link>
+  <EditButton href={`/suppliers/${supplier.id}/booth/edit`} />
 </div>
 
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -174,7 +187,7 @@ export default async function SupplierProfile({
         </div>
         
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-semibold">Products Discussed</h2>
             <AddProductForm supplierId={supplier.id} />
           </div>
@@ -231,7 +244,7 @@ export default async function SupplierProfile({
         </div>
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-semibold">Meetings</h2>
             <AddMeetingForm supplierId={supplier.id} exhibitions={exhibitions} />
           </div>
@@ -242,23 +255,6 @@ export default async function SupplierProfile({
             <ul className="space-y-3">
               {meetings.map((mt) => (
                 <MeetingManager key={mt.id} meeting={mt} exhibitions={exhibitions} />
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Contacts</h2>
-            <AddContactForm supplierId={supplier.id} />
-          </div>
-
-          {contacts.length === 0 ? (
-            <p className="text-sm text-ink-400">No contacts yet.</p>
-          ) : (
-            <ul className="divide-y divide-ink-100">
-              {contacts.map((ct) => (
-                <ContactManager key={ct.id} contact={ct} />
               ))}
             </ul>
           )}

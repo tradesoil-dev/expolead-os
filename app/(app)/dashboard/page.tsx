@@ -7,6 +7,9 @@ import { getSuppliers, getOpportunities } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_QUANTITY_UNIT, formatGroupedVolume } from "@/lib/quantity-units";
+import { Calendar, Users, Target, CircleCheck, Clock, AlertTriangle, MapPin, BarChart3 } from "lucide-react";
+
+const ICON = { size: 17, strokeWidth: 2 } as const;
 
 export default async function DashboardPage() {
   const suppliers = await getSuppliers();
@@ -101,22 +104,26 @@ export default async function DashboardPage() {
             value={exhibitionsCount}
             hint="Shows with saved leads"
             accent="emerald"
+            icon={<Calendar {...ICON} />}
           />
           <StatCard
             label="Connections Captured"
             value={met.length}
             hint="Captured at booths"
+            icon={<Users {...ICON} />}
           />
           <StatCard
             label="Active Opportunities"
             value={activeOpportunities}
             hint="Open business opportunities"
             accent="emerald"
+            icon={<Target {...ICON} />}
           />
           <StatCard
             label="Visited Booths"
             value={visitedBooths}
             hint="Booths already visited"
+            icon={<CircleCheck {...ICON} />}
           />
         </section>
 
@@ -125,22 +132,28 @@ export default async function DashboardPage() {
             label="Due Today"
             value={dueTodayFollowUps.length}
             hint="Follow-ups requiring action"
+            accent="amber"
+            icon={<Clock {...ICON} />}
           />
           <StatCard
             label="Overdue"
             value={overdueFollowUps.length}
             hint="Missed follow-up actions"
+            accent="rose"
+            icon={<AlertTriangle {...ICON} />}
           />
           <StatCard
             label="Unvisited Booths"
             value={unvisitedBooths}
             hint="Booths still to visit"
+            icon={<MapPin {...ICON} />}
           />
           <StatCard
             label="Pipeline Volume"
             value={pipelineVolume}
             hint="Total potential volume"
             accent="emerald"
+            icon={<BarChart3 {...ICON} />}
           />
         </section>
 

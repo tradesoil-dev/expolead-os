@@ -74,10 +74,10 @@ export default function AddMeetingForm({
         onChange={(e) => set("notes", e.target.value)}
       />
       <div className="flex items-center gap-2">
-        <button onClick={save} disabled={saving} className="rounded-lg bg-ink-900 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-ink-700 disabled:opacity-60">
+        <button onClick={save} disabled={saving} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60">
           {saving ? "Saving…" : "Save meeting"}
         </button>
-        <button onClick={() => setOpen(false)} className="text-sm text-ink-500 hover:text-ink-900">Cancel</button>
+        <button onClick={() => setOpen(false)} className="rounded-lg border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-50">Cancel</button>
       </div>
     </div>
   );

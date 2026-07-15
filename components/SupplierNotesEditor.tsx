@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/useToast";
+import EditButton from "@/components/EditButton";
 
 export default function SupplierNotesEditor({
   supplierId,
@@ -33,14 +34,7 @@ export default function SupplierNotesEditor({
       {ToastUI}
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-sm font-semibold">Notes</h2>
-        {!editing && (
-          <button
-            onClick={() => setEditing(true)}
-            className="rounded-full border border-emerald-200 px-3 py-1 text-xs font-medium text-emerald-700 hover:bg-emerald-50"
-          >
-            Edit
-          </button>
-        )}
+        {!editing && <EditButton onClick={() => setEditing(true)} />}
       </div>
 
       {editing ? (
@@ -56,13 +50,13 @@ export default function SupplierNotesEditor({
             <button
               onClick={save}
               disabled={saving}
-              className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
             >
               {saving ? "Saving…" : "Save"}
             </button>
             <button
               onClick={() => { setNotes(initialNotes ?? ""); setEditing(false); }}
-              className="rounded-full border border-ink-200 px-4 py-2 text-xs font-semibold text-ink-600 hover:bg-ink-50"
+              className="rounded-lg border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-50"
             >
               Cancel
             </button>

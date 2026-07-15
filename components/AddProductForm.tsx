@@ -56,7 +56,7 @@ export default function AddProductForm({ supplierId }: { supplierId: string }) {
     "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
 
   return (
-    <div className="rounded-lg border border-ink-200 p-3 space-y-3">
+    <div className="w-full rounded-lg border border-ink-200 p-3 space-y-3">
       <input
         value={form.name}
         onChange={(e) => set("name", e.target.value)}
@@ -82,14 +82,14 @@ export default function AddProductForm({ supplierId }: { supplierId: string }) {
         <button
           onClick={save}
           disabled={saving}
-          className="rounded-lg bg-ink-900 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-ink-700 disabled:opacity-60"
+          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save product"}
         </button>
 
         <button
           onClick={() => setOpen(false)}
-          className="text-sm text-ink-500 hover:text-ink-900"
+          className="rounded-lg border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-50"
         >
           Cancel
         </button>

@@ -77,7 +77,7 @@ export default function AddContactForm({ supplierId }: { supplierId: string }) {
   const lbl = "mb-1 block text-xs font-bold uppercase tracking-wide text-ink-500";
 
   return (
-    <div className="rounded-lg border border-ink-200 p-3 space-y-3">
+    <div className="w-full rounded-lg border border-ink-200 p-3 space-y-3">
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className={lbl}>Full name</label>
@@ -118,11 +118,11 @@ export default function AddContactForm({ supplierId }: { supplierId: string }) {
         <button
           onClick={save}
           disabled={saving}
-          className="rounded-lg bg-ink-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-ink-700 disabled:opacity-60"
+          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save contact"}
         </button>
-        <button onClick={() => setOpen(false)} className="text-sm text-ink-500 hover:text-ink-900">
+        <button onClick={() => setOpen(false)} className="rounded-lg border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-50">
           Cancel
         </button>
       </div>
