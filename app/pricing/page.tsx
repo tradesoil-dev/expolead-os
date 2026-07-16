@@ -5,24 +5,24 @@ import PricingPlans from "@/components/PricingPlans";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
-  description: "Start free for 14 days, no credit card. Solo from $15/month billed annually ($190/year), or $19 monthly. One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
+  description: "Start free, no credit card. Paid plans from $24/month billed annually ($290/year Starter), or $29 monthly. One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
 };
 
 const TRUST = [
   { title: "Isolated & private", desc: "No other user sees your records" },
   { title: "Encrypted", desc: "HTTPS/TLS in transit" },
-  { title: "Exportable anytime", desc: "CSV export on every plan" },
+  { title: "Exportable anytime", desc: "CSV export on Starter & Growth" },
   { title: "No lock-in", desc: "Cancel anytime" },
 ];
 
 const SHOWS = ["ANUGA", "SIAL CHINA", "CHINACOAT", "GULFOOD"];
 
 const FAQ = [
-  { q: "What happens after my 14-day trial?", a: "You keep viewing all your data. To add new records, upgrade to a paid plan." },
-  { q: "Do I need a credit card to start?", a: "No — full access for 14 days, no card required." },
+  { q: "What is the difference between Trial and Starter?", a: "Trial is free and lets you capture one show (1 exhibition, up to 25 connections) to see the value. Starter unlocks unlimited exhibitions, connections and opportunities, plus reports and CSV export." },
+  { q: "Do I need a credit card to start?", a: "No. The Trial plan is free with no card. Paid plans include a 14-day free trial, also no card to start." },
   { q: "Can I switch between monthly and annual?", a: "Yes, anytime from your billing settings." },
-  { q: "Can I export my data?", a: "Yes — CSV export on all plans, during and after trial. Your data is always yours." },
-  { q: "When will the Team plan launch?", a: "Soon — join the waitlist and we'll notify you the moment it's live." },
+  { q: "Can I export my data?", a: "Yes, CSV export on Starter and Growth. Your data is always yours, with no lock-in." },
+  { q: "When do the Growth team features launch?", a: "Soon. Start on Trial or Starter now, and team features (up to 5 users, shared workspace, team reporting) are on the way." },
 ];
 
 const GRADIENT = "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)";

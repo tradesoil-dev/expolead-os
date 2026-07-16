@@ -3,13 +3,81 @@
 import { useState } from "react";
 import Link from "next/link";
 
+type Feature = { label: string; soon?: boolean };
+
+type Plan = {
+  name: string;
+  tagline: string;
+  monthly: number;
+  annual: number;
+  outcome: string;
+  cta: { label: string; href: string };
+  featured?: boolean;
+  badge?: { label: string; tone: "emerald" | "amber" };
+  features: Feature[];
+  inheritsFrom?: string;
+};
+
+const PLANS: Plan[] = [
+  {
+    name: "Trial",
+    tagline: "Try it on a real show",
+    monthly: 0,
+    annual: 0,
+    outcome: "Capture your first show and see the value",
+    cta: { label: "Start free", href: "/login?mode=signup" },
+    features: [
+      { label: "1 exhibition" },
+      { label: "Up to 25 connections" },
+      { label: "Up to 10 opportunities" },
+      { label: "Follow-up tracking & reminders" },
+      { label: "Exhibition library" },
+    ],
+  },
+  {
+    name: "Starter",
+    tagline: "Everything one person needs",
+    monthly: 29,
+    annual: 290,
+    outcome: "Never lose a lead, run your full pipeline solo",
+    cta: { label: "Start free trial", href: "/login?mode=signup" },
+    features: [
+      { label: "Unlimited exhibitions" },
+      { label: "Unlimited connections & opportunities" },
+      { label: "Follow-up tracking & reminders" },
+      { label: "Exhibition library" },
+      { label: "“Met before” year-over-year memory" },
+      { label: "Reports & insights" },
+      { label: "CSV export" },
+      { label: "Email support" },
+    ],
+  },
+  {
+    name: "Growth",
+    tagline: "For teams working shows together",
+    monthly: 99,
+    annual: 990,
+    outcome: "Your whole team, one shared exhibition memory",
+    cta: { label: "Start free trial", href: "/login?mode=signup" },
+    featured: true,
+    badge: { label: "Most popular", tone: "emerald" },
+    inheritsFrom: "Starter",
+    features: [
+      { label: "Up to 5 users", soon: true },
+      { label: "Shared workspace", soon: true },
+      { label: "Team activity & reporting", soon: true },
+      { label: "Priority email support" },
+    ],
+  },
+];
+
 export default function PricingPlans() {
   const [annual, setAnnual] = useState(true);
 
   return (
     <div>
       {/* Billing toggle */}
-      <div className="flex justify-center mb-6">
+      <div className="mb-8 flex justify-center">
         <div className="inline-flex rounded-full border border-slate-200 bg-white p-1">
           <button
             onClick={() => setAnnual(false)}
@@ -26,71 +94,72 @@ export default function PricingPlans() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* SOLO */}
-        <div className="relative rounded-2xl border-2 border-emerald-500 bg-white p-6">
-          <span className="absolute -top-3 left-6 rounded-full bg-emerald-600 px-3 py-1 text-[10px] font-bold text-white">Available now</span>
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Solo</p>
-          <div className="mt-2 flex items-end gap-1.5">
-            <span className="text-4xl font-black text-slate-900">{annual ? "$190" : "$19"}</span>
-            <span className="mb-1.5 text-sm text-slate-500">{annual ? "/year" : "/month"}</span>
-          </div>
-          <p className="mt-1 text-xs text-slate-400">
-            {annual ? "≈ $15.83/mo · 2 months free vs monthly" : "billed monthly · or $190/yr to save"}
-          </p>
-          <Link href="/login?mode=signup" className="mt-5 block rounded-lg bg-emerald-600 py-2.5 text-center text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
-            Start free trial
-          </Link>
-          <p className="mt-5 text-xs font-bold text-slate-600">For solo buyers, traders &amp; sourcing managers</p>
-          <ul className="mt-3 space-y-2.5">
-            {[
-              "Unlimited exhibitions",
-              "Unlimited connections & opportunities",
-              "Follow-up tracking & reminders",
-              "Exhibition library & directory",
-              "CSV export",
-              "Email support",
-            ].map((f) => (
-              <li key={f} className="flex items-center gap-2.5 text-sm text-slate-700">
-                <CheckIcon /> {f}
-              </li>
-            ))}
-            <li className="flex items-center gap-2.5 text-sm text-slate-400">
-              <CheckIcon muted /> <span>AI booth summaries</span>
-              <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">Soon</span>
-            </li>
-          </ul>
-        </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        {PLANS.map((plan) => {
+          const free = plan.monthly === 0;
+          const priceLabel = free ? "$0" : annual ? `$${plan.annual}` : `$${plan.monthly}`;
+          const perLabel = free ? "" : annual ? "/year" : "/month";
+          const subLabel = free
+            ? "No card required to start"
+            : annual
+            ? `≈ $${Math.round((plan.annual / 12) * 10) / 10}/mo · 2 months free`
+            : `or $${plan.annual}/yr to save 2 months`;
 
-        {/* TEAM */}
-        <div className="relative rounded-2xl border border-slate-200 bg-white p-6">
-          <span className="absolute -top-3 left-6 rounded-full bg-amber-100 px-3 py-1 text-[10px] font-bold text-amber-700">Coming soon</span>
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Team</p>
-          <div className="mt-2 flex items-end gap-1.5">
-            <span className="text-4xl font-black text-slate-900">{annual ? "$490" : "$49"}</span>
-            <span className="mb-1.5 text-sm text-slate-500">{annual ? "/year" : "/month"}</span>
-          </div>
-          <p className="mt-1 text-xs text-slate-400">
-            {annual ? "≈ $40.83/mo · 2 months free vs monthly" : "billed monthly · or $490/yr to save"}
-          </p>
-          <a href="mailto:hello.expolead@tradesoil.com?subject=ExpoLead%20OS%20Team%20plan%20waitlist" className="mt-5 block rounded-lg border border-slate-300 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
-            Join the waitlist
-          </a>
-          <p className="mt-5 text-xs font-bold text-slate-600">For trading companies &amp; sourcing teams</p>
-          <ul className="mt-3 space-y-2.5">
-            <li className="flex items-center gap-2.5 text-sm text-slate-700"><CheckIcon /> Everything in Solo</li>
-            <li className="flex items-center gap-2.5 text-sm text-slate-700"><CheckIcon /> Up to 5 users</li>
-            <li className="flex items-center gap-2.5 text-sm text-slate-400">
-              <CheckIcon muted /> <span>Shared workspace</span>
-              <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">Soon</span>
-            </li>
-            <li className="flex items-center gap-2.5 text-sm text-slate-400">
-              <CheckIcon muted /> <span>Team activity &amp; reporting</span>
-              <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">Soon</span>
-            </li>
-          </ul>
-        </div>
+          return (
+            <div
+              key={plan.name}
+              className={`relative flex flex-col rounded-2xl bg-white p-6 ${plan.featured ? "border-2 border-emerald-500 shadow-lg" : "border border-slate-200"}`}
+            >
+              {plan.badge && (
+                <span className={`absolute -top-3 left-6 rounded-full px-3 py-1 text-[10px] font-bold ${plan.badge.tone === "emerald" ? "bg-emerald-600 text-white" : "bg-amber-100 text-amber-700"}`}>
+                  {plan.badge.label}
+                </span>
+              )}
+
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">{plan.name}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">{plan.tagline}</p>
+
+              <div className="mt-4 flex items-end gap-1.5">
+                <span className="text-4xl font-black text-slate-900">{priceLabel}</span>
+                {perLabel && <span className="mb-1.5 text-sm text-slate-500">{perLabel}</span>}
+              </div>
+              <p className="mt-1 text-xs text-slate-400">{subLabel}</p>
+
+              {/* What that covers */}
+              <div className="mt-4 rounded-lg border-l-[3px] border-emerald-500 bg-emerald-50/60 px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-emerald-700">What that covers</p>
+                <p className="mt-0.5 text-[13px] font-medium leading-snug text-slate-700">{plan.outcome}</p>
+              </div>
+
+              <Link
+                href={plan.cta.href}
+                className={`mt-5 block rounded-lg py-2.5 text-center text-sm font-semibold transition-colors ${plan.featured ? "bg-emerald-600 text-white hover:bg-emerald-500" : "border border-slate-300 text-slate-700 hover:bg-slate-50"}`}
+              >
+                {plan.cta.label}
+              </Link>
+
+              <ul className="mt-5 space-y-2.5">
+                {plan.inheritsFrom && (
+                  <li className="flex items-center gap-2.5 text-sm font-medium text-slate-700">
+                    <CheckIcon /> Everything in {plan.inheritsFrom}
+                  </li>
+                )}
+                {plan.features.map((f) => (
+                  <li key={f.label} className={`flex items-center gap-2.5 text-sm ${f.soon ? "text-slate-400" : "text-slate-700"}`}>
+                    <CheckIcon muted={f.soon} />
+                    <span>{f.label}</span>
+                    {f.soon && <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">Soon</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
       </div>
+
+      <p className="mt-6 text-center text-xs text-slate-400">
+        14-day free trial on paid plans. No credit card required to start.
+      </p>
     </div>
   );
 }
