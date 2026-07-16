@@ -74,9 +74,9 @@ const translations = {
     pricingAnchor: {
       label: "Simple, honest pricing",
       priceLead: "Paid plans from",
-      price: "$24",
+      price: "$29",
       priceTail: "/month",
-      sub: "Starter billed annually, or $29 a month. Start free, no credit card. One recovered lead pays for ExpoLead OS for years.",
+      sub: "Or save 2 months billing annually. Start free, no credit card. One recovered lead pays for ExpoLead OS for years.",
       cta: "Start free trial",
       secondary: "See full pricing",
     },
@@ -200,9 +200,9 @@ const translations = {
     pricingAnchor: {
       label: "简单、透明的定价",
       priceLead: "付费套餐低至",
-      price: "$24",
+      price: "$29",
       priceTail: "/月",
-      sub: "Starter 按年计费，或每月 $29。免费开始，无需信用卡。挽回一条线索即可让 ExpoLead OS 物超所值多年。",
+      sub: "按年计费可省 2 个月。免费开始，无需信用卡。挽回一条线索即可让 ExpoLead OS 物超所值多年。",
       cta: "免费试用",
       secondary: "查看完整定价",
     },
