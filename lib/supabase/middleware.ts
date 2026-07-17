@@ -33,7 +33,7 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   const publicRoutes = ["/", "/login", "/reset-password", "/update-password", "/pricing", "/features", "/about", "/privacy", "/terms", "/trade-shows", "/getting-started", "/opengraph-image", "/email-logo", "/auth/callback"];
-  const isPublicRoute = publicRoutes.includes(path) || path === "/resources" || path.startsWith("/resources/");
+  const isPublicRoute = publicRoutes.includes(path) || path === "/resources" || path.startsWith("/resources/") || path === "/hero-preview";
   const isAuthRoute = path === "/login";
 
   if (!user && !isPublicRoute) {
