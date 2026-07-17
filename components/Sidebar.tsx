@@ -17,7 +17,7 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col bg-slate-800 shadow-lg">
+    <aside className="hidden md:flex w-60 shrink-0 flex-col bg-slate-800 shadow-lg sticky top-0 h-screen self-start overflow-y-auto">
       <div className="flex items-center gap-2 px-4 h-14 border-b border-white/10">
         <svg width="26" height="26" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2.2" fill="none"/>
