@@ -2,7 +2,7 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import StatCard from "@/components/StatCard";
 import WelcomeCard from "@/components/WelcomeCard";
-import { PriorityBadge } from "@/components/Badge";
+import { PriorityBadge, StatusBadge } from "@/components/Badge";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
@@ -229,64 +229,80 @@ export default async function DashboardPage() {
           </Panel>
         </section>
 
-        <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Panel
-            title="Recent opportunities"
-            href="/opportunities"
-            linkLabel="View all"
-          >
-            {recentOpportunities.length === 0 ? (
-              <EmptyRow text="No opportunities created yet." />
-            ) : (
-              <ul className="divide-y divide-ink-100">
-                {recentOpportunities.map((opportunity) => (
-                  <li key={opportunity.id}>
-                    <Link
-                      href={`/opportunities/${opportunity.id}`}
-                      className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-ink-50"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">
-                          {opportunity.name}
-                        </p>
-                        <p className="truncate text-xs text-ink-500">
-                          {opportunity.product || "No product added"}
-                        </p>
-                      </div>
-                      <PriorityBadge priority={opportunity.priority} />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Panel>
+        {/* Newest connections — live feed table */}
+        <section className="rounded-xl border border-ink-200 bg-white shadow-card">
+          <div className="flex items-center justify-between gap-2 border-b border-ink-100 px-5 py-3.5">
+            <h2 className="text-sm font-semibold text-ink-900">Newest connections</h2>
+            <Link href="/suppliers" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">View all →</Link>
+          </div>
+          {suppliers.length === 0 ? (
+            <EmptyRow text="No connections yet — add your first one." />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[620px] text-sm">
+                <thead>
+                  <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-ink-400">
+                    <th className="px-5 py-2.5">Company</th>
+                    <th className="px-3 py-2.5">Country</th>
+                    <th className="px-3 py-2.5">Exhibition</th>
+                    <th className="px-3 py-2.5">Status</th>
+                    <th className="px-5 py-2.5 text-right">Added</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {suppliers.slice(0, 6).map((s) => (
+                    <tr key={s.id} className="border-b border-ink-50 last:border-0 hover:bg-ink-50">
+                      <td className="px-5 py-3">
+                        <Link href={`/suppliers/${s.id}`} className="font-medium text-ink-900 hover:text-emerald-700">{s.company_name}</Link>
+                      </td>
+                      <td className="px-3 py-3 text-ink-500">{s.country ?? "—"}</td>
+                      <td className="px-3 py-3 text-ink-500">{s.exhibition?.name ?? "—"}</td>
+                      <td className="px-3 py-3"><StatusBadge status={s.follow_up_status} /></td>
+                      <td className="px-5 py-3 text-right text-ink-400">{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
-          <Panel title="Recently added connections" href="/suppliers" linkLabel="View all">
-            {suppliers.length === 0 ? (
-              <EmptyRow text="No connections yet — add your first one." />
-            ) : (
-              <ul className="divide-y divide-ink-100">
-                {suppliers.slice(0, 5).map((supplier) => (
-                  <li key={supplier.id}>
-                    <Link
-                      href={`/suppliers/${supplier.id}`}
-                      className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-ink-50"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">
-                          {supplier.company_name}
-                        </p>
-                        <p className="truncate text-xs text-ink-500">
-                          {supplier.country ?? "—"}
-                        </p>
-                      </div>
-                      <PriorityBadge priority={supplier.priority} />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Panel>
+        {/* Recent opportunities — live feed table */}
+        <section className="rounded-xl border border-ink-200 bg-white shadow-card">
+          <div className="flex items-center justify-between gap-2 border-b border-ink-100 px-5 py-3.5">
+            <h2 className="text-sm font-semibold text-ink-900">Recent opportunities</h2>
+            <Link href="/opportunities" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">View all →</Link>
+          </div>
+          {recentOpportunities.length === 0 ? (
+            <EmptyRow text="No opportunities created yet." />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-sm">
+                <thead>
+                  <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-ink-400">
+                    <th className="px-5 py-2.5">Opportunity</th>
+                    <th className="px-3 py-2.5">Product</th>
+                    <th className="px-3 py-2.5">Exhibition</th>
+                    <th className="px-3 py-2.5">Priority</th>
+                    <th className="px-5 py-2.5 text-right">Added</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentOpportunities.map((o) => (
+                    <tr key={o.id} className="border-b border-ink-50 last:border-0 hover:bg-ink-50">
+                      <td className="px-5 py-3">
+                        <Link href={`/opportunities/${o.id}`} className="font-medium text-ink-900 hover:text-emerald-700">{o.name}</Link>
+                      </td>
+                      <td className="px-3 py-3 text-ink-500">{o.product || "—"}</td>
+                      <td className="px-3 py-3 text-ink-500">{o.exhibition || "—"}</td>
+                      <td className="px-3 py-3"><PriorityBadge priority={o.priority} /></td>
+                      <td className="px-5 py-3 text-right text-ink-400">{o.created_at ? new Date(o.created_at).toLocaleDateString() : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
       </main>
     </>
