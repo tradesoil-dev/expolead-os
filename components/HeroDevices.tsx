@@ -8,15 +8,16 @@ const SHOTS = [
   "/screenshots/reports.png",
 ];
 
-// Cursor over the sidebar items, as % of the laptop screen area.
 const CURSOR = [
-  { x: 6, y: 20 },
-  { x: 6, y: 33 },
-  { x: 6, y: 42 },
+  { x: 7, y: 12 },
+  { x: 7, y: 19 },
+  { x: 7, y: 24 },
 ];
 
 const LAPTOP = { left: 12.34, top: 6.47, width: 75.2, height: 81.4 };
 const PHONE = { left: 5.71, top: 2.39, width: 88.57, height: 95.14 };
+
+const MOBILE_NAV = ["Dashboard", "Exhibitions", "Connections", "Opportunities", "Follow-ups", "Reports"];
 
 export default function HeroDevices() {
   const [i, setI] = useState(0);
@@ -69,12 +70,20 @@ export default function HeroDevices() {
       {/* Phone — right side, larger, static */}
       <div className="absolute bottom-[-9%] right-[-1%] z-[3] w-[22%]">
         <div
-          className="absolute overflow-hidden bg-white"
-          style={{ left: `${PHONE.left}%`, top: `${PHONE.top}%`, width: `${PHONE.width}%`, height: `${PHONE.height}%`, zIndex: 1, borderRadius: "10%" }}
+          className="absolute overflow-hidden bg-slate-50"
+          style={{ left: `${PHONE.left}%`, top: `${PHONE.top}%`, width: `${PHONE.width}%`, height: `${PHONE.height}%`, zIndex: 1, borderRadius: "9%" }}
         >
-          <img src="/screenshots/mobile-report.png" alt="ExpoLead OS on a phone" className="h-full w-full" style={{ objectFit: "cover", objectPosition: "top" }} />
+          <div className="flex h-full flex-col p-[8%]">
+            <div className="mb-[10%] flex items-center gap-[6%]">
+              <div className="h-[10px] w-[10px] rounded-[2px] bg-emerald-500" />
+              <span className="text-[9px] font-semibold text-slate-900">ExpoLead</span>
+            </div>
+            {MOBILE_NAV.map((n, k) => (
+              <div key={n} className={`mb-[5%] rounded-[5px] px-[8%] py-[6%] text-[8px] ${k === 0 ? "bg-emerald-700 font-medium text-white" : "text-slate-600"}`}>{n}</div>
+            ))}
+          </div>
         </div>
-        <img src="/mockups/phone-t.png" alt="" className="relative block w-full" style={{ zIndex: 2 }} />
+        <img src="/mockups/phone-t.png" alt="ExpoLead OS on a phone" className="relative block w-full" style={{ zIndex: 2 }} />
       </div>
     </div>
   );
