@@ -231,17 +231,20 @@ export default async function DashboardPage() {
 
         {/* Newest connections — live feed table */}
         <section className="rounded-xl border border-ink-200 bg-white shadow-card">
-          <div className="flex items-center justify-between gap-2 border-b border-ink-100 px-5 py-3.5">
-            <h2 className="text-sm font-semibold text-ink-900">Newest connections</h2>
+          <div className="flex items-center justify-between gap-2 border-b border-ink-100 px-5 py-4">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600"><Users size={16} strokeWidth={2} /></span>
+              <h2 className="text-[15px] font-semibold text-ink-900">Newest connections</h2>
+            </div>
             <Link href="/suppliers" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">View all →</Link>
           </div>
           {suppliers.length === 0 ? (
             <EmptyRow text="No connections yet — add your first one." />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-sm">
+              <table className="w-full min-w-[680px] text-sm">
                 <thead>
-                  <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-ink-400">
+                  <tr className="border-b border-ink-100 bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wide text-emerald-700">
                     <th className="px-5 py-2.5">Company</th>
                     <th className="px-3 py-2.5">Country</th>
                     <th className="px-3 py-2.5">Exhibition</th>
@@ -250,17 +253,21 @@ export default async function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {suppliers.slice(0, 6).map((s) => (
-                    <tr key={s.id} className="border-b border-ink-50 last:border-0 hover:bg-ink-50">
-                      <td className="px-5 py-3">
-                        <Link href={`/suppliers/${s.id}`} className="font-medium text-ink-900 hover:text-emerald-700">{s.company_name}</Link>
-                      </td>
-                      <td className="px-3 py-3 text-ink-500">{s.country ?? "—"}</td>
-                      <td className="px-3 py-3 text-ink-500">{s.exhibition?.name ?? "—"}</td>
-                      <td className="px-3 py-3"><StatusBadge status={s.follow_up_status} /></td>
-                      <td className="px-5 py-3 text-right text-ink-400">{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</td>
-                    </tr>
-                  ))}
+                  {suppliers.slice(0, 6).map((s) => {
+                    const primary = s.contacts?.find((c) => c.is_primary) ?? s.contacts?.[0];
+                    return (
+                      <tr key={s.id} className="border-b border-ink-50 last:border-0 hover:bg-ink-50">
+                        <td className="px-5 py-3">
+                          <Link href={`/suppliers/${s.id}`} className="font-medium text-ink-900 hover:text-emerald-700">{s.company_name}</Link>
+                          {primary?.full_name && <p className="text-xs text-ink-400">{primary.full_name}</p>}
+                        </td>
+                        <td className="px-3 py-3 text-ink-500">{s.country ?? "—"}</td>
+                        <td className="px-3 py-3 text-ink-500">{s.exhibition?.name ?? "—"}</td>
+                        <td className="px-3 py-3"><StatusBadge status={s.follow_up_status} /></td>
+                        <td className="px-5 py-3 text-right text-ink-400">{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -269,8 +276,11 @@ export default async function DashboardPage() {
 
         {/* Recent opportunities — live feed table */}
         <section className="rounded-xl border border-ink-200 bg-white shadow-card">
-          <div className="flex items-center justify-between gap-2 border-b border-ink-100 px-5 py-3.5">
-            <h2 className="text-sm font-semibold text-ink-900">Recent opportunities</h2>
+          <div className="flex items-center justify-between gap-2 border-b border-ink-100 px-5 py-4">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600"><Target size={16} strokeWidth={2} /></span>
+              <h2 className="text-[15px] font-semibold text-ink-900">Recent opportunities</h2>
+            </div>
             <Link href="/opportunities" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">View all →</Link>
           </div>
           {recentOpportunities.length === 0 ? (
@@ -279,7 +289,7 @@ export default async function DashboardPage() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px] text-sm">
                 <thead>
-                  <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-ink-400">
+                  <tr className="border-b border-ink-100 bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wide text-emerald-700">
                     <th className="px-5 py-2.5">Opportunity</th>
                     <th className="px-3 py-2.5">Product</th>
                     <th className="px-3 py-2.5">Exhibition</th>
