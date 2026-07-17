@@ -57,7 +57,7 @@ export default function MobileNav({ email }: { email?: string | null }) {
             onClick={() => setOpen(false)}
           />
 
-          <div className="fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-xl flex flex-col">
+          <div className="fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-xl flex flex-col">
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center gap-2">
                 <svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
