@@ -8,15 +8,15 @@ const SHOTS = [
   "/screenshots/reports.png",
 ];
 
-// Cursor target over the sidebar area, as % of the laptop screen content.
+// Cursor over the sidebar items, as % of the laptop screen area.
 const CURSOR = [
-  { x: 7, y: 20 },
-  { x: 7, y: 40 },
-  { x: 7, y: 62 },
+  { x: 6, y: 20 },
+  { x: 6, y: 33 },
+  { x: 6, y: 42 },
 ];
 
-const LAPTOP = { left: 19.75, top: 17.75, width: 64.6, height: 56.93 };
-const PHONE = { left: 37.6, top: 11.88, width: 24.8, height: 76.17 };
+const LAPTOP = { left: 12.34, top: 6.47, width: 75.2, height: 81.4 };
+const PHONE = { left: 5.71, top: 2.39, width: 88.57, height: 95.14 };
 
 export default function HeroDevices() {
   const [i, setI] = useState(0);
@@ -40,11 +40,11 @@ export default function HeroDevices() {
   }, []);
 
   return (
-    <div className="relative mx-auto w-full max-w-[680px]">
+    <div className="relative mx-auto w-full max-w-[760px]">
       {/* Laptop */}
-      <div className="relative">
+      <div className="relative w-[80%]">
         <div
-          className="absolute overflow-hidden"
+          className="absolute overflow-hidden bg-white"
           style={{ left: `${LAPTOP.left}%`, top: `${LAPTOP.top}%`, width: `${LAPTOP.width}%`, height: `${LAPTOP.height}%`, zIndex: 1 }}
         >
           {SHOTS.map((s, idx) => (
@@ -53,36 +53,28 @@ export default function HeroDevices() {
               src={s}
               alt=""
               className="absolute inset-0 h-full w-full transition-opacity duration-500"
-              style={{ objectFit: "cover", objectPosition: "top left", opacity: idx === i ? 1 : 0 }}
+              style={{ objectFit: "contain", opacity: idx === i ? 1 : 0 }}
             />
           ))}
           <div
             className="pointer-events-none absolute transition-all duration-700"
-            style={{ left: `${cursor.x}%`, top: `${cursor.y}%`, transform: `scale(${click ? 0.8 : 1})` }}
+            style={{ left: `${cursor.x}%`, top: `${cursor.y}%`, transform: `scale(${click ? 0.75 : 1})` }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#0f172a" stroke="#fff" strokeWidth="1.5"><path d="M4 2l6 16 2.5-6.5L19 9z" /></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#0f172a" stroke="#fff" strokeWidth="1.6"><path d="M4 2l6 16 2.5-6.5L19 9z" /></svg>
           </div>
         </div>
-        <img src="/mockups/laptop.png" alt="ExpoLead OS on a laptop" className="relative block w-full" style={{ zIndex: 2 }} />
+        <img src="/mockups/laptop-t.png" alt="ExpoLead OS on a laptop" className="relative block w-full" style={{ zIndex: 2 }} />
       </div>
 
-      {/* Phone */}
-      <div className="absolute bottom-[-4%] left-[-2%] w-[26%]">
+      {/* Phone — right side, larger, static */}
+      <div className="absolute bottom-[-9%] right-[-1%] z-[3] w-[22%]">
         <div
           className="absolute overflow-hidden bg-white"
-          style={{ left: `${PHONE.left}%`, top: `${PHONE.top}%`, width: `${PHONE.width}%`, height: `${PHONE.height}%`, zIndex: 1 }}
+          style={{ left: `${PHONE.left}%`, top: `${PHONE.top}%`, width: `${PHONE.width}%`, height: `${PHONE.height}%`, zIndex: 1, borderRadius: "10%" }}
         >
-          <div className="flex h-full flex-col p-[6%]">
-            <div className="mb-[8%] flex items-center gap-[4%]">
-              <div className="h-[7px] w-[7px] rounded-[2px] bg-emerald-500 sm:h-[9px] sm:w-[9px]" />
-              <span className="text-[7px] font-semibold text-slate-900 sm:text-[9px]">ExpoLead</span>
-            </div>
-            {["Dashboard", "Exhibitions", "Connections", "Opportunities", "Follow-ups", "Reports"].map((n, k) => (
-              <div key={n} className={`mb-[3%] rounded-[3px] px-[6%] py-[4%] text-[6px] sm:text-[8px] ${k === 0 ? "bg-emerald-700 font-medium text-white" : "text-slate-600"}`}>{n}</div>
-            ))}
-          </div>
+          <img src="/screenshots/mobile-report.png" alt="ExpoLead OS on a phone" className="h-full w-full" style={{ objectFit: "cover", objectPosition: "top" }} />
         </div>
-        <img src="/mockups/phone.png" alt="ExpoLead OS on a phone" className="relative block w-full" style={{ zIndex: 2 }} />
+        <img src="/mockups/phone-t.png" alt="" className="relative block w-full" style={{ zIndex: 2 }} />
       </div>
     </div>
   );
