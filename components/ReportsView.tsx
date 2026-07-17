@@ -3,7 +3,15 @@
 import { useMemo, useState } from "react";
 import ReportChart from "@/components/ReportChart";
 import Select from "@/components/Select";
+import ReportsPresent from "@/components/ReportsPresent";
 import { formatGroupedVolume } from "@/lib/quantity-units";
+
+const RANGE_LABELS: Record<string, string> = {
+  year: "This year",
+  "90": "Last 90 days",
+  "30": "Last 30 days",
+  all: "All time",
+};
 
 type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null };
 type Opp = { id: string; created_at: string | null; status: string | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
@@ -46,6 +54,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
   const [tTime, setTTime] = useState<"line" | "bar">("line");
   const [tCountry, setTCountry] = useState<"bar" | "pie">("bar");
   const [tMarket, setTMarket] = useState<"bar" | "pie">("bar");
+  const [presenting, setPresenting] = useState(false);
 
   const exhibitionOptions = useMemo(() => {
     const set = new Set<string>();
@@ -167,6 +176,15 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-end gap-2">
+        {hasData && (
+          <button
+            onClick={() => setPresenting(true)}
+            className="mr-auto inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h20v14H2z"/><path d="M8 21h8M12 17v4"/></svg>
+            Present
+          </button>
+        )}
         <div className="w-48"><Select value={exhibition} onChange={setExhibition} options={exhibitionOptions} className="py-2" /></div>
         <div className="w-40"><Select value={range} onChange={setRange} className="py-2" options={[
           { value: "year", label: "This year" },
@@ -175,6 +193,25 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
           { value: "all", label: "All time" },
         ]} /></div>
       </div>
+
+      {presenting && (
+        <ReportsPresent
+          title={exhibition || "All exhibitions"}
+          rangeLabel={RANGE_LABELS[range] ?? "This year"}
+          kpis={kpis}
+          charts={[
+            { key: "stage", heading: "Pipeline by stage", type: "bar", data: stage },
+            { key: "type", heading: "Connections by type", type: "doughnut", data: type },
+            { key: "exh", heading: "Leads by exhibition", type: "bar", data: exh },
+            { key: "time", heading: "Connections added over time", type: "line", data: time },
+            { key: "country", heading: "Connections by country", type: "bar", data: country },
+            { key: "market", heading: "Opportunities by market", type: "bar", data: market },
+          ]}
+          funnel={funnel}
+          perExhibition={perExhibition}
+          onClose={() => setPresenting(false)}
+        />
+      )}
 
       {!hasData ? (
         <div className="rounded-xl border border-ink-200 bg-white px-4 py-16 text-center">
