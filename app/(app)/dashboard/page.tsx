@@ -11,6 +11,15 @@ import { Calendar, Users, Target, CircleCheck, Clock, AlertTriangle, MapPin, Bar
 
 const ICON = { size: 17, strokeWidth: 2 } as const;
 
+const PIPELINE_STAGES = [
+  { key: "researching", label: "Qualified", box: "bg-slate-50 border-slate-200", num: "text-slate-700" },
+  { key: "contacted", label: "Pricing", box: "bg-amber-50 border-amber-200", num: "text-amber-600" },
+  { key: "evaluating", label: "Evaluation", box: "bg-sky-50 border-sky-200", num: "text-sky-600" },
+  { key: "negotiating", label: "Negotiating", box: "bg-violet-50 border-violet-200", num: "text-violet-600" },
+  { key: "won", label: "Won", box: "bg-emerald-50 border-emerald-200", num: "text-emerald-600" },
+  { key: "lost", label: "Lost", box: "bg-rose-50 border-rose-200", num: "text-rose-600" },
+];
+
 export default async function DashboardPage() {
   const suppliers = await getSuppliers();
   const opportunities = await getOpportunities();
@@ -155,6 +164,25 @@ export default async function DashboardPage() {
             accent="emerald"
             icon={<BarChart3 {...ICON} />}
           />
+        </section>
+
+        <section className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <h2 className="text-sm font-semibold text-ink-900">Pipeline at a glance</h2>
+            <Link href="/opportunities" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
+              View pipeline →
+            </Link>
+          </div>
+          <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
+            {PIPELINE_STAGES.map((s) => (
+              <div key={s.key} className={`rounded-xl border ${s.box} p-3 text-center`}>
+                <p className={`text-2xl font-bold tabular-nums ${s.num}`}>
+                  {opportunities.filter((o) => o.status === s.key).length}
+                </p>
+                <p className="mt-0.5 text-[11px] font-medium text-ink-500">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
