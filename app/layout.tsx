@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     url: "https://expolead.tradesoil.com",
     siteName: "ExpoLead OS",
     type: "website",
-    images: [{ url: "https://expolead.tradesoil.com/opengraph-image", width: 1200, height: 630 }],
+    images: [{ url: "https://expolead.tradesoil.com/og.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ExpoLead OS — Exhibition Lead Management for Trade Professionals",
     description: "Capture booth visits, qualify buyers, track samples and follow-ups in one workspace built for international trade exhibitions. Start your free 14-day trial.",
-    images: ["https://expolead.tradesoil.com/opengraph-image"],
+    images: ["https://expolead.tradesoil.com/og.png"],
   },
 };
 
