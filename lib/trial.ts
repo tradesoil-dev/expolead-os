@@ -7,6 +7,13 @@ export type TrialStatus = {
   daysLeft: number;
   plan: string;
   subscriptionStatus: string;
+  /**
+   * CSV export is a paid feature (Starter & Growth). Trial users cannot export
+   * at any point — not during the 14 days and not after expiry. This closes the
+   * "capture free → export on day 13 → re-register next show" loop.
+   * Granting early_access unlocks it manually for pilots.
+   */
+  canExport: boolean;
 };
 
 export async function getTrialStatus(): Promise<TrialStatus> {
@@ -16,6 +23,7 @@ export async function getTrialStatus(): Promise<TrialStatus> {
     daysLeft: 14,
     plan: "trial",
     subscriptionStatus: "trialing",
+    canExport: false,
   };
 
   if (!isSupabaseConfigured) return fallback;
@@ -34,12 +42,12 @@ export async function getTrialStatus(): Promise<TrialStatus> {
 
   // Active paid plan — never locked
   if (data.subscription_status === "active") {
-    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "active" };
+    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "active", canExport: true };
   }
 
   // Early access granted — bypass trial lock entirely
   if (data.early_access) {
-    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "early_access" };
+    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "early_access", canExport: true };
   }
 
   const now = new Date();
@@ -53,5 +61,6 @@ export async function getTrialStatus(): Promise<TrialStatus> {
     daysLeft: Math.max(0, daysLeft),
     plan: data.plan,
     subscriptionStatus: data.subscription_status,
+    canExport: false,
   };
 }

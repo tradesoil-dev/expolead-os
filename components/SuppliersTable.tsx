@@ -14,7 +14,7 @@ import {
   type Supplier,
 } from "@/lib/types";
 
-export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] }) {
+export default function SuppliersTable({ suppliers, canExport }: { suppliers: Supplier[]; canExport: boolean }) {
   const [q, setQ] = useState("");
   const [interest, setInterest] = useState("");
   const [priority, setPriority] = useState("");
@@ -192,13 +192,23 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
         </div>
 
         <div className="flex justify-end">
-          <button
-            onClick={exportCsv}
-            disabled={filtered.length === 0}
-            className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium hover:bg-ink-50 disabled:opacity-50 md:w-auto"
-          >
-            Export CSV
-          </button>
+          {canExport ? (
+            <button
+              onClick={exportCsv}
+              disabled={filtered.length === 0}
+              className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium hover:bg-ink-50 disabled:opacity-50 md:w-auto"
+            >
+              Export CSV
+            </button>
+          ) : (
+            <Link
+              href="/pricing"
+              title="CSV export is available on Starter and Growth"
+              className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-center text-sm font-medium text-ink-400 hover:bg-ink-50 md:w-auto"
+            >
+              🔒 Export CSV
+            </Link>
+          )}
         </div>
       </div>
 

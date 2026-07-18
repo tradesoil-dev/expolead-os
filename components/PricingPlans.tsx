@@ -21,15 +21,16 @@ type Plan = {
 const PLANS: Plan[] = [
   {
     name: "Trial",
-    tagline: "Try it on a real show",
+    tagline: "Try it on a real show, 14 days free",
     monthly: 0,
     annual: 0,
     outcome: "Capture your first show and see the value",
     cta: { label: "Start free", href: "/login?mode=signup" },
     features: [
+      { label: "14 days full access" },
       { label: "1 exhibition" },
       { label: "Up to 25 connections" },
-      { label: "Up to 10 opportunities" },
+      { label: "Up to 25 opportunities" },
       { label: "Follow-up tracking & reminders" },
       { label: "Exhibition library" },
     ],
@@ -157,6 +158,11 @@ export default function PricingPlans() {
         })}
       </div>
 
+      <p className="mt-6 text-center text-xs text-slate-400">
+        Every account starts with a free 14-day trial. No credit card required. After 14 days you keep
+        full access to everything you captured, and upgrade when you want to add more. CSV export is a
+        paid feature.
+      </p>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import PricingPlans from "@/components/PricingPlans";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
-  description: "Start free, no credit card. Paid plans from $29/month ($348/year Starter). One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
+  description: "Free 14-day trial, no credit card. Paid plans from $29/month ($348/year Starter). One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
 };
 
 const TRUST = [
@@ -19,9 +19,10 @@ const SHOWS = ["ANUGA", "SIAL CHINA", "CHINACOAT", "GULFOOD"];
 
 const FAQ = [
   { q: "What is the difference between Trial and Starter?", a: "Trial is free and lets you capture one show (1 exhibition, up to 25 connections) to see the value. Starter unlocks unlimited exhibitions, connections and opportunities, plus reports and CSV export." },
-  { q: "Do I need a credit card to start?", a: "No. The Trial plan is free and needs no card, so you can capture a real show before paying anything." },
+  { q: "Do I need a credit card to start?", a: "No. Every account starts on a free 14-day trial with no card, so you can capture a real show before paying anything." },
+  { q: "What happens after the 14 days?", a: "Nothing disappears. You keep full access to every connection, opportunity and follow-up you captured, and you can still view and edit them. To add new records after day 14, move to Starter or Growth." },
   { q: "Can I switch between monthly and annual?", a: "Yes, anytime from your billing settings." },
-  { q: "Can I export my data?", a: "Yes, CSV export on Starter and Growth. Your data is always yours, with no lock-in." },
+  { q: "Can I export my data?", a: "CSV export is a paid feature, available on Starter and Growth. It is not included in the trial. Your data is always yours and there is no lock-in, so you can export it in full the moment you upgrade." },
   { q: "When do the Growth team features launch?", a: "Soon. Start on Trial or Starter now, and team features (up to 5 users, shared workspace, team reporting) are on the way." },
 ];
 
@@ -130,7 +131,7 @@ export default async function PricingPage() {
             <Link href="/login?mode=signup" className="inline-block rounded-full bg-emerald-600 px-8 py-4 text-base font-semibold text-white hover:bg-emerald-500 transition-colors">
               Get started free →
             </Link>
-            <p className="mt-3 text-sm text-slate-500">Start on the free Trial plan. No credit card required.</p>
+            <p className="mt-3 text-sm text-slate-500">Free for 14 days. No credit card required.</p>
           </div>
         </div>
       </div>

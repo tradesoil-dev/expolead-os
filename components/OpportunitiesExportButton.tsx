@@ -1,12 +1,27 @@
 "use client";
 
+import Link from "next/link";
 import { opportunityStatusLabel, type Opportunity } from "@/lib/types";
 
 export default function OpportunitiesExportButton({
   opportunities,
+  canExport,
 }: {
   opportunities: Opportunity[];
+  canExport: boolean;
 }) {
+  if (!canExport) {
+    return (
+      <Link
+        href="/pricing"
+        title="CSV export is available on Starter and Growth"
+        className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-50"
+      >
+        🔒 Export CSV
+      </Link>
+    );
+  }
+
   function exportCsv() {
     const headers = [
       "Name",
