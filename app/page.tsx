@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import HeroDevices from "@/components/HeroDevices";
 import {
   ArrowRight,
   CheckCircle2,
@@ -438,111 +439,9 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* RIGHT PRODUCT MOCKUP */}
+        {/* RIGHT PRODUCT MOCKUP — real device frames, screens cycle */}
         <div className="relative hidden lg:block">
-          <style>{`
-            @keyframes growUp {
-              0%   { transform: scaleY(0); opacity: 0; }
-              60%  { transform: scaleY(1); opacity: 1; }
-              80%  { transform: scaleY(1); opacity: 1; }
-              95%  { transform: scaleY(0); opacity: 0; }
-              100% { transform: scaleY(0); opacity: 0; }
-            }
-            .bar { transform-origin: bottom; animation: growUp 2.4s cubic-bezier(0.34,1.56,0.64,1) infinite; }
-          `}</style>
-          <div className="absolute -left-10 top-10 h-32 w-44 rounded-2xl bg-white p-4 shadow-xl">
-            <p className="text-xs font-semibold text-slate-500">Lead Quality</p>
-            <div className="mt-4 flex items-end gap-3">
-              <div className="bar h-16 w-8 rounded-t-lg bg-emerald-300" style={{ animationDelay: "0.1s" }} />
-              <div className="bar h-24 w-8 rounded-t-lg bg-emerald-500" style={{ animationDelay: "0.25s" }} />
-              <div className="bar h-20 w-8 rounded-t-lg bg-slate-700" style={{ animationDelay: "0.4s" }} />
-              <div className="bar h-28 w-8 rounded-t-lg bg-emerald-700" style={{ animationDelay: "0.55s" }} />
-            </div>
-          </div>
-          <div className="rounded-[2rem] border-[10px] border-slate-950 bg-white shadow-2xl shadow-emerald-900/20">
-            <div className="border-b border-slate-200 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <p className="font-bold text-slate-900">{t.mockup.title}</p>
-                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{t.mockup.live}</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-4 gap-3 p-5">
-              {mockupItems.map((col, i) => {
-                const Icon = col.icon;
-                return (
-                  <div key={i} className="min-h-[360px] rounded-2xl bg-slate-50 p-4">
-                    <div className="mb-4 flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-bold text-slate-800">{t.mockup.columns[i]}</p>
-                        <p className="text-xs text-slate-500">{col.items.length} {t.mockup.leads}</p>
-                      </div>
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-emerald-700 shadow-sm">
-                        <Icon className="h-4 w-4" />
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      {col.items.map((item) => (
-                        <div key={item} className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-                          <p className="text-sm font-semibold text-slate-800">{item}</p>
-                          <p className="mt-1 text-xs text-slate-500">{t.mockup.followup}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div className="absolute bottom-8 right-8 rounded-2xl bg-white p-5 shadow-xl">
-            <p className="text-sm font-bold text-slate-800">{t.mockup.next}</p>
-            <p className="mt-1 text-xs text-slate-500">{t.mockup.nextSub}</p>
-          </div>
-
-          {/* Phone mockup — bottom left, lead detail view */}
-          <div className="absolute -bottom-8 -left-10 w-[140px]" style={{ zIndex: 10 }}>
-            <div className="relative bg-slate-950 rounded-[32px] border-[6px] border-slate-950 shadow-2xl overflow-hidden flex flex-col" style={{ height: 280 }}>
-              {/* Punch-hole */}
-              <div className="bg-slate-900 flex justify-center pt-2 pb-1 shrink-0">
-                <div className="w-[8px] h-[8px] rounded-full bg-slate-950" />
-              </div>
-              {/* Content */}
-              <div className="bg-slate-50 flex flex-col gap-[5px] px-2 py-2 flex-1 overflow-hidden">
-                {/* Avatar + name */}
-                <div className="flex items-center gap-[6px]">
-                  <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                    <span className="text-[8px] font-bold text-emerald-700">KK</span>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold text-slate-900 leading-none">KENP Korea</p>
-                    <p className="text-[7px] text-emerald-500 mt-0.5">● High priority</p>
-                  </div>
-                </div>
-                {/* Stage */}
-                <div className="bg-white border border-slate-200 rounded-md px-2 py-[5px]">
-                  <p className="text-[6px] font-bold uppercase tracking-wide text-slate-400 mb-[2px]">Stage</p>
-                  <p className="text-[8px] font-semibold text-slate-800">Qualified</p>
-                </div>
-                {/* Follow-up */}
-                <div className="bg-white border border-slate-200 rounded-md px-2 py-[5px]">
-                  <p className="text-[6px] font-bold uppercase tracking-wide text-slate-400 mb-[2px]">Follow-up</p>
-                  <p className="text-[8px] font-semibold text-amber-500">Due tomorrow</p>
-                </div>
-                {/* Notes */}
-                <div className="bg-white border border-slate-200 rounded-md px-2 py-[5px]">
-                  <p className="text-[6px] font-bold uppercase tracking-wide text-slate-400 mb-[2px]">Notes</p>
-                  <p className="text-[7px] text-slate-600 leading-[1.4]">Interested in 500MT UCO. Send spec sheet.</p>
-                </div>
-                {/* CTA */}
-                <div className="bg-emerald-600 rounded-md px-2 py-[6px] text-center mt-auto">
-                  <p className="text-[8px] font-bold text-white">Mark followed up ✓</p>
-                </div>
-              </div>
-              {/* Home bar */}
-              <div className="bg-slate-50 flex justify-center py-[5px] shrink-0">
-                <div className="w-9 h-[3px] rounded-full bg-slate-300" />
-              </div>
-            </div>
-          </div>
+          <HeroDevices />
         </div>
 
         {/* MOBILE PRODUCT MOCKUP — phone only, so mobile visitors see the product */}
