@@ -12,6 +12,21 @@ const SHOTS = [
 const LAPTOP = { left: 12.34, top: 6.47, width: 75.2, height: 81.4 };
 const PHONE = { left: 5.71, top: 2.39, width: 88.57, height: 95.14 };
 
+// Phone-only version for small screens.
+export function HeroPhone() {
+  return (
+    <div className="relative mx-auto w-[215px]">
+      <div
+        className="absolute overflow-hidden bg-white"
+        style={{ left: `${PHONE.left}%`, top: `${PHONE.top}%`, width: `${PHONE.width}%`, height: `${PHONE.height}%`, zIndex: 1, borderRadius: "9%" }}
+      >
+        <img src="/screenshots/mobile-report.jpeg" alt="ExpoLead OS on a phone" className="h-full w-full" style={{ objectFit: "cover", objectPosition: "top" }} />
+      </div>
+      <img src="/mockups/phone-t.png" alt="" className="relative block w-full" style={{ zIndex: 2 }} />
+    </div>
+  );
+}
+
 export default function HeroDevices() {
   const [i, setI] = useState(0);
 

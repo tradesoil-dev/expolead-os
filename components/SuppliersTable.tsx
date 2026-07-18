@@ -202,8 +202,8 @@ export default function SuppliersTable({ suppliers }: { suppliers: Supplier[] })
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-ink-200 bg-white shadow-card">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-xl border border-ink-200 bg-white shadow-card" style={{ WebkitOverflowScrolling: "touch" }}>
+        <table className="w-full min-w-[860px] text-sm">
           <thead>
             <tr className="border-b border-ink-200 bg-ink-50 text-left text-xs font-medium text-ink-500">
               <th className="px-4 py-2.5">Company</th>

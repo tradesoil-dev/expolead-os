@@ -165,16 +165,16 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
         </div>
       )}
 
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-xl font-bold text-slate-900">Exhibition Library</h1>
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">Admin only</span>
+            <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">Admin only</span>
           </div>
-          <p className="mt-1 text-sm text-slate-500">Shows here appear on /trade-shows and in every user&rsquo;s library picker.</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">Shows here appear on /trade-shows and in every user&rsquo;s library picker.</p>
         </div>
         {!showForm && (
-          <button onClick={openAdd} className="shrink-0 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+          <button onClick={openAdd} className="shrink-0 self-start rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
             + Add exhibition
           </button>
         )}
