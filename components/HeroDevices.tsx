@@ -25,8 +25,8 @@ export default function HeroDevices() {
       {/* Laptop */}
       <div className="relative w-[80%]">
         <div
-          className="absolute overflow-hidden bg-white"
-          style={{ left: `${LAPTOP.left}%`, top: `${LAPTOP.top}%`, width: `${LAPTOP.width}%`, height: `${LAPTOP.height}%`, zIndex: 1 }}
+          className="absolute overflow-hidden"
+          style={{ left: `${LAPTOP.left}%`, top: `${LAPTOP.top}%`, width: `${LAPTOP.width}%`, height: `${LAPTOP.height}%`, zIndex: 1, background: "#f8fafc" }}
         >
           {SHOTS.map((s, idx) => (
             <img
@@ -42,7 +42,7 @@ export default function HeroDevices() {
       </div>
 
       {/* Phone — bottom right, overlapping the laptop edge (per reference) */}
-      <div className="absolute bottom-[-6%] right-[9%] z-[3] w-[13%]">
+      <div className="absolute bottom-[-5%] right-[13%] z-[3] w-[15%]">
         <div
           className="absolute overflow-hidden bg-white"
           style={{ left: `${PHONE.left}%`, top: `${PHONE.top}%`, width: `${PHONE.width}%`, height: `${PHONE.height}%`, zIndex: 1, borderRadius: "9%" }}
