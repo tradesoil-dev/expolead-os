@@ -38,7 +38,7 @@ export default function AboutPage() {
             <Link href="/features" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Product</Link>
             <Link href="/pricing" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Pricing</Link>
             <Link href="/login" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Log in</Link>
-            <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
+            <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
           </div>
         </header>
       </div>
@@ -111,8 +111,8 @@ export default function AboutPage() {
         <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">See it for yourself</h2>
         <p className="mx-auto mt-2 max-w-md text-slate-600">Start a free trial, or take a look at the product.</p>
         <div className="mt-6 flex justify-center gap-3">
-          <Link href="/login?mode=signup" className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
-          <Link href="/features" className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">See the product</Link>
+          <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
+          <Link href="/features" className="rounded-full border border-slate-300 px-7 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">See the product</Link>
         </div>
       </section>
 

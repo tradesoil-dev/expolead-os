@@ -69,7 +69,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <Link href="/features" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Product</Link>
             <Link href="/resources" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Resources</Link>
             <Link href="/pricing" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Pricing</Link>
-            <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
+            <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
           </div>
         </header>
       </div>
@@ -111,7 +111,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="mt-12 rounded-2xl px-7 py-9 text-center text-white" style={{ background: "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)" }}>
           <h2 className="text-xl font-black tracking-tight">Stop losing leads after the show ends</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-white/85">ExpoLead OS captures every connection and reminds you when to follow up.</p>
-          <Link href="/login?mode=signup" className="mt-5 inline-block rounded-xl bg-white px-6 py-3 text-sm font-semibold text-emerald-700 hover:bg-emerald-50">Start free trial</Link>
+          <Link href="/login?mode=signup" className="mt-5 inline-block rounded-full bg-white px-7 py-3 text-sm font-semibold text-emerald-700 hover:bg-emerald-50">Start free trial</Link>
         </div>
 
         {/* Related */}

@@ -126,7 +126,7 @@ export default function FeaturesPage() {
             <Link href="/features" className="hidden md:block text-sm font-medium text-white transition-colors">Product</Link>
             <Link href="/pricing" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">Pricing</Link>
             <Link href="/login" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">Log in</Link>
-            <Link href="/login?mode=signup" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">Start free trial</Link>
+            <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">Start free trial</Link>
           </div>
         </header>
       </div>
@@ -140,8 +140,8 @@ export default function FeaturesPage() {
             <h1 className="mt-3 text-4xl font-black leading-[1.02] tracking-tight text-slate-900 md:text-5xl lg:text-[3.4rem]">capture every booth lead and follow it to a closed deal</h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">From the first handshake at your booth to the signed order months later, ExpoLead OS keeps every conversation, product, and follow-up in one place.</p>
             <div className="mt-7 flex gap-3">
-              <Link href="/login?mode=signup" className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">Start free trial</Link>
-              <Link href="/pricing" className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">See pricing</Link>
+              <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">Start free trial</Link>
+              <Link href="/pricing" className="rounded-full border border-slate-300 px-7 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">See pricing</Link>
             </div>
           </div>
 

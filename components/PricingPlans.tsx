@@ -133,7 +133,7 @@ export default function PricingPlans() {
 
               <Link
                 href={plan.cta.href}
-                className={`mt-5 block rounded-lg py-2.5 text-center text-sm font-semibold transition-colors ${plan.featured ? "bg-emerald-600 text-white hover:bg-emerald-500" : "border border-slate-300 text-slate-700 hover:bg-slate-50"}`}
+                className={`mt-5 block rounded-full py-2.5 text-center text-sm font-semibold transition-colors ${plan.featured ? "bg-emerald-600 text-white hover:bg-emerald-500" : "border border-slate-300 text-slate-700 hover:bg-slate-50"}`}
               >
                 {plan.cta.label}
               </Link>
