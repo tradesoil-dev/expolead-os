@@ -361,11 +361,11 @@ export default function HomePage() {
             <Link href="/pricing" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
               {t.nav.pricing}
             </Link>
-            <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+            <Link href="/login" className="hidden md:inline-flex items-center rounded-full border border-slate-600 px-5 py-2 text-sm font-semibold text-slate-200 hover:border-slate-400 hover:text-white transition-colors">
               {t.nav.login}
             </Link>
           </div>
-          <Link href="/login?mode=signup" className="hidden md:block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">
+          <Link href="/login?mode=signup" className="hidden md:block rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">
             {t.nav.trial}
           </Link>
 
@@ -373,7 +373,7 @@ export default function HomePage() {
           <div className="relative shrink-0">
             <button
               onClick={() => setLangOpen((o) => !o)}
-              className="flex items-center gap-1.5 rounded-md border border-slate-600 px-2 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
+              className="flex items-center gap-1.5 rounded-full border border-slate-600 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
               aria-haspopup="listbox"
               aria-expanded={langOpen}
             >
@@ -436,7 +436,7 @@ export default function HomePage() {
           <Link href="/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
             {t.nav.login}
           </Link>
-          <Link href="/login?mode=signup" onClick={() => setMenuOpen(false)} className="mt-1 block w-full rounded-lg bg-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+          <Link href="/login?mode=signup" onClick={() => setMenuOpen(false)} className="mt-1 block w-full rounded-full bg-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
             {t.nav.trial}
           </Link>
         </div>
@@ -463,7 +463,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="anim-hero-btn mt-12 flex flex-col gap-4 sm:flex-row">
-            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-2.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors">
+            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors">
               {t.hero.cta}
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -741,7 +741,7 @@ export default function HomePage() {
         <div className="mt-8 px-8 text-center">
           <Link
             href="/trade-shows"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
           >
             {t.upcoming.cta}
             <ArrowRight className="h-4 w-4" />
@@ -758,11 +758,11 @@ export default function HomePage() {
           </p>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-400">{t.pricingAnchor.sub}</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
               {t.pricingAnchor.cta}
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="/pricing" className="inline-flex items-center justify-center rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-300 hover:border-slate-500 hover:text-white transition-colors">
+            <Link href="/pricing" className="inline-flex items-center justify-center rounded-full border border-slate-600 px-7 py-3 text-sm font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors">
               {t.pricingAnchor.secondary}
             </Link>
           </div>
