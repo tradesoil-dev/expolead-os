@@ -311,6 +311,7 @@ const mockupItems = [
 
 export default function HomePage() {
   const [lang, setLang] = useState<"en" | "zh">("en");
+  const [langOpen, setLangOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [marqueeShows, setMarqueeShows] = useState<MarqueeShow[]>(upcomingShows);
   const t = translations[lang];
@@ -368,14 +369,44 @@ export default function HomePage() {
             {t.nav.trial}
           </Link>
 
-          {/* Language toggle — always visible */}
-          <button
-            onClick={() => setLang(lang === "en" ? "zh" : "en")}
-            className="flex items-center gap-1 rounded-md border border-slate-600 px-2 py-1.5 text-xs font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors shrink-0"
-          >
-            <Globe2 className="h-3 w-3" />
-            {lang === "en" ? "中文" : "EN"}
-          </button>
+          {/* Language dropdown — always visible */}
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setLangOpen((o) => !o)}
+              className="flex items-center gap-1.5 rounded-md border border-slate-600 px-2 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
+              aria-haspopup="listbox"
+              aria-expanded={langOpen}
+            >
+              <Globe2 className="h-3 w-3" />
+              {lang === "en" ? "EN" : "中文"}
+              <svg className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+            </button>
+
+            {langOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
+                <div role="listbox" className="absolute right-0 top-full z-50 mt-2 w-32 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 shadow-xl">
+                  {([
+                    { code: "en", label: "EN", name: "English" },
+                    { code: "zh", label: "中文", name: "Chinese" },
+                  ] as const).map((o) => (
+                    <button
+                      key={o.code}
+                      role="option"
+                      aria-selected={lang === o.code}
+                      onClick={() => { setLang(o.code); setLangOpen(false); }}
+                      className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors ${lang === o.code ? "bg-emerald-50 font-semibold text-emerald-700" : "text-slate-700 hover:bg-slate-50"}`}
+                    >
+                      <span>{o.label}</span>
+                      {lang === o.code && (
+                        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Hamburger — mobile only */}
           <button
