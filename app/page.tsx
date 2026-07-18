@@ -440,12 +440,12 @@ export default function HomePage() {
         </div>
 
         {/* RIGHT PRODUCT MOCKUP — real device frames, screens cycle */}
-        <div className="relative hidden lg:block">
+        <div className="relative hidden md:block">
           <HeroDevices />
         </div>
 
         {/* MOBILE PRODUCT MOCKUP — phone only, so mobile visitors see the product */}
-        <div className="mt-4 flex justify-center lg:hidden">
+        <div className="mt-4 flex justify-center md:hidden">
           <div className="w-[196px] rounded-[34px] border-[8px] border-slate-950 bg-slate-950 shadow-2xl overflow-hidden flex flex-col">
             {/* Status bar + dynamic island */}
             <div className="relative bg-slate-50 flex items-center justify-between px-4 pt-2 pb-1.5 shrink-0">
