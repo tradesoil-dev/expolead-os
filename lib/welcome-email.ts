@@ -32,7 +32,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
           <td style="padding:40px 40px 32px;">
             <p style="margin:0 0 24px;font-size:18px;font-weight:600;color:#0f172a;">Hey ${name}, welcome aboard!</p>
             <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
-              Your 14-day free trial of ExpoLead OS has started. You now have full access to capture connections, create opportunities, and manage your exhibition pipeline.
+              Your free trial of ExpoLead OS has started. You now have full access to capture connections, create opportunities, and manage your exhibition pipeline.
             </p>
             <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#475569;">
               Here are two things to do right now to get the most out of your trial:

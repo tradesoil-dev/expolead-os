@@ -38,9 +38,9 @@ const PLANS: Plan[] = [
     name: "Starter",
     tagline: "Everything one person needs",
     monthly: 29,
-    annual: 290,
+    annual: 348,
     outcome: "Never lose a lead, run your full pipeline solo",
-    cta: { label: "Start free trial", href: "/login?mode=signup" },
+    cta: { label: "Get started", href: "/login?mode=signup" },
     features: [
       { label: "Unlimited exhibitions" },
       { label: "Unlimited connections & opportunities" },
@@ -56,9 +56,9 @@ const PLANS: Plan[] = [
     name: "Growth",
     tagline: "For teams working shows together",
     monthly: 99,
-    annual: 990,
+    annual: 1188,
     outcome: "Your whole team, one shared exhibition memory",
-    cta: { label: "Start free trial", href: "/login?mode=signup" },
+    cta: { label: "Get started", href: "/login?mode=signup" },
     featured: true,
     badge: { label: "Most popular", tone: "emerald" },
     inheritsFrom: "Starter",
@@ -89,7 +89,7 @@ export default function PricingPlans() {
             onClick={() => setAnnual(true)}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${annual ? "bg-emerald-600 text-white" : "text-slate-500 hover:text-slate-800"}`}
           >
-            Annual · save 2 months
+            Annual
           </button>
         </div>
       </div>
@@ -102,8 +102,8 @@ export default function PricingPlans() {
           const subLabel = free
             ? "No card required to start"
             : annual
-            ? `≈ $${Math.round((plan.annual / 12) * 10) / 10}/mo · 2 months free`
-            : `or $${plan.annual}/yr to save 2 months`;
+            ? "Billed once a year"
+            : "Billed monthly";
 
           return (
             <div
@@ -157,9 +157,6 @@ export default function PricingPlans() {
         })}
       </div>
 
-      <p className="mt-6 text-center text-xs text-slate-400">
-        14-day free trial on paid plans. No credit card required to start.
-      </p>
     </div>
   );
 }

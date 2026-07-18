@@ -5,7 +5,7 @@ import PricingPlans from "@/components/PricingPlans";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
-  description: "Start free, no credit card. Paid plans from $24/month billed annually ($290/year Starter), or $29 monthly. One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
+  description: "Start free, no credit card. Paid plans from $29/month ($348/year Starter). One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
 };
 
 const TRUST = [
@@ -19,7 +19,7 @@ const SHOWS = ["ANUGA", "SIAL CHINA", "CHINACOAT", "GULFOOD"];
 
 const FAQ = [
   { q: "What is the difference between Trial and Starter?", a: "Trial is free and lets you capture one show (1 exhibition, up to 25 connections) to see the value. Starter unlocks unlimited exhibitions, connections and opportunities, plus reports and CSV export." },
-  { q: "Do I need a credit card to start?", a: "No. The Trial plan is free with no card. Paid plans include a 14-day free trial, also no card to start." },
+  { q: "Do I need a credit card to start?", a: "No. The Trial plan is free and needs no card, so you can capture a real show before paying anything." },
   { q: "Can I switch between monthly and annual?", a: "Yes, anytime from your billing settings." },
   { q: "Can I export my data?", a: "Yes, CSV export on Starter and Growth. Your data is always yours, with no lock-in." },
   { q: "When do the Growth team features launch?", a: "Soon. Start on Trial or Starter now, and team features (up to 5 users, shared workspace, team reporting) are on the way." },
@@ -127,10 +127,10 @@ export default async function PricingPage() {
 
           {/* Final CTA */}
           <div className="mt-12 text-center">
-            <Link href="/login?mode=signup" className="inline-block rounded-xl bg-emerald-600 px-8 py-4 text-base font-semibold text-white hover:bg-emerald-500 transition-colors">
-              Start your free 14-day trial →
+            <Link href="/login?mode=signup" className="inline-block rounded-full bg-emerald-600 px-8 py-4 text-base font-semibold text-white hover:bg-emerald-500 transition-colors">
+              Get started free →
             </Link>
-            <p className="mt-3 text-sm text-slate-500">No credit card required.</p>
+            <p className="mt-3 text-sm text-slate-500">Start on the free Trial plan. No credit card required.</p>
           </div>
         </div>
       </div>
