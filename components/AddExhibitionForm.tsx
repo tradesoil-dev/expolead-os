@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { saveErrorMessage } from "@/lib/errors";
 import type { ExhibitionLibraryItem } from "@/lib/types";
 import DatePicker from "@/components/DatePicker";
 
@@ -76,7 +77,7 @@ export default function AddExhibitionForm({
     });
     setSaving(false);
     if (error) {
-      setError(error.message);
+      setError(saveErrorMessage(error, "exhibition", "Could not save exhibition."));
       return;
     }
     reset();

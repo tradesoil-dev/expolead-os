@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { saveErrorMessage } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import ModernSelect from "@/components/Select";
@@ -136,7 +137,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
       router.push(`/suppliers/${supplierId}`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save supplier.");
+      setError(saveErrorMessage(err, "connection", "Could not save supplier."));
       setSaving(false);
     }
   }

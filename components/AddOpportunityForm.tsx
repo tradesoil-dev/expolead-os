@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { saveErrorMessage } from "@/lib/errors";
 import { useToast } from "@/components/useToast";
 import Select from "@/components/Select";
 import { QUANTITY_UNITS } from "@/lib/quantity-units";
@@ -66,7 +67,7 @@ booth: form.booth || null,
 });
 
 if (error) {
-  showToast(error.message, "error");
+  showToast(saveErrorMessage(error, "opportunity", "Could not save opportunity."), "error");
   setSaving(false);
   return;
 }
