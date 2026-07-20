@@ -48,7 +48,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     headline: article.title,
     description: article.excerpt,
     datePublished: article.publishedISO,
-    author: { "@type": "Person", name: "Gladwin Gerald" },
+    author: { "@type": "Organization", name: "ExpoLead OS" },
     publisher: { "@type": "Organization", name: "ExpoLead OS" },
     mainEntityOfPage: `https://expolead.tradesoil.com/resources/${article.slug}`,
   };
@@ -80,7 +80,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <span className="mx-1.5">·</span>{article.topic}
         </p>
         <h1 className="mt-3 text-3xl font-black leading-[1.15] tracking-tight text-slate-900 md:text-4xl">{article.title}</h1>
-        <p className="mt-4 text-sm text-slate-400">By Gladwin · {article.readMinutes} min read</p>
+        <p className="mt-4 text-sm text-slate-400">By ExpoLead OS · {article.readMinutes} min read</p>
 
         <div className="mt-8 flex h-44 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
           <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>
