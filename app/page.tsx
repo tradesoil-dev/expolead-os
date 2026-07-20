@@ -43,7 +43,7 @@ const translations = {
   en: {
     nav: { product: "Product", pricing: "Pricing", login: "Log in", trial: "Start free trial" },
     hero: {
-      badge: "Exhibition Lead Management",
+      badge: "Exhibition Connection & Lead Management",
       h1a: "Turn Expo Conversations",
       h1b: "Into Revenue",
       sub: "Capture booth visits, buyer signals, samples, quotations and follow-ups in one workspace built for exhibitors, sourcing teams and international trade professionals.",
@@ -169,7 +169,7 @@ const translations = {
   zh: {
     nav: { product: "产品", pricing: "定价", login: "登录", trial: "免费试用" },
     hero: {
-      badge: "展会线索管理",
+      badge: "展会人脉与线索管理",
       h1a: "将展会对话",
       h1b: "转化为收入",
       sub: "在一个专为参展商、采购团队和国际贸易专业人士打造的工作空间中，捕捉展位访客、买家意向、样品、报价和跟进事项。",
