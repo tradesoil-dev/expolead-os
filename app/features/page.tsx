@@ -53,7 +53,7 @@ const TABS = [
     desc: "Your leads are your business. ExpoLead OS keeps them private, portable, and yours, with no lock-in and no data sold on.",
     points: [
       ["Strictly private", "row-level security at the database means no other user can ever see your records."],
-      ["Export anytime", "take everything with you as CSV, connections and opportunities included, whenever you want."],
+      ["Export on any paid plan", "take everything with you as CSV, connections and opportunities included. Export is a paid feature, not part of the free trial."],
       ["No lock-in", "we never sell or share your business data with third parties. Leave whenever you like."],
     ],
   },

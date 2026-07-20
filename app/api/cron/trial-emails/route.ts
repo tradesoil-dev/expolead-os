@@ -37,7 +37,7 @@ function emailDay7(name: string, trialEndDate: string) {
       <div style="padding: 32px; background: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
         <p style="font-size: 16px; margin-top: 0;">Hi ${displayName},</p>
         <p style="font-size: 15px; color: #374151;">Your free trial ends in <strong>7 days</strong> on <strong>${trialEndDate}</strong>.</p>
-        <p style="font-size: 15px; color: #374151;">Everything you have added — connections, opportunities, and exhibitions — stays in your account. After the trial ends you can still view and export all your data.</p>
+        <p style="font-size: 15px; color: #374151;">Everything you have added — connections, opportunities, and exhibitions — stays in your account. After the trial ends you can still view and edit all of it.</p>
         <p style="font-size: 15px; color: #374151;">To keep adding new records and stay on top of your leads, choose a plan before your trial ends.</p>
         <div style="margin: 28px 0;">
           <a href="${APP_URL}/pricing" style="background: #059669; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">View Plans</a>
@@ -84,7 +84,7 @@ function emailExpired(name: string) {
         <p style="font-size: 15px; color: #374151;">Here is what you can still do:</p>
         <ul style="font-size: 15px; color: #374151; padding-left: 20px; line-height: 1.8;">
           <li>View all your connections, opportunities, and exhibitions</li>
-          <li>Export your data to CSV at any time</li>
+          <li>Edit and update everything you already captured</li>
           <li>Access your account settings</li>
         </ul>
         <p style="font-size: 15px; color: #374151;">To continue adding new records, choose a plan. Your data is waiting for you exactly as you left it.</p>

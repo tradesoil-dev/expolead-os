@@ -40,7 +40,7 @@ const STEPS = [
     description: "When the show ends, export all your connections or opportunities to CSV. Share with your team, import into another system, or keep as a record of every show you've attended.",
     cta: { label: "Go to Connections →", href: "/suppliers" },
     mockup: <ExportMockup />,
-    tip: "Tip: Export is available even after your trial ends — your data is always yours.",
+    tip: "Note: CSV export is a paid feature on Starter and Growth. It is not included in the free trial.",
   },
 ];
 

@@ -15,7 +15,7 @@ export default function TrialBanner({ isExpired, isWarning, daysLeft }: Props) {
     return (
       <div className="flex items-center justify-between gap-4 bg-rose-600 px-4 py-2.5 text-sm text-white">
         <p className="font-medium">
-          Your 14-day trial has ended. You can still view and export your data.
+          Your 14-day trial has ended. You can still view and edit everything you captured.
         </p>
         <Link
           href="/pricing"

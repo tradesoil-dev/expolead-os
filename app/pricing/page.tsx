@@ -18,12 +18,15 @@ const TRUST = [
 const SHOWS = ["ANUGA", "SIAL CHINA", "CHINACOAT", "GULFOOD"];
 
 const FAQ = [
-  { q: "What is the difference between Trial and Starter?", a: "Trial is free and lets you capture one show (1 exhibition, up to 25 connections) to see the value. Starter unlocks unlimited exhibitions, connections and opportunities, plus reports and CSV export." },
+  { q: "Is this just another CRM?", a: "No. A CRM is built for a sales team working a pipeline all year from a desk. ExpoLead OS is built for three days on a show floor, on your feet, meeting fifty people. It captures connections, products and quantities the way exhibition work actually happens, and there is nothing to configure before you can use it." },
+  { q: "What is the difference between Trial and Starter?", a: "Trial is free and lets you capture one show (1 exhibition, up to 25 connections, up to 25 opportunities) to see the value. Starter unlocks unlimited exhibitions, connections and opportunities, plus reports and CSV export." },
   { q: "Do I need a credit card to start?", a: "No. Every account starts on a free 14-day trial with no card, so you can capture a real show before paying anything." },
   { q: "What happens after the 14 days?", a: "Nothing disappears. You keep full access to every connection, opportunity and follow-up you captured, and you can still view and edit them. To add new records after day 14, move to Starter or Growth." },
   { q: "Can I switch between monthly and annual?", a: "Yes, anytime from your billing settings." },
   { q: "Can I export my data?", a: "CSV export is a paid feature, available on Starter and Growth. It is not included in the trial. Your data is always yours and there is no lock-in, so you can export it in full the moment you upgrade." },
   { q: "When do the Growth team features launch?", a: "Soon. Start on Trial or Starter now, and team features (up to 5 users, shared workspace, team reporting) are on the way." },
+  { q: "Which industries is it built for?", a: "Companies that exhibit and sell products: food and beverage, tea, spices, chemicals and coatings, apparel and textiles, machinery, packaging, building materials, gems and jewellery. If you negotiate in quantities, it fits. If you sell services, it will feel half empty." },
+  { q: "Does it work on my phone at the show?", a: "Yes, it runs in your phone browser, which is where most capture happens. You do need a connection in the hall, so it is worth checking the wifi at your stand on day one." },
 ];
 
 const GRADIENT = "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)";
@@ -115,6 +118,20 @@ export default async function PricingPage() {
 
           {/* FAQ */}
           <div className="mt-12">
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: FAQ.map(({ q, a }) => ({
+                    "@type": "Question",
+                    name: q,
+                    acceptedAnswer: { "@type": "Answer", text: a },
+                  })),
+                }),
+              }}
+            />
             <h2 className="mb-5 text-center text-xl font-bold text-slate-900">Common questions</h2>
             <div className="space-y-2">
               {FAQ.map(({ q, a }) => (

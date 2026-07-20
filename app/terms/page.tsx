@@ -47,7 +47,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">3. Free trial</h2>
-            <p>New accounts receive a 14-day free trial with full access to all Starter plan features. No payment is required during the trial. At the end of the trial, access to certain features will be restricted unless you subscribe to a paid plan. We do not automatically charge you — you must actively choose to subscribe.</p>
+            <p>New accounts receive a 14-day free trial. The trial covers one exhibition, up to 25 connections and up to 25 opportunities, and does not include CSV export, which is a paid feature. No payment is required during the trial. At the end of the trial you keep full access to view and edit everything you captured, but you cannot add new records unless you subscribe to a paid plan. We do not automatically charge you — you must actively choose to subscribe.</p>
           </section>
 
           <section>
@@ -57,7 +57,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">5. Your data</h2>
-            <p>You own all business data you enter into ExpoLead OS — your connections, opportunities, notes and records. We do not claim any rights over your data. You may export your data at any time using the CSV export feature. Upon account deletion, your data will be removed within 30 days.</p>
+            <p>You own all business data you enter into ExpoLead OS — your connections, opportunities, notes and records. We do not claim any rights over your data. On any paid plan you may export your data at any time using the CSV export feature. Upon account deletion, your data will be removed within 30 days.</p>
           </section>
 
           <section>
