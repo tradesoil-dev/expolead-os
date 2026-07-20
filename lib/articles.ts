@@ -4,6 +4,7 @@
 export type Block =
   | { type: "p"; text: string }
   | { type: "h2"; text: string }
+  | { type: "h3"; text: string }
   | { type: "ul"; items: string[] };
 
 export type Article = {
@@ -330,6 +331,347 @@ export const ARTICLES: Article[] = [
       {
         type: "p",
         text: "At ExpoLead, we believe every conversation at an exhibition has the potential to become a valuable business opportunity. The key is having the right process to capture, organise, and follow up on those opportunities, long after the exhibition ends.",
+      },
+    ],
+  },
+  {
+    slug: "exhibition-booth-preparation-checklist",
+    title: "The ultimate exhibition booth preparation checklist",
+    topic: "Exhibitions",
+    excerpt:
+      "A successful exhibition does not begin when the doors open. This is the full preparation timeline, from 90 days out to the final morning of the show, plus the checklist to run through before you leave.",
+    readMinutes: 9,
+    publishedISO: "2026-07-20",
+    body: [
+      {
+        type: "p",
+        text: "A successful exhibition doesn't begin when the doors open, it starts weeks or even months before the event.",
+      },
+      {
+        type: "p",
+        text: "Many companies invest thousands of dollars in exhibition space, booth design, travel, accommodation, and marketing. Yet despite this investment, many leave the event disappointed because they prepared for the booth but not for the business opportunities.",
+      },
+      {
+        type: "p",
+        text: "The most successful exhibitors understand that an exhibition is more than a marketing event. It's an opportunity to build relationships, generate qualified leads, strengthen existing partnerships, understand market trends, and ultimately drive revenue.",
+      },
+      {
+        type: "p",
+        text: "Proper preparation is what separates businesses that simply attend exhibitions from those that consistently achieve measurable results.",
+      },
+      {
+        type: "p",
+        text: "This guide walks through every stage of exhibition preparation, from three months before the event until the final day of the show.",
+      },
+      { type: "h2", text: "Why preparation determines exhibition success" },
+      {
+        type: "p",
+        text: "Many exhibitors focus most of their attention on booth design. While appearance certainly matters, a beautiful stand alone won't generate sales.",
+      },
+      {
+        type: "p",
+        text: "Preparation involves much more than graphics and banners. It includes setting clear objectives, training your team, identifying target buyers, scheduling meetings, preparing marketing materials, and establishing a process for capturing and following up on leads.",
+      },
+      {
+        type: "p",
+        text: "Without these elements, even a busy booth can result in very few real business opportunities.",
+      },
+      {
+        type: "p",
+        text: "The exhibition itself lasts only a few days. The planning behind it determines whether those few days become a worthwhile investment.",
+      },
+      { type: "h2", text: "90 days before the exhibition" },
+      {
+        type: "p",
+        text: "The most successful exhibitors begin preparing at least three months before the event. This is the time to define exactly what success looks like.",
+      },
+      { type: "p", text: "Ask yourself:" },
+      {
+        type: "ul",
+        items: [
+          "Why are we attending this exhibition?",
+          "Are we launching a product?",
+          "Looking for distributors?",
+          "Meeting existing customers?",
+          "Finding new buyers?",
+          "Building brand awareness?",
+          "Researching competitors?",
+        ],
+      },
+      { type: "p", text: "Clear objectives influence every decision that follows." },
+      { type: "p", text: "You should also establish measurable goals, such as:" },
+      {
+        type: "ul",
+        items: [
+          "Number of meetings",
+          "Qualified leads",
+          "Product demonstrations",
+          "Distributor enquiries",
+          "Sales opportunities",
+          "Revenue target",
+        ],
+      },
+      {
+        type: "p",
+        text: "Without measurable goals, it's impossible to evaluate your return on investment after the event.",
+      },
+      { type: "h3", text: "Research the visitor profile" },
+      { type: "p", text: "Not every exhibition attracts the same audience. Study previous attendee statistics carefully." },
+      { type: "p", text: "Consider:" },
+      {
+        type: "ul",
+        items: [
+          "Industries represented",
+          "Company sizes",
+          "Countries attending",
+          "Job titles",
+          "Decision-makers versus influencers",
+          "Returning visitors",
+          "Buyer demographics",
+        ],
+      },
+      {
+        type: "p",
+        text: "Understanding your audience allows you to tailor your messaging and decide which products deserve the most attention.",
+      },
+      { type: "h3", text: "Book meetings before the exhibition" },
+      {
+        type: "p",
+        text: "One of the biggest mistakes exhibitors make is relying on walk-in traffic. Today's buyers often arrive with their schedules already full.",
+      },
+      { type: "p", text: "Weeks before the event, reach out to:" },
+      {
+        type: "ul",
+        items: [
+          "Existing customers",
+          "Warm prospects",
+          "LinkedIn connections",
+          "Industry contacts",
+          "Distributors",
+          "Suppliers",
+          "Partners",
+        ],
+      },
+      {
+        type: "p",
+        text: "Invite them to visit your booth at a specific time. Pre-booked meetings almost always produce higher-quality conversations than spontaneous booth visits.",
+      },
+      { type: "h2", text: "60 days before the exhibition" },
+      { type: "p", text: "Now it's time to prepare your marketing assets. Ensure you have:" },
+      {
+        type: "ul",
+        items: [
+          "Updated brochures",
+          "Business cards",
+          "Product catalogues",
+          "QR codes",
+          "Digital presentations",
+          "Product videos",
+          "Price lists, if appropriate",
+          "Samples",
+        ],
+      },
+      {
+        type: "p",
+        text: "Everything should communicate a consistent message and clearly explain the value your business offers.",
+      },
+      { type: "h3", text: "Train your exhibition team" },
+      { type: "p", text: "Your booth staff are the face of your company. Everyone attending should understand:" },
+      {
+        type: "ul",
+        items: [
+          "Your products",
+          "Your ideal customer",
+          "Common customer questions",
+          "Competitor positioning",
+          "Pricing strategy",
+          "Lead qualification process",
+          "Next steps after the exhibition",
+        ],
+      },
+      {
+        type: "p",
+        text: "Role-playing customer conversations before the event builds confidence and creates consistency across the team.",
+      },
+      { type: "h2", text: "30 days before the exhibition" },
+      { type: "p", text: "At this stage, logistics become the priority. Confirm:" },
+      {
+        type: "ul",
+        items: [
+          "Booth construction",
+          "Furniture",
+          "Lighting",
+          "Internet access",
+          "Power requirements",
+          "Shipping arrangements",
+          "Product samples",
+          "Customs documentation",
+          "Hotel reservations",
+          "Travel schedules",
+        ],
+      },
+      {
+        type: "p",
+        text: "Leaving logistics until the final week often creates unnecessary stress and additional costs.",
+      },
+      { type: "h3", text: "Prepare your lead capture process" },
+      {
+        type: "p",
+        text: "Many exhibitors still rely on handwritten notes or stacks of business cards. Unfortunately, valuable information is often forgotten once the exhibition ends.",
+      },
+      { type: "p", text: "Every conversation should capture information such as:" },
+      {
+        type: "ul",
+        items: [
+          "Contact details",
+          "Company",
+          "Products of interest",
+          "Buying timeline",
+          "Budget",
+          "Decision-making authority",
+          "Pain points",
+          "Next action",
+        ],
+      },
+      { type: "p", text: "The more structured your process, the easier your follow-up becomes." },
+      { type: "h3", text: "Build a lead qualification framework" },
+      {
+        type: "p",
+        text: "Not every visitor deserves the same level of attention after the exhibition. Create a simple scoring system. For example:",
+      },
+      { type: "h3", text: "Hot leads" },
+      {
+        type: "ul",
+        items: ["Immediate buying need", "Decision-maker", "Budget available"],
+      },
+      { type: "h3", text: "Warm leads" },
+      {
+        type: "ul",
+        items: ["Strong interest", "Future opportunity", "Needs nurturing"],
+      },
+      { type: "h3", text: "Cold leads" },
+      {
+        type: "ul",
+        items: ["Information gathering", "Students", "Media", "Suppliers"],
+      },
+      { type: "p", text: "This allows your sales team to prioritise follow-up after the event." },
+      { type: "h2", text: "One week before the exhibition" },
+      { type: "p", text: "Perform a final review. Confirm:" },
+      {
+        type: "ul",
+        items: [
+          "Travel documents",
+          "Exhibition passes",
+          "Hotel bookings",
+          "Meeting schedule",
+          "Product samples",
+          "Marketing material",
+          "Chargers and extension cords",
+          "Laptop and tablets",
+          "Phone chargers",
+          "Business cards",
+          "Company uniforms",
+          "Stationery",
+          "Emergency contacts",
+        ],
+      },
+      { type: "p", text: "Small details often become major problems if overlooked." },
+      { type: "h2", text: "During the exhibition" },
+      { type: "p", text: "Preparation doesn't stop once the exhibition begins. Each morning:" },
+      {
+        type: "ul",
+        items: [
+          "Review the day's meetings",
+          "Assign responsibilities",
+          "Check product displays",
+          "Test presentation equipment",
+          "Brief the team",
+        ],
+      },
+      { type: "p", text: "At the end of each day:" },
+      {
+        type: "ul",
+        items: [
+          "Review every lead collected",
+          "Update notes while conversations are still fresh",
+          "Identify urgent follow-ups",
+          "Prepare for tomorrow's meetings",
+        ],
+      },
+      { type: "p", text: "Daily reviews prevent valuable information from being lost." },
+      { type: "h2", text: "Common booth preparation mistakes" },
+      {
+        type: "p",
+        text: "Many exhibitors make avoidable mistakes that reduce their return on investment. Common examples include:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Waiting for visitors instead of engaging them",
+          "Focusing on quantity rather than quality",
+          "Not qualifying leads",
+          "Collecting business cards without recording context",
+          "Failing to schedule meetings in advance",
+          "Having inconsistent messaging across team members",
+          "Delaying follow-up after the event",
+        ],
+      },
+      {
+        type: "p",
+        text: "Avoiding these mistakes often delivers a greater improvement than increasing your exhibition budget.",
+      },
+      { type: "h2", text: "Your exhibition preparation checklist" },
+      {
+        type: "p",
+        text: "Before leaving for the exhibition, ensure you have completed the following:",
+      },
+      { type: "h3", text: "Strategy" },
+      {
+        type: "ul",
+        items: ["Defined clear objectives", "Established measurable KPIs", "Identified target audience"],
+      },
+      { type: "h3", text: "Marketing" },
+      {
+        type: "ul",
+        items: ["Brochures", "Business cards", "Product catalogues", "QR codes", "Digital presentations"],
+      },
+      { type: "h3", text: "Booth" },
+      {
+        type: "ul",
+        items: ["Graphics installed", "Furniture confirmed", "Internet tested", "Lighting checked"],
+      },
+      { type: "h3", text: "Sales" },
+      {
+        type: "ul",
+        items: [
+          "Meeting schedule prepared",
+          "Lead qualification questions ready",
+          "Sales team trained",
+          "Lead capture system tested",
+        ],
+      },
+      { type: "h3", text: "Logistics" },
+      {
+        type: "ul",
+        items: ["Flights booked", "Hotels confirmed", "Product samples packed", "Shipping verified"],
+      },
+      { type: "h2", text: "Final thoughts" },
+      { type: "p", text: "Exceptional exhibitions rarely happen by chance." },
+      {
+        type: "p",
+        text: "Behind every productive booth is a carefully planned strategy, a well-prepared team, and a structured process that begins long before the exhibition opens.",
+      },
+      {
+        type: "p",
+        text: "While attractive booth designs can capture attention, it's preparation that converts conversations into meaningful business opportunities.",
+      },
+      {
+        type: "p",
+        text: "The businesses that consistently achieve the best exhibition results don't simply work harder during the event, they prepare smarter before it.",
+      },
+      {
+        type: "p",
+        text: "And once those valuable conversations begin, having a reliable system to capture, organise, qualify, and follow up on every lead becomes just as important as the booth itself. That's where solutions like ExpoLead help exhibitors ensure that no opportunity is lost after the event.",
       },
     ],
   },

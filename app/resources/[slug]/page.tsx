@@ -96,6 +96,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             if (block.type === "h2") {
               return <h2 key={i} className="mt-9 mb-3 text-xl font-black tracking-tight text-slate-900">{block.text}</h2>;
             }
+            if (block.type === "h3") {
+              return <h3 key={i} className="mt-6 mb-2 text-base font-bold text-slate-900">{block.text}</h3>;
+            }
             if (block.type === "ul") {
               return (
                 <ul key={i} className="mb-4 ml-1 space-y-2">
