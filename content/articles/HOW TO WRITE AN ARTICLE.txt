@@ -1,0 +1,98 @@
+HOW TO WRITE AN ARTICLE FOR THE RESOURCES PAGE
+==============================================
+
+Drop your finished Word file in this folder, then tell Claude
+"new article ready" and it goes live.
+
+
+WHAT TO PUT IN THE WORD DOC
+---------------------------
+
+1. TITLE
+   First line of the document. Just type it as normal text.
+   Make it specific and useful, not clever.
+
+   Good:  How to qualify a buyer in 5 minutes at your booth
+   Weak:  Booth tips
+
+
+2. INTRO PARAGRAPH
+   Second block. Two or three sentences.
+   Say what the reader will be able to do after reading it.
+
+
+3. SECTION HEADINGS
+   Use Word's Heading 2 style, or just type the heading on its
+   own line and leave a blank line above and below it.
+   Numbered headings work well: "1. Log the lead before you leave"
+
+
+4. BODY PARAGRAPHS
+   Write normally. Blank line between paragraphs.
+   Short paragraphs read better on a phone. Three or four
+   sentences is plenty.
+
+
+5. BULLET LISTS
+   Use Word's bullet button, or start each line with a dash.
+
+
+THAT IS ALL THE FORMATTING THERE IS.
+No bold, italics, tables, images or colours are needed. They are
+ignored on conversion, so do not spend time on them.
+
+
+HOUSE STYLE
+-----------
+
+- No em dashes and no hyphens used as dashes. Use commas.
+- Say "connections" not "leads" where you can. That is what the
+  app calls them.
+- Lead with the reader's problem, then the answer.
+- Write the way you talk to a customer, not the way a brochure
+  talks.
+- Never invent a statistic, a customer quote or a company name.
+  If you want a number in there, tell Claude and it will find a
+  real sourced one or leave it out.
+
+
+NAMING THE FILE
+---------------
+
+Name it after the article so it is easy to find later.
+
+  qualify-a-buyer-at-your-booth.docx
+  choosing-which-shows-to-attend.docx
+
+
+THREE THINGS CLAUDE NEEDS FROM YOU EACH TIME
+--------------------------------------------
+
+Send these with "new article ready", or Claude will pick and
+tell you what it chose:
+
+1. TOPIC. One of: Exhibitions, Sales, Marketing, Follow-up
+2. FEATURED? Yes or no. Featured shows at the top of /resources.
+   Only one article should be featured at a time.
+3. PUBLISH DATE. Defaults to the day you send it.
+
+
+WHAT HAPPENS NEXT
+-----------------
+
+Claude reads the Word file, converts it, adds it to the site,
+and pushes it live. It will send you the live link to check.
+
+Reading time is calculated automatically. You do not need to
+work it out.
+
+Anything that looks wrong after it is live, say so and it gets
+fixed in a minute. Nothing here is permanent.
+
+
+ONE LIMITATION TO KNOW
+----------------------
+
+Articles go live when Claude runs the conversion, not the moment
+you save the file here. If you need to publish without waiting,
+that is the admin publishing page, which is a separate build.

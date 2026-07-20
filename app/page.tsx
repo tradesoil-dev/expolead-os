@@ -16,6 +16,8 @@ import {
   CalendarCheck,
   BarChart3,
   Store,
+  Filter,
+  Handshake,
 } from "lucide-react";
 import SplashScreen from "@/components/SplashScreen";
 import { createClient } from "@/lib/supabase/client";
@@ -117,7 +119,60 @@ const translations = {
         },
       ],
     },
-    growth: "Driving revenue growth",
+    problemSolution: {
+      label: "The difference",
+      title: "The same three days, handled two ways",
+      beforeHeading: "Without a system",
+      afterHeading: "With ExpoLead OS",
+      pairs: [
+        {
+          before: "Cards in one pocket, notes on the back of a brochure, three numbers saved with no name.",
+          after: "Every connection logged at the booth, with the product and the quantity they actually asked about.",
+        },
+        {
+          before: "You land home and cannot remember which supplier quoted what, or who wanted the sample.",
+          after: "Every conversation searchable, with your own notes and the stage each one reached.",
+        },
+        {
+          before: "Follow-ups happen if somebody remembers. Most of them quietly do not.",
+          after: "Due dates and at-risk flags, so a connection cannot go quiet without you seeing it.",
+        },
+        {
+          before: "Next year you walk into the same hall and start again from nothing.",
+          after: "You see who you met at this show last year, and what came of it, before you walk in.",
+        },
+      ],
+    },
+    faq: {
+      label: "Questions",
+      title: "Straight answers before you start",
+      items: [
+        {
+          q: "Is this just another CRM?",
+          a: "No. A CRM is built for a sales team working a pipeline all year from a desk. ExpoLead OS is built for three days on a show floor, on your feet, meeting fifty people. It captures connections, products and quantities the way exhibition work actually happens, and there is nothing to configure before you can use it.",
+        },
+        {
+          q: "What happens when the 14 day trial ends?",
+          a: "Nothing disappears. You keep full access to everything you captured, and you can still view and edit all of it. The only thing that stops is adding new records. Upgrade whenever you are ready and it opens straight back up.",
+        },
+        {
+          q: "Do I need a credit card to start?",
+          a: "No. The trial is free and needs no card. You get 14 days, one exhibition, up to 25 connections and up to 25 opportunities, which is enough to run a real show end to end.",
+        },
+        {
+          q: "Can I get my data out?",
+          a: "Yes, as CSV, on any paid plan. Export is not part of the free trial. Once you are on a paid plan your data is yours to take whenever you want, and there is no lock-in.",
+        },
+        {
+          q: "Which industries is it built for?",
+          a: "Companies that exhibit and sell products: food and beverage, tea, spices, chemicals and coatings, apparel and textiles, machinery, packaging, building materials, gems and jewellery. If you negotiate in quantities, it fits. If you sell services, it will feel half empty.",
+        },
+        {
+          q: "Does it work on my phone at the show?",
+          a: "Yes, it runs in your phone browser, which is where most capture happens. You do need a connection in the hall, so it is worth checking the wifi at your stand on day one.",
+        },
+      ],
+    },
     features: {
       label: "Everything in one workspace",
       title: "Everything you need to turn booth conversations into orders",
@@ -243,7 +298,60 @@ const translations = {
         },
       ],
     },
-    growth: "驱动营收增长",
+    problemSolution: {
+      label: "差别所在",
+      title: "同样的三天，两种结果",
+      beforeHeading: "没有系统时",
+      afterHeading: "使用 ExpoLead OS",
+      pairs: [
+        {
+          before: "名片塞在口袋里，笔记写在宣传册背面，还有三个没写名字的电话号码。",
+          after: "每一个人脉都在展位上即时记录，包括他们真正询问的产品和数量。",
+        },
+        {
+          before: "回到家后，想不起哪家供应商报了什么价，也想不起谁要过样品。",
+          after: "每一次对话都可搜索，附带您自己的笔记和各自推进到的阶段。",
+        },
+        {
+          before: "跟进全靠有人记得，而大多数都在无声中错过了。",
+          after: "到期提醒和风险标记，让任何人脉都不会在您不知情的情况下冷却。",
+        },
+        {
+          before: "第二年走进同一个展馆，一切从零开始。",
+          after: "在进场之前，就能看到去年在这个展会上见过谁，以及后来的结果。",
+        },
+      ],
+    },
+    faq: {
+      label: "常见问题",
+      title: "开始之前，先给您直接的答案",
+      items: [
+        {
+          q: "这只是另一个 CRM 吗？",
+          a: "不是。CRM 是为销售团队全年坐在办公桌前管理管道而设计的。ExpoLead OS 是为展会现场的三天而设计的，您站着，要见五十个人。它按照展会工作的真实方式记录人脉、产品和数量，而且无需任何配置即可开始使用。",
+        },
+        {
+          q: "14 天试用期结束后会怎样？",
+          a: "什么都不会消失。您捕捉的所有内容仍可完整访问，仍然可以查看和编辑。唯一停止的是新增记录。您准备好时随时升级，立即恢复。",
+        },
+        {
+          q: "开始需要信用卡吗？",
+          a: "不需要。试用是免费的，无需信用卡。您可获得 14 天、1 个展会、最多 25 个人脉和最多 25 个商机，足以完整跑完一场真实的展会。",
+        },
+        {
+          q: "我可以导出我的数据吗？",
+          a: "可以，导出为 CSV，适用于任何付费方案。导出不包含在免费试用中。开通付费方案后，您的数据随时可以带走，没有任何锁定。",
+        },
+        {
+          q: "它是为哪些行业打造的？",
+          a: "参展并销售产品的公司：食品饮料、茶叶、香料、化工与涂料、服装纺织、机械、包装、建材、珠宝玉石。如果您按数量谈判，它就适合您。如果您销售的是服务，会觉得很多字段用不上。",
+        },
+        {
+          q: "在展会现场可以用手机吗？",
+          a: "可以，它在手机浏览器中运行，而大部分记录本来就发生在手机上。展馆内需要网络连接，所以第一天值得先确认展位的 wifi。",
+        },
+      ],
+    },
     features: {
       label: "一体化工作空间",
       title: "将展台对话变成订单所需的一切",
@@ -628,6 +736,48 @@ export default function HomePage() {
         })();
       ` }} />
 
+      {/* PROBLEM / SOLUTION — same three days, two ways */}
+      <section className="bg-white px-8 py-16 lg:px-16 border-t border-slate-100">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-10">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 mb-2">
+              {t.problemSolution.label}
+            </p>
+            <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
+              {t.problemSolution.title}
+            </h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+            <div>
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-slate-400">
+                {t.problemSolution.beforeHeading}
+              </p>
+              <div className="flex flex-col gap-3">
+                {t.problemSolution.pairs.map((pair, i) => (
+                  <div key={i} className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4">
+                    <p className="text-sm leading-relaxed text-slate-500">{pair.before}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">
+                {t.problemSolution.afterHeading}
+              </p>
+              <div className="flex flex-col gap-3">
+                {t.problemSolution.pairs.map((pair, i) => (
+                  <div key={i} className="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4">
+                    <p className="text-sm leading-relaxed text-slate-700">{pair.after}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* HOW IT WORKS */}
       <section className="bg-white px-8 py-12 lg:px-16">
         <div className="mx-auto max-w-4xl text-center">
@@ -639,16 +789,21 @@ export default function HomePage() {
           .progress-line { transform-origin: left; animation: drawLine 3s ease-in-out infinite; }
         `}</style>
         <div className="relative mx-auto mt-10 grid max-w-5xl gap-8 md:grid-cols-3">
-          <div className="absolute hidden md:block" style={{ top: 27, left: "calc(16.67% + 28px)", right: "calc(16.67% + 28px)", height: 2, background: "#d1fae5" }}>
+          <div className="absolute hidden md:block" style={{ top: 19, left: "calc(16.67% + 24px)", right: "calc(16.67% + 24px)", height: 2, background: "#d1fae5" }}>
             <div className="progress-line absolute inset-0" style={{ background: "#059669" }} />
           </div>
-          {t.how.steps.map((step, i) => (
+          {t.how.steps.map((step, i) => {
+            const StepIcon = [UserPlus, Filter, Handshake][i] ?? UserPlus;
+            return (
             <div key={i} className="relative flex flex-col items-center text-center">
-              <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600 text-xl font-black text-white shadow-lg">{i + 1}</div>
+              <div className="relative z-10 flex items-center justify-center bg-white px-4">
+                <StepIcon className="h-10 w-10 text-emerald-600" strokeWidth={1.75} />
+              </div>
               <h3 className="mt-6 text-lg font-bold text-slate-900">{step.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-500">{step.desc}</p>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -823,6 +978,53 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      <section className="bg-slate-50 px-8 py-16 lg:px-16 border-t border-slate-100" id="faq">
+        <div className="mx-auto max-w-3xl">
+          <div className="text-center mb-10">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 mb-2">
+              {t.faq.label}
+            </p>
+            <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
+              {t.faq.title}
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {t.faq.items.map((item, i) => (
+              <details
+                key={i}
+                className="group rounded-xl border border-slate-200 bg-white px-5 py-4 open:border-emerald-200"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-bold text-slate-900 md:text-base">
+                  {item.q}
+                  <span className="shrink-0 text-lg font-black text-emerald-500 transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ structured data — lets Google show these as rich results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: t.faq.items.map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: { "@type": "Answer", text: item.a },
+            })),
+          }),
+        }}
+      />
 
       {/* FOUNDER NOTE */}
       <section className="bg-slate-800 px-8 py-12 lg:px-16">
