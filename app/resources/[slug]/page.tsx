@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ARTICLES, getArticle } from "@/lib/articles";
+import ShareButtons from "@/components/ShareButtons";
 
 export function generateStaticParams() {
   return ARTICLES.map((a) => ({ slug: a.slug }));
@@ -80,7 +81,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <span className="mx-1.5">·</span>{article.topic}
         </p>
         <h1 className="mt-3 text-3xl font-black leading-[1.15] tracking-tight text-slate-900 md:text-4xl">{article.title}</h1>
-        <p className="mt-4 text-sm text-slate-400">By ExpoLead OS · {article.readMinutes} min read</p>
+        <p className="mt-4 text-sm text-slate-400">
+          By ExpoLead OS <span className="mx-1.5 text-slate-300">|</span> {article.readMinutes} min read{" "}
+          <span className="mx-1.5 text-slate-300">|</span> Published on{" "}
+          {new Date(article.publishedISO).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
+        </p>
 
         <div className="mt-8 flex h-44 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
           <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>
@@ -106,6 +111,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             return <p key={i} className="mb-4 text-[17px] leading-8 text-slate-700">{block.text}</p>;
           })}
         </div>
+
+        <ShareButtons
+          url={`https://expolead.tradesoil.com/resources/${article.slug}`}
+          title={article.title}
+        />
 
         {/* CTA */}
         <div className="mt-12 rounded-2xl px-7 py-9 text-center text-white" style={{ background: "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)" }}>
