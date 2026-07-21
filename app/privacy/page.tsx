@@ -32,7 +32,7 @@ export default function PrivacyPage() {
         <div className="mx-auto max-w-3xl">
           <Link href="/" className="text-sm text-emerald-600 hover:underline">← Back to home</Link>
 
-          <p className="mt-4 text-sm text-slate-500">Last updated: 20 June 2026</p>
+          <p className="mt-4 text-sm text-slate-500">Last updated: 22 July 2026</p>
 
           <div className="mt-10 space-y-8 text-sm leading-7 text-slate-700">
 
@@ -131,7 +131,7 @@ export default function PrivacyPage() {
                 <li><strong>Access</strong> — request a copy of the personal data we hold about you</li>
                 <li><strong>Correct</strong> — ask us to fix inaccurate or incomplete data</li>
                 <li><strong>Delete</strong> — ask us to delete your personal data</li>
-                <li><strong>Export</strong> — download your business data at any time using the CSV export feature inside the platform</li>
+                <li><strong>Export</strong> — download your business data using the CSV export feature inside the platform, available on any paid plan. If you are on a free trial, email us and we will provide a copy of your data</li>
                 <li><strong>Object</strong> — ask us to stop processing your data in certain circumstances</li>
                 <li><strong>Withdraw consent</strong> — where we rely on consent, you can withdraw it at any time</li>
               </ul>
