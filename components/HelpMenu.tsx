@@ -70,7 +70,7 @@ export default function HelpMenu() {
               Email support
             </a>
             <Link
-              href="/pricing"
+              href="/upgrade"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
             >

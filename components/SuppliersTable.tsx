@@ -202,7 +202,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
             </button>
           ) : (
             <Link
-              href="/pricing"
+              href="/upgrade"
               title="CSV export is available on Starter and Growth"
               className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-center text-sm font-medium text-ink-400 hover:bg-ink-50 md:w-auto"
             >

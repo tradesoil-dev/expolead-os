@@ -121,7 +121,7 @@ export default function NotificationsMenu({ daysLeft, isExpired }: Props) {
                     : "Upgrade before your trial ends."}
                 </p>
                 <Link
-                  href="/pricing"
+                  href="/upgrade"
                   onClick={() => setOpen(false)}
                   className={`mt-1.5 inline-block text-xs font-bold underline ${isExpired ? "text-rose-700" : "text-amber-700"}`}
                 >

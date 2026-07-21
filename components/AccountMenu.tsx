@@ -180,7 +180,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
                 ? "Trial ended — upgrade to add new records."
                 : `${daysLeft} day${daysLeft === 1 ? "" : "s"} left in your free trial.`}
               <Link
-                href="/pricing"
+                href="/upgrade"
                 onClick={() => setOpen(false)}
                 className="ml-2 font-bold underline"
               >
@@ -195,7 +195,7 @@ export default function AccountMenu({ email }: { email: string | null }) {
               Workspace
             </p>
             <Link
-              href="/pricing"
+              href="/upgrade"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
             >

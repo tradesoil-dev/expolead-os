@@ -142,7 +142,7 @@ export default function MobileNav({ email }: { email?: string | null }) {
               )}
 
               <div className="my-2 border-t border-ink-100" />
-              <Link href="/pricing" onClick={() => setOpen(false)} className={`${item} text-ink-700 hover:bg-ink-50`}>View plans</Link>
+              <Link href="/upgrade" onClick={() => setOpen(false)} className={`${item} text-ink-700 hover:bg-ink-50`}>View plans</Link>
             </nav>
 
             <div className="border-t border-ink-100 p-3">

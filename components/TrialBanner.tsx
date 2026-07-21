@@ -18,7 +18,7 @@ export default function TrialBanner({ isExpired, isWarning, daysLeft }: Props) {
           Your 14-day trial has ended. You can still view and edit everything you captured.
         </p>
         <Link
-          href="/pricing"
+          href="/upgrade"
           className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors"
         >
           Upgrade Now
@@ -35,7 +35,7 @@ export default function TrialBanner({ isExpired, isWarning, daysLeft }: Props) {
           : `${daysLeft} days left in your free trial.`}
       </p>
       <Link
-        href="/pricing"
+        href="/upgrade"
         className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-sm font-semibold text-amber-600 hover:bg-amber-50 transition-colors"
       >
         View Plans
