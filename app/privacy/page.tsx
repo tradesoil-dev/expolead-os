@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PublicHeader from "@/components/PublicHeader";
 
 export const metadata = {
   title: "Privacy Notice — ExpoLead OS",
@@ -10,22 +11,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-white">
 
       {/* HEADER */}
-      <header className="flex items-center justify-between bg-slate-800 px-6 py-4 lg:px-16">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
-            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
-          </div>
-          <span className="flex items-center text-[16px] tracking-tight leading-none">
-            <span className="font-semibold text-white">Expo</span>
-            <span className="font-semibold text-emerald-400">Lead</span>
-            <span className="font-normal text-slate-400"> OS</span>
-          </span>
-        </Link>
-        <span className="text-sm font-semibold text-emerald-400">Privacy Notice</span>
-      </header>
+      <PublicHeader />
 
       {/* CONTENT */}
       <div className="px-6 py-16 lg:px-16">

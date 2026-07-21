@@ -20,6 +20,7 @@ import {
   Handshake,
 } from "lucide-react";
 import SplashScreen from "@/components/SplashScreen";
+import PublicHeader from "@/components/PublicHeader";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -360,7 +361,6 @@ const mockupItems = [
 export default function HomePage() {
   const [lang, setLang] = useState<"en" | "zh">("en");
   const [langOpen, setLangOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [marqueeShows, setMarqueeShows] = useState<MarqueeShow[]>(upcomingShows);
   const t = translations[lang];
 
@@ -382,114 +382,47 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white text-slate-950">
       <SplashScreen />
-      {/* HEADER (sticky) */}
-      <div className="sticky top-0 z-50">
-      <header className="flex items-center justify-between bg-slate-900 px-4 py-3 shadow-sm shadow-black/20 lg:px-16 lg:py-4">
-        <div className="flex items-center gap-2.5">
-          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
-            <div className="logo-sq1 w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="logo-sq2 w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="logo-sq3 w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="logo-sq4 w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
-          </div>
-          <span className="flex items-center text-[16px] tracking-tight leading-none">
-            <span className="font-semibold text-white">Expo</span><span className="font-semibold text-emerald-400">Lead</span><span className="font-normal text-slate-400"> OS</span>
-          </span>
-        </div>
-
-        <div className="anim-nav-links flex items-center gap-3">
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-7 lg:gap-8 mr-3">
-            <Link href="/features" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-              {t.nav.product}
-            </Link>
-            <Link href="/resources" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-              {lang === "en" ? "Resources" : "资源"}
-            </Link>
-            <Link href="/pricing" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-              {t.nav.pricing}
-            </Link>
-            <Link href="/login" className="hidden md:inline-flex items-center rounded-full border border-slate-600 px-5 py-2 text-sm font-semibold text-slate-200 hover:border-slate-400 hover:text-white transition-colors">
-              {t.nav.login}
-            </Link>
-          </div>
-          <Link href="/login?mode=signup" className="hidden md:block rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">
-            {t.nav.trial}
-          </Link>
-
-          {/* Language dropdown — always visible */}
-          <div className="relative shrink-0">
-            <button
-              onClick={() => setLangOpen((o) => !o)}
-              className="flex items-center gap-1.5 rounded-full border border-slate-600 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
-              aria-haspopup="listbox"
-              aria-expanded={langOpen}
-            >
-              <Globe2 className="h-3 w-3" />
-              {lang === "en" ? "EN" : "中文"}
-              <svg className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
-            </button>
-
-            {langOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-                <div role="listbox" className="absolute right-0 top-full z-50 mt-2 w-32 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 shadow-xl">
-                  {([
-                    { code: "en", label: "EN", name: "English" },
-                    { code: "zh", label: "中文", name: "Chinese" },
-                  ] as const).map((o) => (
-                    <button
-                      key={o.code}
-                      role="option"
-                      aria-selected={lang === o.code}
-                      onClick={() => { setLang(o.code); setLangOpen(false); }}
-                      className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors ${lang === o.code ? "bg-emerald-50 font-semibold text-emerald-700" : "text-slate-700 hover:bg-slate-50"}`}
-                    >
-                      <span>{o.label}</span>
-                      {lang === o.code && (
-                        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Hamburger — mobile only */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden flex flex-col gap-[5px] p-1.5 shrink-0"
-            aria-label="Toggle menu"
-          >
-            <span className={`block w-5 h-0.5 bg-slate-300 transition-all ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-            <span className={`block w-5 h-0.5 bg-slate-300 transition-all ${menuOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-5 h-0.5 bg-slate-300 transition-all ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
-          </button>
-        </div>
-      </header>
-
-      {/* Mobile dropdown menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-slate-900 border-t border-slate-700 px-4 py-3 flex flex-col gap-1">
-          <Link href="/features" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-            {t.nav.product}
-          </Link>
-          <Link href="/resources" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-            {lang === "en" ? "Resources" : "资源"}
-          </Link>
-          <Link href="/pricing" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-            {t.nav.pricing}
-          </Link>
-          <Link href="/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-            {t.nav.login}
-          </Link>
-          <Link href="/login?mode=signup" onClick={() => setMenuOpen(false)} className="mt-1 block w-full rounded-full bg-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
-            {t.nav.trial}
-          </Link>
-        </div>
-      )}
-      </div>
+      <PublicHeader labels={{ product: t.nav.product, resources: lang === "en" ? "Resources" : "资源", pricing: t.nav.pricing, login: t.nav.login, trial: t.nav.trial }}>
+            {/* Language dropdown — always visible */}
+            <div className="relative shrink-0">
+              <button
+                onClick={() => setLangOpen((o) => !o)}
+                className="flex items-center gap-1.5 rounded-full border border-slate-600 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
+                aria-haspopup="listbox"
+                aria-expanded={langOpen}
+              >
+                <Globe2 className="h-3 w-3" />
+                {lang === "en" ? "EN" : "中文"}
+                <svg className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+              </button>
+  
+              {langOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
+                  <div role="listbox" className="absolute right-0 top-full z-50 mt-2 w-32 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 shadow-xl">
+                    {([
+                      { code: "en", label: "EN", name: "English" },
+                      { code: "zh", label: "中文", name: "Chinese" },
+                    ] as const).map((o) => (
+                      <button
+                        key={o.code}
+                        role="option"
+                        aria-selected={lang === o.code}
+                        onClick={() => { setLang(o.code); setLangOpen(false); }}
+                        className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors ${lang === o.code ? "bg-emerald-50 font-semibold text-emerald-700" : "text-slate-700 hover:bg-slate-50"}`}
+                      >
+                        <span>{o.label}</span>
+                        {lang === o.code && (
+                          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+  
+      </PublicHeader>
 
       {/* HERO */}
       <section

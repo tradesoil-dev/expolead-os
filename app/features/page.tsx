@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import PublicHeader from "@/components/PublicHeader";
 
 const AVATARS = [
   { src: "/avatars/avatar-1.png", pos: { left: "50%", top: "8.75%" } },
@@ -114,22 +115,7 @@ export default function FeaturesPage() {
       `}</style>
 
       {/* HEADER */}
-      <div className="sticky top-0 z-50">
-        <header className="flex items-center justify-between bg-slate-900 px-4 py-3 shadow-sm shadow-black/20 lg:px-16 lg:py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <BoxLogo />
-            <span className="flex items-center text-[16px] tracking-tight leading-none">
-              <span className="font-semibold text-white">Expo</span><span className="font-semibold text-emerald-400">Lead</span><span className="font-normal text-slate-400"> OS</span>
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/features" className="hidden md:block text-sm font-medium text-white transition-colors">Product</Link>
-            <Link href="/pricing" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">Pricing</Link>
-            <Link href="/login" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors">Log in</Link>
-            <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors shrink-0">Start free trial</Link>
-          </div>
-        </header>
-      </div>
+      <PublicHeader />
 
       {/* HERO */}
       <section className="relative overflow-hidden px-6 py-16 lg:px-16 lg:py-20">

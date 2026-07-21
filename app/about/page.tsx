@@ -1,20 +1,10 @@
 import Link from "next/link";
+import PublicHeader from "@/components/PublicHeader";
 
 export const metadata = {
   title: "About — ExpoLead OS",
   description: "Why ExpoLead OS exists, who it is for, and the people behind it.",
 };
-
-function BoxLogo() {
-  return (
-    <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
-      <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-white" />
-      <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-white" />
-      <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-white" />
-      <div className="h-[10px] w-[10px] rounded-[2px] bg-emerald-500" />
-    </div>
-  );
-}
 
 const VALUES = [
   ["Booth-first", "Fast enough to use one-handed at a busy stand. If it needs a manual, it does not belong here."],
@@ -26,22 +16,7 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-slate-950">
-      <div className="sticky top-0 z-50">
-        <header className="flex items-center justify-between bg-slate-900 px-4 py-3 shadow-sm shadow-black/20 lg:px-16 lg:py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <BoxLogo />
-            <span className="text-[16px] leading-none tracking-tight">
-              <span className="font-semibold text-white">Expo</span><span className="font-semibold text-emerald-400">Lead</span><span className="font-normal text-slate-400"> OS</span>
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/features" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Product</Link>
-            <Link href="/pricing" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Pricing</Link>
-            <Link href="/login" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Log in</Link>
-            <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
-          </div>
-        </header>
-      </div>
+      <PublicHeader />
 
       {/* Hero */}
       <section className="px-6 py-20 text-center text-white lg:px-16" style={{ background: "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)" }}>

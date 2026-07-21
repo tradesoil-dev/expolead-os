@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
 import PricingPlans from "@/components/PricingPlans";
+import PublicHeader from "@/components/PublicHeader";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
@@ -32,37 +32,11 @@ const FAQ = [
 const GRADIENT = "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)";
 const GRADIENT_STRIP = "linear-gradient(100deg, #0f172a 0%, #065f46 60%, #10b981 100%)";
 
-export default async function PricingPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
+export default function PricingPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       {/* STICKY HEADER */}
-      <header className="sticky top-0 z-50 flex items-center justify-between bg-slate-900 px-6 py-4 shadow-sm shadow-black/20 lg:px-16">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
-            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="w-[10px] h-[10px] rounded-[2px] border-[1.8px] border-white" />
-            <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
-          </div>
-          <span className="flex items-center text-[16px] tracking-tight leading-none">
-            <span className="font-semibold text-white">Expo</span>
-            <span className="font-semibold text-emerald-400">Lead</span>
-            <span className="font-normal text-slate-400"> OS</span>
-          </span>
-        </Link>
-        {user ? (
-          <Link href="/dashboard" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
-            ← Back to dashboard
-          </Link>
-        ) : (
-          <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
-            Start free trial
-          </Link>
-        )}
-      </header>
+      <PublicHeader />
 
       {/* GRADIENT HERO */}
       <div style={{ background: GRADIENT }} className="pb-16 pt-12">

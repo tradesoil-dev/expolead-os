@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ARTICLES, getArticle } from "@/lib/articles";
 import ShareButtons from "@/components/ShareButtons";
+import PublicHeader from "@/components/PublicHeader";
 
 export function generateStaticParams() {
   return ARTICLES.map((a) => ({ slug: a.slug }));
@@ -23,17 +24,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "article",
     },
   };
-}
-
-function BoxLogo() {
-  return (
-    <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
-      <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-white" />
-      <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-white" />
-      <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-white" />
-      <div className="h-[10px] w-[10px] rounded-[2px] bg-emerald-500" />
-    </div>
-  );
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -58,22 +48,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     <main className="min-h-screen overflow-x-hidden bg-white text-slate-950">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <div className="sticky top-0 z-50">
-        <header className="flex items-center justify-between bg-slate-900 px-4 py-3 shadow-sm shadow-black/20 lg:px-16 lg:py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <BoxLogo />
-            <span className="text-[16px] leading-none tracking-tight">
-              <span className="font-semibold text-white">Expo</span><span className="font-semibold text-emerald-400">Lead</span><span className="font-normal text-slate-400"> OS</span>
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/features" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Product</Link>
-            <Link href="/resources" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Resources</Link>
-            <Link href="/pricing" className="hidden text-sm font-medium text-slate-400 hover:text-white md:block">Pricing</Link>
-            <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Start free trial</Link>
-          </div>
-        </header>
-      </div>
+      <PublicHeader />
 
       <article className="mx-auto max-w-2xl px-6 py-14">
         <p className="text-sm text-slate-400">
