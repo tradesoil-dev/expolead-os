@@ -249,6 +249,20 @@ function LoginForm() {
                 ? mode === "signin" ? "Signing in…" : "Creating account…"
                 : mode === "signin" ? "Sign in →" : "Create account"}
             </button>
+
+            {mode === "signup" && (
+              <p className="mt-3 text-center text-xs leading-relaxed text-ink-500">
+                By signing up, I agree to the ExpoLead OS{" "}
+                <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-medium text-emerald-700 underline hover:text-emerald-800">
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="font-medium text-emerald-700 underline hover:text-emerald-800">
+                  Privacy Notice
+                </a>
+                .
+              </p>
+            )}
           </form>
 
           <p className="text-sm text-ink-500 mt-7 text-center">

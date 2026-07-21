@@ -165,6 +165,53 @@ Access continues after the trial ends, but creating new things stops. The opposi
 
 ---
 
+## Payment words
+
+**Sandbox**
+A complete practice copy of a payment system. Same screens, same steps, fake money. It has its own login and its own keys, and you pay with published test card numbers, one that always succeeds, one that always declines.
+
+Why it matters: the whole payment flow can be built and tested before your account is approved and before a single real card is charged. Think flight simulator.
+
+*ExpoLead example:* checkout gets built in the Paddle sandbox while your verification is still pending, then the keys get swapped for live ones.
+
+**Live keys / Test keys**
+Two sets of passwords that tell the payment provider which world you are in. Test keys move fake money, live keys move real money. Products and prices created in the sandbox do not carry over, so plans get set up twice.
+
+**Merchant of Record**
+The company that legally sells to your customer, takes their money, and is responsible for the sales tax on that sale. It is not always the company that made the product.
+
+Why it matters: selling software worldwide means VAT in Europe, sales tax in the US, and dozens of other rules. A merchant of record takes all of that on. You get paid a lump sum and never file a foreign tax return.
+
+*ExpoLead example:* Paddle is your merchant of record. Their name, not yours, appears on the customer's card statement. They charge more than a plain card processor, and handling the tax is what you are paying for.
+
+**Payment processor**
+The narrower alternative: they move the money and leave the tax to you. Stripe is the best known. Not available to Sri Lankan businesses, which is why you are on Paddle.
+
+**Webhook**
+An automatic message one system sends another when something happens, so nobody has to sit there checking.
+
+*ExpoLead example:* a customer pays, Paddle sends a webhook to ExpoLead saying "this person subscribed," and their account flips to paid with CSV export unlocked. Without it, you would be upgrading people by hand.
+
+**Signature verification**
+Checking that a webhook genuinely came from Paddle and not from someone pretending. Without it, anyone who guessed the address could send a fake "they paid" message and unlock a free account.
+
+**Price ID**
+The provider's own code for one specific plan at one specific price, such as Growth billed annually. Checkout is opened with a price ID rather than a number, so prices can never disagree between your site and the payment screen.
+
+**Checkout**
+The payment window itself. Paddle's version opens as an overlay on top of your page, so the customer never leaves your site.
+
+**Dunning**
+The polite chasing that happens when a card fails or expires: automatic retries and reminder emails. Done for you, and the reason recurring billing beats invoicing by hand.
+
+**Domain review / Account verification**
+Paddle's approval process before you may take real money. Three parts: they review your website, they verify your identity with government ID, and they verify your business details. Website review can take 5 to 7 working days.
+
+**Chargeback**
+A customer disputing a charge with their bank and pulling the money back. With a merchant of record, they handle the dispute.
+
+---
+
 ## Security words
 
 **Authentication** — proving who you are. Logging in.
