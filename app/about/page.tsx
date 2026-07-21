@@ -87,7 +87,7 @@ export default function AboutPage() {
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-slate-900 text-xs font-semibold text-emerald-500">GG</div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Gladwin Gerald</p>
-                  <p className="text-xs text-slate-500">Founder · Tradesoil International</p>
+                  <p className="text-xs text-slate-500">Founder, ExpoLead OS</p>
                 </div>
               </div>
               <p className="text-[13px] leading-[1.9] text-slate-600">Gladwin has worked in international trade and knows the exhibition floor first-hand. ExpoLead OS is the tool he wished he had: built for the way trade professionals actually work, on the floor, across borders, under time pressure.</p>
@@ -117,7 +117,7 @@ export default function AboutPage() {
       </section>
 
       <footer className="bg-slate-900 px-6 py-8 text-center text-sm text-slate-400 lg:px-16">
-        © 2026 Tradesoil International. Built for exhibitions. Designed for revenue growth.
+        © 2026 ExpoLead OS. Built for exhibitions. Designed for revenue growth.
       </footer>
     </main>
   );

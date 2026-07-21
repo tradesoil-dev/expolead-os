@@ -88,7 +88,7 @@ export default function ResourcesPage() {
       </section>
 
       <footer className="bg-slate-900 px-6 py-8 text-center text-sm text-slate-400 lg:px-16">
-        © 2026 Tradesoil International. Built for exhibitions. Designed for revenue growth.
+        © 2026 ExpoLead OS. Built for exhibitions. Designed for revenue growth.
       </footer>
     </main>
   );

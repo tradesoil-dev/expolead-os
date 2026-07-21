@@ -38,13 +38,13 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">About this notice</h2>
-              <p>ExpoLead OS is a product of Tradesoil International. We built ExpoLead OS to help trade professionals manage their exhibition leads, buyers, suppliers, and opportunities in one place. This notice explains what information we collect when you use ExpoLead OS, how we use it, and what rights you have over your data.</p>
+              <p>We built ExpoLead OS to help trade professionals manage their exhibition leads, buyers, suppliers, and opportunities in one place. This notice explains what information we collect when you use ExpoLead OS, how we use it, and what rights you have over your data.</p>
               <p className="mt-3">If you have any questions, contact us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>.</p>
             </section>
 
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">1. Who we are</h2>
-              <p>ExpoLead OS is operated by Tradesoil International. We are the data controller, meaning we decide how and why your personal data is processed. We do not process data on behalf of any third party.</p>
+              <p>ExpoLead OS is the data controller for the personal data described in this notice, meaning we decide how and why your personal data is processed. We do not process data on behalf of any third party.</p>
             </section>
 
             <section>

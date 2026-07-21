@@ -176,7 +176,7 @@ const translations = {
       label: "A note from the founders",
       quote: "ExpoLead OS was built by someone who has worked in international trade, understands the exhibition floor, and believes that serious professionals deserve serious tools. This is not a generic CRM adapted for exhibitions, it was designed specifically for the way trade professionals work, on the floor, across borders, under time pressure. Built with conviction. Designed for results.",
       name: "Gladwin Gerald",
-      title: "Founder, ExpoLead OS · Tradesoil International",
+      title: "Founder, ExpoLead OS",
     },
     footerLinks: {
       col1: { heading: "ExpoLead OS", items: ["About", "Product Overview", "Exhibitions", "Trade Show Teams"] },
@@ -325,7 +325,7 @@ const translations = {
       label: "联合创始人寄语",
       quote: "ExpoLead OS由一位深耕国际贸易、了解展会现场的人创建，他相信专业人士值得拥有专业工具。这不是一个为展会改造的通用CRM——它专为贸易专业人士的工作方式而设计：在展台上、跨越国界、在时间压力下。以信念打造，为成果而生。",
       name: "Gladwin Gerald",
-      title: "创始人，ExpoLead OS · Tradesoil International",
+      title: "创始人，ExpoLead OS",
     },
     footerLinks: {
       col1: { heading: "ExpoLead OS", items: ["关于我们", "产品概览", "展会", "展会团队"] },
@@ -1049,7 +1049,7 @@ export default function HomePage() {
 
         {/* Bottom bar */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-6">
-          <p className="text-xs text-slate-600">© 2026 Tradesoil International. All rights reserved.</p>
+          <p className="text-xs text-slate-600">© 2026 ExpoLead OS. All rights reserved.</p>
           <div className="flex flex-wrap gap-4">
             <Link href="/terms" className="text-xs text-slate-500 hover:text-white transition-colors">{t.footer.terms}</Link>
             <Link href="/privacy" className="text-xs text-slate-500 hover:text-white transition-colors">{t.footer.privacy}</Link>

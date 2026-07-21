@@ -37,7 +37,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">1. Acceptance of terms</h2>
-            <p>By creating an account or using ExpoLead OS, you agree to these Terms of Service. If you do not agree, do not use the service. These terms form a binding agreement between you and Tradesoil International (operator of ExpoLead OS).</p>
+            <p>By creating an account or using ExpoLead OS, you agree to these Terms of Service. If you do not agree, do not use the service. These terms form a binding agreement between you and ExpoLead OS.</p>
           </section>
 
           <section>
@@ -87,7 +87,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">9. Limitation of liability</h2>
-            <p>ExpoLead OS is provided "as is". To the maximum extent permitted by law, Tradesoil International is not liable for any indirect, incidental or consequential damages arising from your use of the service. Our total liability to you shall not exceed the amount you paid us in the 3 months preceding the claim.</p>
+            <p>ExpoLead OS is provided "as is". To the maximum extent permitted by law, ExpoLead OS is not liable for any indirect, incidental or consequential damages arising from your use of the service. Our total liability to you shall not exceed the amount you paid us in the 3 months preceding the claim.</p>
           </section>
 
           <section>
