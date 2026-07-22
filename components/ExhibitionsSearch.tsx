@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Exhibition, Supplier } from "@/lib/types";
+import { calcRoi, formatRatio } from "@/lib/currencies";
 
 function relativeLabel(diffDays: number): string {
   const d = Math.abs(diffDays);
@@ -41,9 +42,13 @@ function exhibitionStatus(startDate: string | null, endDate: string | null) {
 export default function ExhibitionsSearch({
   exhibitions,
   suppliers,
+  opportunities = [],
+  currency = "USD",
 }: {
   exhibitions: Exhibition[];
   suppliers: Supplier[];
+  opportunities?: { exhibition: string | null; status: string | null; deal_value: number | null }[];
+  currency?: string;
 }) {
   const [query, setQuery] = useState("");
   const [rows, setRows] = useState<Exhibition[]>(exhibitions);
@@ -99,6 +104,13 @@ export default function ExhibitionsSearch({
     const visited = related.filter((s) => s.visited).length;
     const remaining = related.filter((s) => !s.visited).length;
     return { total: related.length, visited, remaining };
+  };
+
+  // Cost against won business for one show. Opportunities link to exhibitions
+  // by free-text name, not by id, which is why this matches on ex.name.
+  const moneyFor = (ex: Exhibition) => {
+    const forShow = opportunities.filter((o) => o.exhibition === ex.name);
+    return calcRoi(forShow, Number(ex.cost) || 0);
   };
 
   const filtered = useMemo(() => {
@@ -223,7 +235,25 @@ export default function ExhibitionsSearch({
                   <p className="text-[11px] text-ink-400">Remaining</p>
                 </div>
               </div>
-              <div className="mt-5 flex justify-end">
+              {(() => {
+                const money = moneyFor(ex);
+                return (
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-ink-100 pt-3">
+                    {money.cost === 0 ? (
+                      <span className="text-xs font-medium text-amber-700">Add cost to see this show&rsquo;s return</span>
+                    ) : (
+                      <span className="text-xs text-ink-500">
+                        Cost {Math.round(money.cost).toLocaleString()}
+                        {money.won > 0 && <> · Won {Math.round(money.won).toLocaleString()}</>}
+                      </span>
+                    )}
+                    <span className={`shrink-0 text-sm font-bold ${money.cost === 0 ? "text-ink-300" : money.won === 0 ? "text-ink-400" : "text-emerald-600"}`}>
+                      {money.cost === 0 ? "—" : money.won === 0 ? "Too early" : formatRatio(money.ratio)}
+                    </span>
+                  </div>
+                );
+              })()}
+              <div className="mt-3 flex justify-end">
                 <span className="text-sm font-medium text-emerald-600">
                   View exhibition →
                 </span>
