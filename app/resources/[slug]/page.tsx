@@ -13,6 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const article = getArticle(slug);
   if (!article) return {};
   const url = `https://expolead.tradesoil.com/resources/${article.slug}`;
+  // Social crawlers cannot render SVG, so share previews point at the PNG copy
+  // of the cover illustration. Defining openGraph here replaces the one in the
+  // root layout wholesale, so the image has to be repeated or the card shows
+  // with no picture at all.
+  const image = article.image
+    ? `https://expolead.tradesoil.com/articles/og/${article.slug}.png`
+    : "https://expolead.tradesoil.com/og.png";
   return {
     title: `${article.title} | ExpoLead OS`,
     description: article.excerpt,
@@ -22,6 +29,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: article.excerpt,
       url,
       type: "article",
+      siteName: "ExpoLead OS",
+      images: [{ url: image, width: 1200, height: 630, alt: article.imageAlt ?? article.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt,
+      images: [image],
     },
   };
 }
@@ -68,7 +83,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             src={article.image}
             alt={article.imageAlt ?? ""}
             width={1200}
-            height={400}
+            height={630}
             className="mt-8 w-full rounded-2xl"
           />
         ) : (

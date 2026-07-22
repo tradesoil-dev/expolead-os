@@ -1,33 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" role="img" aria-label="Three exhibition options side by side with the middle one selected and marked with a green tick">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Three exhibition options side by side with the middle one selected and marked with a green tick">
   <defs>
     <g id="pin">
-      <path d="M0 -46c-15 0-27 12-27 27 0 19 27 47 27 47s27-28 27-47c0-15-12-27-27-27z" />
-      <circle cx="0" cy="-19" r="10" fill="#ffffff" />
+      <path d="M0 -60c-20 0-36 16-36 36 0 25 36 62 36 62s36-37 36-62c0-20-16-36-36-36z" />
+      <circle cx="0" cy="-24" r="13" fill="#ffffff" />
     </g>
   </defs>
 
-  <rect width="1200" height="400" fill="#ecfdf5" />
-  <circle cx="10" cy="400" r="130" fill="#d1fae5" />
-  <circle cx="1180" cy="16" r="100" fill="#d1fae5" />
+  <rect width="1200" height="630" fill="#d1fae5" />
+  <circle cx="-10" cy="660" r="210" fill="#a7f3d0" />
+  <circle cx="1215" cy="-25" r="180" fill="#a7f3d0" />
+  <circle cx="106" cy="128" r="24" fill="#fbbf24" />
+  <circle cx="1100" cy="552" r="18" fill="#818cf8" />
 
   <!-- Option 1 -->
-  <rect x="170" y="112" width="272" height="216" rx="20" fill="#ffffff" stroke="#e2e8f0" stroke-width="3" />
-  <g transform="translate(306,196)"><use href="#pin" fill="#cbd5e1" /></g>
-  <rect x="226" y="238" width="160" height="14" rx="7" fill="#e2e8f0" />
-  <rect x="252" y="266" width="108" height="11" rx="5.5" fill="#eef2f6" />
+  <rect x="164" y="182" width="284" height="284" rx="26" fill="#ffffff" opacity="0.75" />
+  <g transform="translate(306,300)"><use href="#pin" fill="#6366f1" opacity="0.5" /></g>
+  <rect x="222" y="366" width="168" height="18" rx="9" fill="#cbd5e1" />
+  <rect x="250" y="400" width="112" height="14" rx="7" fill="#e2e8f0" />
 
   <!-- Option 2, the chosen show -->
-  <rect x="464" y="76" width="272" height="256" rx="20" fill="#0f172a" opacity="0.07" transform="translate(0,6)" />
-  <rect x="464" y="76" width="272" height="256" rx="20" fill="#ffffff" stroke="#10b981" stroke-width="5" />
-  <g transform="translate(600,186)"><use href="#pin" fill="#10b981" /></g>
-  <rect x="520" y="238" width="160" height="14" rx="7" fill="#cbd5e1" />
-  <rect x="546" y="266" width="108" height="11" rx="5.5" fill="#e2e8f0" />
-  <circle cx="736" cy="86" r="30" fill="#10b981" />
-  <path d="M723 86 l9 10 l17 -19" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="458" y="130" width="284" height="358" rx="26" fill="#065f46" opacity="0.16" transform="translate(0,8)" />
+  <rect x="458" y="130" width="284" height="358" rx="26" fill="#ffffff" />
+  <rect x="458" y="130" width="284" height="358" rx="26" fill="none" stroke="#10b981" stroke-width="7" />
+  <g transform="translate(600,290)"><use href="#pin" fill="#10b981" /></g>
+  <rect x="516" y="366" width="168" height="18" rx="9" fill="#cbd5e1" />
+  <rect x="544" y="400" width="112" height="14" rx="7" fill="#e2e8f0" />
+  <circle cx="742" cy="142" r="42" fill="#10b981" />
+  <path d="M724 142 l13 14 l23 -26" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Option 3 -->
-  <rect x="758" y="112" width="272" height="216" rx="20" fill="#ffffff" stroke="#e2e8f0" stroke-width="3" />
-  <g transform="translate(894,196)"><use href="#pin" fill="#cbd5e1" /></g>
-  <rect x="814" y="238" width="160" height="14" rx="7" fill="#e2e8f0" />
-  <rect x="840" y="266" width="108" height="11" rx="5.5" fill="#eef2f6" />
+  <rect x="752" y="182" width="284" height="284" rx="26" fill="#ffffff" opacity="0.75" />
+  <g transform="translate(894,300)"><use href="#pin" fill="#f59e0b" opacity="0.5" /></g>
+  <rect x="810" y="366" width="168" height="18" rx="9" fill="#cbd5e1" />
+  <rect x="838" y="400" width="112" height="14" rx="7" fill="#e2e8f0" />
 </svg>

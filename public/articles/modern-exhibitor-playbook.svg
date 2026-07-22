@@ -1,36 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" role="img" aria-label="A timeline running from planning before a show, through the booth itself, to follow-up results afterwards">
-  <rect width="1200" height="400" fill="#ecfdf5" />
-  <circle cx="10" cy="400" r="130" fill="#d1fae5" />
-  <circle cx="1180" cy="16" r="100" fill="#d1fae5" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="A timeline running from planning before a show, through the booth itself, to follow-up results afterwards">
+  <rect width="1200" height="630" fill="#d1fae5" />
+  <circle cx="-10" cy="660" r="210" fill="#a7f3d0" />
+  <circle cx="1215" cy="-25" r="180" fill="#a7f3d0" />
+  <circle cx="112" cy="126" r="24" fill="#fbbf24" />
+  <circle cx="1104" cy="566" r="18" fill="#818cf8" />
 
   <!-- The arc through the show and beyond it -->
-  <line x1="120" y1="300" x2="1040" y2="300" stroke="#a7f3d0" stroke-width="10" stroke-linecap="round" stroke-dasharray="4 26" />
-  <path d="M1044 284 L1082 300 L1044 316 Z" fill="#a7f3d0" />
+  <line x1="120" y1="452" x2="1030" y2="452" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-dasharray="2 34" />
+  <path d="M1038 430 L1088 452 L1038 474 Z" fill="#ffffff" />
 
-  <g font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="700" font-size="21" text-anchor="middle">
+  <g font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="700" font-size="29" text-anchor="middle">
     <!-- Before: the plan -->
-    <rect x="150" y="146" width="170" height="128" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="3" />
-    <rect x="180" y="178" width="110" height="12" rx="6" fill="#cbd5e1" />
-    <rect x="180" y="204" width="86" height="10" rx="5" fill="#e2e8f0" />
-    <rect x="180" y="226" width="98" height="10" rx="5" fill="#e2e8f0" />
-    <circle cx="235" cy="300" r="16" fill="#34d399" />
-    <text x="235" y="356" fill="#0f172a">Before</text>
+    <rect x="140" y="216" width="200" height="176" rx="22" fill="#065f46" opacity="0.14" transform="translate(0,7)" />
+    <rect x="140" y="216" width="200" height="176" rx="22" fill="#ffffff" />
+    <rect x="174" y="256" width="132" height="16" rx="8" fill="#6366f1" />
+    <rect x="174" y="290" width="100" height="14" rx="7" fill="#c7d2fe" />
+    <rect x="174" y="318" width="118" height="14" rx="7" fill="#e2e8f0" />
+    <rect x="174" y="346" width="86" height="14" rx="7" fill="#e2e8f0" />
+    <circle cx="240" cy="452" r="24" fill="#6366f1" />
+    <text x="240" y="540" fill="#064e3b">Before</text>
 
     <!-- The booth itself -->
-    <rect x="486" y="92" width="228" height="34" rx="10" fill="#065f46" />
-    <rect x="510" y="134" width="180" height="112" rx="10" fill="#10b981" />
-    <rect x="540" y="168" width="120" height="12" rx="6" fill="#ffffff" opacity="0.7" />
-    <rect x="540" y="192" width="84" height="10" rx="5" fill="#ffffff" opacity="0.5" />
-    <rect x="546" y="246" width="108" height="24" rx="8" fill="#0f172a" />
-    <circle cx="600" cy="300" r="20" fill="#10b981" />
-    <text x="600" y="356" fill="#0f172a">At the show</text>
+    <rect x="470" y="136" width="260" height="44" rx="14" fill="#065f46" />
+    <rect x="498" y="192" width="204" height="146" rx="14" fill="#10b981" />
+    <rect x="532" y="234" width="136" height="16" rx="8" fill="#ffffff" opacity="0.8" />
+    <rect x="532" y="264" width="94" height="14" rx="7" fill="#ffffff" opacity="0.55" />
+    <rect x="538" y="338" width="124" height="30" rx="10" fill="#0f172a" />
+    <circle cx="600" cy="452" r="30" fill="#10b981" />
+    <text x="600" y="540" fill="#064e3b">At the show</text>
 
     <!-- After: the results -->
-    <rect x="880" y="146" width="170" height="128" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="3" />
-    <rect x="910" y="228" width="26" height="24" rx="5" fill="#a7f3d0" />
-    <rect x="952" y="204" width="26" height="48" rx="5" fill="#34d399" />
-    <rect x="994" y="176" width="26" height="76" rx="5" fill="#10b981" />
-    <circle cx="965" cy="300" r="16" fill="#34d399" />
-    <text x="965" y="356" fill="#0f172a">After</text>
+    <rect x="860" y="216" width="200" height="176" rx="22" fill="#065f46" opacity="0.14" transform="translate(0,7)" />
+    <rect x="860" y="216" width="200" height="176" rx="22" fill="#ffffff" />
+    <rect x="892" y="322" width="34" height="42" rx="7" fill="#c7d2fe" />
+    <rect x="942" y="288" width="34" height="76" rx="7" fill="#fbbf24" />
+    <rect x="992" y="248" width="34" height="116" rx="7" fill="#10b981" />
+    <circle cx="960" cy="452" r="24" fill="#f59e0b" />
+    <text x="960" y="540" fill="#064e3b">After</text>
   </g>
 </svg>
