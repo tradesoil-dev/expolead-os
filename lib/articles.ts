@@ -29,8 +29,10 @@ export const ARTICLES: Article[] = [
     excerpt:
       "The first 72 hours decide whether a booth chat becomes an order. Here is the follow-up cadence that keeps you on a buyer's radar without wearing out your welcome.",
     readMinutes: 8,
-    featured: true,
     publishedISO: "2026-07-13",
+    image: "/articles/follow-up-after-trade-show.svg",
+    imageAlt:
+      "A follow-up timeline with three messages sent on day 2, day 7 and day 21 after a trade show",
     body: [
       {
         type: "p",
@@ -102,6 +104,9 @@ export const ARTICLES: Article[] = [
       "Not everyone who stops at your stand is a buyer. A few simple questions tell you who is worth your follow-up time and who is just collecting brochures.",
     readMinutes: 5,
     publishedISO: "2026-07-11",
+    image: "/articles/qualify-lead-at-booth.svg",
+    imageAlt:
+      "An exhibitor and a visitor talking across a booth counter beside a stopwatch showing ninety seconds",
     body: [
       {
         type: "p",
@@ -150,6 +155,9 @@ export const ARTICLES: Article[] = [
       "A stand at the wrong show costs you thousands and returns nothing. Here is how to pick the exhibitions that actually put you in front of buyers.",
     readMinutes: 6,
     publishedISO: "2026-07-09",
+    image: "/articles/choosing-right-exhibitions.svg",
+    imageAlt:
+      "Three exhibition options side by side with the middle one selected and marked with a green tick",
     body: [
       {
         type: "p",
@@ -199,6 +207,9 @@ export const ARTICLES: Article[] = [
       "Foot traffic was never the point. Modern exhibitors prepare earlier, qualify harder and follow up with more consistency, and they measure the show on business won rather than visitors counted.",
     readMinutes: 5,
     publishedISO: "2026-07-20",
+    image: "/articles/modern-exhibitor-playbook.svg",
+    imageAlt:
+      "A timeline running from planning before a show, through the booth itself, to follow-up results afterwards",
     body: [
       {
         type: "p",
@@ -345,6 +356,9 @@ export const ARTICLES: Article[] = [
       "A successful exhibition does not begin when the doors open. This is the full preparation timeline, from 90 days out to the final morning of the show, plus the checklist to run through before you leave.",
     readMinutes: 9,
     publishedISO: "2026-07-20",
+    image: "/articles/exhibition-booth-preparation-checklist.svg",
+    imageAlt:
+      "A booth preparation checklist on a clipboard beside countdown markers at 90, 60 and 30 days before the show",
     body: [
       {
         type: "p",
@@ -685,6 +699,7 @@ export const ARTICLES: Article[] = [
     excerpt:
       "Fifty qualified prospects beat five hundred business cards every time. Here is how to read a visitor properly, score the conversation, and send your follow-up where it will actually pay.",
     readMinutes: 7,
+    featured: true,
     publishedISO: "2026-07-22",
     image: "/articles/trade-show-lead-qualification.svg",
     imageAlt:
