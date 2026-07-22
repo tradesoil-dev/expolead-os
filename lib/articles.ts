@@ -15,6 +15,9 @@ export type Article = {
   readMinutes: number;
   featured?: boolean;
   publishedISO: string;
+  /** Cover illustration in /public/articles. Falls back to the plain icon block when absent. */
+  image?: string;
+  imageAlt?: string;
   body: Block[];
 };
 
@@ -672,6 +675,310 @@ export const ARTICLES: Article[] = [
       {
         type: "p",
         text: "And once those valuable conversations begin, having a reliable system to capture, organise, qualify, and follow up on every lead becomes just as important as the booth itself. That's where solutions like ExpoLead help exhibitors ensure that no opportunity is lost after the event.",
+      },
+    ],
+  },
+  {
+    slug: "trade-show-lead-qualification",
+    title: "Lead qualification at trade shows: how to identify high-value prospects",
+    topic: "Sales",
+    excerpt:
+      "Fifty qualified prospects beat five hundred business cards every time. Here is how to read a visitor properly, score the conversation, and send your follow-up where it will actually pay.",
+    readMinutes: 7,
+    publishedISO: "2026-07-22",
+    image: "/articles/trade-show-lead-qualification.svg",
+    imageAlt:
+      "Exhibition visitors passing through a funnel and being sorted into hot, warm and cold lead cards",
+    body: [
+      {
+        type: "p",
+        text: "One of the biggest misconceptions about exhibiting at trade shows is that success is measured by the number of leads collected.",
+      },
+      { type: "p", text: "It's not." },
+      {
+        type: "p",
+        text: "A business that collects 50 highly qualified prospects will almost always outperform one that returns with 500 business cards but no understanding of who those people are or what they need.",
+      },
+      {
+        type: "p",
+        text: "Trade shows provide a unique opportunity to meet hundreds, sometimes thousands, of potential customers in just a few days. But time is limited, conversations are brief, and not every visitor represents a genuine business opportunity.",
+      },
+      {
+        type: "p",
+        text: "That's why lead qualification is one of the most important skills an exhibitor can develop.",
+      },
+      {
+        type: "p",
+        text: "In this guide, you'll learn how to identify high-value prospects, ask the right questions, prioritise your follow-up, and build a pipeline that delivers real business results.",
+      },
+      { type: "h2", text: "What is lead qualification?" },
+      {
+        type: "p",
+        text: "Lead qualification is the process of determining whether a visitor has the potential to become a customer.",
+      },
+      {
+        type: "p",
+        text: "Instead of treating every conversation equally, successful exhibitors evaluate each prospect based on factors such as:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Business need",
+          "Buying authority",
+          "Budget",
+          "Purchase timeline",
+          "Product fit",
+          "Strategic value",
+        ],
+      },
+      {
+        type: "p",
+        text: "The goal is not to dismiss visitors but to ensure your time and follow-up efforts are focused where they can create the greatest impact.",
+      },
+      { type: "h2", text: "Why every visitor is not a customer" },
+      { type: "p", text: "At any exhibition, your booth may attract a wide range of people:" },
+      {
+        type: "ul",
+        items: [
+          "Existing customers",
+          "Prospective buyers",
+          "Distributors",
+          "Competitors",
+          "Industry partners",
+          "Students",
+          "Media representatives",
+          "Consultants",
+          "Suppliers",
+          "Job seekers",
+        ],
+      },
+      { type: "p", text: "Each group has different objectives." },
+      {
+        type: "p",
+        text: "A student researching the industry shouldn't receive the same follow-up as a procurement manager looking to purchase within the next quarter.",
+      },
+      {
+        type: "p",
+        text: "Understanding this distinction helps your team spend time where it matters most.",
+      },
+      { type: "h2", text: "The cost of poor lead qualification" },
+      {
+        type: "p",
+        text: "Failing to qualify leads does not just waste time, it wastes money.",
+      },
+      { type: "p", text: "Common consequences include:" },
+      {
+        type: "ul",
+        items: [
+          "Sales teams chasing unqualified prospects",
+          "Genuine buyers receiving delayed follow-up",
+          "Missed opportunities due to poor prioritisation",
+          "Inaccurate ROI reporting",
+          "Frustrated sales teams",
+          "Lower conversion rates",
+        ],
+      },
+      {
+        type: "p",
+        text: "A structured qualification process improves efficiency across the entire sales cycle.",
+      },
+      { type: "h2", text: "Questions every exhibitor should ask" },
+      { type: "p", text: "Great conversations start with great questions." },
+      {
+        type: "p",
+        text: "Rather than delivering a lengthy sales pitch, focus on understanding the visitor's situation. Examples include:",
+      },
+      { type: "h3", text: "About their business" },
+      {
+        type: "ul",
+        items: [
+          "What does your company do?",
+          "Which markets do you operate in?",
+          "What products are you currently sourcing?",
+        ],
+      },
+      { type: "h3", text: "About their challenges" },
+      {
+        type: "ul",
+        items: [
+          "What's your biggest challenge right now?",
+          "Are you looking for a new supplier?",
+          "What prompted you to visit our booth?",
+        ],
+      },
+      { type: "h3", text: "About timing" },
+      {
+        type: "ul",
+        items: [
+          "Are you planning to purchase this year?",
+          "Is this an active project or future research?",
+        ],
+      },
+      { type: "h3", text: "About decision-making" },
+      {
+        type: "ul",
+        items: [
+          "Are you involved in the purchasing decision?",
+          "Who else will be evaluating potential suppliers?",
+        ],
+      },
+      {
+        type: "p",
+        text: "These questions provide valuable context without making the conversation feel like an interrogation.",
+      },
+      { type: "h2", text: "A simple lead scoring system" },
+      {
+        type: "p",
+        text: "You do not need complicated sales software to prioritise leads. A simple three-tier system can be highly effective.",
+      },
+      { type: "h3", text: "Hot leads" },
+      {
+        type: "ul",
+        items: [
+          "Clear business need",
+          "Decision-maker present",
+          "Budget available",
+          "Purchase planned within 3 months",
+        ],
+      },
+      {
+        type: "p",
+        text: "Action: follow up within 24 hours and schedule a meeting or product demonstration.",
+      },
+      { type: "h3", text: "Warm leads" },
+      {
+        type: "ul",
+        items: [
+          "Interested but still evaluating options",
+          "Project planned within 6 to 12 months",
+          "Influencer rather than final decision-maker",
+        ],
+      },
+      {
+        type: "p",
+        text: "Action: follow up within a few days, share relevant resources and case studies, and maintain regular contact.",
+      },
+      { type: "h3", text: "Cold leads" },
+      {
+        type: "ul",
+        items: [
+          "Gathering information",
+          "No immediate requirement",
+          "Limited purchasing influence",
+        ],
+      },
+      {
+        type: "p",
+        text: "Action: add them to your marketing database, send educational content, and nurture the relationship over time.",
+      },
+      { type: "h2", text: "What information should you capture?" },
+      { type: "p", text: "Collecting a business card is no longer enough." },
+      { type: "p", text: "For every meaningful conversation, record:" },
+      {
+        type: "ul",
+        items: [
+          "Full name",
+          "Job title",
+          "Company",
+          "Country",
+          "Email address",
+          "Phone number",
+          "Products discussed",
+          "Level of interest",
+          "Buying timeline",
+          "Decision-making role",
+          "Key challenges",
+          "Agreed next steps",
+          "Personal notes",
+        ],
+      },
+      {
+        type: "p",
+        text: "These details make your follow-up far more relevant and memorable.",
+      },
+      { type: "h2", text: "Avoid these common mistakes" },
+      {
+        type: "p",
+        text: "Many exhibitors unintentionally weaken their sales process by:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Talking too much about themselves",
+          "Asking only closed-ended questions",
+          "Assuming everyone is a potential buyer",
+          "Failing to record conversation details",
+          "Waiting too long to follow up",
+          "Treating every lead the same",
+        ],
+      },
+      { type: "p", text: "Lead qualification is about understanding before selling." },
+      { type: "h2", text: "How technology improves lead qualification" },
+      {
+        type: "p",
+        text: "Modern exhibitors increasingly rely on digital tools to support their qualification process.",
+      },
+      {
+        type: "p",
+        text: "Instead of handwritten notes or spreadsheets, dedicated lead management platforms allow teams to:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Capture detailed visitor information",
+          "Categorise prospects",
+          "Assign lead scores",
+          "Record meeting notes",
+          "Schedule follow-up activities",
+          "Share information across the sales team",
+          "Track progress after the exhibition",
+        ],
+      },
+      {
+        type: "p",
+        text: "This creates a more consistent process and reduces the risk of valuable opportunities being overlooked.",
+      },
+      { type: "h2", text: "From qualified leads to long-term customers" },
+      {
+        type: "p",
+        text: "Lead qualification doesn't end when the exhibition closes.",
+      },
+      {
+        type: "p",
+        text: "The information gathered during each conversation should shape every follow-up email, meeting, quotation, and future interaction.",
+      },
+      {
+        type: "p",
+        text: "A personalised follow-up that references the visitor's specific interests demonstrates professionalism and builds trust from the very beginning.",
+      },
+      {
+        type: "p",
+        text: "When done well, lead qualification becomes the foundation of stronger relationships, not just more sales.",
+      },
+      { type: "h2", text: "Key takeaways" },
+      {
+        type: "ul",
+        items: [
+          "Focus on quality, not quantity.",
+          "Ask questions before presenting solutions.",
+          "Record meaningful conversation details.",
+          "Prioritise leads based on potential value.",
+          "Follow up while the conversation is still fresh.",
+          "Use a structured process to keep opportunities moving.",
+        ],
+      },
+      { type: "h2", text: "Final thoughts" },
+      {
+        type: "p",
+        text: "Trade shows offer a rare opportunity to meet dozens of potential customers face to face in a short period of time. But the value of those conversations depends on what happens next.",
+      },
+      {
+        type: "p",
+        text: "By qualifying leads consistently, recording the right information, and prioritising follow-up, exhibitors can turn a busy exhibition into a well-organised sales pipeline.",
+      },
+      {
+        type: "p",
+        text: "At ExpoLead, we believe every meaningful conversation deserves a structured next step. By helping exhibitors capture, organise, qualify, and follow up on leads in one place, businesses can spend less time sorting through business cards and more time building lasting customer relationships.",
       },
     ],
   },

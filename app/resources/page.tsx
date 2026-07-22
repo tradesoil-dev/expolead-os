@@ -29,9 +29,14 @@ export default function ResourcesPage() {
       <section className="mx-auto max-w-5xl px-6 py-14 lg:px-8">
         {/* Featured */}
         <Link href={`/resources/${featured.slug}`} className="group grid overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:border-emerald-300 md:grid-cols-2">
-          <div className="flex h-48 items-center justify-center bg-emerald-100 text-emerald-700 md:h-auto">
-            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>
-          </div>
+          {featured.image ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={featured.image} alt={featured.imageAlt ?? ""} className="h-48 w-full bg-emerald-50 object-cover md:h-full" />
+          ) : (
+            <div className="flex h-48 items-center justify-center bg-emerald-100 text-emerald-700 md:h-auto">
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>
+            </div>
+          )}
           <div className="p-7">
             <span className="text-xs font-bold uppercase tracking-wide text-emerald-600">Featured · {featured.topic}</span>
             <h2 className="mt-2 text-2xl font-black leading-tight tracking-tight text-slate-900 group-hover:text-emerald-700">{featured.title}</h2>

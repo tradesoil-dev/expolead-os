@@ -62,9 +62,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {new Date(article.publishedISO).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
         </p>
 
-        <div className="mt-8 flex h-44 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>
-        </div>
+        {article.image ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={article.image}
+            alt={article.imageAlt ?? ""}
+            width={1200}
+            height={400}
+            className="mt-8 w-full rounded-2xl"
+          />
+        ) : (
+          <div className="mt-8 flex h-44 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>
+          </div>
+        )}
 
         <div className="mt-10">
           {article.body.map((block, i) => {
