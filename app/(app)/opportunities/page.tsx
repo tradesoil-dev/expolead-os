@@ -7,15 +7,31 @@ import { getTrialStatus } from "@/lib/trial";
 import { getQuantityUnit } from "@/lib/quantity-unit";
 import { getCurrency } from "@/lib/currency";
 import { formatGroupedVolume } from "@/lib/quantity-units";
+import ExhibitionFilter from "@/components/ExhibitionFilter";
 
-export default async function OpportunitiesPage() {
-  const [opportunities, exhibitions, trial, quantityUnit, currency] = await Promise.all([
+export default async function OpportunitiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ exhibition?: string }>;
+}) {
+  const { exhibition: selected = "" } = await searchParams;
+  const [allOpportunities, exhibitions, trial, quantityUnit, currency] = await Promise.all([
     getOpportunities(),
     getExhibitions(),
     getTrialStatus(),
     getQuantityUnit(),
     getCurrency(),
   ]);
+
+  // Every count, volume and column below works off the filtered set, so the
+  // stat cards and the board can never disagree with the chosen show.
+  const opportunities = selected
+    ? allOpportunities.filter((o: any) => o.exhibition === selected)
+    : allOpportunities;
+
+  const exhibitionNames = Array.from(
+    new Set(allOpportunities.map((o: any) => o.exhibition).filter(Boolean) as string[])
+  ).sort();
 
   const pipelineCounts = {
     qualified: opportunities.filter((opportunity) => opportunity.status === "researching").length,
@@ -55,7 +71,12 @@ export default async function OpportunitiesPage() {
         subtitle="Track exhibition conversations from qualified interest to revenue"
       />
 
-      <AddOpportunityForm exhibitions={exhibitions} isLocked={trial.isExpired} quantityUnit={quantityUnit} currency={currency} />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <AddOpportunityForm exhibitions={exhibitions} isLocked={trial.isExpired} quantityUnit={quantityUnit} currency={currency} />
+        {exhibitionNames.length > 1 && (
+          <ExhibitionFilter exhibitions={exhibitionNames} value={selected} />
+        )}
+      </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
         <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
