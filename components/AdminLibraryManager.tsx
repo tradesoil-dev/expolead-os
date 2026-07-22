@@ -128,7 +128,7 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
     setDeleting(false);
     setConfirmTarget(null);
     if (error) { notify(error.message, "error"); return; }
-    if (!data || data.length === 0) { notify("Couldn't delete — admin permission required.", "error"); return; }
+    if (!data || data.length === 0) { notify("Couldn't delete, admin permission required.", "error"); return; }
     setRows((p) => p.filter((x) => x.id !== r.id));
     notify(`"${r.name}" removed.`, "success");
   }

@@ -93,7 +93,7 @@ export default function AddExhibitionForm({
 
   if (isLocked) {
     return (
-      <a href="/upgrade" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended — upgrade to continue">
+      <a href="/upgrade" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended, upgrade to continue">
         🔒 New exhibition
       </a>
     );

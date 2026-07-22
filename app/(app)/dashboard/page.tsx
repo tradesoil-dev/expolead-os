@@ -239,7 +239,7 @@ export default async function DashboardPage() {
             <Link href="/suppliers" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">View all →</Link>
           </div>
           {suppliers.length === 0 ? (
-            <EmptyRow text="No connections yet — add your first one." />
+            <EmptyRow text="No connections yet, add your first one." />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[680px] text-sm">

@@ -96,7 +96,7 @@ booth: "",
 
   if (isLocked) {
     return (
-      <a href="/upgrade" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended — upgrade to continue">
+      <a href="/upgrade" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended, upgrade to continue">
         🔒 New Opportunity
       </a>
     );
@@ -238,21 +238,25 @@ booth: "",
       </div>
     </div>
 
-    {/* Guide note — coaches first-time users */}
+    {/* Guide note, coaches first-time users */}
     <div className="w-full max-w-sm rounded-xl border border-emerald-100 bg-emerald-50 p-5">
       <p className="text-sm font-bold text-emerald-900 mb-3">New here? Tracking an opportunity</p>
       <div className="space-y-2.5">
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">1</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Name the opportunity and product — e.g. &ldquo;UCO Korea Program&rdquo;, Used Cooking Oil.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Name the opportunity and product, for example &ldquo;UCO Korea Program&rdquo;, Used Cooking Oil.</p>
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">2</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Add quantity and destination market, and link the exhibition where it started.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Add the quantity and unit discussed, the destination market, and link the exhibition where it started.</p>
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">3</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Set priority and stage, add notes (target price, buyer expectations), then save.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Add the deal value if an order came up at the booth. Optional, and it is what turns this show into a return figure on Reports.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">4</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Set priority and stage, add notes such as target price, buyer expectations or samples promised, then save.</p>
         </div>
       </div>
     </div>

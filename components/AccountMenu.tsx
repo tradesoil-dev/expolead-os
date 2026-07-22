@@ -163,7 +163,7 @@ export default function AccountMenu({ email, profile, daysLeft, isExpired }: { e
           {daysLeft !== null && (
             <div className={`mx-3 my-2 rounded-lg px-3 py-2 text-xs ${isExpired ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700"}`}>
               {isExpired
-                ? "Trial ended — upgrade to add new records."
+                ? "Trial ended, upgrade to add new records."
                 : `${daysLeft} day${daysLeft === 1 ? "" : "s"} left in your free trial.`}
               <Link
                 href="/upgrade"

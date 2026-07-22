@@ -232,7 +232,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
               <tr>
                 <td colSpan={8} className="px-4 py-12 text-center text-ink-400">
                   {suppliers.length === 0
-                    ? "No connections yet — add your first one."
+                    ? "No connections yet, add your first one."
                     : "No connections match these filters."}
                 </td>
               </tr>

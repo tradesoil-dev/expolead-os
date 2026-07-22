@@ -90,7 +90,7 @@ export default function ExhibitionsSearch({
       return;
     }
     if (!data || data.length === 0) {
-      showToast("Couldn't delete this exhibition — it may already be removed, or you don't have permission.", "error");
+      showToast("Couldn't delete this exhibition, it may already be removed, or you don't have permission.", "error");
       router.refresh();
       return;
     }

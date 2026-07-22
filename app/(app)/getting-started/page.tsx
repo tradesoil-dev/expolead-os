@@ -21,7 +21,7 @@ const STEPS = [
   {
     number: 3,
     title: "Set a follow-up date",
-    description: "After capturing a connection, set a follow-up date. This is the most important step — it's what separates leads that convert from leads that go cold. ExpoLead OS will surface overdue follow-ups on your dashboard.",
+    description: "After capturing a connection, set a follow-up date. This is the most important step, it's what separates leads that convert from leads that go cold. ExpoLead OS will surface overdue follow-ups on your dashboard.",
     cta: { label: "View your Connections →", href: "/suppliers" },
     mockup: <FollowUpMockup />,
     tip: "Tip: Set follow-up dates before you leave the exhibition hall. Tomorrow is always too late.",

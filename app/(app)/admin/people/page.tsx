@@ -23,7 +23,7 @@ export default async function AdminPeoplePage() {
 
   return (
     <>
-      <PageHeader title="People" subtitle="Everyone who has signed up — your traction at a glance" />
+      <PageHeader title="People" subtitle="Everyone who has signed up, your traction at a glance" />
       <main className="flex-1 p-6 md:p-8">
         <AdminPeople people={people} />
       </main>
