@@ -12,6 +12,7 @@ import {
 } from "@/components/OpportunityFieldEditor";
 import { opportunityStatusLabel } from "@/lib/types";
 import { getQuantityUnit } from "@/lib/quantity-unit";
+import { getCurrency } from "@/lib/currency";
 
 export default async function OpportunityDetailPage({
   params,
@@ -23,6 +24,7 @@ export default async function OpportunityDetailPage({
   const followUps = await getOpportunityFollowUps(id);
   const statusHistory = await getOpportunityStatusHistory(id);
   const workspaceUnit = await getQuantityUnit();
+  const currency = await getCurrency();
 
   if (!opportunity) notFound();
 
@@ -81,6 +83,16 @@ export default async function OpportunityDetailPage({
             field="destination_market"
             current={opportunity.destination_market}
           />
+        </div>
+
+        <div className="rounded-xl border bg-white p-4">
+          <p className="text-xs text-gray-500 mb-1">Deal value ({currency})</p>
+          <OpportunityTextFieldEditor
+            opportunityId={opportunity.id}
+            field="deal_value"
+            current={opportunity.deal_value === null || opportunity.deal_value === undefined ? "" : String(opportunity.deal_value)}
+          />
+          <p className="mt-1 text-[11px] text-gray-400">Optional. Counts toward this show&rsquo;s return once won.</p>
         </div>
 
         <div className="rounded-xl border bg-white p-4">

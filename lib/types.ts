@@ -25,6 +25,7 @@ export interface Exhibition {
   location: string | null;
   start_date: string | null;
   end_date: string | null;
+  cost: number | null;
   created_at: string;
 }
 
@@ -169,6 +170,7 @@ export type Opportunity = {
   product: string;
   quantity: string | null;
   quantity_unit: string | null;
+  deal_value: number | null;
   destination_market: string | null;
 exhibition: string | null;
 booth: string | null;

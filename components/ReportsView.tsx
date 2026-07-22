@@ -5,6 +5,7 @@ import ReportChart from "@/components/ReportChart";
 import Select from "@/components/Select";
 import ReportsPresent from "@/components/ReportsPresent";
 import { formatGroupedVolume } from "@/lib/quantity-units";
+import RoiPanel from "@/components/RoiPanel";
 
 const RANGE_LABELS: Record<string, string> = {
   year: "This year",
@@ -14,7 +15,7 @@ const RANGE_LABELS: Record<string, string> = {
 };
 
 type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null };
-type Opp = { id: string; created_at: string | null; status: string | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
+type Opp = { id: string; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
 
 const STAGE_ORDER: { key: string; label: string; color: string }[] = [
   { key: "researching", label: "Qualified", color: "#64748b" },
@@ -45,7 +46,7 @@ function withinRange(dateStr: string | null, range: string): boolean {
   return d >= now - days * 86400000;
 }
 
-export default function ReportsView({ connections, opportunities, quantityUnit = "MT" }: { connections: Conn[]; opportunities: Opp[]; quantityUnit?: string }) {
+export default function ReportsView({ connections, opportunities, quantityUnit = "MT", currency = "USD", exhibitionCosts = [] }: { connections: Conn[]; opportunities: Opp[]; quantityUnit?: string; currency?: string; exhibitionCosts?: { name: string; cost: number | null }[] }) {
   const [exhibition, setExhibition] = useState("");
   const [range, setRange] = useState("year");
   const [tStage, setTStage] = useState<"bar" | "line" | "pie">("bar");
@@ -228,6 +229,13 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             <Kpi label="Follow-up rate" value={kpis.followUpRate === null ? "—" : `${kpis.followUpRate}%`} />
             <Kpi label="Exhibitions" value={kpis.exhibitions} />
           </div>
+
+          <RoiPanel
+            opportunities={fOpps}
+            exhibitionCosts={exhibitionCosts}
+            currency={currency}
+            exhibition={exhibition}
+          />
 
           <div className="grid gap-4 lg:grid-cols-2">
             <Card title="Pipeline by stage" seg={<Seg value={tStage} onChange={(v) => setTStage(v as any)} options={["bar", "line", "pie"]} labels={["Bar", "Line", "Pie"]} />}>

@@ -19,7 +19,10 @@ async function updateOpportunity(
   value: string
 ) {
   const supabase = createClient();
-  return supabase.from("opportunities").update({ [field]: value }).eq("id", opportunityId);
+  // deal_value is numeric in the database; an empty box means "not recorded",
+  // which must be null rather than 0 so it does not drag the ROI figure down.
+  const payload = field === "deal_value" ? (value.trim() === "" ? null : Number(value)) : value;
+  return supabase.from("opportunities").update({ [field]: payload }).eq("id", opportunityId);
 }
 
 export function OpportunityStatusEditor({
@@ -150,7 +153,7 @@ export function OpportunityTextFieldEditor({
   current,
 }: {
   opportunityId: string;
-  field: "quantity" | "destination_market";
+  field: "quantity" | "destination_market" | "deal_value";
   current: string | null;
 }) {
   const router = useRouter();

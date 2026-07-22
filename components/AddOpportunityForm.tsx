@@ -10,7 +10,7 @@ import Select from "@/components/Select";
 import { QUANTITY_UNITS } from "@/lib/quantity-units";
 import type { Exhibition } from "@/lib/types";
 
-export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit = "MT" }: { exhibitions: Exhibition[]; isLocked?: boolean; quantityUnit?: string }) {
+export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit = "MT", currency = "USD" }: { exhibitions: Exhibition[]; isLocked?: boolean; quantityUnit?: string; currency?: string }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
   const [open, setOpen] = useState(false);
@@ -21,6 +21,7 @@ export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit
     product: "",
     quantity: "",
     quantity_unit: quantityUnit,
+    deal_value: "",
     destination_market: "",
     priority: "medium",
     status: "researching",
@@ -58,6 +59,7 @@ const { error } = await supabase.from("opportunities").insert({
   product: form.product.trim(),
   quantity: form.quantity || null,
   quantity_unit: form.quantity_unit || null,
+  deal_value: form.deal_value.trim() === "" ? null : Number(form.deal_value),
   destination_market: form.destination_market || null,
   priority: form.priority,
   status: form.status,
@@ -79,6 +81,7 @@ if (error) {
       product: "",
       quantity: "",
       quantity_unit: quantityUnit,
+      deal_value: "",
       destination_market: "",
       priority: "medium",
       status: "researching",
@@ -167,6 +170,15 @@ booth: "",
           value={form.destination_market}
           onChange={(e) => set("destination_market", e.target.value)}
           placeholder="Destination market, e.g. South Korea"
+          className={inputClass}
+        />
+
+        <input
+          value={form.deal_value}
+          onChange={(e) => set("deal_value", e.target.value.replace(/[^\d.]/g, ""))}
+          inputMode="decimal"
+          placeholder={`Deal value in ${currency}, optional`}
+          title="Optional. Used to work out the return on each exhibition."
           className={inputClass}
         />
         <input

@@ -11,9 +11,11 @@ import DatePicker from "@/components/DatePicker";
 export default function AddExhibitionForm({
   isLocked,
   library = [],
+  currency = "USD",
 }: {
   isLocked?: boolean;
   library?: ExhibitionLibraryItem[];
+  currency?: string;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -21,7 +23,7 @@ export default function AddExhibitionForm({
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState(false);
-  const [f, setF] = useState({ name: "", location: "", start_date: "", end_date: "" });
+  const [f, setF] = useState({ name: "", location: "", start_date: "", end_date: "", cost: "" });
 
   function set<K extends keyof typeof f>(k: K, v: string) {
     setF((p) => ({ ...p, [k]: v }));
@@ -46,13 +48,14 @@ export default function AddExhibitionForm({
       location: ex.location ?? "",
       start_date: ex.start_date ?? "",
       end_date: ex.end_date ?? "",
+      cost: f.cost,
     });
     setQuery("");
     setPicked(true);
   }
 
   function reset() {
-    setF({ name: "", location: "", start_date: "", end_date: "" });
+    setF({ name: "", location: "", start_date: "", end_date: "", cost: "" });
     setQuery("");
     setPicked(false);
     setError(null);
@@ -74,6 +77,7 @@ export default function AddExhibitionForm({
       location: f.location || null,
       start_date: f.start_date || null,
       end_date: f.end_date || null,
+      cost: f.cost.trim() === "" ? null : Number(f.cost),
     });
     setSaving(false);
     if (error) {
@@ -167,6 +171,14 @@ export default function AddExhibitionForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input className={`${inp} sm:col-span-2`} placeholder="Exhibition name (e.g. CHINACOAT 2026)" value={f.name} onChange={(e) => set("name", e.target.value)} />
         <input className={`${inp} sm:col-span-2`} placeholder="Location (e.g. Shanghai, China)" value={f.location} onChange={(e) => set("location", e.target.value)} />
+        <input
+          className={`${inp} sm:col-span-2`}
+          placeholder={`Total cost of attending in ${currency}, optional`}
+          title="Stand, travel, staff, samples and shipping. Used to work out this show's return."
+          inputMode="decimal"
+          value={f.cost}
+          onChange={(e) => set("cost", e.target.value.replace(/[^\d.]/g, ""))}
+        />
         <div className="text-sm text-ink-500">
           <span className="mb-1 block font-medium">Start</span>
           <DatePicker value={f.start_date} onChange={(v) => set("start_date", v)} />

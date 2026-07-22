@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Select from "@/components/Select";
 import { QUANTITY_UNITS, DEFAULT_QUANTITY_UNIT } from "@/lib/quantity-units";
+import { CURRENCIES, DEFAULT_CURRENCY } from "@/lib/currencies";
 
 export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
@@ -14,6 +15,8 @@ export default function ProfilePage() {
   const [about, setAbout] = useState("");
   const [quantityUnit, setQuantityUnit] = useState(DEFAULT_QUANTITY_UNIT);
   const [savingUnit, setSavingUnit] = useState(false);
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
+  const [savingCurrency, setSavingCurrency] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [posY, setPosY] = useState(50);
   const [adjusting, setAdjusting] = useState(false);
@@ -36,7 +39,7 @@ export default function ProfilePage() {
     if (!user) return;
     const { data } = await supabase
       .from("profiles")
-      .select("full_name, company_name, role, country, linkedin_url, about, avatar_url, avatar_position_y, quantity_unit")
+      .select("full_name, company_name, role, country, linkedin_url, about, avatar_url, avatar_position_y, quantity_unit, currency")
       .eq("id", user.id)
       .single();
     if (data) {
@@ -49,6 +52,7 @@ export default function ProfilePage() {
       setAvatarUrl(data.avatar_url || null);
       setPosY(data.avatar_position_y ?? 50);
       setQuantityUnit(data.quantity_unit || DEFAULT_QUANTITY_UNIT);
+      setCurrency(data.currency || DEFAULT_CURRENCY);
     }
   }
 
@@ -60,6 +64,16 @@ export default function ProfilePage() {
     const { error } = await supabase.from("profiles").upsert({ id: user.id, quantity_unit: unit });
     setSavingUnit(false);
     showToast(error ? error.message : "Quantity unit saved.", error ? "error" : "success");
+  }
+
+  async function saveCurrency(next: string) {
+    setCurrency(next);
+    setSavingCurrency(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSavingCurrency(false); return; }
+    const { error } = await supabase.from("profiles").upsert({ id: user.id, currency: next });
+    setSavingCurrency(false);
+    showToast(error ? error.message : "Currency saved.", error ? "error" : "success");
   }
 
   async function uploadAvatar(file: File) {
@@ -307,6 +321,16 @@ export default function ProfilePage() {
                 disabled={savingUnit}
               />
               <p className="mt-2 text-xs text-slate-500">Pick MT for bulk commodities, or cartons, units, kg, and more for packaged goods.</p>
+            </div>
+            <div className="mt-4">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-500">Currency</label>
+              <Select
+                value={currency}
+                onChange={saveCurrency}
+                options={CURRENCIES}
+                disabled={savingCurrency}
+              />
+              <p className="mt-2 text-xs text-slate-500">Used for optional deal values and exhibition costs. One currency per workspace, so figures stay comparable.</p>
             </div>
           </div>
 

@@ -1,12 +1,21 @@
 import PageHeader from "@/components/PageHeader";
 import ReportsView from "@/components/ReportsView";
-import { getSuppliers, getOpportunities } from "@/lib/data";
+import { getSuppliers, getOpportunities, getExhibitions } from "@/lib/data";
 import { getQuantityUnit } from "@/lib/quantity-unit";
+import { getCurrency } from "@/lib/currency";
 
 export const metadata = { title: "Reports — ExpoLead OS" };
 
 export default async function ReportsPage() {
-  const [suppliers, opportunities, quantityUnit] = await Promise.all([getSuppliers(), getOpportunities(), getQuantityUnit()]);
+  const [suppliers, opportunities, exhibitions, quantityUnit, currency] = await Promise.all([
+    getSuppliers(),
+    getOpportunities(),
+    getExhibitions(),
+    getQuantityUnit(),
+    getCurrency(),
+  ]);
+
+  const exhibitionCosts = exhibitions.map((e: any) => ({ name: e.name, cost: e.cost ?? null }));
 
   const connections = suppliers.map((s) => ({
     id: s.id,
@@ -22,6 +31,7 @@ export default async function ReportsPage() {
     status: o.status ?? null,
     quantity: Number(o.quantity) || 0,
     quantity_unit: o.quantity_unit ?? null,
+    deal_value: o.deal_value ?? null,
     exhibition: o.exhibition ?? null,
     market: o.destination_market ?? null,
     next_follow_up_date: o.next_follow_up_date ?? null,
@@ -32,7 +42,7 @@ export default async function ReportsPage() {
     <>
       <PageHeader title="Reports" subtitle="How your exhibitions are performing" />
       <main className="flex-1 p-6 md:p-8">
-        <ReportsView connections={connections} opportunities={opps} quantityUnit={quantityUnit} />
+        <ReportsView connections={connections} opportunities={opps} quantityUnit={quantityUnit} currency={currency} exhibitionCosts={exhibitionCosts} />
       </main>
     </>
   );
