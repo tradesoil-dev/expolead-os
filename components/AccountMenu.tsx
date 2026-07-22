@@ -6,17 +6,25 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export default function AccountMenu({ email }: { email: string | null }) {
+export type HeaderProfile = {
+  full_name: string | null;
+  company_name: string | null;
+  avatar_url: string | null;
+  avatar_position_y: number | null;
+  is_admin: boolean;
+};
+
+export default function AccountMenu({ email, profile }: { email: string | null; profile: HeaderProfile }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
-  const [fullName, setFullName] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [avatarPosY, setAvatarPosY] = useState(50);
+  const fullName = profile.full_name ?? "";
+  const companyName = profile.company_name ?? "";
+  const avatarUrl = profile.avatar_url;
+  const avatarPosY = profile.avatar_position_y ?? 50;
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [isExpired, setIsExpired] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const isAdmin = profile.is_admin;
   const buttonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -26,34 +34,6 @@ export default function AccountMenu({ email }: { email: string | null }) {
     ? email.slice(0, 2).toUpperCase()
     : "ME";
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) return;
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      supabase
-        .from("profiles")
-        .select("full_name, company_name, avatar_url, avatar_position_y, trial_ends_at, subscription_status, early_access, is_admin")
-        .eq("id", user.id)
-        .single()
-        .then(({ data }) => {
-          if (data) {
-            setFullName(data.full_name || "");
-            setCompanyName(data.company_name || "");
-            setAvatarUrl(data.avatar_url || null);
-            setAvatarPosY(data.avatar_position_y ?? 50);
-            setIsAdmin(!!data.is_admin);
-            if (!data.early_access && data.subscription_status !== "active" && data.trial_ends_at) {
-              const days = Math.ceil(
-                (new Date(data.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-              );
-              setDaysLeft(Math.max(0, days));
-              setIsExpired(days <= 0);
-            }
-          }
-        });
-    });
-  }, []);
 
   const handleOpen = useCallback(() => {
     if (buttonRef.current) {

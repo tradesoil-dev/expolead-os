@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -27,33 +27,14 @@ function Logo({ size = 24 }: { size?: number }) {
   );
 }
 
-export default function MobileNav({ email }: { email?: string | null }) {
+export default function MobileNav({ email, profile }: { email?: string | null; profile: { full_name: string | null; company_name: string | null; is_admin: boolean } }) {
   const [open, setOpen] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const fullName = profile.full_name ?? "";
+  const companyName = profile.company_name ?? "";
+  const isAdmin = profile.is_admin;
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) return;
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      supabase
-        .from("profiles")
-        .select("full_name, company_name, is_admin")
-        .eq("id", user.id)
-        .single()
-        .then(({ data }) => {
-          if (data) {
-            setFullName(data.full_name || "");
-            setCompanyName(data.company_name || "");
-            setIsAdmin(!!data.is_admin);
-          }
-        });
-    });
-  }, []);
 
   const initials = fullName
     ? fullName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
