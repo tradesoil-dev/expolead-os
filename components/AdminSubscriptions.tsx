@@ -51,18 +51,38 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
     return { received, awaiting, interested };
   }, [rows]);
 
-  async function run(fn: "admin_confirm_upgrade" | "admin_cancel_upgrade", reference: string) {
+  /** Confirm goes through the API so the customer gets their receipt email. */
+  async function confirmPayment(reference: string) {
     setBusy(reference);
     setError(null);
-    const { data, error } = await createClient().rpc(fn, { p_reference: reference });
+    try {
+      const res = await fetch("/api/upgrade-request/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Something went wrong");
+      if (data.emailSent === false) {
+        setError(`${reference} is confirmed and the account is unlocked, but the confirmation email did not send. Let them know directly.`);
+      }
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setBusy(null);
+      setConfirmTarget(null);
+    }
+  }
+
+  /** Cancel changes nothing for the customer, so it stays a direct call. */
+  async function cancelRequest(reference: string) {
+    setBusy(reference);
+    setError(null);
+    const { error } = await createClient().rpc("admin_cancel_upgrade", { p_reference: reference });
     setBusy(null);
-    setConfirmTarget(null);
     if (error) {
       setError(error.message);
-      return;
-    }
-    if (!data) {
-      setError("Nothing changed. It may already have been confirmed.");
       return;
     }
     router.refresh();
@@ -87,7 +107,7 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
             <p className="mt-2 text-sm text-ink-500">
               Only do this once <strong>USD {Number(confirmTarget.amount_usd).toFixed(2)}</strong> from{" "}
               {confirmTarget.full_name || confirmTarget.email} has actually arrived in your account.
-              This unlocks their {confirmTarget.plan} plan immediately.
+              This unlocks their {confirmTarget.plan} plan immediately and emails them a receipt.
             </p>
             <div className="mt-6 flex gap-3">
               <button
@@ -97,7 +117,7 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
                 Cancel
               </button>
               <button
-                onClick={() => run("admin_confirm_upgrade", confirmTarget.reference)}
+                onClick={() => confirmPayment(confirmTarget.reference)}
                 disabled={busy === confirmTarget.reference}
                 className="flex-1 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
               >
@@ -174,7 +194,7 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
                           Confirm
                         </button>
                         <button
-                          onClick={() => run("admin_cancel_upgrade", r.reference)}
+                          onClick={() => cancelRequest(r.reference)}
                           disabled={busy === r.reference}
                           className="rounded-lg border border-ink-200 px-3 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-50 disabled:opacity-60"
                         >
