@@ -57,6 +57,26 @@ export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Prop
     }
   }
 
+  async function claimPayment() {
+    if (!reference) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/upgrade-request/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Something went wrong");
+      setConfirmed(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   if (confirmed) {
     return (
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
@@ -99,15 +119,19 @@ export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Prop
           Quote reference <strong className="font-mono">{reference}</strong> on your transfer so we can match your payment.
         </div>
 
+        {error && <p className="mt-4 text-sm text-rose-600">{error}</p>}
+
         <button
-          onClick={() => setConfirmed(true)}
-          className="mt-5 w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+          onClick={claimPayment}
+          disabled={submitting}
+          className="mt-5 w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
         >
-          I have made the payment
+          {submitting ? "Just a moment…" : "I have made the payment"}
         </button>
         <button
           onClick={() => setStep(1)}
-          className="mt-2 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-medium text-ink-600 hover:bg-ink-50"
+          disabled={submitting}
+          className="mt-2 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-medium text-ink-600 hover:bg-ink-50 disabled:opacity-60"
         >
           Choose a different plan
         </button>
