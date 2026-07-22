@@ -94,7 +94,12 @@ export default async function AppLayout({
             <HelpMenu />
             <NotificationsMenu daysLeft={trial.daysLeft} isExpired={trial.isExpired} />
             <div className="ml-2">
-              <AccountMenu email={email} profile={headerProfile} />
+              <AccountMenu
+                email={email}
+                profile={headerProfile}
+                daysLeft={trial.subscriptionStatus === "active" || trial.subscriptionStatus === "early_access" ? null : trial.daysLeft}
+                isExpired={trial.isExpired}
+              />
             </div>
           </div>
         </div>

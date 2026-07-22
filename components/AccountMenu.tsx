@@ -14,16 +14,17 @@ export type HeaderProfile = {
   is_admin: boolean;
 };
 
-export default function AccountMenu({ email, profile }: { email: string | null; profile: HeaderProfile }) {
+export default function AccountMenu({ email, profile, daysLeft, isExpired }: { email: string | null; profile: HeaderProfile; daysLeft: number | null; isExpired: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const fullName = profile.full_name ?? "";
   const companyName = profile.company_name ?? "";
   const avatarUrl = profile.avatar_url;
+  // A stored avatar URL can outlive the file it points at. Fall back to
+  // initials rather than showing a broken image icon in the header.
+  const [avatarBroken, setAvatarBroken] = useState(false);
   const avatarPosY = profile.avatar_position_y ?? 50;
-  const [daysLeft, setDaysLeft] = useState<number | null>(null);
-  const [isExpired, setIsExpired] = useState(false);
   const isAdmin = profile.is_admin;
   const buttonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -71,8 +72,13 @@ export default function AccountMenu({ email, profile }: { email: string | null; 
         className="h-11 w-11 rounded-full bg-emerald-100 text-sm font-semibold text-emerald-700 hover:bg-emerald-200 transition-colors overflow-hidden grid place-items-center"
         aria-label="Account menu"
       >
-        {avatarUrl
-          ? <img src={avatarUrl} alt="Avatar" style={{ width: 44, height: 44, objectFit: "cover", objectPosition: `center ${avatarPosY}%`, display: "block" }} />
+        {avatarUrl && !avatarBroken
+          ? <img
+              src={avatarUrl}
+              alt=""
+              onError={() => setAvatarBroken(true)}
+              style={{ width: 44, height: 44, objectFit: "cover", objectPosition: `center ${avatarPosY}%`, display: "block" }}
+            />
           : initials}
       </button>
 
