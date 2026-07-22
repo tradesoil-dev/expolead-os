@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import { getExhibitions, getSuppliers, getMeetingsForExhibition } from "@/lib/data";
+import { getCurrency } from "@/lib/currency";
+import ExhibitionCostEditor from "@/components/ExhibitionCostEditor";
 
 export default async function ExhibitionDetailPage({
   params,
@@ -21,6 +23,7 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
   );
 
   const meetings = await getMeetingsForExhibition(exhibition.id);
+  const currency = await getCurrency();
 
   const visited = suppliers.filter((s) => s.visited).length;
   const remaining = suppliers.length - visited;
@@ -58,10 +61,11 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
             <p className="text-sm text-ink-500">Remaining Booths</p>
           </div>
 
-          <div className="rounded-xl border-2 border-purple-400 bg-white p-4 text-center">
-            <p className="text-sm font-semibold text-ink-400">Not tracked yet</p>
-            <p className="text-sm text-ink-500">Opportunities</p>
-          </div>
+          <ExhibitionCostEditor
+            exhibitionId={exhibition.id}
+            current={exhibition.cost ?? null}
+            currency={currency}
+          />
         </div>
 <div className="grid gap-4 lg:grid-cols-4">
   <div className="rounded-xl border border-ink-200 bg-white p-4">
