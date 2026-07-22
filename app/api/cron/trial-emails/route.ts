@@ -37,14 +37,14 @@ function emailDay7(name: string, trialEndDate: string) {
       <div style="padding: 32px; background: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
         <p style="font-size: 16px; margin-top: 0;">Hi ${displayName},</p>
         <p style="font-size: 15px; color: #374151;">Your free trial ends in <strong>7 days</strong> on <strong>${trialEndDate}</strong>.</p>
-        <p style="font-size: 15px; color: #374151;">Everything you have added — connections, opportunities, and exhibitions — stays in your account. After the trial ends you can still view and edit all of it.</p>
+        <p style="font-size: 15px; color: #374151;">Everything you have added, connections, opportunities and exhibitions, stays in your account. After the trial ends you can still view and edit all of it.</p>
         <p style="font-size: 15px; color: #374151;">To keep adding new records and stay on top of your leads, choose a plan before your trial ends.</p>
         <div style="margin: 28px 0;">
-          <a href="${APP_URL}/pricing" style="background: #059669; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">View Plans</a>
+          <a href="${APP_URL}/upgrade" style="background: #059669; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">View Plans</a>
         </div>
         <p style="font-size: 13px; color: #6b7280;">Questions? Just reply to this email.</p>
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS &mdash; tradesoil.com</p>
+        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · tradesoil.com</p>
       </div>
     </div>`;
 }
@@ -59,14 +59,14 @@ function emailDay1(name: string, trialEndDate: string) {
       <div style="padding: 32px; background: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
         <p style="font-size: 16px; margin-top: 0;">Hi ${displayName},</p>
         <p style="font-size: 15px; color: #374151;">Your free trial ends <strong>tomorrow</strong> on <strong>${trialEndDate}</strong>.</p>
-        <p style="font-size: 15px; color: #374151;">After that, adding new connections, opportunities, and exhibitions will be paused until you upgrade. Your existing data and CSV export will always be available.</p>
+        <p style="font-size: 15px; color: #374151;">After that, adding new connections, opportunities, and exhibitions will be paused until you upgrade. Everything you have already captured stays available to view and edit.</p>
         <p style="font-size: 15px; color: #374151;">If ExpoLead OS has helped you stay on top of your exhibition leads, now is a good time to continue with a plan.</p>
         <div style="margin: 28px 0;">
-          <a href="${APP_URL}/pricing" style="background: #d97706; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">Choose a Plan</a>
+          <a href="${APP_URL}/upgrade" style="background: #d97706; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">Choose a Plan</a>
         </div>
         <p style="font-size: 13px; color: #6b7280;">Questions? Just reply to this email.</p>
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS &mdash; tradesoil.com</p>
+        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · tradesoil.com</p>
       </div>
     </div>`;
 }
@@ -89,11 +89,11 @@ function emailExpired(name: string) {
         </ul>
         <p style="font-size: 15px; color: #374151;">To continue adding new records, choose a plan. Your data is waiting for you exactly as you left it.</p>
         <div style="margin: 28px 0;">
-          <a href="${APP_URL}/pricing" style="background: #059669; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">See Plans and Pricing</a>
+          <a href="${APP_URL}/upgrade" style="background: #059669; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600;">See Plans and Pricing</a>
         </div>
         <p style="font-size: 13px; color: #6b7280;">Questions? Just reply to this email.</p>
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS &mdash; tradesoil.com</p>
+        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · tradesoil.com</p>
       </div>
     </div>`;
 }

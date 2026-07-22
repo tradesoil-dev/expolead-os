@@ -9,7 +9,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
   return resend.emails.send({
     from: "Gladwin at ExpoLead OS <hello.expolead@tradesoil.com>",
     to: email,
-    subject: "Welcome to ExpoLead OS — your trial has started",
+    subject: "Welcome to ExpoLead OS, your trial has started",
     html: `
 <!DOCTYPE html>
 <html>
@@ -44,7 +44,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
                 <td style="background:#f0fdf4;border-left:3px solid #10b981;border-radius:6px;padding:16px 20px;">
                   <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;">Step 1</p>
                   <p style="margin:0;font-size:14px;color:#0f172a;font-weight:500;">Add your first connection</p>
-                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Go to Connections and add someone you met at a recent exhibition — name, company, what you discussed.</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Go to Connections and add someone you met at a recent exhibition: name, company, what you discussed.</p>
                 </td>
               </tr>
               <tr><td style="height:10px;"></td></tr>
@@ -52,7 +52,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
                 <td style="background:#f0fdf4;border-left:3px solid #10b981;border-radius:6px;padding:16px 20px;">
                   <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;">Step 2</p>
                   <p style="margin:0;font-size:14px;color:#0f172a;font-weight:500;">Log an opportunity</p>
-                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Under Opportunities, track a deal or follow-up in progress — stage, value, next action.</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Under Opportunities, track a deal or follow-up in progress: stage, value, next action.</p>
                 </td>
               </tr>
             </table>
@@ -63,7 +63,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
         <tr>
           <td style="background:#f8fafc;padding:24px 40px;border-top:1px solid #e2e8f0;">
             <p style="margin:0 0 4px;font-size:13px;color:#94a3b8;">Questions? Just reply to this email.</p>
-            <p style="margin:0;font-size:13px;color:#94a3b8;">— Gladwin, Founder of ExpoLead OS</p>
+            <p style="margin:0;font-size:13px;color:#94a3b8;">Gladwin, Founder of ExpoLead OS</p>
           </td>
         </tr>
 

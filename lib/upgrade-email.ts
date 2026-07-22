@@ -33,7 +33,7 @@ export async function sendPaymentClaimedEmail(d: Details) {
     from: "ExpoLead OS <hello.expolead@tradesoil.com>",
     to: NOTIFY_TO,
     replyTo: d.customerEmail,
-    subject: `Payment sent ${d.reference} — check the bank — ${planLabel} ${d.billingCycle}`,
+    subject: `Payment sent ${d.reference}, check the bank. ${planLabel} ${d.billingCycle}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #0f172a;">
         <div style="background: #0f172a; padding: 20px 28px; border-radius: 12px 12px 0 0;">
@@ -67,7 +67,7 @@ export async function sendUpgradeRequestEmail(d: Details) {
     from: "ExpoLead OS <hello.expolead@tradesoil.com>",
     to: NOTIFY_TO,
     replyTo: d.customerEmail,
-    subject: `Upgrade request ${d.reference} — ${planLabel} ${d.billingCycle}`,
+    subject: `Upgrade request ${d.reference}, ${planLabel} ${d.billingCycle}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #0f172a;">
         <div style="background: #059669; padding: 20px 28px; border-radius: 12px 12px 0 0;">
