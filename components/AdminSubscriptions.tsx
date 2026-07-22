@@ -48,7 +48,12 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
     const interested = rows
       .filter((r) => r.status === "pending")
       .reduce((s, r) => s + Number(r.amount_usd), 0);
-    return { received, awaiting, interested };
+    return {
+      received, awaiting, interested,
+      receivedCount: rows.filter((r) => r.status === "confirmed").length,
+      awaitingCount: rows.filter((r) => r.status === "payment_claimed").length,
+      interestedCount: rows.filter((r) => r.status === "pending").length,
+    };
   }, [rows]);
 
   /** Confirm goes through the API so the customer gets their receipt email. */
@@ -91,9 +96,9 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Stat label="Received" value={totals.received} tone="text-emerald-600" />
-        <Stat label="Waiting on you to check" value={totals.awaiting} tone="text-amber-600" />
-        <Stat label="Chose a plan, not paid yet" value={totals.interested} tone="text-ink-500" />
+        <Stat label="Received and confirmed" value={totals.received} count={totals.receivedCount} tone="text-emerald-600" />
+        <Stat label="They say they have paid, check your bank" value={totals.awaiting} count={totals.awaitingCount} tone="text-amber-600" />
+        <Stat label="Chose a plan, have not paid yet" value={totals.interested} count={totals.interestedCount} tone="text-ink-500" />
       </div>
 
       {error && <p className="text-sm text-rose-600">{error}</p>}
@@ -218,11 +223,12 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
   );
 }
 
-function Stat({ label, value, tone }: { label: string; value: number; tone: string }) {
+function Stat({ label, value, count, tone }: { label: string; value: number; count: number; tone: string }) {
   return (
     <div className="rounded-xl border border-ink-200 bg-white p-4">
       <p className={`text-2xl font-black ${tone}`}>USD {Math.round(value).toLocaleString()}</p>
       <p className="mt-0.5 text-xs text-ink-500">{label}</p>
+      <p className="mt-1 text-[11px] text-ink-400">{count} {count === 1 ? "request" : "requests"}</p>
     </div>
   );
 }

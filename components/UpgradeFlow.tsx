@@ -119,6 +119,11 @@ export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Prop
           Quote reference <strong className="font-mono">{reference}</strong> on your transfer so we can match your payment.
         </div>
 
+        <p className="mt-3 text-xs leading-relaxed text-ink-500">
+          Not the person who makes payments? Take a screenshot of this page and send it to your
+          finance team. Everything they need is on it, including the reference.
+        </p>
+
         {error && <p className="mt-4 text-sm text-rose-600">{error}</p>}
 
         <button
