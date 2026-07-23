@@ -8,7 +8,7 @@ import GlobalSearch from "@/components/GlobalSearch";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { getTrialStatus } from "@/lib/trial";
+import { computeTrialStatus, TRIAL_FALLBACK, type TrialStatus } from "@/lib/trial";
 import { sendWelcomeEmail } from "@/lib/welcome-email";
 
 export default async function AppLayout({
@@ -17,6 +17,7 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   let email: string | null = null;
+  let trial: TrialStatus = TRIAL_FALLBACK;
   let headerProfile = {
     full_name: null as string | null,
     company_name: null as string | null,
@@ -35,7 +36,7 @@ export default async function AppLayout({
     if (user) {
       const { data: prof } = await supabase
         .from("profiles")
-        .select("signup_country, welcome_sent, full_name, company_name, avatar_url, avatar_position_y, is_admin")
+        .select("signup_country, welcome_sent, full_name, company_name, avatar_url, avatar_position_y, is_admin, plan, trial_ends_at, subscription_status, early_access")
         .eq("id", user.id)
         .single();
 
@@ -47,6 +48,9 @@ export default async function AppLayout({
           avatar_position_y: prof.avatar_position_y ?? null,
           is_admin: !!prof.is_admin,
         };
+        // Compute trial state from the row we already have, rather than a
+        // second getUser + profile query.
+        trial = computeTrialStatus(prof);
       }
 
       // Stamp the user's country from Vercel's geo header on first visit.
@@ -78,8 +82,6 @@ export default async function AppLayout({
       }
     }
   }
-
-  const trial = await getTrialStatus();
 
   return (
     <div className="flex min-h-screen">

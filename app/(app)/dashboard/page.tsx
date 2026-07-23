@@ -21,20 +21,28 @@ const PIPELINE_STAGES = [
 ];
 
 export default async function DashboardPage() {
-  const suppliers = await getSuppliers();
-  const opportunities = await getOpportunities();
+  // These three are independent, so run them together rather than in a line.
+  // Each used to wait for the last to finish, which is most of why the
+  // dashboard felt slow right after login.
+  const [suppliers, opportunities, profileResult] = await Promise.all([
+    getSuppliers(),
+    getOpportunities(),
+    (async () => {
+      if (!isSupabaseConfigured) return null;
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, quantity_unit")
+        .eq("id", user.id)
+        .single();
+      return data;
+    })(),
+  ]);
 
-  let firstName = "";
-  let quantityUnit = DEFAULT_QUANTITY_UNIT;
-  if (isSupabaseConfigured) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase.from("profiles").select("full_name, quantity_unit").eq("id", user.id).single();
-      firstName = (profile?.full_name ?? "").trim().split(" ")[0] ?? "";
-      quantityUnit = profile?.quantity_unit || DEFAULT_QUANTITY_UNIT;
-    }
-  }
+  const firstName = (profileResult?.full_name ?? "").trim().split(" ")[0] ?? "";
+  const quantityUnit = profileResult?.quantity_unit || DEFAULT_QUANTITY_UNIT;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

@@ -16,6 +16,51 @@ export type TrialStatus = {
   canExport: boolean;
 };
 
+export const TRIAL_FALLBACK: TrialStatus = {
+  isExpired: false,
+  isWarning: false,
+  daysLeft: 14,
+  plan: "trial",
+  subscriptionStatus: "trialing",
+  canExport: false,
+};
+
+type TrialProfileRow = {
+  plan: string | null;
+  trial_ends_at: string | null;
+  subscription_status: string | null;
+  early_access: boolean | null;
+} | null;
+
+/**
+ * Pure computation of trial status from a profile row. Lets a caller that has
+ * already fetched the profile (the app layout) avoid a second getUser and a
+ * second profile query just to learn the trial state.
+ */
+export function computeTrialStatus(data: TrialProfileRow): TrialStatus {
+  if (!data) return TRIAL_FALLBACK;
+
+  if (data.subscription_status === "active") {
+    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan ?? "trial", subscriptionStatus: "active", canExport: true };
+  }
+  if (data.early_access) {
+    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan ?? "trial", subscriptionStatus: "early_access", canExport: true };
+  }
+
+  const now = new Date();
+  const trialEnd = new Date(data.trial_ends_at ?? now);
+  const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  return {
+    isExpired: daysLeft <= 0,
+    isWarning: daysLeft > 0 && daysLeft <= 7,
+    daysLeft: Math.max(0, daysLeft),
+    plan: data.plan ?? "trial",
+    subscriptionStatus: data.subscription_status ?? "trialing",
+    canExport: false,
+  };
+}
+
 export async function getTrialStatus(): Promise<TrialStatus> {
   const fallback: TrialStatus = {
     isExpired: false,
