@@ -31,7 +31,7 @@ export default function AboutPage() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600">Why we built it</p>
           <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-900 md:text-3xl">Serious trade professionals deserve serious tools.</h2>
           <div className="mt-5 space-y-4 text-[15px] leading-8 text-slate-600">
-            <p>Generic CRMs are built for software sales teams. They are heavy, need setup and training, and have no idea that exhibitions repeat every year and that you meet the same companies again. Momencio and the enterprise tools price out the very people who need this most: solo exhibitors, SME exporters, and the buyers who walk the halls.</p>
+            <p>Generic CRMs are built for software sales teams. They are heavy, need setup and training, and have no idea that exhibitions repeat every year and that you meet the same companies again. Those and the enterprise lead tools price out the very people who need this most: solo exhibitors, SME exporters, and the buyers who walk the halls.</p>
             <p>ExpoLead OS is the opposite. It is simple enough to use at the booth, priced for real businesses, and shaped entirely around the way product trade actually works, capture the connection, note what they deal in and in what quantity, follow up on time, and pick up the same relationship at next year&rsquo;s show.</p>
           </div>
         </div>
