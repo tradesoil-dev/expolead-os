@@ -37,6 +37,19 @@ export default async function BillingPage() {
     .limit(1)
     .maybeSingle();
 
+  // paid_until is the real renewal date, advanced on every renewal. Fall back
+  // to confirmed + one cycle only if it has not been set yet.
+  const { data: prof } = await supabase
+    .from("profiles")
+    .select("paid_until")
+    .eq("id", user.id)
+    .single();
+  const paidUntil = prof?.paid_until
+    ? new Date(prof.paid_until)
+    : paid
+    ? addCycle(paid.confirmed_at, paid.billing_cycle)
+    : null;
+
   const isPaid = trial.subscriptionStatus === "active" || trial.subscriptionStatus === "early_access";
 
   return (
@@ -65,9 +78,9 @@ export default async function BillingPage() {
               <dl className="divide-y divide-ink-100 text-sm">
                 <Row label="Amount">{money(paid.amount_usd)} per {paid.billing_cycle === "annual" ? "year" : "month"}</Row>
                 <Row label="Started">{date(paid.confirmed_at)}</Row>
-                <Row label="Paid until">{date(addCycle(paid.confirmed_at, paid.billing_cycle).toISOString())}</Row>
+                <Row label="Paid until">{date(paidUntil ? paidUntil.toISOString() : null)}</Row>
                 <Row label="Next payment due">
-                  {date(addCycle(paid.confirmed_at, paid.billing_cycle).toISOString())}
+                  {date(paidUntil ? paidUntil.toISOString() : null)}
                   <span className="ml-2 text-xs text-ink-400">to keep your plan active</span>
                 </Row>
                 <Row label="Payment method">Bank transfer</Row>

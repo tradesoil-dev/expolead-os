@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 export type UpgradeRow = {
   id: string;
   reference: string;
+  user_id: string;
   email: string;
   full_name: string | null;
   company_name: string | null;
@@ -18,6 +19,7 @@ export type UpgradeRow = {
   payment_claimed_at: string | null;
   confirmed_at: string | null;
   early_access: boolean;
+  paid_until: string | null;
 };
 
 const STATUS = {
@@ -30,6 +32,9 @@ const STATUS = {
 function when(iso: string | null) {
   if (!iso) return "—";
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+function isOverdue(iso: string) {
+  return new Date(iso).getTime() < Date.now();
 }
 
 export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
@@ -85,6 +90,22 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
     setBusy(reference);
     setError(null);
     const { error } = await createClient().rpc("admin_cancel_upgrade", { p_reference: reference });
+    setBusy(null);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    router.refresh();
+  }
+
+  /** Push the renewal date forward one cycle when the next transfer arrives. */
+  async function markRenewed(r: UpgradeRow) {
+    setBusy(r.reference);
+    setError(null);
+    const { error } = await createClient().rpc("admin_mark_renewed", {
+      p_user_id: r.user_id,
+      p_cycle: r.billing_cycle,
+    });
     setBusy(null);
     if (error) {
       setError(error.message);
@@ -185,9 +206,27 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
                     <span className="block">Asked {when(r.requested_at)}</span>
                     {r.payment_claimed_at && <span className="block">Said paid {when(r.payment_claimed_at)}</span>}
                     {r.confirmed_at && <span className="block text-emerald-700">Confirmed {when(r.confirmed_at)}</span>}
+                    {r.status === "confirmed" && r.paid_until && (
+                      isOverdue(r.paid_until)
+                        ? <span className="block font-semibold text-rose-600">Renewal overdue since {when(r.paid_until)}</span>
+                        : <span className="block">Paid until {when(r.paid_until)}</span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
-                    {r.status === "confirmed" || r.status === "cancelled" ? (
+                    {r.status === "confirmed" ? (
+                      <button
+                        onClick={() => markRenewed(r)}
+                        disabled={busy === r.reference}
+                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold disabled:opacity-60 ${
+                          r.paid_until && isOverdue(r.paid_until)
+                            ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                            : "border border-ink-200 text-ink-600 hover:bg-ink-50"
+                        }`}
+                        title="Push the renewal date forward one cycle after the next transfer arrives"
+                      >
+                        {busy === r.reference ? "Working…" : "Mark renewed"}
+                      </button>
+                    ) : r.status === "cancelled" ? (
                       <span className="text-xs text-ink-400">Done</span>
                     ) : (
                       <div className="flex gap-2">
