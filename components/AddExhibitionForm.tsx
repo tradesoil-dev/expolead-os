@@ -173,7 +173,7 @@ export default function AddExhibitionForm({
 
       {picked && (
         <p className="text-xs text-emerald-700">
-          Pre-filled from the library — edit anything below, then save.{" "}
+          Pre-filled from the library. Edit anything below, then save.{" "}
           <button onClick={reset} className="underline hover:text-emerald-800">Clear</button>
         </p>
       )}
@@ -212,7 +212,7 @@ export default function AddExhibitionForm({
       <div className="space-y-2.5">
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">1</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Search the library for an exhibition you attend (e.g. SIAL, CHINACOAT) — it fills in the details for you.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Search the library for an exhibition you attend (e.g. SIAL, CHINACOAT), it fills in the details for you.</p>
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">2</span>
@@ -220,7 +220,11 @@ export default function AddExhibitionForm({
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">3</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Save it — then add your connections and opportunities under that show.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Add the total cost of attending if you know it. Optional, and it lets Reports show what each show returned against what it cost.</p>
+        </div>
+        <div className="flex gap-2.5 items-start">
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">4</span>
+          <p className="text-xs leading-relaxed text-emerald-800">Save it, then add your connections and opportunities under that show.</p>
         </div>
       </div>
     </div>
