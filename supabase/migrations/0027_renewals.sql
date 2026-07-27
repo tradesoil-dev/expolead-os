@@ -111,7 +111,10 @@ where p.id = r.user_id
 
 -- ---- admin list: add paid_until so the Subscriptions screen can show
 --       renewal dates and offer a "Mark renewed" action ----
-create or replace function public.admin_list_upgrade_requests()
+-- The return type changes (paid_until added), so it must be dropped first.
+drop function if exists public.admin_list_upgrade_requests();
+
+create function public.admin_list_upgrade_requests()
 returns table (
   id uuid, reference text, user_id uuid, email text, full_name text,
   company_name text, plan text, billing_cycle text, amount_usd numeric,
