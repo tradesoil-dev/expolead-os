@@ -207,13 +207,14 @@ export default function AccountMenu({ email, profile, daysLeft, isExpired }: { e
                 Soon
               </span>
             </div>
-            <div className="flex items-center gap-3 px-4 py-2 text-sm text-ink-300 cursor-not-allowed select-none">
-              <BillingIcon className="h-4 w-4" />
+            <Link
+              href="/billing"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
+            >
+              <BillingIcon className="h-4 w-4 text-ink-400" />
               <span>Billing</span>
-              <span className="ml-auto text-[10px] font-semibold text-ink-300 border border-ink-200 rounded px-1.5 py-0.5">
-                Soon
-              </span>
-            </div>
+            </Link>
           </div>
 
           {/* Sign out */}
