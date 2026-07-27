@@ -22,6 +22,7 @@ export default function AddExhibitionForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const [picked, setPicked] = useState(false);
   const [f, setF] = useState({ name: "", location: "", start_date: "", end_date: "", cost: "" });
 
@@ -31,7 +32,14 @@ export default function AddExhibitionForm({
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return [];
+    // With no search typed, show the library up front so a new user can see
+    // the admin-curated shows exist without having to guess a search term.
+    // Soonest upcoming first.
+    if (!q) {
+      return [...library]
+        .sort((a, b) => (a.start_date ?? "9999").localeCompare(b.start_date ?? "9999"))
+        .slice(0, 6);
+    }
     return library
       .filter(
         (ex) =>
@@ -127,11 +135,13 @@ export default function AddExhibitionForm({
           </label>
           <input
             className={inp}
-            placeholder="Type a show name, city or sector (e.g. SIAL, Dubai, Food)…"
+            placeholder="Search or pick from the list, e.g. SIAL, Dubai, Food…"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setPicked(false); }}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
           />
-          {matches.length > 0 && (
+          {searchFocused && matches.length > 0 && (
             <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-ink-200 bg-white shadow-lg">
               {matches.map((ex) => (
                 <button
@@ -156,7 +166,7 @@ export default function AddExhibitionForm({
             </div>
           )}
           <p className="mt-1 text-xs text-ink-400">
-            Not listed? Just fill the fields below manually.
+            Click the box to see available shows, or type to search. Not listed? Just fill the fields below manually.
           </p>
         </div>
       )}
