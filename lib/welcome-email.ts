@@ -7,7 +7,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   return resend.emails.send({
-    from: "Gladwin at ExpoLead OS <hello.expolead@tradesoil.com>",
+    from: "Gladwin & Gayan at ExpoLead OS <hello.expolead@tradesoil.com>",
     to: email,
     subject: "Welcome to ExpoLead OS, your trial has started",
     html: `
@@ -63,7 +63,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
         <tr>
           <td style="background:#f8fafc;padding:24px 40px;border-top:1px solid #e2e8f0;">
             <p style="margin:0 0 4px;font-size:13px;color:#94a3b8;">Questions? Just reply to this email.</p>
-            <p style="margin:0;font-size:13px;color:#94a3b8;">Gladwin, Founder of ExpoLead OS</p>
+            <p style="margin:0;font-size:13px;color:#94a3b8;">Gladwin and Gayan, Founders of ExpoLead OS</p>
           </td>
         </tr>
 
