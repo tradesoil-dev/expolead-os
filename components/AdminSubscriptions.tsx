@@ -42,6 +42,23 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmTarget, setConfirmTarget] = useState<UpgradeRow | null>(null);
+  const [renewalMsg, setRenewalMsg] = useState<string | null>(null);
+  const [runningRenewals, setRunningRenewals] = useState(false);
+
+  async function runRenewalCheck() {
+    setRunningRenewals(true);
+    setRenewalMsg(null);
+    try {
+      const res = await fetch("/api/admin/run-renewals", { method: "POST" });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || "Something went wrong");
+      setRenewalMsg(`Checked ${d.checked} paid account${d.checked === 1 ? "" : "s"}. Sent ${d.pre} pre, ${d.due} due, ${d.overdue} overdue. Errors: ${d.errors}.`);
+    } catch (e) {
+      setRenewalMsg(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setRunningRenewals(false);
+    }
+  }
 
   const totals = useMemo(() => {
     const received = rows
@@ -120,6 +137,19 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
         <Stat label="Received and confirmed" value={totals.received} count={totals.receivedCount} tone="text-emerald-600" />
         <Stat label="They say they have paid, check your bank" value={totals.awaiting} count={totals.awaitingCount} tone="text-amber-600" />
         <Stat label="Chose a plan, have not paid yet" value={totals.interested} count={totals.interestedCount} tone="text-ink-500" />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-ink-200 bg-white p-4">
+        <button
+          onClick={runRenewalCheck}
+          disabled={runningRenewals}
+          className="rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white hover:bg-ink-800 disabled:opacity-60"
+        >
+          {runningRenewals ? "Running…" : "Run renewal check now"}
+        </button>
+        <span className="text-xs text-ink-500">
+          {renewalMsg ?? "Sends any due renewal reminders right now, the same check the daily job runs."}
+        </span>
       </div>
 
       {error && <p className="text-sm text-rose-600">{error}</p>}
