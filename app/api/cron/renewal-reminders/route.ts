@@ -34,8 +34,13 @@ function fmt(d: Date) {
 }
 
 export async function GET(request: Request) {
+  // Vercel Cron sends the secret in an Authorization header. For manual runs
+  // (testing, or a one-off resend), the same secret can be passed as ?key=,
+  // since a browser cannot set an Authorization header from a plain URL.
   const authHeader = request.headers.get("authorization");
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  const key = new URL(request.url).searchParams.get("key");
+  const authorised = !CRON_SECRET || authHeader === `Bearer ${CRON_SECRET}` || key === CRON_SECRET;
+  if (!authorised) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!RESEND_API_KEY || !SUPABASE_SERVICE_KEY) {
@@ -44,7 +49,7 @@ export async function GET(request: Request) {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const now = new Date();
-  const results = { pre: 0, due: 0, overdue: 0, errors: 0 };
+  const results = { pre: 0, due: 0, overdue: 0, errors: 0, checked: 0 };
 
   // Everyone with a renewal date set. Small table, so read and branch in code.
   const { data: profiles } = await supabase
@@ -55,6 +60,7 @@ export async function GET(request: Request) {
   if (!profiles || profiles.length === 0) {
     return NextResponse.json({ ok: true, ...results });
   }
+  results.checked = profiles.length;
 
   const { data: authUsers } = await supabase.auth.admin.listUsers();
   const emailMap: Record<string, string> = {};
