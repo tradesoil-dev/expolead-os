@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import HeroDevices, { HeroPhone } from "@/components/HeroDevices";
 import {
@@ -362,7 +362,40 @@ export default function HomePage() {
   const [lang, setLang] = useState<"en" | "zh">("en");
   const [langOpen, setLangOpen] = useState(false);
   const [marqueeShows, setMarqueeShows] = useState<MarqueeShow[]>(upcomingShows);
+  const donutRef = useRef<HTMLCanvasElement>(null);
   const t = translations[lang];
+
+  // Draw the exhibition-reality donut on the canvas. Runs only in the browser
+  // after mount, so the server and client never disagree on the canvas size
+  // (the old inline script mutated canvas.width post-render and tripped a
+  // hydration mismatch on every load).
+  useEffect(() => {
+    const canvas = donutRef.current;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    const size = 220;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.scale(dpr, dpr);
+    const cx = 110, cy = 110, r = 80, thickness = 30;
+    const segments = [
+      { pct: 0.70, color: "#f87171" },
+      { pct: 0.20, color: "#fbbf24" },
+      { pct: 0.10, color: "#10b981" },
+    ];
+    let start = -Math.PI / 2;
+    for (const seg of segments) {
+      const end = start + seg.pct * 2 * Math.PI;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, start, end);
+      ctx.lineWidth = thickness;
+      ctx.strokeStyle = seg.color;
+      ctx.stroke();
+      start = end;
+    }
+  }, []);
 
   // Pull the live exhibition library so the marquee reflects what admins add.
   useEffect(() => {
@@ -529,7 +562,7 @@ export default function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-8">
             {/* Donut chart */}
             <div className="relative shrink-0" style={{ width: 220, height: 220 }}>
-              <canvas id="reality-donut" width={220} height={220} />
+              <canvas ref={donutRef} style={{ width: 220, height: 220 }} />
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="text-4xl font-black text-red-400 leading-none">70%</span>
                 <span className="text-xs text-slate-400 mt-1">{lang === "en" ? "never" : "从未"}</span>
@@ -570,44 +603,6 @@ export default function HomePage() {
           </p>
         </div>
       </section>
-
-      <script dangerouslySetInnerHTML={{ __html: `
-        (function() {
-          function drawDonut() {
-            var canvas = document.getElementById('reality-donut');
-            if (!canvas) { setTimeout(drawDonut, 100); return; }
-            var dpr = window.devicePixelRatio || 1;
-            var size = 220;
-            canvas.width = size * dpr;
-            canvas.height = size * dpr;
-            canvas.style.width = size + 'px';
-            canvas.style.height = size + 'px';
-            var ctx = canvas.getContext('2d');
-            ctx.scale(dpr, dpr);
-            var cx = 110, cy = 110, r = 80, thickness = 30;
-            var segments = [
-              { pct: 0.70, color: '#f87171' },
-              { pct: 0.20, color: '#fbbf24' },
-              { pct: 0.10, color: '#10b981' },
-            ];
-            var start = -Math.PI / 2;
-            segments.forEach(function(seg) {
-              var end = start + seg.pct * 2 * Math.PI;
-              ctx.beginPath();
-              ctx.arc(cx, cy, r, start, end);
-              ctx.lineWidth = thickness;
-              ctx.strokeStyle = seg.color;
-              ctx.stroke();
-              start = end;
-            });
-          }
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', drawDonut);
-          } else {
-            drawDonut();
-          }
-        })();
-      ` }} />
 
       {/* PROBLEM / SOLUTION — same three days, two ways */}
       <section className="bg-white px-8 py-16 lg:px-16 border-t border-slate-100">
