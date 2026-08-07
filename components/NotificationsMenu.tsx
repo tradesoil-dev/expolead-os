@@ -154,6 +154,16 @@ export default function NotificationsMenu({ daysLeft, isExpired }: Props) {
                 <p className="text-xs text-ink-300 mt-1">You're all caught up.</p>
               </div>
             )}
+
+            {/* Always link through to the full follow-ups page */}
+            <Link
+              href="/follow-ups"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-center gap-1.5 border-t border-ink-100 px-4 py-3 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors"
+            >
+              View all follow-ups
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
           </div>
         </div>
       )}
