@@ -51,6 +51,28 @@ export default function LoginPage() {
   );
 }
 
+// Turn raw auth/network errors into something a person can act on.
+function friendlyAuthError(err: unknown): string {
+  const raw = err instanceof Error ? err.message : String(err ?? "");
+  const m = raw.toLowerCase();
+  if (m.includes("failed to fetch") || m.includes("network") || m.includes("load failed")) {
+    return "We could not reach our servers. Check your connection and try again in a moment.";
+  }
+  if (m.includes("invalid login credentials")) {
+    return "That email or password is not right. Try again, or reset your password.";
+  }
+  if (m.includes("email not confirmed")) {
+    return "Please confirm your email first. Check your inbox for the confirmation link.";
+  }
+  if (m.includes("already registered") || m.includes("already been registered")) {
+    return "An account with this email already exists. Try signing in instead.";
+  }
+  if (m.includes("rate limit") || m.includes("too many")) {
+    return "Too many attempts. Please wait a minute and try again.";
+  }
+  return raw || "Something went wrong. Please try again.";
+}
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -114,7 +136,7 @@ function LoginForm() {
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(friendlyAuthError(err));
     } finally {
       setLoading(false);
     }

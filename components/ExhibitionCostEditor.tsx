@@ -22,12 +22,14 @@ export default function ExhibitionCostEditor({
   const [value, setValue] = useState(current === null || current === undefined ? "" : String(current));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
 
   async function save() {
     const original = current === null || current === undefined ? "" : String(current);
     if (value === original) return;
     setSaving(true);
     setError(null);
+    setSaved(false);
     // Empty means "not recorded", which must be null rather than 0 so the
     // return is hidden instead of being divided by zero.
     const payload = value.trim() === "" ? null : Number(value);
@@ -41,6 +43,8 @@ export default function ExhibitionCostEditor({
       setError(error.message);
       return;
     }
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
     router.refresh();
   }
 
@@ -50,7 +54,7 @@ export default function ExhibitionCostEditor({
         <span className="text-sm font-semibold text-ink-400">{currency}</span>
         <input
           value={value}
-          onChange={(e) => setValue(e.target.value.replace(/[^\d.]/g, ""))}
+          onChange={(e) => { setValue(e.target.value.replace(/[^\d.]/g, "")); setSaved(false); }}
           onBlur={save}
           disabled={saving}
           inputMode="decimal"
@@ -62,6 +66,8 @@ export default function ExhibitionCostEditor({
       <p className="mt-1 text-sm text-ink-500">Cost of attending</p>
       {error ? (
         <p className="mt-1 text-[11px] text-rose-600">{error}</p>
+      ) : saved ? (
+        <p className="mt-1 text-[11px] font-medium text-emerald-600">Saved</p>
       ) : (
         <p className="mt-1 text-[11px] text-ink-400">Optional. Stand, travel, staff, samples.</p>
       )}

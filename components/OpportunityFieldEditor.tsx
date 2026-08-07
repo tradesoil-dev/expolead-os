@@ -159,10 +159,12 @@ export function OpportunityTextFieldEditor({
   const router = useRouter();
   const [value, setValue] = useState(current ?? "");
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
 
   async function handleBlur() {
     if (value === (current ?? "")) return;
     setError(null);
+    setSaved(false);
 
     const previous = current ?? "";
     const { error } = await updateOpportunity(opportunityId, field, value);
@@ -171,6 +173,8 @@ export function OpportunityTextFieldEditor({
       setError(error.message);
       return;
     }
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
     router.refresh();
   }
 
@@ -179,11 +183,15 @@ export function OpportunityTextFieldEditor({
       <input
         type="text"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => { setValue(e.target.value); setSaved(false); }}
         onBlur={handleBlur}
         className="w-full rounded-lg border border-ink-200 bg-white px-2 py-2.5 text-sm font-semibold outline-none focus:border-brand-500"
       />
-      {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
+      {error ? (
+        <p className="mt-1 text-xs text-rose-600">{error}</p>
+      ) : saved ? (
+        <p className="mt-1 text-xs font-medium text-emerald-600">Saved</p>
+      ) : null}
     </div>
   );
 }
