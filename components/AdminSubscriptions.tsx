@@ -44,6 +44,12 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
   const [confirmTarget, setConfirmTarget] = useState<UpgradeRow | null>(null);
   const [renewalMsg, setRenewalMsg] = useState<string | null>(null);
   const [runningRenewals, setRunningRenewals] = useState(false);
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 15;
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = rows.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
   async function runRenewalCheck() {
     setRunningRenewals(true);
@@ -207,7 +213,7 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
+              {paged.map((r) => (
                 <tr key={r.id} className="border-b border-ink-100 last:border-0">
                   <td className="px-4 py-3 font-mono font-semibold text-ink-900">{r.reference}</td>
                   <td className="px-4 py-3">
@@ -281,6 +287,23 @@ export default function AdminSubscriptions({ rows }: { rows: UpgradeRow[] }) {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {rows.length > 0 && (
+        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+          <p className="text-xs text-ink-400">
+            Showing {(currentPage - 1) * PER_PAGE + 1}–{Math.min(currentPage * PER_PAGE, rows.length)} of {rows.length}
+          </p>
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1">
+              <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="rounded-md border border-ink-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40">Prev</button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                <button key={n} onClick={() => setPage(n)} className={`rounded-md px-3 py-1.5 text-xs font-semibold ${n === currentPage ? "bg-emerald-600 text-white" : "border border-ink-200 text-slate-600 hover:bg-slate-50"}`}>{n}</button>
+              ))}
+              <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="rounded-md border border-ink-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40">Next</button>
+            </div>
+          )}
         </div>
       )}
 

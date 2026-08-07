@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Person = {
   id: string;
@@ -58,9 +58,12 @@ function trialWindow(p: Person): string {
   return fmtDate(p.trial_ends_at);
 }
 
+const PER_PAGE = 15;
+
 export default function AdminPeople({ people }: { people: Person[] }) {
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "confirmed" | "pending" | "company" | "never">("all");
+  const [page, setPage] = useState(1);
 
   const stats = useMemo(() => {
     const total = people.length;
@@ -93,6 +96,14 @@ export default function AdminPeople({ people }: { people: Person[] }) {
       return true;
     });
   }, [people, q, filter]);
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = useMemo(
+    () => rows.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE),
+    [rows, currentPage]
+  );
+  useEffect(() => { setPage(1); }, [q, filter]);
 
   return (
     <div className="space-y-5">
@@ -149,10 +160,10 @@ export default function AdminPeople({ people }: { people: Person[] }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-ink-100">
-            {rows.length === 0 ? (
+            {paged.length === 0 ? (
               <tr><td colSpan={9} className="px-4 py-12 text-center text-ink-400">No people match.</td></tr>
             ) : (
-              rows.map((p) => {
+              paged.map((p) => {
                 const plan = planOf(p);
                 const company = isCompany(p.email);
                 return (
@@ -198,7 +209,24 @@ export default function AdminPeople({ people }: { people: Person[] }) {
         </table>
       </div>
 
-      <p className="text-xs text-ink-400">Showing {rows.length} of {people.length} people. Private admin view — share aggregate numbers, not individual emails.</p>
+      <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+        <p className="text-xs text-ink-400">
+          {rows.length === 0
+            ? "No people match."
+            : `Showing ${(currentPage - 1) * PER_PAGE + 1}–${Math.min(currentPage * PER_PAGE, rows.length)} of ${rows.length}`}
+          {rows.length !== people.length ? ` (filtered from ${people.length})` : ""}
+        </p>
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1">
+            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="rounded-md border border-ink-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40">Prev</button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+              <button key={n} onClick={() => setPage(n)} className={`rounded-md px-3 py-1.5 text-xs font-semibold ${n === currentPage ? "bg-emerald-600 text-white" : "border border-ink-200 text-slate-600 hover:bg-slate-50"}`}>{n}</button>
+            ))}
+            <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="rounded-md border border-ink-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40">Next</button>
+          </div>
+        )}
+      </div>
+      <p className="text-xs text-ink-400">Private admin view. Share aggregate numbers, not individual emails.</p>
     </div>
   );
 }
