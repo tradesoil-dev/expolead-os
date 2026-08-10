@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense, Fragment } from "react";
+import { useEffect, useRef, useState, Suspense, Fragment } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -88,6 +88,12 @@ function LoginForm() {
   );
   const [activeStep, setActiveStep] = useState(0);
 
+  // Bot traps (signup only, no third party): a hidden field a real person
+  // never sees or fills, and a minimum time-on-page. A form-fill bot trips one
+  // or the other regardless of what email domain it uses. See signup handler.
+  const [trap, setTrap] = useState("");
+  const pageLoadedAt = useRef<number>(Date.now());
+
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveStep((current) => (current === 4 ? 0 : current + 1));
@@ -116,6 +122,17 @@ function LoginForm() {
         router.push("/dashboard");
         router.refresh();
       } else {
+        // Bot traps. If the hidden field is filled, or the form is submitted
+        // implausibly fast after the page loaded, treat it as a bot: show the
+        // normal success message but create nothing, so the bot moves on and
+        // never lands in our signups list. A genuine person clears both.
+        const tooFast = Date.now() - pageLoadedAt.current < 2000;
+        if (trap.trim() !== "" || tooFast) {
+          setInfo("Account created. Check your email to confirm, then sign in.");
+          setMode("signin");
+          return; // finally resets loading; no signup call is made
+        }
+
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -226,6 +243,21 @@ function LoginForm() {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+            {/* Honeypot: off-screen, skipped by keyboard and screen readers.
+                Humans never fill it; bots that fill every field trip the trap. */}
+            <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden" tabIndex={-1}>
+              <label>
+                Company website
+                <input
+                  type="text"
+                  name="company_website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={trap}
+                  onChange={(e) => setTrap(e.target.value)}
+                />
+              </label>
+            </div>
             <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@company.com" />
             <div>
               <div className="flex items-center justify-between mb-2">
