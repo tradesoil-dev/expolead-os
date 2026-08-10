@@ -105,7 +105,7 @@ export default function FeaturesPage() {
   }, []);
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-slate-950">
+    <main className="min-h-screen overflow-x-clip bg-white text-slate-950">
       <style>{`
         @keyframes spinOrbit { to { transform: rotate(360deg); } }
         @keyframes counterOrbit { to { transform: rotate(-360deg); } }

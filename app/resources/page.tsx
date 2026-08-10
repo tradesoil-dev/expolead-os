@@ -16,7 +16,7 @@ export default function ResourcesPage() {
   const rest = ARTICLES.filter((a) => a.slug !== featured.slug);
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-slate-950">
+    <main className="min-h-screen overflow-x-clip bg-white text-slate-950">
       <PublicHeader />
 
       {/* Hero */}
