@@ -90,17 +90,11 @@ function bulletBox(s, x, y, w, h, items, dotColor, txtColor){
   s.addText('ExpoLead does not replace your CRM. It gives your exhibition team a purpose-built workspace for the part of the commercial journey that happens before, during and immediately after the show.',
     {x:M, y:4.35, w:9.6, h:0.9, fontFace:FB, fontSize:15, color:'CBD5E1', align:'left', valign:'top', lineSpacingMultiple:1.15, margin:0});
 
-  // works-alongside strip
-  s.addText('WORKS ALONGSIDE THE CRM YOU ALREADY USE', {x:M, y:5.75, w:9, h:0.28, fontFace:FH, fontSize:10.5, bold:true, color:C.em400, charSpacing:1.5, align:'left', valign:'middle', margin:0});
-  const crms = ['Salesforce','HubSpot','Zoho CRM','Bigin','Pipedrive','Odoo'];
-  let cx = M;
-  crms.forEach(n=>{
-    const w = 0.36 + n.length*0.095;
-    s.addShape(p.ShapeType.roundRect, {x:cx, y:6.1, w, h:0.42, rectRadius:0.1, fill:{color:C.slate800}, line:{color:C.slate700, width:1}});
-    s.addText(n, {x:cx, y:6.1, w, h:0.42, fontFace:FB, fontSize:12, bold:true, color:'CBD5E1', align:'center', valign:'middle', margin:0});
-    cx += w + 0.16;
-  });
-  s.addNotes('Opening frame: ExpoLead is not a CRM competitor. It sits alongside whatever CRM the prospect already runs (Salesforce, HubSpot, Zoho, Bigin, Pipedrive, Odoo) and owns only the exhibition layer.');
+  // no-rip-and-replace strip (coexistence, not an integrations claim)
+  s.addText('NO RIP AND REPLACE', {x:M, y:5.75, w:9, h:0.28, fontFace:FH, fontSize:10.5, bold:true, color:C.em400, charSpacing:1.5, align:'left', valign:'middle', margin:0});
+  s.addText([{text:'Keep the CRM you already use. ', options:{color:C.white, bold:true}},{text:'ExpoLead owns the exhibition, then you take the clean lead into your CRM.', options:{color:'CBD5E1'}}],
+    {x:M, y:6.08, w:10.5, h:0.5, fontFace:FB, fontSize:14.5, align:'left', valign:'top', lineSpacingMultiple:1.12, margin:0});
+  s.addNotes('Opening frame: ExpoLead is not a CRM competitor and is not sold as a CRM integration. It runs the exhibition and owns only the exhibition layer; the user keeps whatever CRM they already run and takes the clean lead into it. We do not have CRM integrations today.');
 })();
 
 // ============================================================
@@ -248,7 +242,7 @@ function bulletBox(s, x, y, w, h, items, dotColor, txtColor){
   s.addShape(p.ShapeType.roundRect, {x:M, y:5.45, w:PW-2*M, h:1.5, rectRadius:0.12, fill:{color:C.navy}, line:{type:'none'}});
   s.addText([{text:'Both hold a contact. ', options:{color:C.white}},{text:'Only one ran the exhibition that produced it.', options:{color:C.em400}}],
     {x:M+0.35, y:5.7, w:PW-2*M-0.7, h:0.5, fontFace:FH, fontSize:19, bold:true, align:'left', valign:'top', margin:0});
-  s.addText('A CRM begins with the finished lead. Everything before that clean record, the plan, the floor and the follow-through, is the ExpoLead job. It works alongside the CRM you already use.',
+  s.addText('A CRM begins with the finished lead. Everything before that clean record, the plan, the floor and the follow-through, is the ExpoLead job. You then take that clean lead into whatever CRM you already use.',
     {x:M+0.35, y:6.28, w:PW-2*M-0.7, h:0.55, fontFace:FB, fontSize:12.5, color:'CBD5E1', align:'left', valign:'top', lineSpacingMultiple:1.12, margin:0});
 
   s.addNotes('No comparison grid. The CRM appears only as the downstream recipient of a clean, qualified lead. This removes any row-by-row "my CRM does that too" reflex: we are showing a sequence, not a feature contest. A CRM begins where the exhibition ends.');
@@ -366,7 +360,7 @@ function bulletBox(s, x, y, w, h, items, dotColor, txtColor){
   const arr = qs.map(t=>({text:t, options:{bullet:{code:'003F', indent:16}, color:'CBD5E1', breakLine:true, paraSpaceAfter:9}}));
   s.addText(arr, {x:M+0.35, y:5.0, w:PW-2*M-0.7, h:1.3, fontFace:FB, fontSize:13.5, align:'left', valign:'top', margin:0});
 
-  s.addText('WORKS ALONGSIDE  ·  SALESFORCE  ·  HUBSPOT  ·  ZOHO  ·  BIGIN  ·  PIPEDRIVE  ·  ODOO',
+  s.addText('NO RIP AND REPLACE  ·  KEEP THE CRM YOU ALREADY USE',
     {x:M, y:6.7, w:12, h:0.3, fontFace:FH, fontSize:10.5, bold:true, color:C.slate500, charSpacing:1.2, align:'left', valign:'middle', margin:0});
   s.addNotes('Close on reassurance: no rip-and-replace. ExpoLead owns only the exhibition layer and complements any CRM. Use the three discovery questions to open the conversation without telling the prospect their CRM is inadequate.');
 })();
