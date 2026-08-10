@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import SplashScreen from "@/components/SplashScreen";
 import PublicHeader from "@/components/PublicHeader";
+import Lenis from "lenis";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -395,6 +396,52 @@ export default function HomePage() {
       ctx.stroke();
       start = end;
     }
+  }, []);
+
+  // Landing-page polish: Lenis momentum smooth-scroll + gentle section reveals.
+  // Both bail out under prefers-reduced-motion, and the reveal styling is gated
+  // behind a JS-added class, so content is never left hidden without JS.
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    // Reveal: each section (except the hero) eases up as it enters view.
+    document.documentElement.classList.add("reveal-ready");
+    const sections = Array.from(document.querySelectorAll("main > section")).slice(1);
+    sections.forEach((s) => s.classList.add("reveal-section"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+    );
+    sections.forEach((s) => io.observe(s));
+
+    // Safety net: if anything is still hidden after 3s (e.g. the observer never
+    // fired for a section), reveal everything so content can never stay stuck.
+    const failsafe = setTimeout(() => {
+      sections.forEach((s) => s.classList.add("in"));
+    }, 3000);
+
+    // Lenis momentum scroll.
+    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    let raf = requestAnimationFrame(function loop(time) {
+      lenis.raf(time);
+      raf = requestAnimationFrame(loop);
+    });
+
+    return () => {
+      io.disconnect();
+      clearTimeout(failsafe);
+      document.documentElement.classList.remove("reveal-ready");
+      cancelAnimationFrame(raf);
+      lenis.destroy();
+    };
   }, []);
 
   // Pull the live exhibition library so the marquee reflects what admins add.

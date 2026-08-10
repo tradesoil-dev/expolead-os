@@ -71,6 +71,33 @@
   }
 }
 
+/* ---- Landing page: Lenis smooth scroll + gentle section reveals ---- */
+/* Lenis recommended base styles (only apply once Lenis tags <html>). */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* Sections ease up into view on scroll. Gated behind .reveal-ready, which the
+   page adds via JS only when it can run, so no-JS visitors see everything. */
+.reveal-ready section.reveal-section > *:not(style) {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal-ready section.reveal-section.in > *:not(style) {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready section.reveal-section > *:not(style) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none;
+  }
+}
+
 :root {
   color-scheme: light;
 }
