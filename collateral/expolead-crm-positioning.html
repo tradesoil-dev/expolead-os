@@ -1,0 +1,424 @@
+<title>ExpoLead OS · CRM Positioning</title>
+<style>
+  :root{
+    --emerald-700:#047857; --emerald-600:#059669; --emerald-500:#10b981; --emerald-400:#34d399;
+    --emerald-100:#d1fae5; --emerald-50:#ecfdf5;
+    --navy:#0f172a; --slate-800:#1e293b; --slate-700:#334155; --slate-600:#475569;
+    --slate-500:#64748b; --slate-400:#94a3b8; --slate-300:#cbd5e1; --slate-200:#e2e8f0;
+    --slate-100:#f1f5f9; --slate-50:#f8fafc;
+    --blue-600:#2563eb; --blue-500:#3b82f6; --blue-50:#eff6ff;
+    --amber-500:#f59e0b; --amber-50:#fffbeb;
+    --ink:#16161d;
+    --sans:'Geist','Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);background:var(--slate-100);color:var(--navy);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .wrap{display:flex;flex-direction:column;align-items:center;gap:24px;padding:28px 12px 48px;}
+
+  .sheet{
+    position:relative;width:297mm;height:210mm;background:#fff;overflow:hidden;
+    box-shadow:0 10px 40px rgba(16,16,29,.14);border-radius:2px;
+    padding:9mm 13mm;display:flex;flex-direction:column;
+  }
+
+  /* ---------- shared atoms ---------- */
+  .eyebrow{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--emerald-600);}
+  .eyebrow.on-dark{color:var(--emerald-400);}
+  h1.title{font-size:31px;font-weight:900;letter-spacing:-.02em;line-height:1.06;color:var(--navy);}
+  .accent{color:var(--emerald-600);}
+  .muted{color:var(--slate-500);}
+  .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;font-size:11px;font-weight:700;}
+  .roadmap{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 8px;
+    font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    color:#7c5b16;background:var(--amber-50);border:1px solid #fde68a;}
+  .roadmap .dot{width:5px;height:5px;border-radius:999px;background:var(--amber-500);}
+
+  /* logo */
+  .logo{display:flex;align-items:center;gap:8px;}
+  .logo .grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:18px;height:18px;}
+  .logo .grid span{border-radius:2px;border:1.6px solid var(--navy);}
+  .logo .grid span.fill{background:var(--emerald-500);border-color:var(--emerald-500);}
+  .logo .word{font-size:15px;letter-spacing:-.01em;font-weight:700;}
+  .logo .word .e{color:var(--navy);} .logo .word .l{color:var(--emerald-600);} .logo .word .os{color:var(--slate-400);font-weight:500;}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;}
+  .tag-r{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--slate-400);}
+
+  /* ---------- PAGE 1 ---------- */
+  .p1-head{margin-top:9px;}
+  .p1-head h1{margin-top:9px;max-width:80%;}
+  .p1-sub{margin-top:9px;font-size:12.5px;line-height:1.55;color:var(--slate-600);max-width:70%;}
+
+  .journey{margin-top:14px;}
+  .brackets{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;}
+  .brk-row{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
+  .brk{display:flex;align-items:center;gap:8px;height:21px;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:0 11px;border-radius:7px;}
+  .brk .ln{flex:1;height:2px;border-radius:2px;}
+  .brk-exp{grid-column:1 / span 3;color:var(--emerald-700);background:var(--emerald-50);}
+  .brk-exp .ln{background:linear-gradient(90deg,var(--emerald-400),var(--emerald-100));}
+  .brk-crm{grid-column:3 / span 2;color:var(--slate-600);background:var(--slate-100);}
+  .brk-crm .ln{background:linear-gradient(90deg,var(--slate-300),var(--slate-200));}
+
+  .stages{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
+  .stage{position:relative;border-radius:14px;border:1px solid var(--slate-200);background:#fff;padding:13px 14px 14px;box-shadow:0 1px 2px rgba(16,16,29,.04);}
+  .stage.exp{background:linear-gradient(180deg,#fff, #fbfefc);border-color:var(--emerald-100);}
+  .stage.crm{background:var(--slate-50);border-color:var(--slate-200);}
+  .stage .snum{font-size:10px;font-weight:800;color:var(--slate-300);letter-spacing:.1em;}
+  .stage h3{font-size:15px;font-weight:900;letter-spacing:-.01em;margin-top:3px;color:var(--navy);}
+  .stage .role{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-top:3px;}
+  .stage.exp .role{color:var(--emerald-600);}
+  .stage.crm .role{color:var(--slate-500);}
+  .stage ul{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .stage li{display:flex;align-items:flex-start;gap:7px;font-size:11.5px;line-height:1.3;color:var(--slate-700);}
+  .stage li .b{width:5px;height:5px;border-radius:999px;margin-top:5px;flex:none;}
+  .stage.exp li .b{background:var(--emerald-500);}
+  .stage.crm li .b{background:var(--slate-400);}
+  .arrow{position:absolute;top:50%;right:-9px;transform:translateY(-50%);z-index:3;width:18px;height:18px;border-radius:999px;background:#fff;border:1px solid var(--slate-200);display:flex;align-items:center;justify-content:center;color:var(--slate-400);font-size:10px;}
+  .shared-note{position:absolute;left:0;right:0;bottom:-1px;}
+  .overlap-chip{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;
+    font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--emerald-700);
+    background:var(--emerald-50);border:1px dashed var(--emerald-400);border-radius:999px;padding:2px 9px;white-space:nowrap;}
+
+  .explain{margin-top:14px;background:var(--navy);border-radius:14px;padding:14px 18px;}
+  .explain p{font-size:12px;line-height:1.6;color:#e2e8f0;}
+  .explain b{color:#fff;font-weight:700;}
+
+  .models{margin-top:13px;display:grid;grid-template-columns:1fr 1.35fr;gap:12px;}
+  .model{border-radius:14px;padding:13px 15px;border:1px solid var(--slate-200);}
+  .model.crm{background:var(--slate-50);}
+  .model.exp{background:linear-gradient(120deg,#f0fdf9,#ecfdf5);border-color:var(--emerald-100);}
+  .model .mlabel{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
+  .model.crm .mlabel{color:var(--slate-500);}
+  .model.exp .mlabel{color:var(--emerald-700);}
+  .chain{margin-top:9px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+  .node{font-size:11px;font-weight:700;border-radius:8px;padding:5px 9px;white-space:nowrap;}
+  .model.crm .node{background:#fff;border:1px solid var(--slate-200);color:var(--slate-700);}
+  .model.exp .node{background:#fff;border:1px solid var(--emerald-100);color:var(--emerald-700);}
+  .sep{color:var(--slate-300);font-weight:700;font-size:11px;}
+  .model.exp .sep{color:var(--emerald-400);}
+
+  .p1-foot{margin-top:auto;padding-top:11px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--slate-100);}
+  .p1-foot .note{font-size:10.5px;color:var(--slate-500);}
+  .p1-foot .brandline{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-400);}
+
+  /* ---------- PAGE 2 ---------- */
+  .p2-head h1{margin-top:7px;font-size:24px;}
+  .answer{margin-top:8px;display:inline-flex;align-items:center;gap:9px;background:var(--emerald-50);border:1px solid var(--emerald-100);border-radius:12px;padding:7px 13px;}
+  .answer .yes{font-size:12.5px;font-weight:900;color:var(--emerald-700);}
+  .answer .q{font-size:11.5px;color:var(--slate-700);}
+
+  .p2-body{margin-top:11px;display:grid;grid-template-columns:1.42fr 1fr;gap:14px;}
+
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;font-size:10.2px;}
+  table.cmp thead th{text-align:left;padding:0 8px 5px;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--slate-400);}
+  table.cmp thead th.c-exp{color:var(--emerald-600);}
+  table.cmp thead th .th-sub{display:block;margin-top:2px;font-size:8.6px;font-weight:600;letter-spacing:.01em;text-transform:none;color:var(--slate-400);}
+  table.cmp thead th .th-sub.em{color:var(--emerald-600);}
+  table.cmp td{padding:3.2px 8px;border-top:1px solid var(--slate-100);vertical-align:middle;}
+  table.cmp tr td:first-child{font-weight:700;color:var(--navy);width:39%;}
+  table.cmp td.crm{color:var(--slate-500);width:29%;}
+  table.cmp td.exp{width:32%;}
+  .exp-chip{display:inline-flex;align-items:center;gap:5px;font-size:9.6px;font-weight:800;color:var(--emerald-700);background:var(--emerald-50);border:1px solid var(--emerald-100);border-radius:7px;padding:3px 8px;line-height:1.2;}
+  .exp-chip.plain{color:var(--slate-600);background:var(--slate-50);border-color:var(--slate-200);font-weight:700;}
+  .exp-chip .tick{width:11px;height:11px;flex:none;}
+  .cmp-note{margin-top:7px;font-size:9.4px;color:var(--slate-500);line-height:1.45;font-style:italic;}
+
+  .rail{display:flex;flex-direction:column;gap:11px;min-height:0;}
+  .panel{border-radius:13px;border:1px solid var(--slate-200);padding:12px 13px;}
+  .panel .plabel{font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--emerald-600);}
+  .reality{background:linear-gradient(140deg,#0f172a,#0b3b2e);border:none;}
+  .reality .plabel{color:var(--emerald-400);}
+  .thoughts{margin-top:9px;display:flex;flex-wrap:wrap;gap:5px;}
+  .thoughts .tb{font-size:9.7px;font-weight:600;color:#dbeafe;background:rgba(255,255,255,.08);border:1px solid rgba(148,163,184,.28);border-radius:999px;padding:3px 9px;}
+  .reality .cap{margin-top:9px;font-size:9.6px;line-height:1.45;color:#94a3b8;}
+  .reality .cap b{color:var(--emerald-300);font-weight:700;}
+
+  .frag .flow{margin-top:9px;display:flex;align-items:center;gap:10px;}
+  .frag .chips{display:flex;flex-wrap:wrap;gap:4px;flex:1;}
+  .frag .chips .fc{font-size:9.3px;font-weight:600;color:var(--slate-500);background:var(--slate-50);border:1px solid var(--slate-200);border-radius:6px;padding:3px 7px;}
+  .frag .to{color:var(--slate-300);font-size:16px;font-weight:800;flex:none;}
+  .frag .one{flex:none;width:118px;text-align:center;border-radius:11px;padding:9px 8px;background:linear-gradient(150deg,var(--emerald-600),var(--emerald-500));color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.28);}
+  .frag .one .big{font-size:11px;font-weight:900;line-height:1.15;}
+  .frag .one .sm{font-size:8.6px;margin-top:2px;color:#d1fae5;}
+  .frag .cap{margin-top:9px;font-size:9.6px;color:var(--slate-500);line-height:1.45;}
+  .frag .cap b{color:var(--navy);}
+
+  .intel{margin-top:10px;border-radius:14px;border:1px solid var(--slate-200);background:var(--slate-50);padding:11px 15px;}
+  .intel-top{display:flex;justify-content:space-between;align-items:baseline;}
+  .intel-top .plabel{font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--emerald-600);}
+  .intel-top .vision{font-size:11px;font-weight:800;color:var(--navy);}
+  .intel-top .vision .accent{color:var(--emerald-600);}
+  .intel-cols{margin-top:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
+  .icol{position:relative;}
+  .icol h4{font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);display:flex;align-items:center;gap:6px;}
+  .icol h4 .stagek{width:6px;height:6px;border-radius:999px;background:var(--emerald-500);}
+  .icol.over h4 .stagek{background:var(--amber-500);}
+  .icol ul{list-style:none;margin-top:7px;display:flex;flex-direction:column;gap:4px;}
+  .icol li{font-size:9.8px;line-height:1.3;color:var(--slate-600);padding-left:9px;position:relative;}
+  .icol li::before{content:"";position:absolute;left:0;top:6px;width:3px;height:3px;border-radius:999px;background:var(--slate-300);}
+  .icol.over li::before{background:var(--amber-500);}
+
+  .p2-foot{margin-top:10px;border-radius:12px;background:var(--navy);padding:10px 16px;display:flex;gap:16px;align-items:center;}
+  .p2-foot .lead{flex:none;max-width:38%;}
+  .p2-foot .lead .big{font-size:12px;font-weight:900;color:#fff;line-height:1.25;}
+  .p2-foot .lead .big .accent{color:var(--emerald-400);}
+  .p2-foot .lead .sub{font-size:9.5px;color:#94a3b8;margin-top:4px;line-height:1.4;}
+  .p2-foot .disc{border-left:1px solid rgba(148,163,184,.3);padding-left:16px;}
+  .p2-foot .disc .dl{font-size:8.6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--emerald-400);margin-bottom:5px;}
+  .p2-foot .disc ul{list-style:none;display:flex;flex-direction:column;gap:3px;}
+  .p2-foot .disc li{font-size:9.6px;color:#cbd5e1;line-height:1.35;padding-left:12px;position:relative;}
+  .p2-foot .disc li::before{content:"?";position:absolute;left:0;color:var(--emerald-400);font-weight:800;}
+
+  /* ---- Page 2 v3: begins-where-exhibition-ends ---- */
+  .p2-sub{margin-top:9px;font-size:12.5px;line-height:1.5;color:var(--slate-600);max-width:88%;}
+  .flow2{margin-top:15px;display:flex;align-items:stretch;gap:11px;}
+  .zoneA{flex:1.75;border-radius:14px;border:1px solid var(--emerald-100);background:linear-gradient(120deg,#f0fdf9,#ecfdf5);padding:14px 16px;}
+  .zoneC{flex:1.15;border-radius:14px;border:1px solid var(--slate-200);background:var(--slate-50);padding:14px 16px;display:flex;flex-direction:column;}
+  .zlabel{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;}
+  .zlabel.em{color:var(--emerald-700);}
+  .zlabel.navy{color:var(--slate-600);}
+  .ops{margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .op{font-size:11px;font-weight:700;color:#065f46;background:#fff;border:1px solid var(--emerald-100);border-radius:8px;padding:6px 10px;}
+  .oparr{color:var(--emerald-400);font-weight:800;font-size:12px;}
+  .zcap{margin-top:12px;font-size:10.8px;line-height:1.45;color:var(--slate-600);}
+  .harr{align-self:center;flex:0 0 auto;font-size:24px;font-weight:800;color:var(--slate-300);}
+  .leadcard{align-self:center;flex:0 0 172px;border-radius:12px;border:1.5px solid var(--emerald-400);background:#fff;padding:11px 13px;box-shadow:0 5px 16px rgba(16,185,129,.18);}
+  .lc-tag{display:inline-block;font-size:8px;font-weight:800;letter-spacing:.05em;color:var(--emerald-700);background:var(--emerald-50);border:1px solid var(--emerald-100);border-radius:5px;padding:2px 6px;}
+  .lc-co{font-size:13.5px;font-weight:900;color:var(--navy);margin-top:7px;}
+  .lc-row{font-size:10px;color:var(--slate-600);margin-top:3px;}
+  .lc-row b{color:var(--slate-700);}
+  .crmcard{margin-top:11px;border-radius:10px;border:1px solid var(--slate-200);background:#fff;padding:11px 13px;flex:1;}
+  .cc-hd{font-size:11px;font-weight:800;color:var(--navy);}
+  .cc-row{font-size:10.5px;color:var(--slate-600);margin-top:4px;}
+  .cc-foot{font-size:10px;color:var(--slate-500);margin-top:9px;padding-top:8px;border-top:1px solid var(--slate-100);line-height:1.4;}
+  .p2-supp{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+  .visionstrip{margin-top:12px;border-radius:11px;border:1px dashed #a7f3d0;background:var(--emerald-50);padding:9px 15px;font-size:11px;color:var(--slate-700);display:flex;align-items:center;gap:10px;line-height:1.4;}
+  .visionstrip b{color:var(--emerald-700);font-weight:800;}
+
+  @media print{
+    body{background:#fff;}
+    .wrap{padding:0;gap:0;}
+    .sheet{box-shadow:none;border-radius:0;page-break-after:always;}
+    .sheet:last-child{page-break-after:auto;}
+  }
+  @page{size:297mm 210mm;margin:0;}
+</style>
+
+<div class="wrap">
+
+  <!-- ============================ PAGE 1 ============================ -->
+  <section class="sheet" id="p1">
+    <div class="topbar">
+      <div class="logo">
+        <div class="grid"><span></span><span></span><span></span><span class="fill"></span></div>
+        <div class="word"><span class="e">Expo</span><span class="l">Lead</span><span class="os"> OS</span></div>
+      </div>
+      <div class="tag-r">Positioning · for teams who already use a CRM</div>
+    </div>
+
+    <div class="p1-head">
+      <div class="eyebrow">Two systems. Two different jobs.</div>
+      <h1 class="title">Your CRM manages the relationship.<br><span class="accent">ExpoLead manages the exhibition journey.</span></h1>
+      <p class="p1-sub">ExpoLead does not replace your CRM. It gives your exhibition team a purpose-built workspace for the part of the commercial journey that happens before, during and immediately after the show.</p>
+    </div>
+
+    <div class="journey">
+      <div class="brackets">
+        <div class="brk-row"><div class="brk brk-exp">ExpoLead OS · the exhibition layer <span class="ln"></span></div></div>
+        <div class="brk-row"><div class="brk brk-crm">Your CRM · the relationship layer <span class="ln"></span></div></div>
+      </div>
+
+      <div class="stages">
+        <div class="stage exp">
+          <div class="snum">01</div><h3>Before expo</h3><div class="role">Plan</div>
+          <ul>
+            <li><span class="b"></span>Set targets</li>
+            <li><span class="b"></span>Identify companies</li>
+            <li><span class="b"></span>Prioritise booths</li>
+            <li><span class="b"></span>Prepare objectives</li>
+          </ul>
+          <div class="arrow">›</div>
+        </div>
+        <div class="stage exp">
+          <div class="snum">02</div><h3>During expo</h3><div class="role">Capture</div>
+          <ul>
+            <li><span class="b"></span>Record conversations</li>
+            <li><span class="b"></span>Identify opportunities</li>
+            <li><span class="b"></span>Set priorities</li>
+            <li><span class="b"></span>Note next actions</li>
+          </ul>
+          <div class="arrow">›</div>
+        </div>
+        <div class="stage exp">
+          <div class="snum">03</div><h3>After expo</h3><div class="role">Convert</div>
+          <ul>
+            <li><span class="b"></span>Follow up</li>
+            <li><span class="b"></span>Track commitments</li>
+            <li><span class="b"></span>Progress opportunities</li>
+            <li><span class="b"></span>Read exhibition outcomes</li>
+          </ul>
+          <div class="arrow">›</div>
+          <div class="overlap-chip">Handoff · qualified lead to your CRM</div>
+        </div>
+        <div class="stage crm">
+          <div class="snum">04</div><h3>Ongoing sales</h3><div class="role">Manage · CRM</div>
+          <ul>
+            <li><span class="b"></span>Contacts &amp; accounts</li>
+            <li><span class="b"></span>Deals &amp; pipeline</li>
+            <li><span class="b"></span>Activities</li>
+            <li><span class="b"></span>Customer relationships</li>
+            <li><span class="b"></span>Revenue</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="explain">
+      <p><b>CRM systems are excellent at managing structured customer and sales data over time.</b> ExpoLead is purpose-built for the high-volume, fast-moving environment of exhibitions, helping teams organise what they want to achieve before the show, capture what happens on the floor, and turn conversations into structured opportunities and actions immediately afterwards.</p>
+    </div>
+
+    <div class="models">
+      <div class="model crm">
+        <div class="mlabel">CRM is primarily record-centric</div>
+        <div class="chain">
+          <span class="node">Contact</span><span class="sep">›</span>
+          <span class="node">Company</span><span class="sep">›</span>
+          <span class="node">Deal</span><span class="sep">›</span>
+          <span class="node">Activity</span><span class="sep">›</span>
+          <span class="node">Pipeline</span>
+        </div>
+      </div>
+      <div class="model exp">
+        <div class="mlabel">ExpoLead is exhibition-centric</div>
+        <div class="chain">
+          <span class="node">Exhibition</span><span class="sep">›</span>
+          <span class="node">Target</span><span class="sep">›</span>
+          <span class="node">Booth</span><span class="sep">›</span>
+          <span class="node">Person</span><span class="sep">›</span>
+          <span class="node">Conversation</span><span class="sep">›</span>
+          <span class="node">Product / need</span><span class="sep">›</span>
+          <span class="node">Opportunity</span><span class="sep">›</span>
+          <span class="node">Commitment</span><span class="sep">›</span>
+          <span class="node">Follow-up</span><span class="sep">›</span>
+          <span class="node">Outcome</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p1-foot">
+      <div class="note">ExpoLead runs the show, then hands your CRM a clean, qualified lead. Two jobs on one timeline, not two tools doing the same job.</div>
+      <div class="brandline">ExpoLead OS · powered by Tradesoil</div>
+    </div>
+  </section>
+
+  <!-- ============================ PAGE 2 ============================ -->
+  <section class="sheet" id="p2">
+    <div class="topbar">
+      <div class="logo">
+        <div class="grid"><span></span><span></span><span></span><span class="fill"></span></div>
+        <div class="word"><span class="e">Expo</span><span class="l">Lead</span><span class="os"> OS</span></div>
+      </div>
+      <div class="tag-r">If you already use a CRM · this is where ExpoLead fits</div>
+    </div>
+
+    <div class="p2-head">
+      <div class="eyebrow">Two jobs, one handoff</div>
+      <h1 class="title">A CRM begins where the exhibition <span class="accent">ends.</span></h1>
+      <p class="p2-sub">Your CRM starts with the lead. ExpoLead is everything that happens before it becomes one, then it hands your CRM a clean, qualified opportunity when the show is done.</p>
+    </div>
+
+    <!-- HERO: the exhibition operation -> one clean lead -> your CRM -->
+    <div class="flow2">
+      <div class="zoneA">
+        <div class="zlabel em">The exhibition · ExpoLead runs this</div>
+        <div class="ops">
+          <span class="op">Plan targets &amp; booths</span><span class="oparr">›</span>
+          <span class="op">Capture on the floor</span><span class="oparr">›</span>
+          <span class="op">Prioritise on the spot</span><span class="oparr">›</span>
+          <span class="op">Track commitments</span><span class="oparr">›</span>
+          <span class="op">Structure the outcome</span>
+        </div>
+        <div class="zcap">Hall, booth, product and conversation context, captured at booth speed across dozens of meetings, then turned into structured opportunities.</div>
+      </div>
+
+      <div class="harr">›</div>
+
+      <div class="leadcard">
+        <span class="lc-tag">ONE CLEAN, QUALIFIED LEAD</span>
+        <div class="lc-co">Acme Foods Ltd</div>
+        <div class="lc-row"><b>John Perera</b>, Buyer</div>
+        <div class="lc-row">Needs: 500 MT, monthly</div>
+        <div class="lc-row">Priority: High, sample promised</div>
+      </div>
+
+      <div class="harr">›</div>
+
+      <div class="zoneC">
+        <div class="zlabel navy">Your CRM starts here</div>
+        <div class="crmcard">
+          <div class="cc-hd">Contact &amp; deal created</div>
+          <div class="cc-row">Stage: open</div>
+          <div class="cc-row">Owner assigned</div>
+          <div class="cc-foot">From here your CRM does what it does best: long-term relationship, pipeline and revenue.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supporting: the operation is real work, not a lookup -->
+    <div class="p2-supp">
+      <div class="panel reality">
+        <div class="plabel">Why a lead-capture field is not enough</div>
+        <div class="thoughts">
+          <span class="tb">Where do I go next?</span>
+          <span class="tb">Which booth is this?</span>
+          <span class="tb">Has a colleague visited them?</span>
+          <span class="tb">Who did I speak to?</span>
+          <span class="tb">What product did they want?</span>
+          <span class="tb">Did I promise a sample?</span>
+          <span class="tb">Is this one serious?</span>
+          <span class="tb">Who follows up?</span>
+        </div>
+        <div class="cap">Dozens, sometimes hundreds of conversations, moving fast. <b>This is an operation to run</b>, not a record to type up later.</div>
+      </div>
+
+      <div class="panel frag">
+        <div class="plabel">Today that operation is scattered</div>
+        <div class="flow">
+          <div class="chips">
+            <span class="fc">Business cards</span><span class="fc">Phone contacts</span>
+            <span class="fc">WhatsApp</span><span class="fc">Notebook notes</span>
+            <span class="fc">Photos</span><span class="fc">Spreadsheets</span>
+            <span class="fc">Memory</span>
+          </div>
+          <div class="to">›</div>
+          <div class="one"><div class="big">One exhibition workspace</div><div class="sm">structured &amp; searchable</div></div>
+        </div>
+        <div class="cap">ExpoLead brings it into one place, <b>so the lead that reaches your CRM is clean</b>, not a guess.</div>
+      </div>
+    </div>
+
+    <!-- Vision line -->
+    <div class="visionstrip">
+      <span>Not a business-card scanner. <b>An Exhibition Intelligence Workspace</b> that turns each show into structured commercial intelligence over time.</span>
+      <span class="roadmap"><span class="dot"></span>Direction</span>
+    </div>
+
+    <!-- Footer: handoff line + discovery -->
+    <div class="p2-foot">
+      <div class="lead">
+        <div class="big">The lead is the finish line for the exhibition, and the <span class="accent">starting line for your CRM.</span></div>
+        <div class="sub">Works alongside the CRM you already use: Salesforce, HubSpot, Zoho, Bigin, Pipedrive, Odoo.</div>
+      </div>
+      <div class="disc">
+        <div class="dl">Ask your team</div>
+        <ul>
+          <li>Back from a show with 50 to 100 conversations, how do you manage everything from that specific exhibition?</li>
+          <li>How do you separate serious opportunities from casual chats?</li>
+          <li>Six months on, can you trace a deal back to the show it started at?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
