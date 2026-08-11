@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { friendlyPasswordError } from "@/lib/errors";
 import {
   Users,
   MessageSquare,
@@ -55,6 +56,8 @@ export default function LoginPage() {
 function friendlyAuthError(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err ?? "");
   const m = raw.toLowerCase();
+  const pw = friendlyPasswordError(raw);
+  if (pw) return pw;
   if (m.includes("failed to fetch") || m.includes("network") || m.includes("load failed")) {
     return "We could not reach our servers. Check your connection and try again in a moment.";
   }

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { friendlyPasswordError } from "@/lib/errors";
 
 function UpdatePasswordForm() {
   const router = useRouter();
@@ -67,7 +68,7 @@ function UpdatePasswordForm() {
     setLoading(true);
     const { error } = await createClient().auth.updateUser({ password });
     setLoading(false);
-    if (error) { setSubmitError(error.message); return; }
+    if (error) { setSubmitError(friendlyPasswordError(error) ?? error.message); return; }
     router.push("/dashboard");
   }
 
