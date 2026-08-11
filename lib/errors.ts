@@ -45,7 +45,7 @@ export function friendlyPasswordError(err: unknown): string | null {
     return "That password has turned up in a known data breach or is too easy to guess. Please choose a stronger one.";
   }
   if (/should contain|at least one character of each|character types|requires/.test(raw)) {
-    return "Please make your password stronger by mixing in letters, numbers and a symbol.";
+    return "Please use a stronger password that includes both letters and numbers.";
   }
   return null;
 }
