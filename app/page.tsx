@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import SplashScreen from "@/components/SplashScreen";
 import PublicHeader from "@/components/PublicHeader";
-import Lenis from "lenis";
+import SmoothScroll from "@/components/SmoothScroll";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -428,19 +428,10 @@ export default function HomePage() {
       sections.forEach((s) => s.classList.add("in"));
     }, 3000);
 
-    // Lenis momentum scroll.
-    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
-    let raf = requestAnimationFrame(function loop(time) {
-      lenis.raf(time);
-      raf = requestAnimationFrame(loop);
-    });
-
     return () => {
       io.disconnect();
       clearTimeout(failsafe);
       document.documentElement.classList.remove("reveal-ready");
-      cancelAnimationFrame(raf);
-      lenis.destroy();
     };
   }, []);
 
@@ -461,6 +452,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-white text-slate-950">
+      <SmoothScroll />
       <SplashScreen />
       <PublicHeader labels={{ product: t.nav.product, resources: lang === "en" ? "Resources" : "资源", pricing: t.nav.pricing, login: t.nav.login, trial: t.nav.trial }}>
             {/* Language dropdown — always visible */}

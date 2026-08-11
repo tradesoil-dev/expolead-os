@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const AVATARS = [
   { src: "/avatars/avatar-1.png", pos: { left: "50%", top: "8.75%" } },
@@ -106,6 +107,7 @@ export default function FeaturesPage() {
 
   return (
     <main className="min-h-screen overflow-x-clip bg-white text-slate-950">
+      <SmoothScroll />
       <style>{`
         @keyframes spinOrbit { to { transform: rotate(360deg); } }
         @keyframes counterOrbit { to { transform: rotate(-360deg); } }

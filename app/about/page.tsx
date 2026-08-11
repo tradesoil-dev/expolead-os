@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata = {
   title: "About — ExpoLead OS",
@@ -15,7 +16,8 @@ const VALUES = [
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-slate-950">
+    <main className="min-h-screen overflow-x-clip bg-white text-slate-950">
+      <SmoothScroll />
       <PublicHeader />
 
       {/* Hero */}

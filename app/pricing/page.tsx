@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import PricingPlans from "@/components/PricingPlans";
 import PublicHeader from "@/components/PublicHeader";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
@@ -35,6 +36,7 @@ const GRADIENT_STRIP = "linear-gradient(100deg, #0f172a 0%, #065f46 60%, #10b981
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
+      <SmoothScroll />
       {/* STICKY HEADER */}
       <PublicHeader />
 

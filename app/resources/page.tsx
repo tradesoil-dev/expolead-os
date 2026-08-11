@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ARTICLES } from "@/lib/articles";
 import PublicHeader from "@/components/PublicHeader";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata = {
   title: "Resources — The exhibition lead playbook | ExpoLead OS",
@@ -17,6 +18,7 @@ export default function ResourcesPage() {
 
   return (
     <main className="min-h-screen overflow-x-clip bg-white text-slate-950">
+      <SmoothScroll />
       <PublicHeader />
 
       {/* Hero */}
