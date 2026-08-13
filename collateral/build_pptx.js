@@ -249,7 +249,51 @@ function bulletBox(s, x, y, w, h, items, dotColor, txtColor){
 })();
 
 // ============================================================
-// SLIDE 5 — EXHIBITION REALITY + FRAGMENTS
+// SLIDE 5 — THE MISSING LAYER (workflow: without vs with)
+// ============================================================
+(()=>{
+  const s = p.addSlide(); s.background = {color:C.white};
+  logo(s, M, 0.4, false);
+  s.addText('THE EXHIBITION WORKFLOW', {x:PW-5.5, y:0.42, w:4.95, h:0.3, fontFace:FH, fontSize:10, bold:true, color:C.slate400, charSpacing:1.4, align:'right', valign:'middle', margin:0});
+  eyebrow(s, M, 1.05, 'The missing layer', C.em600);
+  s.addText([{text:'ExpoLead is the ', options:{color:C.navy}},{text:'missing layer', options:{color:C.em600}},{text:' between the exhibition floor and your CRM.', options:{color:C.navy}}],
+    {x:M, y:1.32, w:12.1, h:0.9, fontFace:FH, fontSize:23, bold:true, align:'left', valign:'top', lineSpacingMultiple:1.02, margin:0});
+  s.addText('It captures opportunities on the floor. Your CRM manages them afterwards. Different purpose, different time, complete together.',
+    {x:M, y:2.3, w:12, h:0.35, fontFace:FB, fontSize:13, color:C.slate600, align:'left', valign:'top', margin:0});
+
+  const chainRow=(items, y, endC, baseFill, baseLine, baseText)=>{
+    const x=M, w=PW-2*M, n=items.length, aw=0.26;
+    const nodeW=(w-(n-1)*aw)/n;
+    let cx=x;
+    items.forEach((t,i)=>{
+      const end=(i===n-1);
+      s.addShape(p.ShapeType.roundRect,{x:cx,y,w:nodeW,h:0.66,rectRadius:0.07,fill:{color:end?endC.fill:baseFill},line:{color:end?endC.line:baseLine,width:1}});
+      s.addText(t,{x:cx+0.03,y,w:nodeW-0.06,h:0.66,fontFace:FB,fontSize:8.7,bold:true,color:end?endC.text:baseText,align:'center',valign:'middle',lineSpacingMultiple:0.95,margin:0});
+      cx+=nodeW;
+      if(!end){ s.addText('→',{x:cx,y,w:aw,h:0.66,fontFace:FB,fontSize:11,bold:true,color:baseLine,align:'center',valign:'middle',margin:0}); cx+=aw; }
+    });
+  };
+
+  s.addText('WITHOUT EXPOLEAD', {x:M, y:2.8, w:6, h:0.26, fontFace:FH, fontSize:11, bold:true, color:'B91C1C', charSpacing:1, margin:0});
+  chainRow(['Visit booth','Talk','Collect card','Notebook & photos','Back to office','Manual entry','Lost & missed leads'],
+    3.08, {fill:'FEF2F2', line:'FECACA', text:'B91C1C'}, C.white, C.slate200, C.slate600);
+
+  s.addText('WITH EXPOLEAD', {x:M, y:4.08, w:6, h:0.26, fontFace:FH, fontSize:11, bold:true, color:C.em700, charSpacing:1, margin:0});
+  chainRow(['Visit booth','Open ExpoLead','Capture info','Product & booth','Follow-up tasks','Export (CSV)','Your CRM','Successful follow-up'],
+    4.36, {fill:C.em500, line:C.em500, text:C.white}, C.white, C.em100, C.em700);
+
+  s.addShape(p.ShapeType.roundRect, {x:M, y:5.5, w:PW-2*M, h:1.0, rectRadius:0.12, fill:{color:C.navy}, line:{type:'none'}});
+  s.addText([{text:'ExpoLead captures the moment. ', options:{color:C.white}},{text:'Your CRM builds the future. ', options:{color:C.em400}},{text:'Together, they drive revenue.', options:{color:'CBD5E1'}}],
+    {x:M+0.35, y:5.5, w:PW-2*M-0.7, h:1.0, fontFace:FH, fontSize:18, bold:true, align:'left', valign:'middle', margin:0});
+
+  s.addText([{text:'Built for product exhibitions:  ', options:{bold:true, color:C.slate600}},{text:'Tea · Chemicals · Food & Beverage · Packaging · Machinery, and more.', options:{color:C.slate500}}],
+    {x:M, y:6.68, w:12, h:0.35, fontFace:FB, fontSize:11.5, align:'left', valign:'middle', margin:0});
+
+  s.addNotes('Core thesis: ExpoLead is not an alternative to a CRM, it is the missing layer between the exhibition floor and the CRM. Without ExpoLead the booth-to-CRM path leaks (cards, notebooks, back to the office, manual entry, lost leads). With ExpoLead the floor is captured cleanly and the lead reaches the CRM export-ready. Note: no live CRM sync today; export is CSV, then imported to the CRM.');
+})();
+
+// ============================================================
+// SLIDE 6 — EXHIBITION REALITY + FRAGMENTS
 // ============================================================
 (()=>{
   const s = p.addSlide(); s.background = {color:C.white};

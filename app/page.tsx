@@ -2,10 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import HeroDevices, { HeroPhone } from "@/components/HeroDevices";
 import {
   ArrowRight,
-  CheckCircle2,
   Globe2,
   ShieldCheck,
   Users,
@@ -48,8 +46,8 @@ const translations = {
     nav: { product: "Product", pricing: "Pricing", login: "Log in", trial: "Start free trial" },
     hero: {
       badge: "Exhibition Connection & Lead Management",
-      h1a: "Turn Expo Conversations",
-      h1b: "Into Revenue",
+      h1a: "Turn expo conversations",
+      h1b: "into revenue.",
       sub: "Capture booth visits, buyer signals, samples, quotations and follow-ups in one workspace built for exhibitors, sourcing teams and international trade professionals.",
       checks: [
         "Capture buyer intent and qualification signals instantly",
@@ -459,7 +457,7 @@ export default function HomePage() {
             <div className="relative shrink-0">
               <button
                 onClick={() => setLangOpen((o) => !o)}
-                className="flex items-center gap-1.5 rounded-full border border-slate-600 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
+                className="flex items-center gap-1.5 rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:border-slate-400 hover:text-slate-900"
                 aria-haspopup="listbox"
                 aria-expanded={langOpen}
               >
@@ -496,41 +494,30 @@ export default function HomePage() {
   
       </PublicHeader>
 
-      {/* HERO */}
-      <section
-        className="grid min-h-[calc(100vh-96px)] items-center gap-12 px-8 pb-16 pt-10 lg:grid-cols-2 lg:px-16"
-        style={{ background: "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)" }}
-      >
-        <div className="max-w-3xl">
-          <p className="anim-hero-badge mb-4 text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">{t.hero.badge}</p>
-          <h1 className="anim-hero-title max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-white md:text-5xl lg:text-4xl">
-            {t.hero.h1a}<br />{t.hero.h1b}
+      {/* HERO — light redesign, text-forward like the Lovable concept */}
+      <section className="bg-[#f8f7f3] px-8 pb-24 pt-20 lg:px-16 lg:pb-32 lg:pt-28">
+        <div className="mx-auto max-w-6xl">
+          <p className="anim-hero-badge mb-6 font-mono text-xs font-semibold uppercase tracking-[0.22em] text-emerald-600">{t.hero.badge}</p>
+          <h1 className="anim-hero-title max-w-[15ch] text-5xl font-extrabold leading-[1.03] tracking-tight text-slate-950 md:text-6xl lg:text-7xl">
+            {t.hero.h1a} <span className="italic text-emerald-600">{t.hero.h1b}</span>
           </h1>
-          <p className="anim-hero-sub mt-8 max-w-2xl text-xl leading-9 text-white/85">{t.hero.sub}</p>
-          <div className="anim-hero-sub mt-8 space-y-5 text-lg text-white/90">
+          <p className="anim-hero-sub mt-8 max-w-2xl text-lg leading-8 text-slate-500 md:text-xl md:leading-9">{t.hero.sub}</p>
+          <div className="anim-hero-sub mt-10 grid max-w-3xl gap-x-6 gap-y-5 sm:grid-cols-3">
             {t.hero.checks.map((check) => (
-              <div key={check} className="flex items-center gap-3">
-                <CheckCircle2 className="h-7 w-7 text-emerald-300 shrink-0" />
-                <span>{check}</span>
+              <div key={check} className="border-l-2 border-emerald-500 pl-4 text-sm leading-6 text-slate-600">
+                {check}
               </div>
             ))}
           </div>
           <div className="anim-hero-btn mt-12 flex flex-col gap-4 sm:flex-row">
-            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors">
+            <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">
               {t.hero.cta}
               <ArrowRight className="h-4 w-4" />
             </Link>
+            <Link href="/pricing" className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-semibold text-slate-900 transition-colors hover:border-slate-400 hover:bg-slate-50">
+              {lang === "en" ? "See pricing" : "查看定价"}
+            </Link>
           </div>
-        </div>
-
-        {/* RIGHT PRODUCT MOCKUP — real device frames, screens cycle */}
-        <div className="relative hidden md:block">
-          <HeroDevices />
-        </div>
-
-        {/* MOBILE PRODUCT MOCKUP — real phone frame, so mobile visitors see the product */}
-        <div className="mt-4 flex justify-center md:hidden">
-          <HeroPhone />
         </div>
       </section>
 
