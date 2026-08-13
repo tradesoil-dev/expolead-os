@@ -46,11 +46,14 @@ export default function ReportsPresent({
     <div className="fixed inset-0 z-[9999] flex flex-col bg-white">
       {/* Sticky header */}
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-ink-100 bg-white px-6 py-3">
-        <div className="flex items-center gap-2.5">
-          <span className="text-sm font-bold uppercase tracking-tight text-ink-900">EXPOLEAD<span className="text-emerald-600">&nbsp;OS</span></span>
-          <span className="text-sm text-ink-400">·</span>
-          <span className="text-sm font-semibold text-ink-900">{title}</span>
-          <span className="text-sm text-ink-400">· {rangeLabel}</span>
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="whitespace-nowrap text-sm font-bold uppercase tracking-tight text-ink-900">EXPOLEAD<span className="text-emerald-600">&nbsp;OS</span></span>
+          {/* Title + range only on wider screens — on mobile it's already the big body heading */}
+          <span className="hidden min-w-0 items-center gap-2 sm:flex">
+            <span className="text-sm text-ink-400">·</span>
+            <span className="truncate text-sm font-semibold text-ink-900">{title}</span>
+            <span className="whitespace-nowrap text-sm text-ink-400">· {rangeLabel}</span>
+          </span>
         </div>
         <button onClick={onClose} className="inline-flex items-center gap-2 rounded-lg border border-ink-200 px-3 py-1.5 text-sm font-semibold text-ink-600 hover:bg-ink-50" aria-label="Exit presentation">
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
