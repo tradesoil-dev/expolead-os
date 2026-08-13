@@ -53,28 +53,28 @@ export default function SiteFooter() {
             <div>
               <p className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">ExpoLead OS</p>
               <div className="flex flex-col gap-3 text-sm">
-                <Link href="/about" className="text-slate-700 transition-colors hover:text-slate-950">About</Link>
-                <Link href="/features" className="text-slate-700 transition-colors hover:text-slate-950">Product overview</Link>
+                <Link href="/about" className="text-slate-700 transition-colors hover:text-emerald-600">About</Link>
+                <Link href="/features" className="text-slate-700 transition-colors hover:text-emerald-600">Product overview</Link>
               </div>
             </div>
             <div>
               <p className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Product</p>
               <div className="flex flex-col gap-3 text-sm">
-                <Link href="/pricing" className="text-slate-700 transition-colors hover:text-slate-950">Pricing</Link>
-                <Link href="/trade-shows" className="text-slate-700 transition-colors hover:text-slate-950">Exhibitions</Link>
-                <Link href="/login?mode=signup" className="text-slate-700 transition-colors hover:text-slate-950">Start free trial</Link>
+                <Link href="/pricing" className="text-slate-700 transition-colors hover:text-emerald-600">Pricing</Link>
+                <Link href="/trade-shows" className="text-slate-700 transition-colors hover:text-emerald-600">Exhibitions</Link>
+                <Link href="/login?mode=signup" className="text-slate-700 transition-colors hover:text-emerald-600">Start free trial</Link>
               </div>
             </div>
             <div>
               <p className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Legal</p>
               <div className="flex flex-col gap-3 text-sm">
-                <Link href="/privacy" className="text-slate-700 transition-colors hover:text-slate-950">Privacy</Link>
-                <Link href="/terms" className="text-slate-700 transition-colors hover:text-slate-950">Terms</Link>
+                <Link href="/privacy" className="text-slate-700 transition-colors hover:text-emerald-600">Privacy</Link>
+                <Link href="/terms" className="text-slate-700 transition-colors hover:text-emerald-600">Terms</Link>
               </div>
             </div>
             <div>
               <p className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Contact</p>
-              <a href="mailto:hello.expolead@tradesoil.com" className="text-sm text-slate-700 transition-colors hover:text-slate-950">
+              <a href="mailto:hello.expolead@tradesoil.com" className="text-sm text-slate-700 transition-colors hover:text-emerald-600">
                 hello.expolead@tradesoil.com
               </a>
               <p className="mt-3 text-sm text-slate-500">Sri Lanka | Australia</p>
