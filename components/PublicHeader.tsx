@@ -7,34 +7,36 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 type Props = {
   /**
-   * Rendered to the right of the nav, before the mobile menu button. Used by
-   * the landing page to inject its language dropdown, which only it needs
-   * because only it is translated.
+   * Rendered to the right of the actions (after the trial button). Used by the
+   * landing page to inject its language dropdown, which only it needs because
+   * only it is translated.
    */
   children?: ReactNode;
   /** Nav labels, so the landing page can pass Chinese. Defaults to English. */
-  labels?: { product: string; resources: string; pricing: string; login: string; trial: string };
+  labels?: { exhibitions: string; pricing: string; product: string; login: string; trial: string };
 };
 
 const DEFAULT_LABELS = {
-  product: "Product",
-  resources: "Resources",
+  exhibitions: "Exhibitions",
   pricing: "Pricing",
+  product: "Product",
   login: "Log in",
   trial: "Start free trial",
 };
 
+// Lovable header order: Exhibitions, Pricing, Product (left, next to the logo).
 const NAV = [
-  { href: "/features", key: "product" as const },
-  { href: "/resources", key: "resources" as const },
+  { href: "/trade-shows", key: "exhibitions" as const },
   { href: "/pricing", key: "pricing" as const },
+  { href: "/features", key: "product" as const },
 ];
 
 /**
  * The single header for every public page. Light theme (redesign): cream
- * background, dark wordmark, emerald accent. Login state resolves in the
- * browser, so the signed-out buttons render first and swap to "Back to
- * dashboard" for a signed-in visitor without shifting the layout.
+ * background, text-only wordmark (EXPOLEAD OS, OS in emerald), nav on the left
+ * beside the logo, actions on the right. Login state resolves in the browser,
+ * so the signed-out buttons render first and swap to "Back to dashboard" for a
+ * signed-in visitor without shifting the layout.
  */
 export default function PublicHeader({ children, labels = DEFAULT_LABELS }: Props) {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -57,22 +59,16 @@ export default function PublicHeader({ children, labels = DEFAULT_LABELS }: Prop
   return (
     <div className="sticky top-0 z-50">
       <header className="flex items-center justify-between border-b border-slate-200 bg-[#f8f7f3]/90 px-4 py-3 backdrop-blur-sm lg:px-16 lg:py-4">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="ExpoLead OS home">
-          <div className="grid grid-cols-2 gap-[3.5px] shrink-0">
-            <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-slate-900" />
-            <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-slate-900" />
-            <div className="h-[10px] w-[10px] rounded-[2px] border-[1.8px] border-slate-900" />
-            <div className="h-[10px] w-[10px] rounded-[2px] bg-emerald-500" />
-          </div>
-          <span className="flex items-center text-[16px] leading-none tracking-tight">
-            <span className="font-semibold text-slate-900">Expo</span>
-            <span className="font-semibold text-emerald-600">Lead</span>
-            <span className="font-normal text-slate-500"> OS</span>
-          </span>
-        </Link>
+        {/* Left: logo + nav */}
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center" aria-label="ExpoLead OS home">
+            <span className="text-[17px] font-bold uppercase tracking-tight">
+              <span className="text-slate-900">EXPOLEAD</span>
+              <span className="text-emerald-600">&nbsp;OS</span>
+            </span>
+          </Link>
 
-        <div className="flex items-center gap-3">
-          <div className="mr-1 hidden items-center gap-7 md:flex lg:gap-8">
+          <nav className="hidden items-center gap-7 md:flex lg:gap-8">
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -82,8 +78,11 @@ export default function PublicHeader({ children, labels = DEFAULT_LABELS }: Prop
                 {labels[item.key]}
               </Link>
             ))}
-          </div>
+          </nav>
+        </div>
 
+        {/* Right: actions */}
+        <div className="flex items-center gap-3">
           {loggedIn ? (
             <Link
               href="/dashboard"

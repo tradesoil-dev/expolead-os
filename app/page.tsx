@@ -452,7 +452,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-white text-slate-950">
       <SmoothScroll />
       <SplashScreen />
-      <PublicHeader labels={{ product: t.nav.product, resources: lang === "en" ? "Resources" : "资源", pricing: t.nav.pricing, login: t.nav.login, trial: t.nav.trial }}>
+      <PublicHeader labels={{ exhibitions: lang === "en" ? "Exhibitions" : "展会", pricing: t.nav.pricing, product: t.nav.product, login: t.nav.login, trial: t.nav.trial }}>
             {/* Language dropdown — always visible */}
             <div className="relative shrink-0">
               <button
@@ -499,7 +499,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl">
           <p className="anim-hero-badge mb-6 font-mono text-xs font-semibold uppercase tracking-[0.22em] text-emerald-600">{t.hero.badge}</p>
           <h1 className="anim-hero-title max-w-[15ch] text-5xl font-extrabold leading-[1.03] tracking-tight text-slate-950 md:text-6xl lg:text-7xl">
-            {t.hero.h1a} <span className="italic text-emerald-600">{t.hero.h1b}</span>
+            {t.hero.h1a}<br /><span className="italic text-emerald-600 whitespace-nowrap">{t.hero.h1b}</span>
           </h1>
           <p className="anim-hero-sub mt-8 max-w-2xl text-lg leading-8 text-slate-500 md:text-xl md:leading-9">{t.hero.sub}</p>
           <div className="anim-hero-sub mt-10 grid max-w-3xl gap-x-6 gap-y-5 sm:grid-cols-3">
