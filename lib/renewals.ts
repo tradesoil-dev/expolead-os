@@ -10,7 +10,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const NOTIFY_TO = "hello.expolead@tradesoil.com";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://expolead.tradesoil.com";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://expoleados.com";
 
 export type RenewalResult = { ok: boolean; pre: number; due: number; overdue: number; errors: number; checked: number; error?: string };
 

@@ -7,20 +7,20 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 export const metadata: Metadata = {
   title: "ExpoLead OS: Exhibition Connection and Lead Management for Trade Professionals",
   description: "Capture booth visits, qualify buyers, track samples and follow-ups in one workspace built for international trade exhibitions. Start your free 14-day trial, no credit card required.",
-  metadataBase: new URL("https://expolead.tradesoil.com"),
+  metadataBase: new URL("https://expoleados.com"),
   openGraph: {
     title: "ExpoLead OS: Exhibition Connection and Lead Management for Trade Professionals",
     description: "Capture booth visits, qualify buyers, track samples and follow-ups in one workspace built for international trade exhibitions. Start your free 14-day trial, no credit card required.",
-    url: "https://expolead.tradesoil.com",
+    url: "https://expoleados.com",
     siteName: "ExpoLead OS",
     type: "website",
-    images: [{ url: "https://expolead.tradesoil.com/og.png", width: 1200, height: 630 }],
+    images: [{ url: "https://expoleados.com/og.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ExpoLead OS: Exhibition Connection and Lead Management for Trade Professionals",
     description: "Capture booth visits, qualify buyers, track samples and follow-ups in one workspace built for international trade exhibitions. Start your free 14-day trial, no credit card required.",
-    images: ["https://expolead.tradesoil.com/og.png"],
+    images: ["https://expoleados.com/og.png"],
   },
 };
 

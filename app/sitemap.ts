@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { ARTICLES } from "@/lib/articles";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://expolead.tradesoil.com";
+  const base = "https://expoleados.com";
 
   const articleUrls: MetadataRoute.Sitemap = ARTICLES.map((a) => ({
     url: `${base}/resources/${a.slug}`,

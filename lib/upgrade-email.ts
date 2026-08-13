@@ -73,7 +73,7 @@ export async function sendUpgradeConfirmedEmail(d: {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const planLabel = d.plan.charAt(0).toUpperCase() + d.plan.slice(1);
   const first = (d.customerName ?? "").split(" ")[0] || "there";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://expolead.tradesoil.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://expoleados.com";
 
   return resend.emails.send({
     from: "ExpoLead OS <hello.expolead@tradesoil.com>",

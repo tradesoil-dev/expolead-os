@@ -22,7 +22,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
         <!-- Header -->
         <tr>
           <td style="background-color:#065f46;background-image:linear-gradient(115deg,#0f172a 0%,#065f46 48%,#10b981 100%);padding:32px 40px;">
-            <img src="https://expolead.tradesoil.com/email-logo.png" width="24" height="24" alt="" style="vertical-align:middle;margin-right:9px;display:inline-block;" />
+            <img src="https://expoleados.com/email-logo.png" width="24" height="24" alt="" style="vertical-align:middle;margin-right:9px;display:inline-block;" />
             <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;vertical-align:middle;">Expo<span style="color:#34d399;">Lead</span> <span style="color:rgba(255,255,255,0.65);font-size:15px;font-weight:400;">OS</span></span>
           </td>
         </tr>

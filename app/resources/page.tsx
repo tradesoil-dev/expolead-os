@@ -7,7 +7,7 @@ export const metadata = {
   title: "Resources — The exhibition lead playbook | ExpoLead OS",
   description:
     "Practical guides on capturing, qualifying, and following up on leads from trade shows and exhibitions. Written for product exporters and traders.",
-  alternates: { canonical: "https://expolead.tradesoil.com/resources" },
+  alternates: { canonical: "https://expoleados.com/resources" },
 };
 
 const TOPIC_ORDER = ["Exhibitions", "Sales", "Marketing", "Follow-up"] as const;

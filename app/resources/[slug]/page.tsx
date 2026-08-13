@@ -12,14 +12,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const article = getArticle(slug);
   if (!article) return {};
-  const url = `https://expolead.tradesoil.com/resources/${article.slug}`;
+  const url = `https://expoleados.com/resources/${article.slug}`;
   // Social crawlers cannot render SVG, so share previews point at the PNG copy
   // of the cover illustration. Defining openGraph here replaces the one in the
   // root layout wholesale, so the image has to be repeated or the card shows
   // with no picture at all.
   const image = article.image
-    ? `https://expolead.tradesoil.com/articles/og/${article.slug}.png`
-    : "https://expolead.tradesoil.com/og.png";
+    ? `https://expoleados.com/articles/og/${article.slug}.png`
+    : "https://expoleados.com/og.png";
   return {
     title: `${article.title} | ExpoLead OS`,
     description: article.excerpt,
@@ -56,7 +56,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     datePublished: article.publishedISO,
     author: { "@type": "Organization", name: "ExpoLead OS" },
     publisher: { "@type": "Organization", name: "ExpoLead OS" },
-    mainEntityOfPage: `https://expolead.tradesoil.com/resources/${article.slug}`,
+    mainEntityOfPage: `https://expoleados.com/resources/${article.slug}`,
   };
 
   return (
@@ -117,7 +117,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </div>
 
         <ShareButtons
-          url={`https://expolead.tradesoil.com/resources/${article.slug}`}
+          url={`https://expoleados.com/resources/${article.slug}`}
           title={article.title}
         />
 
