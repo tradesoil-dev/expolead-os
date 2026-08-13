@@ -20,6 +20,7 @@ import {
 import SplashScreen from "@/components/SplashScreen";
 import PublicHeader from "@/components/PublicHeader";
 import SmoothScroll from "@/components/SmoothScroll";
+import SiteFooter from "@/components/SiteFooter";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -452,7 +453,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-white text-slate-950">
       <SmoothScroll />
       <SplashScreen />
-      <PublicHeader labels={{ exhibitions: lang === "en" ? "Exhibitions" : "展会", pricing: t.nav.pricing, product: t.nav.product, login: t.nav.login, trial: t.nav.trial }}>
+      <PublicHeader labels={{ exhibitions: lang === "en" ? "Exhibitions" : "展会", pricing: t.nav.pricing, product: t.nav.product, resources: lang === "en" ? "Resources" : "资源", login: t.nav.login, trial: t.nav.trial }}>
             {/* Language dropdown — always visible */}
             <div className="relative shrink-0">
               <button
@@ -913,103 +914,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-slate-900 px-8 pt-12 pb-8 lg:px-16">
-        {/* Top row: logo + columns */}
-        <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-16 pb-10 border-b border-slate-800">
-          {/* Logo + tagline */}
-          <div className="shrink-0">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="grid grid-cols-2 gap-[3px] w-[18px] h-[18px] shrink-0">
-                <div className="rounded-[2px] border-[1.5px] border-white" />
-                <div className="rounded-[2px] border-[1.5px] border-white" />
-                <div className="rounded-[2px] border-[1.5px] border-white" />
-                <div className="rounded-[2px] bg-emerald-500" />
-              </div>
-              <span className="text-[15px] tracking-tight leading-none">
-                <span className="font-semibold text-white">Expo</span>
-                <span className="font-semibold text-emerald-400">Lead</span>
-                <span className="font-normal text-slate-400"> OS</span>
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 leading-relaxed max-w-[180px]">{t.footer.tagline}</p>
-            <div className="mt-4 flex items-center gap-2.5">
-              <a
-                href="https://www.linkedin.com/company/expolead-os/"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="ExpoLead OS on LinkedIn"
-                className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition-colors hover:bg-emerald-600 hover:text-white"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM8 8h3.83v2.19h.05c.53-1 1.84-2.19 3.79-2.19 4.05 0 4.8 2.67 4.8 6.14V24h-4v-7.03c0-1.68-.03-3.84-2.34-3.84-2.34 0-2.7 1.83-2.7 3.72V24H8V8z" /></svg>
-              </a>
-              <a
-                href="https://x.com/ExpoLeadOS"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="ExpoLead OS on X"
-                className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition-colors hover:bg-emerald-600 hover:text-white"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5"><path d="M18.9 2H22l-7.64 8.73L23.5 22h-7.02l-5.5-7.19L4.7 22H1.58l8.18-9.34L.5 2h7.2l4.97 6.57L18.9 2zm-1.23 18h1.94L6.4 3.9H4.32L17.67 20z" /></svg>
-              </a>
-            </div>
-          </div>
-
-          {/* Columns */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:gap-16">
-            {/* ExpoLead OS */}
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col1.heading}</p>
-              <div className="flex flex-col gap-3">
-                <Link href="/about" className="text-sm text-slate-500 hover:text-white transition-colors">
-                  {lang === "en" ? "About" : "关于我们"}
-                </Link>
-                <Link href="/features" className="text-sm text-slate-500 hover:text-white transition-colors">
-                  {lang === "en" ? "Product Overview" : "产品概览"}
-                </Link>
-              </div>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col3.heading}</p>
-              <div className="flex flex-col gap-3">
-                <Link href="/resources" className="text-sm text-slate-500 hover:text-white transition-colors">
-                  {lang === "en" ? "Exhibition Playbook" : "参展指南"}
-                </Link>
-                <a href={`mailto:hello.expolead@tradesoil.com`} className="text-sm text-slate-500 hover:text-white transition-colors">
-                  {lang === "en" ? "Help Center" : "帮助中心"}
-                </a>
-                <a href={`mailto:hello.expolead@tradesoil.com`} className="text-sm text-slate-500 hover:text-white transition-colors">
-                  {lang === "en" ? "Support" : "支持"}
-                </a>
-              </div>
-            </div>
-
-            {/* Company */}
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-white mb-4">{t.footerLinks.col4.heading}</p>
-              <div className="flex flex-col gap-3">
-                <a href="https://www.tradesoil.com" target="_blank" rel="noreferrer" className="text-sm text-slate-500 hover:text-white transition-colors">
-                  {t.footerLinks.col4.tradesoil}
-                </a>
-                <a href="mailto:hello.expolead@tradesoil.com" className="text-sm text-slate-500 hover:text-white transition-colors">
-                  {t.footerLinks.col4.contact}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-6">
-          <p className="text-xs text-slate-600">© 2026 ExpoLead OS. All rights reserved.</p>
-          <div className="flex flex-wrap gap-4">
-            <Link href="/terms" className="text-xs text-slate-500 hover:text-white transition-colors">{t.footer.terms}</Link>
-            <Link href="/privacy" className="text-xs text-slate-500 hover:text-white transition-colors">{t.footer.privacy}</Link>
-          </div>
-        </div>
-      </footer>
+      {/* FOOTER — shared, same as every public page */}
+      <SiteFooter />
     </main>
   );
 }

@@ -169,21 +169,11 @@ function LoginForm() {
         style={{ background: "linear-gradient(150deg, #0f172a 0%, #065f46 50%, #10b981 100%)" }}
       >
         <Link href="/" className="absolute top-8 left-10 inline-block" aria-label="Go to ExpoLead OS home">
-    <div className="flex items-center gap-3">
-      <svg width="42" height="42" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
-        <rect x="22" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
-        <rect x="1" y="22" width="17" height="17" rx="3" stroke="white" strokeWidth="2" fill="none"/>
-        <rect x="22" y="22" width="17" height="17" rx="3" fill="#34d399"/>
-      </svg>
-      <div>
-        <h1 className="flex items-center text-[26px] font-semibold tracking-tight leading-none">
-          <span className="text-white">Expo</span><span className="text-emerald-300">Lead</span><span className="text-white/60 text-[18px] font-normal ml-1">OS</span>
-        </h1>
-        <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-200">Powered by Tradesoil</p>
-      </div>
-    </div>
-</Link>
+          <span className="text-[22px] font-bold uppercase tracking-tight leading-none">
+            <span className="text-white">EXPOLEAD</span>
+            <span className="text-emerald-300">&nbsp;OS</span>
+          </span>
+        </Link>
         <div className="w-full max-w-[520px] rounded-[2rem] border border-white/15 bg-white/10 p-6 shadow-xl backdrop-blur">
           <div className="flex justify-center py-10">
   <div className="scale-[5] text-emerald-300">

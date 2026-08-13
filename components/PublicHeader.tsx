@@ -13,22 +13,24 @@ type Props = {
    */
   children?: ReactNode;
   /** Nav labels, so the landing page can pass Chinese. Defaults to English. */
-  labels?: { exhibitions: string; pricing: string; product: string; login: string; trial: string };
+  labels?: { exhibitions: string; pricing: string; product: string; resources: string; login: string; trial: string };
 };
 
 const DEFAULT_LABELS = {
   exhibitions: "Exhibitions",
   pricing: "Pricing",
   product: "Product",
+  resources: "Resources",
   login: "Log in",
   trial: "Start free trial",
 };
 
-// Lovable header order: Exhibitions, Pricing, Product (left, next to the logo).
+// Header order (left, next to the logo): Exhibitions, Pricing, Product, Resources.
 const NAV = [
   { href: "/trade-shows", key: "exhibitions" as const },
   { href: "/pricing", key: "pricing" as const },
   { href: "/features", key: "product" as const },
+  { href: "/resources", key: "resources" as const },
 ];
 
 /**

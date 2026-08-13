@@ -18,8 +18,26 @@ export default function SiteFooter() {
               <span className="text-emerald-600">&nbsp;OS</span>
             </Link>
             <p className="mt-3 text-sm leading-relaxed text-slate-500">
-              Exhibition connection and lead management. Powered by Tradesoil.
+              Built for exhibitions. Designed for revenue growth.
             </p>
+            <div className="mt-5 flex items-center gap-2.5">
+              <a
+                href="mailto:hello.expolead@tradesoil.com"
+                aria-label="Email ExpoLead OS"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-emerald-600 hover:bg-emerald-600 hover:text-white"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 6L2 7" /></svg>
+              </a>
+              <a
+                href="https://www.linkedin.com/company/expolead-os/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="ExpoLead OS on LinkedIn"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-emerald-600 hover:bg-emerald-600 hover:text-white"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM8 8h3.83v2.19h.05c.53-1 1.84-2.19 3.79-2.19 4.05 0 4.8 2.67 4.8 6.14V24h-4v-7.03c0-1.68-.03-3.84-2.34-3.84-2.34 0-2.7 1.83-2.7 3.72V24H8V8z" /></svg>
+              </a>
+            </div>
           </div>
 
           {/* Columns */}
