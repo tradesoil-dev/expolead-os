@@ -19,14 +19,8 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
   return (
     <aside className="hidden md:flex w-60 shrink-0 flex-col bg-slate-800 shadow-lg sticky top-0 h-screen self-start overflow-y-auto">
       <div className="flex items-center gap-2 px-4 h-14 border-b border-white/10">
-        <svg width="26" height="26" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2.2" fill="none"/>
-          <rect x="22" y="1" width="17" height="17" rx="3" stroke="white" strokeWidth="2.2" fill="none"/>
-          <rect x="1" y="22" width="17" height="17" rx="3" stroke="white" strokeWidth="2.2" fill="none"/>
-          <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/>
-        </svg>
-        <span className="flex items-center text-[17px] font-semibold tracking-tight leading-none">
-          <span className="text-white">Expo</span><span className="text-emerald-400">Lead</span><span className="text-slate-500 text-[12px] font-normal ml-1">OS</span>
+        <span className="flex items-center text-[17px] font-bold uppercase tracking-tight leading-none">
+          <span className="text-white">EXPOLEAD</span><span className="text-emerald-400">&nbsp;OS</span>
         </span>
       </div>
 

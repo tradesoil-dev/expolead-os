@@ -450,7 +450,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white text-slate-950">
+    <main className="min-h-screen overflow-x-clip bg-white text-slate-950">
       <SmoothScroll />
       <SplashScreen />
       <PublicHeader labels={{ exhibitions: lang === "en" ? "Exhibitions" : "展会", pricing: t.nav.pricing, product: t.nav.product, resources: lang === "en" ? "Resources" : "资源", login: t.nav.login, trial: t.nav.trial }}>

@@ -47,7 +47,8 @@ export default function ReportsPresent({
       {/* Sticky header */}
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-ink-100 bg-white px-6 py-3">
         <div className="flex items-center gap-2.5">
-          <svg width="22" height="22" viewBox="0 0 40 40" fill="none"><rect x="1" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2"/><rect x="22" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2"/><rect x="1" y="22" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2"/><rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981"/></svg>
+          <span className="text-sm font-bold uppercase tracking-tight text-ink-900">EXPOLEAD<span className="text-emerald-600">&nbsp;OS</span></span>
+          <span className="text-sm text-ink-400">·</span>
           <span className="text-sm font-semibold text-ink-900">{title}</span>
           <span className="text-sm text-ink-400">· {rangeLabel}</span>
         </div>

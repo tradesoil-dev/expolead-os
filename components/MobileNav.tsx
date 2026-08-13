@@ -16,17 +16,6 @@ const NAV = [
   { href: "/profile", label: "Settings" },
 ];
 
-function Logo({ size = 24 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none" />
-      <rect x="22" y="1" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none" />
-      <rect x="1" y="22" width="17" height="17" rx="3" stroke="#0f172a" strokeWidth="2.2" fill="none" />
-      <rect x="22" y="22" width="17" height="17" rx="3" fill="#10b981" />
-    </svg>
-  );
-}
-
 export default function MobileNav({ email, profile }: { email?: string | null; profile: { full_name: string | null; company_name: string | null; is_admin: boolean } }) {
   const [open, setOpen] = useState(false);
   const fullName = profile.full_name ?? "";
@@ -55,10 +44,9 @@ export default function MobileNav({ email, profile }: { email?: string | null; p
     <div className="contents md:hidden">
       {/* Top bar — sticky as a direct child of the page column */}
       <div className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-ink-100 bg-white px-4">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <Logo />
-          <span className="flex items-center text-[17px] font-semibold leading-none tracking-tight">
-            <span className="text-slate-900">Expo</span><span className="text-emerald-500">Lead</span><span className="ml-1 text-[12px] font-normal text-slate-400">OS</span>
+        <Link href="/dashboard" className="flex items-center">
+          <span className="flex items-center text-[17px] font-bold uppercase leading-none tracking-tight">
+            <span className="text-slate-900">EXPOLEAD</span><span className="text-emerald-600">&nbsp;OS</span>
           </span>
         </Link>
 
@@ -77,10 +65,9 @@ export default function MobileNav({ email, profile }: { email?: string | null; p
 
           <div className="fixed right-0 top-0 z-50 flex h-full w-[280px] flex-col overflow-y-auto bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-ink-100 p-4">
-              <div className="flex items-center gap-2">
-                <Logo size={22} />
-                <span className="flex items-center text-[16px] font-semibold leading-none tracking-tight">
-                  <span className="text-slate-900">Expo</span><span className="text-emerald-500">Lead</span><span className="ml-1 text-[11px] font-normal text-slate-400">OS</span>
+              <div className="flex items-center">
+                <span className="flex items-center text-[16px] font-bold uppercase leading-none tracking-tight">
+                  <span className="text-slate-900">EXPOLEAD</span><span className="text-emerald-600">&nbsp;OS</span>
                 </span>
               </div>
               <button onClick={() => setOpen(false)} className="grid h-9 w-9 place-items-center rounded-lg border border-ink-200 text-ink-500" aria-label="Close menu">

@@ -21,38 +21,28 @@ export default function SplashScreen() {
   return (
     <div
       onClick={dismiss}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-900 cursor-pointer select-none"
-      style={{
-        transition: "opacity 0.4s ease",
-        opacity: hiding ? 0 : 1,
-      }}
+      className="fixed inset-0 z-[100] flex cursor-pointer select-none flex-col items-center justify-center bg-[#f8f7f3]"
+      style={{ transition: "opacity 0.4s ease", opacity: hiding ? 0 : 1 }}
     >
-      {/* Animated floor plan icon */}
-      <div className="flex flex-col gap-2.5 mb-8">
-        <div className="flex gap-2.5">
-          <div className="anim-sq1 w-10 h-10 rounded-[7px] border-[2.5px] border-white" />
-          <div className="anim-sq2 w-10 h-10 rounded-[7px] border-[2.5px] border-white" />
-        </div>
-        <div className="flex gap-2.5">
-          <div className="anim-sq3 w-10 h-10 rounded-[7px] border-[2.5px] border-white" />
-          <div className="anim-sq4 w-10 h-10 rounded-[7px] bg-emerald-500" />
-        </div>
-      </div>
+      <style>{`
+        @keyframes splashLogoPlay { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
+        .splash-logo-play { animation: splashLogoPlay 2.2s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .splash-logo-play { animation: none; opacity: 1; } }
+      `}</style>
 
-      {/* Logo text */}
-      <div className="anim-logo-text flex items-center text-[30px] font-semibold tracking-tight leading-none">
-        <span className="text-white">Expo</span>
-        <span className="text-emerald-400">Lead</span>
-        <span className="text-slate-500 text-[20px] font-normal ml-1.5">OS</span>
+      {/* Logo text — playing */}
+      <div className="splash-logo-play flex items-center text-[34px] font-bold uppercase leading-none tracking-tight">
+        <span className="text-slate-900">EXPOLEAD</span>
+        <span className="text-emerald-600">&nbsp;OS</span>
       </div>
 
       {/* Tagline */}
-      <p className="anim-tagline mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-600">
-        Powered by Tradesoil
+      <p className="anim-tagline mt-4 max-w-[260px] text-center text-[13px] leading-relaxed text-slate-500">
+        Built for exhibitions. Designed for revenue growth.
       </p>
 
       {/* Tap hint */}
-      <p className="anim-tap-hint absolute bottom-14 text-[12px] text-slate-500">
+      <p className="anim-tap-hint absolute bottom-14 text-[12px] text-slate-400">
         tap anywhere to continue
       </p>
     </div>

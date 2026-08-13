@@ -74,7 +74,7 @@ export default function SiteFooter() {
             </div>
             <div>
               <p className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Contact</p>
-              <a href="mailto:hello.expolead@tradesoil.com" className="text-sm text-slate-700 transition-colors hover:text-emerald-600">
+              <a href="mailto:hello.expolead@tradesoil.com" className="block break-all text-sm text-slate-700 transition-colors hover:text-emerald-600">
                 hello.expolead@tradesoil.com
               </a>
               <p className="mt-3 text-sm text-slate-500">Sri Lanka | Australia</p>
