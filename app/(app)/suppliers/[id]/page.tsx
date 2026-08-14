@@ -103,12 +103,15 @@ export default async function SupplierProfile({
         )}
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <InterestBadge interest={supplier.interest_type} />
-            <PriorityBadge priority={supplier.priority} />
-            {supplier.is_target && (
-              <span className="rounded bg-ink-100 px-2 py-0.5 text-xs font-medium text-ink-500">Target</span>
-            )}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <InterestBadge interest={supplier.interest_type} />
+              <PriorityBadge priority={supplier.priority} />
+              {supplier.is_target && (
+                <span className="rounded bg-ink-100 px-2 py-0.5 text-xs font-medium text-ink-500">Target</span>
+              )}
+            </div>
+            <EditButton href={`/suppliers/${supplier.id}/edit`} />
           </div>
 
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -247,6 +250,13 @@ export default async function SupplierProfile({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-semibold">Meetings</h2>
             <AddMeetingForm supplierId={supplier.id} exhibitions={exhibitions} />
+          </div>
+
+          <div className="flex gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+            <p className="text-xs leading-relaxed text-emerald-800">
+              Log every conversation you have with this connection after the show, from a call or an office meeting to a site visit. Each one is stamped with its date and exhibition, so you build a running history of how the relationship progressed.
+            </p>
           </div>
 
           {meetings.length === 0 ? (
