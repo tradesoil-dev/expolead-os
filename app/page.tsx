@@ -451,6 +451,28 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen overflow-x-clip bg-white text-slate-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                name: "ExpoLead OS",
+                url: "https://expoleados.com",
+                logo: "https://expoleados.com/og.png",
+                sameAs: ["https://www.linkedin.com/company/expolead-os/"],
+              },
+              {
+                "@type": "WebSite",
+                name: "ExpoLead OS",
+                url: "https://expoleados.com",
+              },
+            ],
+          }),
+        }}
+      />
       <SmoothScroll />
       <SplashScreen />
       <PublicHeader labels={{ exhibitions: lang === "en" ? "Exhibitions" : "展会", pricing: t.nav.pricing, product: t.nav.product, resources: lang === "en" ? "Resources" : "资源", login: t.nav.login, trial: t.nav.trial }}>

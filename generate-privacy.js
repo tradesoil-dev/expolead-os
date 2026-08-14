@@ -67,11 +67,11 @@ const doc = new Document({
         children: [new TextRun({ text: 'Privacy Notice', bold: true, size: 40, font: 'Arial' })]
       }),
 
-      p('Welcome, and thank you for your interest in ExpoLead OS ("ExpoLead OS," "we," or "us"), our website at https://expolead.tradesoil.com and all related services we provide (collectively, "ExpoLead OS Operations"). ExpoLead OS is a product of Tradesoil International, operated by Gladwin Gerald.'),
+      p('Welcome, and thank you for your interest in ExpoLead OS ("ExpoLead OS," "we," or "us"), our website at https://expoleados.com and all related services we provide (collectively, "ExpoLead OS Operations"). ExpoLead OS is a product of Tradesoil International, operated by Gladwin Gerald.'),
 
       p('This Privacy Notice describes the information we gather when you use ExpoLead OS, how we use and disclose such information, and the steps we take to protect it.'),
 
-      p('This Privacy Notice is incorporated into and subject to the ExpoLead OS Terms of Service, available at https://expolead.tradesoil.com/terms.'),
+      p('This Privacy Notice is incorporated into and subject to the ExpoLead OS Terms of Service, available at https://expoleados.com/terms.'),
 
       divider(),
 
@@ -80,7 +80,7 @@ const doc = new Document({
       p('"Personal Data" means any information relating to an identified or identifiable natural person.'),
       p('"Platform" means the ExpoLead OS application and all related services accessible after logging in.'),
       p('"User" means any individual who has created an account on ExpoLead OS.'),
-      p('"Visitor" means an individual who accesses the public-facing website at expolead.tradesoil.com without logging in.'),
+      p('"Visitor" means an individual who accesses the public-facing website at expoleados.com without logging in.'),
 
       divider(),
 
@@ -244,7 +244,7 @@ const doc = new Document({
       new Paragraph({
         spacing: { before: 40, after: 60 },
         indent: { left: 360 },
-        children: [new TextRun({ text: 'Website: https://expolead.tradesoil.com', size: 22, font: 'Arial' })]
+        children: [new TextRun({ text: 'Website: https://expoleados.com', size: 22, font: 'Arial' })]
       }),
       new Paragraph({
         spacing: { before: 40, after: 60 },

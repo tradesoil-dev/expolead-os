@@ -121,7 +121,7 @@ All user data tables enforce RLS keyed on `auth.uid() = user_id`:
 
 - Hosted on Vercel, auto-deploy from the `main` branch of the GitHub repo (`tradesoil-dev/expolead-os`).
 - Constraint: the git commit author email must match a Vercel team member for private-repo deploys to run. Commits are authored as `gladwinmd@tradesoil.com`.
-- Custom domain `expolead.tradesoil.com` via CNAME to Vercel.
+- Custom domain `expoleados.com` via CNAME to Vercel.
 - Build is a standard `next build`; several public/article pages are statically prerendered (SSG), app pages are dynamic (server-rendered on demand).
 
 ## 12. Performance and scalability notes

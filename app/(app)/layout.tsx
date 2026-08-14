@@ -11,6 +11,11 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { computeTrialStatus, TRIAL_FALLBACK, type TrialStatus } from "@/lib/trial";
 import { sendWelcomeEmail } from "@/lib/welcome-email";
 
+// Every logged-in application page is private — keep them all out of search.
+export const metadata = {
+  robots: { index: false, follow: false },
+};
+
 export default async function AppLayout({
   children,
 }: {

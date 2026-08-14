@@ -4,6 +4,7 @@ import PublicHeader from "@/components/PublicHeader";
 export const metadata = {
   title: "Terms of Service — ExpoLead OS",
   description: "Terms and conditions for using ExpoLead OS. 14-day free trial, no credit card required. Your data is yours — export it anytime. Cancel anytime.",
+  alternates: { canonical: "https://expoleados.com/terms" },
 };
 
 export default function TermsPage() {

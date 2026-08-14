@@ -7,6 +7,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
   description: "Free 14-day trial, no credit card. Paid plans from $29/month ($348/year Starter). One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
+  alternates: { canonical: "https://expoleados.com/pricing" },
 };
 
 const TRUST = [

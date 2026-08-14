@@ -21,7 +21,7 @@ A ceiling on how many of something an account may create.
 **OG — Open Graph**
 The little preview card that appears when you paste a link into WhatsApp, LinkedIn or Facebook: the image, the headline, the one-line description. "OG image" and "OG description" are the pieces of that card. You control them; the social network just displays what you set.
 
-*ExpoLead example:* `public/og.png` is the picture people see when you share expolead.tradesoil.com.
+*ExpoLead example:* `public/og.png` is the picture people see when you share expoleados.com.
 
 **Migration**
 A numbered file of database instructions, applied in order, that changes the shape of the database — adding a column, adding a rule, adding a table.
