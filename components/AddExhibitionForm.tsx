@@ -24,7 +24,17 @@ export default function AddExhibitionForm({
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [picked, setPicked] = useState(false);
-  const [f, setF] = useState({ name: "", location: "", start_date: "", end_date: "", cost: "" });
+  const [f, setF] = useState({
+    name: "",
+    location: "",
+    start_date: "",
+    end_date: "",
+    cost: "",
+    attending_as: "visiting",
+    own_hall: "",
+    own_booth_number: "",
+    own_stand_location: "",
+  });
 
   function set<K extends keyof typeof f>(k: K, v: string) {
     setF((p) => ({ ...p, [k]: v }));
@@ -51,19 +61,19 @@ export default function AddExhibitionForm({
   }, [query, library]);
 
   function pick(ex: ExhibitionLibraryItem) {
-    setF({
+    setF((prev) => ({
+      ...prev,
       name: ex.name,
       location: ex.location ?? "",
       start_date: ex.start_date ?? "",
       end_date: ex.end_date ?? "",
-      cost: f.cost,
-    });
+    }));
     setQuery("");
     setPicked(true);
   }
 
   function reset() {
-    setF({ name: "", location: "", start_date: "", end_date: "", cost: "" });
+    setF({ name: "", location: "", start_date: "", end_date: "", cost: "", attending_as: "visiting", own_hall: "", own_booth_number: "", own_stand_location: "" });
     setQuery("");
     setPicked(false);
     setError(null);
@@ -80,12 +90,17 @@ export default function AddExhibitionForm({
       return;
     }
     setSaving(true);
+    const exhibiting = f.attending_as === "exhibiting";
     const { error } = await createClient().from("exhibitions").insert({
       name: f.name.trim(),
       location: f.location || null,
       start_date: f.start_date || null,
       end_date: f.end_date || null,
       cost: f.cost.trim() === "" ? null : Number(f.cost),
+      attending_as: f.attending_as,
+      own_hall: exhibiting ? f.own_hall || null : null,
+      own_booth_number: exhibiting ? f.own_booth_number || null : null,
+      own_stand_location: exhibiting ? f.own_stand_location || null : null,
     });
     setSaving(false);
     if (error) {
@@ -198,6 +213,44 @@ export default function AddExhibitionForm({
           <DatePicker value={f.end_date} onChange={(v) => set("end_date", v)} />
         </div>
       </div>
+
+      {/* Attending posture — drives how connections capture booth details */}
+      <div className="space-y-2 border-t border-ink-100 pt-3">
+        <span className="block text-xs font-semibold uppercase tracking-wide text-ink-400">How are you attending?</span>
+        <div className="grid grid-cols-2 gap-2">
+          {([
+            { value: "visiting", label: "Visiting", hint: "Walking the floor, meeting suppliers" },
+            { value: "exhibiting", label: "Exhibiting", hint: "You have your own stand" },
+          ] as const).map((o) => {
+            const active = f.attending_as === o.value;
+            return (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => set("attending_as", o.value)}
+                className={`rounded-lg border px-3 py-2.5 text-left transition-colors ${active ? "border-emerald-500 bg-emerald-50 ring-1 ring-emerald-200" : "border-ink-200 bg-white hover:border-ink-300"}`}
+              >
+                <span className={`block text-sm font-semibold ${active ? "text-emerald-800" : "text-ink-800"}`}>{o.label}</span>
+                <span className="mt-0.5 block text-[11px] leading-snug text-ink-500">{o.hint}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {f.attending_as === "exhibiting" && (
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <input className={inp} placeholder="Your hall, e.g. Hall 3" value={f.own_hall} onChange={(e) => set("own_hall", e.target.value)} />
+            <input className={inp} placeholder="Your booth, e.g. H3-121" value={f.own_booth_number} onChange={(e) => set("own_booth_number", e.target.value)} />
+            <input className={inp} placeholder="Stand area, optional" value={f.own_stand_location} onChange={(e) => set("own_stand_location", e.target.value)} />
+          </div>
+        )}
+        <p className="text-xs text-ink-400">
+          {f.attending_as === "exhibiting"
+            ? "You set your stand once here. Buyers you capture at this show are logged as meeting you at your stand."
+            : "Connections you capture will record the supplier's own hall, booth and stand."}
+        </p>
+      </div>
+
       <div className="flex items-center gap-2">
         <button onClick={save} disabled={saving} className="rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60">
           {saving ? "Saving…" : "Save exhibition"}

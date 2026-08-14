@@ -18,6 +18,8 @@ export type FollowUpStatus =
   | "under_discussion"
   | "closed";
 
+export type AttendingAs = "visiting" | "exhibiting";
+
 export interface Exhibition {
   id: string;
   user_id: string;
@@ -26,6 +28,10 @@ export interface Exhibition {
   start_date: string | null;
   end_date: string | null;
   cost: number | null;
+  attending_as: AttendingAs;
+  own_hall: string | null;
+  own_booth_number: string | null;
+  own_stand_location: string | null;
   created_at: string;
 }
 

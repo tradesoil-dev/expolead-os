@@ -59,6 +59,12 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     setContact((c) => ({ ...c, [k]: v }));
   }
 
+  const selectedEx = exhibitions.find((e) => e.id === form.exhibition_id);
+  const exhibiting = selectedEx?.attending_as === "exhibiting";
+  const ownStand = [selectedEx?.own_hall, selectedEx?.own_booth_number, selectedEx?.own_stand_location]
+    .filter(Boolean)
+    .join(" · ");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -253,31 +259,45 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
             />
           </Field>
 
-          <Field label="Hall">
-            <Input value={form.hall} onChange={(v) => set("hall", v)} placeholder="e.g. Hall 3" />
-          </Field>
+          {exhibiting ? (
+            <div className="sm:col-span-2 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Met at your stand</p>
+              <p className="mt-1 text-sm font-medium text-emerald-900">
+                {ownStand || "Your stand details are not set for this show yet"}
+              </p>
+              <p className="mt-1 text-xs text-emerald-700">
+                You&rsquo;re exhibiting at this show, so this buyer came to you. No supplier booth to record.
+              </p>
+            </div>
+          ) : (
+            <>
+              <Field label="Hall">
+                <Input value={form.hall} onChange={(v) => set("hall", v)} placeholder="e.g. Hall 3" />
+              </Field>
 
-          <Field label="Booth number">
-            <Input value={form.booth_number} onChange={(v) => set("booth_number", v)} placeholder="e.g. 3.2E15" />
-          </Field>
+              <Field label="Booth number">
+                <Input value={form.booth_number} onChange={(v) => set("booth_number", v)} placeholder="e.g. 3.2E15" />
+              </Field>
 
-          <Field label="Stand location">
-            <Input value={form.stand_location} onChange={(v) => set("stand_location", v)} placeholder="Near raw materials zone" />
-          </Field>
+              <Field label="Stand location">
+                <Input value={form.stand_location} onChange={(v) => set("stand_location", v)} placeholder="Near raw materials zone" />
+              </Field>
 
-          <Field label="Visited">
-            <label className="flex items-center gap-2 h-9">
-              <input
-                type="checkbox"
-                checked={form.visited}
-                onChange={(e) => set("visited", e.target.checked)}
-                className="h-4 w-4 rounded border-ink-300"
-              />
-              <span className="text-sm text-ink-700">Yes, visited this booth</span>
-            </label>
-          </Field>
+              <Field label="Visited">
+                <label className="flex items-center gap-2 h-9">
+                  <input
+                    type="checkbox"
+                    checked={form.visited}
+                    onChange={(e) => set("visited", e.target.checked)}
+                    className="h-4 w-4 rounded border-ink-300"
+                  />
+                  <span className="text-sm text-ink-700">Yes, visited this booth</span>
+                </label>
+              </Field>
+            </>
+          )}
 
-          <Field label="Visit date">
+          <Field label={exhibiting ? "Met on" : "Visit date"}>
             <Input type="date" value={form.visit_date} onChange={(v) => set("visit_date", v)} />
           </Field>
         </Grid>

@@ -41,6 +41,15 @@ export default async function SupplierProfile({
     a.met_on < b.met_on ? 1 : -1
   );
 
+  // Posture drives how Booth & Exhibition reads. "exhibiting" means this
+  // connection is a buyer who came to the user's own stand, so we show the
+  // user's stand (set once on the exhibition) instead of asking for a booth
+  // the buyer does not have.
+  const exhibiting = supplier.exhibition?.attending_as === "exhibiting";
+  const ownStand = [supplier.exhibition?.own_hall, supplier.exhibition?.own_booth_number, supplier.exhibition?.own_stand_location]
+    .filter(Boolean)
+    .join(" · ");
+
   // "Met before" — other records for the same company (year over year, other shows)
   let priorMeets: any[] = [];
   if (isSupabaseConfigured) {
@@ -162,31 +171,55 @@ export default async function SupplierProfile({
   <EditButton href={`/suppliers/${supplier.id}/booth/edit`} />
 </div>
 
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-            <Row label="Source exhibition">
-              {supplier.exhibition?.name ?? "—"}
-            </Row>
+          {exhibiting ? (
+            <>
+              <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Met at your stand</p>
+                <p className="mt-1 text-sm font-medium text-emerald-900">
+                  {ownStand || "Your stand details are not set yet"}
+                </p>
+                {!ownStand && supplier.exhibition && (
+                  <p className="mt-1 text-xs text-emerald-700">
+                    Add them on the{" "}
+                    <Link href={`/exhibitions/${supplier.exhibition_id}`} className="underline hover:text-emerald-800">
+                      {supplier.exhibition.name}
+                    </Link>{" "}
+                    exhibition page.
+                  </p>
+                )}
+              </div>
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                <Row label="Source exhibition">{supplier.exhibition?.name ?? "—"}</Row>
+                <Row label="Met on">{supplier.visit_date ?? "—"}</Row>
+              </dl>
+            </>
+          ) : (
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+              <Row label="Source exhibition">
+                {supplier.exhibition?.name ?? "—"}
+              </Row>
 
-            <Row label="Hall">
-              {supplier.hall ?? "—"}
-            </Row>
+              <Row label="Hall">
+                {supplier.hall ?? "—"}
+              </Row>
 
-            <Row label="Booth number">
-              {supplier.booth_number ?? "—"}
-            </Row>
+              <Row label="Booth number">
+                {supplier.booth_number ?? "—"}
+              </Row>
 
-            <Row label="Stand location">
-              {supplier.stand_location ?? "—"}
-            </Row>
+              <Row label="Stand location">
+                {supplier.stand_location ?? "—"}
+              </Row>
 
-            <Row label="Visited">
-              {supplier.visited ? "Yes" : "No"}
-            </Row>
+              <Row label="Visited">
+                {supplier.visited ? "Yes" : "No"}
+              </Row>
 
-            <Row label="Visit date">
-              {supplier.visit_date ?? "—"}
-            </Row>
-          </dl>
+              <Row label="Visit date">
+                {supplier.visit_date ?? "—"}
+              </Row>
+            </dl>
+          )}
         </div>
         
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
