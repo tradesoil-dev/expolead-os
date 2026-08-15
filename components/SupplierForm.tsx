@@ -15,6 +15,7 @@ import {
   type Exhibition,
 } from "@/lib/types";
 import { User, Building2, Tag, MapPin, StickyNote } from "lucide-react";
+import ConversationRecorder from "@/components/ConversationRecorder";
 
 const SI = { size: 15, strokeWidth: 2 } as const;
 
@@ -333,6 +334,10 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           </Field>
         </Grid>
       </Section>
+
+      <ConversationRecorder
+        onAppend={(block) => set("notes", form.notes ? form.notes + "\n\n" + block : block)}
+      />
 
       <Section title="Notes" icon={<StickyNote {...SI} />}>
         <textarea

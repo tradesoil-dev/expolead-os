@@ -14,7 +14,16 @@ import { useToast } from "@/components/useToast";
 
 type Phase = "idle" | "consent" | "recording" | "review" | "summarizing" | "summary";
 
-export default function ConversationRecorder({ supplierId }: { supplierId: string }) {
+export default function ConversationRecorder({
+  supplierId,
+  onAppend,
+}: {
+  // DB mode: append straight to this connection's notes.
+  supplierId?: string;
+  // Form mode (new-connection page): hand the captured block back to the form
+  // so it saves with the connection. No connection exists yet.
+  onAppend?: (block: string) => void;
+}) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
 
@@ -135,12 +144,23 @@ export default function ConversationRecorder({ supplierId }: { supplierId: strin
       showToast("Nothing to save yet.", "error");
       return;
     }
+    const stamp = new Date().toLocaleDateString();
+    const block = `${label} (${stamp}):\n${body}`;
+
+    // Form mode: hand it to the form's Notes field; it saves with the connection.
+    if (onAppend) {
+      onAppend(block);
+      reset();
+      showToast("Added to notes.", "success");
+      return;
+    }
+
+    // DB mode: append directly to the existing connection's notes.
+    if (!supplierId) return;
     setSaving(true);
     const supabase = createClient();
     const { data } = await supabase.from("suppliers").select("notes").eq("id", supplierId).single();
     const existing = data?.notes?.trim() ? data.notes.trim() + "\n\n" : "";
-    const stamp = new Date().toLocaleDateString();
-    const block = `${label} (${stamp}):\n${body}`;
     const { error } = await supabase
       .from("suppliers")
       .update({ notes: existing + block })
