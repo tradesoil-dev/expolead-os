@@ -7,5 +7,14 @@ const nextConfig = {
   // the wrong root, which breaks Tailwind's content detection and prints a
   // "multiple lockfiles" warning on every build.
   outputFileTracingRoot: path.join(__dirname),
+
+  // The connections feature used to live at /suppliers. Keep old bookmarks and
+  // links working with permanent (308) redirects to the new /connections path.
+  async redirects() {
+    return [
+      { source: "/suppliers", destination: "/connections", permanent: true },
+      { source: "/suppliers/:path*", destination: "/connections/:path*", permanent: true },
+    ];
+  },
 };
 module.exports = nextConfig;

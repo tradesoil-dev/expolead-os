@@ -76,7 +76,7 @@ export default async function SupplierProfile({
         subtitle={supplier.country ?? "—"}
         action={
           <div className="flex items-center gap-3">
-            <Link href="/suppliers" className="text-sm font-medium text-ink-500 hover:text-ink-900">
+            <Link href="/connections" className="text-sm font-medium text-ink-500 hover:text-ink-900">
               ← Back
             </Link>
             <DeleteConnectionButton supplierId={supplier.id} />
@@ -98,7 +98,7 @@ export default async function SupplierProfile({
               {priorMeets.map((p) => (
                 <li key={p.id}>
                   <Link
-                    href={`/suppliers/${p.id}`}
+                    href={`/connections/${p.id}`}
                     className="flex items-center justify-between gap-3 rounded-lg border border-emerald-100 bg-white px-3 py-2 text-sm transition-colors hover:bg-emerald-100/50"
                   >
                     <span className="truncate font-medium text-slate-800">{p.exhibition?.name ?? "No exhibition on record"}</span>
@@ -125,7 +125,7 @@ export default async function SupplierProfile({
                 <span className="rounded bg-ink-100 px-2 py-0.5 text-xs font-medium text-ink-500">Target</span>
               )}
             </div>
-            <EditButton href={`/suppliers/${supplier.id}/edit`} />
+            <EditButton href={`/connections/${supplier.id}/edit`} />
           </div>
 
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -173,7 +173,7 @@ export default async function SupplierProfile({
           <div className="flex items-center justify-between">
   <h2 className="text-sm font-semibold">Booth & Exhibition</h2>
 
-  <EditButton href={`/suppliers/${supplier.id}/booth/edit`} />
+  <EditButton href={`/connections/${supplier.id}/booth/edit`} />
 </div>
 
           {exhibiting ? (

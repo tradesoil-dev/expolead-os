@@ -73,7 +73,7 @@ export default function CompanyManager({ supplierId, initialData }: CompanyManag
       return;
     }
 
-    router.push(`/suppliers/${supplierId}`);
+    router.push(`/connections/${supplierId}`);
     router.refresh();
   }
 

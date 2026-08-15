@@ -146,7 +146,7 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
               {suppliers.map((supplier) => (
                 <Link
                   key={supplier.id}
-                  href={`/suppliers/${supplier.id}`}
+                  href={`/connections/${supplier.id}`}
                   className="flex items-center justify-between px-4 py-3 hover:bg-ink-50"
                 >
                   <div>

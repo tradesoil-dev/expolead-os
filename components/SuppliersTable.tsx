@@ -240,7 +240,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
               filtered.map((s) => (
                 <tr key={s.id} className="hover:bg-ink-50 transition-colors">
                   <td className="px-4 py-3">
-                    <Link href={`/suppliers/${s.id}`} className="font-medium text-ink-900 hover:text-brand-700">
+                    <Link href={`/connections/${s.id}`} className="font-medium text-ink-900 hover:text-brand-700">
                       {s.company_name}
                     </Link>
                     {s.is_target && (

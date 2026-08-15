@@ -7,7 +7,7 @@ import { getTrialStatus } from "@/lib/trial";
 export default async function NewSupplierPage() {
   const [exhibitions, trial] = await Promise.all([getExhibitions(), getTrialStatus()]);
 
-  if (trial.isExpired) redirect("/suppliers?locked=1");
+  if (trial.isExpired) redirect("/connections?locked=1");
 
   return (
     <>

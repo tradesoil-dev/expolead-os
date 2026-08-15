@@ -51,7 +51,7 @@ export default function NotificationsMenu({ daysLeft, isExpired }: Props) {
     ]);
     const fromConnections: NotItem[] = (sup.data ?? [])
       .filter((s) => s.follow_up_date)
-      .map((s) => ({ key: `s-${s.id}`, label: s.company_name, date: s.follow_up_date, href: `/suppliers/${s.id}` }));
+      .map((s) => ({ key: `s-${s.id}`, label: s.company_name, date: s.follow_up_date, href: `/connections/${s.id}` }));
     const fromOpportunities: NotItem[] = (opp.data ?? [])
       .filter((o) => o.next_follow_up_date && !o.next_follow_up_completed)
       .map((o) => ({ key: `o-${o.id}`, label: o.name, date: o.next_follow_up_date as string, href: `/opportunities/${o.id}` }));

@@ -9,7 +9,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/exhibitions", label: "Exhibitions" },
-  { href: "/suppliers", label: "Connections" },
+  { href: "/connections", label: "Connections" },
   { href: "/opportunities", label: "Opportunities" },
   { href: "/follow-ups", label: "Follow-ups" },
   { href: "/reports", label: "Reports" },

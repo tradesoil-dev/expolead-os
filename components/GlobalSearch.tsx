@@ -45,7 +45,7 @@ export default function GlobalSearch({ className = "" }: { className?: string })
         supabase.from("exhibitions").select("id, name, location").ilike("name", like).limit(5),
       ]);
       const out: Result[] = [];
-      (sup.data ?? []).forEach((s) => out.push({ key: `s-${s.id}`, label: s.company_name, sub: s.country ?? "Connection", href: `/suppliers/${s.id}`, group: "Connections" }));
+      (sup.data ?? []).forEach((s) => out.push({ key: `s-${s.id}`, label: s.company_name, sub: s.country ?? "Connection", href: `/connections/${s.id}`, group: "Connections" }));
       (opp.data ?? []).forEach((o) => out.push({ key: `o-${o.id}`, label: o.name, sub: o.product || "Opportunity", href: `/opportunities/${o.id}`, group: "Opportunities" }));
       (exh.data ?? []).forEach((e) => out.push({ key: `e-${e.id}`, label: e.name, sub: e.location ?? "Exhibition", href: `/exhibitions/${e.id}`, group: "Exhibitions" }));
       setResults(out);

@@ -36,7 +36,7 @@ export default async function FollowUpsPage() {
       label: s.company_name,
       note: s.country ?? "Connection follow-up",
       date: s.follow_up_date,
-      href: `/suppliers/${s.id}`,
+      href: `/connections/${s.id}`,
       kind: "Connection",
     });
   }

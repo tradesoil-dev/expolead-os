@@ -244,7 +244,7 @@ export default async function DashboardPage() {
               <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600"><Users size={16} strokeWidth={2} /></span>
               <h2 className="text-[15px] font-semibold text-ink-900">Newest connections</h2>
             </div>
-            <Link href="/suppliers" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">View all →</Link>
+            <Link href="/connections" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">View all →</Link>
           </div>
           {suppliers.length === 0 ? (
             <EmptyRow text="No connections yet, add your first one." />
@@ -266,7 +266,7 @@ export default async function DashboardPage() {
                     return (
                       <tr key={s.id} className="border-b border-ink-50 last:border-0 hover:bg-ink-50">
                         <td className="px-5 py-3">
-                          <Link href={`/suppliers/${s.id}`} className="font-medium text-ink-900 hover:text-emerald-700">{s.company_name}</Link>
+                          <Link href={`/connections/${s.id}`} className="font-medium text-ink-900 hover:text-emerald-700">{s.company_name}</Link>
                           {primary?.full_name && <p className="text-xs text-ink-400">{primary.full_name}</p>}
                         </td>
                         <td className="px-3 py-3 text-ink-500">{s.country ?? "—"}</td>

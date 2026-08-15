@@ -13,7 +13,7 @@ export default function DeleteConnectionButton({ supplierId }: { supplierId: str
     setDeleting(true);
     const supabase = createClient();
     await supabase.from("suppliers").delete().eq("id", supplierId);
-    router.push("/suppliers");
+    router.push("/connections");
     router.refresh();
   }
 

@@ -14,7 +14,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/dashboard",
-        "/suppliers",
+        "/connections",
         "/opportunities",
         "/follow-ups",
         "/reports",

@@ -85,7 +85,7 @@ export default function BoothManager({
       return;
     }
 
-    router.push(`/suppliers/${supplierId}`);
+    router.push(`/connections/${supplierId}`);
     router.refresh();
   }
 

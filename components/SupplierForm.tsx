@@ -145,7 +145,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         );
       }
 
-      router.push(`/suppliers/${supplierId}`);
+      router.push(`/connections/${supplierId}`);
       router.refresh();
     } catch (err) {
       setError(saveErrorMessage(err, "connection", "Could not save supplier."));
@@ -155,7 +155,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 
   return (
     <div className="space-y-3">
-      <Link href="/suppliers" className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+      <Link href="/connections" className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
         ← Back to connections
       </Link>
       <div className="flex flex-col lg:flex-row gap-4 items-start">
