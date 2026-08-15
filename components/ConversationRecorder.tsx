@@ -6,22 +6,20 @@ import { Mic, Square, Sparkles, Loader2, Info } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/useToast";
 
-// Records a booth conversation, transcribes it on-device via the browser
-// speech engine (no audio ever reaches our servers), summarises the transcript
-// text through /api/summarize, and appends the summary to the connection's
-// Notes. Transcription is deliberately the only browser-specific piece; the
-// summarise step is a shared API the mobile app will reuse.
+// Records a booth conversation and transcribes it with speaker labels via
+// Deepgram (/api/transcribe), then either saves the transcript to Notes or
+// turns it into an AI summary (/api/summarize). Audio is sent for
+// transcription and never stored. The audio-capture piece is deliberately the
+// only browser-specific part; the transcribe + summarise steps are shared APIs
+// the mobile app will reuse.
 
-type Phase = "idle" | "consent" | "recording" | "review" | "summarizing" | "summary";
+type Phase = "idle" | "consent" | "recording" | "transcribing" | "review" | "summarizing" | "summary";
 
 export default function ConversationRecorder({
   supplierId,
   onAppend,
 }: {
-  // DB mode: append straight to this connection's notes.
   supplierId?: string;
-  // Form mode (new-connection page): hand the captured block back to the form
-  // so it saves with the connection. No connection exists yet.
   onAppend?: (block: string) => void;
 }) {
   const router = useRouter();
@@ -31,105 +29,106 @@ export default function ConversationRecorder({
   const [consented, setConsented] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [transcript, setTranscript] = useState("");
-  const [interim, setInterim] = useState("");
   const [summary, setSummary] = useState("");
+  const [elapsed, setElapsed] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  const recognitionRef = useRef<any>(null);
-  const finalRef = useRef("");
-  // True while the user intends to keep recording. The browser engine ends a
-  // session on its own after a pause or ~60s; we use this to auto-restart it
-  // so recording runs seamlessly until the user presses Stop.
-  const activeRef = useRef(false);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    const SR =
+    const ok =
       typeof window !== "undefined" &&
-      ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
-    if (!SR) setSupported(false);
+      typeof MediaRecorder !== "undefined" &&
+      !!navigator.mediaDevices?.getUserMedia;
+    if (!ok) setSupported(false);
     return () => {
-      activeRef.current = false;
-      try {
-        recognitionRef.current?.stop();
-      } catch {
-        /* noop */
-      }
+      if (timerRef.current) clearInterval(timerRef.current);
+      streamRef.current?.getTracks().forEach((t) => t.stop());
     };
   }, []);
 
-  function startRecording() {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      setSupported(false);
+  async function startRecording() {
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      showToast("Microphone access was blocked.", "error");
+      setPhase("idle");
       return;
     }
-    const rec = new SR();
-    rec.continuous = true;
-    rec.interimResults = true;
-    rec.lang = "en-US";
-    finalRef.current = transcript ? transcript + " " : "";
+    streamRef.current = stream;
+    chunksRef.current = [];
 
-    rec.onresult = (e: any) => {
-      let interimText = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const res = e.results[i];
-        if (res.isFinal) finalRef.current += res[0].transcript + " ";
-        else interimText += res[0].transcript;
-      }
-      setTranscript(finalRef.current.trim());
-      setInterim(interimText);
-    };
-    rec.onerror = (e: any) => {
-      // no-speech / aborted are expected during pauses; onend will restart.
-      if (e.error === "no-speech" || e.error === "aborted") return;
-      if (e.error === "not-allowed" || e.error === "service-not-allowed") {
-        activeRef.current = false;
-        showToast("Microphone access was blocked.", "error");
-      } else {
-        showToast("Recording error: " + e.error, "error");
-      }
-    };
-    // The engine ends the session on its own (silence, ~60s cap). While the
-    // user still wants to record, start a fresh session so it feels continuous.
-    rec.onend = () => {
-      if (!activeRef.current) return;
-      try {
-        rec.start();
-      } catch {
-        // Occasionally start() throws if called too soon; retry shortly.
-        setTimeout(() => {
-          if (activeRef.current) {
-            try {
-              rec.start();
-            } catch {
-              /* give up quietly; user can press Resume */
-            }
-          }
-        }, 300);
-      }
-    };
-    recognitionRef.current = rec;
-    activeRef.current = true;
+    let mr: MediaRecorder;
     try {
-      rec.start();
-      setPhase("recording");
+      mr = new MediaRecorder(stream);
     } catch {
-      activeRef.current = false;
-      showToast("Could not start recording.", "error");
+      showToast("Could not start recording on this device.", "error");
+      stream.getTracks().forEach((t) => t.stop());
+      setPhase("idle");
+      return;
     }
+    recorderRef.current = mr;
+    mr.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
+    };
+    mr.onstop = () => {
+      void handleStopped(mr.mimeType);
+    };
+    mr.start();
+
+    setElapsed(0);
+    timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    setPhase("recording");
   }
 
   function stopRecording() {
-    activeRef.current = false;
-    try {
-      recognitionRef.current?.stop();
-    } catch {
-      /* noop */
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
-    recognitionRef.current = null;
-    setInterim("");
-    setTranscript(finalRef.current.trim());
-    setPhase("review");
+    setPhase("transcribing");
+    try {
+      recorderRef.current?.stop();
+    } catch {
+      /* onstop handles the rest */
+    }
+  }
+
+  async function handleStopped(mimeType: string) {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    const type = mimeType || "audio/webm";
+    const blob = new Blob(chunksRef.current, { type });
+    chunksRef.current = [];
+
+    if (!blob.size) {
+      showToast("No audio was captured.", "error");
+      setPhase("review");
+      return;
+    }
+    try {
+      const res = await fetch("/api/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": type },
+        body: blob,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(data?.error ?? "Transcription failed.", "error");
+        setTranscript("");
+        setPhase("review");
+        return;
+      }
+      setTranscript(data.transcript ?? "");
+      setPhase("review");
+    } catch {
+      showToast("Transcription failed. Please try again.", "error");
+      setPhase("review");
+    }
   }
 
   function onRecordClick() {
@@ -168,13 +167,13 @@ export default function ConversationRecorder({
   }
 
   async function appendToNotes(text: string, label: string) {
-    const body = text.trim();
-    if (!body) {
+    const value = text.trim();
+    if (!value) {
       showToast("Nothing to save yet.", "error");
       return;
     }
     const stamp = new Date().toLocaleDateString();
-    const block = `${label} (${stamp}):\n${body}`;
+    const block = `${label} (${stamp}):\n${value}`;
 
     // Form mode: hand it to the form's Notes field; it saves with the connection.
     if (onAppend) {
@@ -209,12 +208,12 @@ export default function ConversationRecorder({
 
   function reset() {
     setTranscript("");
-    setInterim("");
     setSummary("");
-    finalRef.current = "";
+    setElapsed(0);
     setPhase("idle");
   }
 
+  const mmss = `${String(Math.floor(elapsed / 60)).padStart(2, "0")}:${String(elapsed % 60).padStart(2, "0")}`;
   const btn =
     "inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60";
 
@@ -228,35 +227,19 @@ export default function ConversationRecorder({
         <h2 className="text-sm font-semibold">Capture conversation</h2>
       </div>
       <p className="mb-4 text-xs text-ink-400">
-        Records and transcribes here. Save the transcript straight to Notes, or turn it into an AI summary. Only the text is kept, no audio is stored.
+        Records the conversation and transcribes it with speaker labels. Save the transcript to Notes, or turn it into an AI summary. Only the text is kept, no audio is stored.
       </p>
 
-      {/* Fallback: browser has no speech recognition (e.g. iPhone Safari) */}
+      {/* Fallback: device can't record audio */}
       {!supported ? (
         <div className="space-y-3">
           <div className="flex gap-2 rounded-lg border border-amber-100 bg-amber-50 px-3.5 py-2.5">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
             <p className="text-xs leading-relaxed text-amber-800">
-              Live recording isn&rsquo;t supported in this browser. Type or dictate the conversation below (use your keyboard&rsquo;s mic), then summarise it into Notes.
+              Recording isn&rsquo;t supported in this browser. Type or dictate the conversation below (use your keyboard&rsquo;s mic), then save it to Notes.
             </p>
           </div>
-          <textarea
-            value={transcript}
-            onChange={(e) => setTranscript(e.target.value)}
-            rows={4}
-            placeholder="What did you discuss? Products, quantities, samples, pricing, next steps…"
-            className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
-          />
-          <div className="flex flex-wrap gap-2">
-            <button onClick={saveTranscript} disabled={saving || phase === "summarizing"} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Save to notes
-            </button>
-            <button onClick={summarise} disabled={saving || phase === "summarizing"} className={`${btn} border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}>
-              {phase === "summarizing" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-              {phase === "summarizing" ? "Summarising…" : "AI summary"}
-            </button>
-          </div>
+          <ManualBox transcript={transcript} setTranscript={setTranscript} onSave={saveTranscript} onSummarise={summarise} phase={phase} saving={saving} btn={btn} />
           {phase === "summary" && (
             <SummaryBlock summary={summary} saving={saving} onAdd={addToNotes} onRedo={summarise} onCancel={reset} btn={btn} />
           )}
@@ -270,7 +253,7 @@ export default function ConversationRecorder({
         <div className="space-y-3 rounded-lg border border-emerald-100 bg-emerald-50 p-4">
           <p className="text-sm font-semibold text-emerald-900">Before you record</p>
           <p className="text-xs leading-relaxed text-emerald-800">
-            Make sure the person you&rsquo;re speaking with has agreed to be recorded. Only the text summary is kept, no audio is stored.
+            Make sure everyone in the conversation has agreed to be recorded. Only the text is kept, no audio is stored.
           </p>
           <div className="flex gap-2">
             <button
@@ -289,31 +272,30 @@ export default function ConversationRecorder({
           </div>
         </div>
       ) : phase === "recording" ? (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600">
-              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-rose-500" />
-              Recording…
-            </span>
-            <button onClick={stopRecording} className={`${btn} bg-slate-900 text-white hover:bg-slate-700`}>
-              <Square className="h-3.5 w-3.5" />
-              Stop
-            </button>
-          </div>
-          <div className="min-h-[80px] rounded-xl border border-ink-200 bg-slate-50 p-3 text-sm leading-relaxed text-ink-800">
-            {transcript}{" "}
-            <span className="text-ink-400">{interim}</span>
-            {!transcript && !interim && <span className="text-ink-400">Listening… start talking.</span>}
-          </div>
+        <div className="flex items-center justify-between rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600">
+            <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-rose-500" />
+            Recording… <span className="tabular-nums font-normal text-rose-500">{mmss}</span>
+          </span>
+          <button onClick={stopRecording} className={`${btn} bg-slate-900 text-white hover:bg-slate-700`}>
+            <Square className="h-3.5 w-3.5" />
+            Stop
+          </button>
+        </div>
+      ) : phase === "transcribing" ? (
+        <div className="flex items-center gap-2 text-sm text-ink-500">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Transcribing… this takes a few seconds.
         </div>
       ) : phase === "review" ? (
         <div className="space-y-3">
-          <p className="text-xs text-ink-400">Check the transcript, fix anything, then summarise it into Notes.</p>
+          <p className="text-xs text-ink-400">Check the transcript, fix anything, then save it to Notes or summarise it.</p>
           <textarea
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
-            rows={5}
-            className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+            rows={6}
+            placeholder="Transcript will appear here. You can also type or dictate."
+            className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm leading-relaxed outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
           />
           <div className="flex flex-wrap gap-2">
             <button onClick={saveTranscript} disabled={saving} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
@@ -326,7 +308,7 @@ export default function ConversationRecorder({
             </button>
             <button onClick={() => startRecording()} disabled={saving} className={`${btn} border border-ink-200 text-ink-600 hover:bg-ink-50`}>
               <Mic className="h-4 w-4" />
-              Resume
+              Re-record
             </button>
             <button onClick={reset} disabled={saving} className={`${btn} text-ink-500 hover:text-ink-900`}>
               Discard
@@ -342,6 +324,46 @@ export default function ConversationRecorder({
         <SummaryBlock summary={summary} saving={saving} onAdd={addToNotes} onRedo={summarise} onCancel={reset} btn={btn} />
       )}
     </div>
+  );
+}
+
+function ManualBox({
+  transcript,
+  setTranscript,
+  onSave,
+  onSummarise,
+  phase,
+  saving,
+  btn,
+}: {
+  transcript: string;
+  setTranscript: (v: string) => void;
+  onSave: () => void;
+  onSummarise: () => void;
+  phase: Phase;
+  saving: boolean;
+  btn: string;
+}) {
+  return (
+    <>
+      <textarea
+        value={transcript}
+        onChange={(e) => setTranscript(e.target.value)}
+        rows={5}
+        placeholder="What did you discuss? Products, quantities, samples, pricing, next steps…"
+        className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+      />
+      <div className="flex flex-wrap gap-2">
+        <button onClick={onSave} disabled={saving || phase === "summarizing"} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+          Save to notes
+        </button>
+        <button onClick={onSummarise} disabled={saving || phase === "summarizing"} className={`${btn} border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}>
+          {phase === "summarizing" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {phase === "summarizing" ? "Summarising…" : "AI summary"}
+        </button>
+      </div>
+    </>
   );
 }
 
