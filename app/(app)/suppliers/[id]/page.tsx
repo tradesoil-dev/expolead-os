@@ -11,6 +11,7 @@ import AddMeetingForm from "@/components/AddMeetingForm";
 import MeetingManager from "@/components/MeetingManager";
 import AddProductForm from "@/components/AddProductForm";
 import SupplierNotesEditor from "@/components/SupplierNotesEditor";
+import ConversationRecorder from "@/components/ConversationRecorder";
 import EditButton from "@/components/EditButton";
 import { getSupplier, getExhibitions } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -306,6 +307,8 @@ export default async function SupplierProfile({
             </ul>
           )}
         </div>
+
+        <ConversationRecorder supplierId={supplier.id} />
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
           <SupplierNotesEditor supplierId={supplier.id} initialNotes={supplier.notes} />

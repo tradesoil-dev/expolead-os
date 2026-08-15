@@ -1,0 +1,316 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Mic, Square, Sparkles, Loader2, Info } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/components/useToast";
+
+// Records a booth conversation, transcribes it on-device via the browser
+// speech engine (no audio ever reaches our servers), summarises the transcript
+// text through /api/summarize, and appends the summary to the connection's
+// Notes. Transcription is deliberately the only browser-specific piece; the
+// summarise step is a shared API the mobile app will reuse.
+
+type Phase = "idle" | "consent" | "recording" | "review" | "summarizing" | "summary";
+
+export default function ConversationRecorder({ supplierId }: { supplierId: string }) {
+  const router = useRouter();
+  const { showToast, ToastUI } = useToast();
+
+  const [supported, setSupported] = useState(true);
+  const [consented, setConsented] = useState(false);
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [transcript, setTranscript] = useState("");
+  const [interim, setInterim] = useState("");
+  const [summary, setSummary] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const recognitionRef = useRef<any>(null);
+  const finalRef = useRef("");
+
+  useEffect(() => {
+    const SR =
+      typeof window !== "undefined" &&
+      ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
+    if (!SR) setSupported(false);
+    return () => {
+      try {
+        recognitionRef.current?.stop();
+      } catch {
+        /* noop */
+      }
+    };
+  }, []);
+
+  function startRecording() {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      setSupported(false);
+      return;
+    }
+    const rec = new SR();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = "en-US";
+    finalRef.current = transcript ? transcript + " " : "";
+
+    rec.onresult = (e: any) => {
+      let interimText = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const res = e.results[i];
+        if (res.isFinal) finalRef.current += res[0].transcript + " ";
+        else interimText += res[0].transcript;
+      }
+      setTranscript(finalRef.current.trim());
+      setInterim(interimText);
+    };
+    rec.onerror = (e: any) => {
+      if (e.error === "no-speech" || e.error === "aborted") return;
+      if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+        showToast("Microphone access was blocked.", "error");
+      } else {
+        showToast("Recording error: " + e.error, "error");
+      }
+    };
+    recognitionRef.current = rec;
+    try {
+      rec.start();
+      setPhase("recording");
+    } catch {
+      showToast("Could not start recording.", "error");
+    }
+  }
+
+  function stopRecording() {
+    try {
+      recognitionRef.current?.stop();
+    } catch {
+      /* noop */
+    }
+    recognitionRef.current = null;
+    setInterim("");
+    setTranscript(finalRef.current.trim());
+    setPhase("review");
+  }
+
+  function onRecordClick() {
+    if (!consented) {
+      setPhase("consent");
+      return;
+    }
+    startRecording();
+  }
+
+  async function summarise() {
+    const text = transcript.trim();
+    if (!text) {
+      showToast("Nothing to summarise yet.", "error");
+      return;
+    }
+    setPhase("summarizing");
+    try {
+      const res = await fetch("/api/summarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: text }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(data?.error ?? "Summary failed.", "error");
+        setPhase("review");
+        return;
+      }
+      setSummary(data.summary);
+      setPhase("summary");
+    } catch {
+      showToast("Summary failed. Please try again.", "error");
+      setPhase("review");
+    }
+  }
+
+  async function addToNotes() {
+    setSaving(true);
+    const supabase = createClient();
+    const { data } = await supabase.from("suppliers").select("notes").eq("id", supplierId).single();
+    const existing = data?.notes?.trim() ? data.notes.trim() + "\n\n" : "";
+    const stamp = new Date().toLocaleDateString();
+    const block = `Conversation summary (${stamp}):\n${summary.trim()}`;
+    const { error } = await supabase
+      .from("suppliers")
+      .update({ notes: existing + block })
+      .eq("id", supplierId);
+    setSaving(false);
+    if (error) {
+      showToast(error.message, "error");
+      return;
+    }
+    reset();
+    showToast("Summary added to notes.", "success");
+    router.refresh();
+  }
+
+  function reset() {
+    setTranscript("");
+    setInterim("");
+    setSummary("");
+    finalRef.current = "";
+    setPhase("idle");
+  }
+
+  const btn =
+    "inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60";
+
+  return (
+    <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
+      {ToastUI}
+      <div className="mb-1 flex items-center gap-2">
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+          <Mic className="h-3.5 w-3.5" />
+        </span>
+        <h2 className="text-sm font-semibold">Capture conversation</h2>
+      </div>
+      <p className="mb-4 text-xs text-ink-400">
+        Records and transcribes here, then writes an AI summary into Notes. Only the text is kept, no audio is stored.
+      </p>
+
+      {/* Fallback: browser has no speech recognition (e.g. iPhone Safari) */}
+      {!supported ? (
+        <div className="space-y-3">
+          <div className="flex gap-2 rounded-lg border border-amber-100 bg-amber-50 px-3.5 py-2.5">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+            <p className="text-xs leading-relaxed text-amber-800">
+              Live recording isn&rsquo;t supported in this browser. Type or dictate the conversation below (use your keyboard&rsquo;s mic), then summarise it into Notes.
+            </p>
+          </div>
+          <textarea
+            value={transcript}
+            onChange={(e) => setTranscript(e.target.value)}
+            rows={4}
+            placeholder="What did you discuss? Products, quantities, samples, pricing, next steps…"
+            className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+          />
+          <button onClick={summarise} disabled={phase === "summarizing"} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+            {phase === "summarizing" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+            {phase === "summarizing" ? "Summarising…" : "Summarise into notes"}
+          </button>
+          {phase === "summary" && (
+            <SummaryBlock summary={summary} saving={saving} onAdd={addToNotes} onRedo={summarise} onCancel={reset} btn={btn} />
+          )}
+        </div>
+      ) : phase === "idle" ? (
+        <button onClick={onRecordClick} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+          <Mic className="h-4 w-4" />
+          Record conversation
+        </button>
+      ) : phase === "consent" ? (
+        <div className="space-y-3 rounded-lg border border-emerald-100 bg-emerald-50 p-4">
+          <p className="text-sm font-semibold text-emerald-900">Before you record</p>
+          <p className="text-xs leading-relaxed text-emerald-800">
+            Make sure the person you&rsquo;re speaking with has agreed to be recorded. Only the text summary is kept, no audio is stored.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setConsented(true);
+                startRecording();
+              }}
+              className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}
+            >
+              <Mic className="h-4 w-4" />
+              They&rsquo;ve agreed, start
+            </button>
+            <button onClick={() => setPhase("idle")} className={`${btn} border border-ink-200 text-ink-600 hover:bg-ink-50`}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : phase === "recording" ? (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600">
+              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-rose-500" />
+              Recording…
+            </span>
+            <button onClick={stopRecording} className={`${btn} bg-slate-900 text-white hover:bg-slate-700`}>
+              <Square className="h-3.5 w-3.5" />
+              Stop
+            </button>
+          </div>
+          <div className="min-h-[80px] rounded-xl border border-ink-200 bg-slate-50 p-3 text-sm leading-relaxed text-ink-800">
+            {transcript}{" "}
+            <span className="text-ink-400">{interim}</span>
+            {!transcript && !interim && <span className="text-ink-400">Listening… start talking.</span>}
+          </div>
+        </div>
+      ) : phase === "review" ? (
+        <div className="space-y-3">
+          <p className="text-xs text-ink-400">Check the transcript, fix anything, then summarise it into Notes.</p>
+          <textarea
+            value={transcript}
+            onChange={(e) => setTranscript(e.target.value)}
+            rows={5}
+            className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+          />
+          <div className="flex flex-wrap gap-2">
+            <button onClick={summarise} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+              <Sparkles className="h-4 w-4" />
+              Summarise into notes
+            </button>
+            <button onClick={() => startRecording()} className={`${btn} border border-ink-200 text-ink-600 hover:bg-ink-50`}>
+              <Mic className="h-4 w-4" />
+              Resume
+            </button>
+            <button onClick={reset} className={`${btn} text-ink-500 hover:text-ink-900`}>
+              Discard
+            </button>
+          </div>
+        </div>
+      ) : phase === "summarizing" ? (
+        <div className="flex items-center gap-2 text-sm text-ink-500">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Summarising…
+        </div>
+      ) : (
+        <SummaryBlock summary={summary} saving={saving} onAdd={addToNotes} onRedo={summarise} onCancel={reset} btn={btn} />
+      )}
+    </div>
+  );
+}
+
+function SummaryBlock({
+  summary,
+  saving,
+  onAdd,
+  onRedo,
+  onCancel,
+  btn,
+}: {
+  summary: string;
+  saving: boolean;
+  onAdd: () => void;
+  onRedo: () => void;
+  onCancel: () => void;
+  btn: string;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">Summary</p>
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-emerald-900">{summary}</p>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <button onClick={onAdd} disabled={saving} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {saving ? "Adding…" : "Add to notes"}
+        </button>
+        <button onClick={onRedo} disabled={saving} className={`${btn} border border-ink-200 text-ink-600 hover:bg-ink-50`}>
+          Redo
+        </button>
+        <button onClick={onCancel} disabled={saving} className={`${btn} text-ink-500 hover:text-ink-900`}>
+          Discard
+        </button>
+      </div>
+    </div>
+  );
+}
