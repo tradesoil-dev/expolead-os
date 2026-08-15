@@ -37,6 +37,10 @@ export default function ConversationRecorder({
 
   const recognitionRef = useRef<any>(null);
   const finalRef = useRef("");
+  // True while the user intends to keep recording. The browser engine ends a
+  // session on its own after a pause or ~60s; we use this to auto-restart it
+  // so recording runs seamlessly until the user presses Stop.
+  const activeRef = useRef(false);
 
   useEffect(() => {
     const SR =
@@ -44,6 +48,7 @@ export default function ConversationRecorder({
       ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
     if (!SR) setSupported(false);
     return () => {
+      activeRef.current = false;
       try {
         recognitionRef.current?.stop();
       } catch {
@@ -75,23 +80,47 @@ export default function ConversationRecorder({
       setInterim(interimText);
     };
     rec.onerror = (e: any) => {
+      // no-speech / aborted are expected during pauses; onend will restart.
       if (e.error === "no-speech" || e.error === "aborted") return;
       if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+        activeRef.current = false;
         showToast("Microphone access was blocked.", "error");
       } else {
         showToast("Recording error: " + e.error, "error");
       }
     };
+    // The engine ends the session on its own (silence, ~60s cap). While the
+    // user still wants to record, start a fresh session so it feels continuous.
+    rec.onend = () => {
+      if (!activeRef.current) return;
+      try {
+        rec.start();
+      } catch {
+        // Occasionally start() throws if called too soon; retry shortly.
+        setTimeout(() => {
+          if (activeRef.current) {
+            try {
+              rec.start();
+            } catch {
+              /* give up quietly; user can press Resume */
+            }
+          }
+        }, 300);
+      }
+    };
     recognitionRef.current = rec;
+    activeRef.current = true;
     try {
       rec.start();
       setPhase("recording");
     } catch {
+      activeRef.current = false;
       showToast("Could not start recording.", "error");
     }
   }
 
   function stopRecording() {
+    activeRef.current = false;
     try {
       recognitionRef.current?.stop();
     } catch {
