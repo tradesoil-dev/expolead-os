@@ -47,6 +47,7 @@ export default async function EditBoothPage({
             stand_location: supplier.stand_location,
             visited: supplier.visited,
             visit_date: supplier.visit_date,
+            met_at: supplier.met_at,
           }}
         />
       </main>

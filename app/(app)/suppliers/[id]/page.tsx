@@ -44,8 +44,12 @@ export default async function SupplierProfile({
   // Posture drives how Booth & Exhibition reads. "exhibiting" means this
   // connection is a buyer who came to the user's own stand, so we show the
   // user's stand (set once on the exhibition) instead of asking for a booth
-  // the buyer does not have.
-  const exhibiting = supplier.exhibition?.attending_as === "exhibiting";
+  // the buyer does not have. A per-connection met_at override wins over the
+  // show's posture for the mixed case (exhibiting show, but this one was met
+  // at their booth, or vice versa); null met_at inherits the show.
+  const exhibiting = supplier.met_at
+    ? supplier.met_at === "my_stand"
+    : supplier.exhibition?.attending_as === "exhibiting";
   const ownStand = [supplier.exhibition?.own_hall, supplier.exhibition?.own_booth_number, supplier.exhibition?.own_stand_location]
     .filter(Boolean)
     .join(" · ");

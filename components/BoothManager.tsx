@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import Select from "@/components/Select";
 import DatePicker from "@/components/DatePicker";
-import type { Exhibition } from "@/lib/types";
+import type { Exhibition, MetAt } from "@/lib/types";
 
 type BoothManagerProps = {
   supplierId: string;
@@ -18,6 +18,7 @@ type BoothManagerProps = {
     stand_location: string | null;
     visited: boolean | null;
     visit_date: string | null;
+    met_at: MetAt | null;
   };
 };
 
@@ -37,6 +38,7 @@ export default function BoothManager({
     stand_location: initialData.stand_location ?? "",
     visited: initialData.visited ?? false,
     visit_date: initialData.visit_date ?? "",
+    met_at: (initialData.met_at ?? "") as MetAt | "",
   });
 
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
@@ -44,7 +46,9 @@ export default function BoothManager({
   }
 
   const selectedEx = exhibitions.find((e) => e.id === form.exhibition_id);
-  const exhibiting = selectedEx?.attending_as === "exhibiting";
+  const showExhibiting = selectedEx?.attending_as === "exhibiting";
+  // Effective posture: the per-connection override wins; empty inherits the show.
+  const exhibiting = form.met_at ? form.met_at === "my_stand" : showExhibiting;
   const ownStand = [selectedEx?.own_hall, selectedEx?.own_booth_number, selectedEx?.own_stand_location]
     .filter(Boolean)
     .join(" · ");
@@ -71,6 +75,7 @@ export default function BoothManager({
         stand_location: form.stand_location || null,
         visited: form.visited,
         visit_date: form.visit_date || null,
+        met_at: form.met_at || null,
       })
       .eq("id", supplierId);
 
@@ -105,6 +110,35 @@ export default function BoothManager({
               onChange={(v) => set("exhibition_id", v)}
               options={[{ value: "", label: "— None —" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
             />
+          </div>
+
+          {/* Where met — overrides the show's posture for this one connection */}
+          <div className="block sm:col-span-2">
+            <span className="block text-sm font-medium text-ink-700 mb-1.5">Where did you meet them?</span>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { value: "their_booth", label: "At their booth", hint: "You visited their stand" },
+                { value: "my_stand", label: "At my stand", hint: "They came to you" },
+              ] as const).map((o) => {
+                const active = exhibiting ? o.value === "my_stand" : o.value === "their_booth";
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    onClick={() => set("met_at", o.value)}
+                    className={`rounded-lg border px-3 py-2.5 text-left transition-colors ${active ? "border-emerald-500 bg-emerald-50 ring-1 ring-emerald-200" : "border-ink-200 bg-white hover:border-ink-300"}`}
+                  >
+                    <span className={`block text-sm font-semibold ${active ? "text-emerald-800" : "text-ink-800"}`}>{o.label}</span>
+                    <span className="mt-0.5 block text-[11px] leading-snug text-ink-500">{o.hint}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-1.5 text-xs text-ink-400">
+              {form.met_at
+                ? "Set for this connection only."
+                : `Following this show’s setting (${showExhibiting ? "Exhibiting" : "Visiting"}). Change it only if this one is different.`}
+            </p>
           </div>
 
           {exhibiting ? (

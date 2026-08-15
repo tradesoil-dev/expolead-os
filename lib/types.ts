@@ -20,6 +20,10 @@ export type FollowUpStatus =
 
 export type AttendingAs = "visiting" | "exhibiting";
 
+// Per-connection override for where a connection was met. null = inherit the
+// linked exhibition's attending_as posture.
+export type MetAt = "my_stand" | "their_booth";
+
 export interface Exhibition {
   id: string;
   user_id: string;
@@ -89,6 +93,7 @@ export interface Supplier {
   stand_location: string | null;
   visited: boolean;
   visit_date: string | null;
+  met_at: MetAt | null;
 
   company_name: string;
   country: string | null;
