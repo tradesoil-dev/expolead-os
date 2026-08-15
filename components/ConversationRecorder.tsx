@@ -129,13 +129,18 @@ export default function ConversationRecorder({ supplierId }: { supplierId: strin
     }
   }
 
-  async function addToNotes() {
+  async function appendToNotes(text: string, label: string) {
+    const body = text.trim();
+    if (!body) {
+      showToast("Nothing to save yet.", "error");
+      return;
+    }
     setSaving(true);
     const supabase = createClient();
     const { data } = await supabase.from("suppliers").select("notes").eq("id", supplierId).single();
     const existing = data?.notes?.trim() ? data.notes.trim() + "\n\n" : "";
     const stamp = new Date().toLocaleDateString();
-    const block = `Conversation summary (${stamp}):\n${summary.trim()}`;
+    const block = `${label} (${stamp}):\n${body}`;
     const { error } = await supabase
       .from("suppliers")
       .update({ notes: existing + block })
@@ -146,9 +151,12 @@ export default function ConversationRecorder({ supplierId }: { supplierId: strin
       return;
     }
     reset();
-    showToast("Summary added to notes.", "success");
+    showToast("Saved to notes.", "success");
     router.refresh();
   }
+
+  const addToNotes = () => appendToNotes(summary, "Conversation summary");
+  const saveTranscript = () => appendToNotes(transcript, "Conversation notes");
 
   function reset() {
     setTranscript("");
@@ -171,7 +179,7 @@ export default function ConversationRecorder({ supplierId }: { supplierId: strin
         <h2 className="text-sm font-semibold">Capture conversation</h2>
       </div>
       <p className="mb-4 text-xs text-ink-400">
-        Records and transcribes here, then writes an AI summary into Notes. Only the text is kept, no audio is stored.
+        Records and transcribes here. Save the transcript straight to Notes, or turn it into an AI summary. Only the text is kept, no audio is stored.
       </p>
 
       {/* Fallback: browser has no speech recognition (e.g. iPhone Safari) */}
@@ -190,10 +198,16 @@ export default function ConversationRecorder({ supplierId }: { supplierId: strin
             placeholder="What did you discuss? Products, quantities, samples, pricing, next steps…"
             className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
           />
-          <button onClick={summarise} disabled={phase === "summarizing"} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
-            {phase === "summarizing" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-            {phase === "summarizing" ? "Summarising…" : "Summarise into notes"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={saveTranscript} disabled={saving || phase === "summarizing"} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Save to notes
+            </button>
+            <button onClick={summarise} disabled={saving || phase === "summarizing"} className={`${btn} border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}>
+              {phase === "summarizing" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              {phase === "summarizing" ? "Summarising…" : "AI summary"}
+            </button>
+          </div>
           {phase === "summary" && (
             <SummaryBlock summary={summary} saving={saving} onAdd={addToNotes} onRedo={summarise} onCancel={reset} btn={btn} />
           )}
@@ -253,15 +267,19 @@ export default function ConversationRecorder({ supplierId }: { supplierId: strin
             className="w-full resize-y rounded-xl border border-ink-200 p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
           />
           <div className="flex flex-wrap gap-2">
-            <button onClick={summarise} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
-              <Sparkles className="h-4 w-4" />
-              Summarise into notes
+            <button onClick={saveTranscript} disabled={saving} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Save transcript to notes
             </button>
-            <button onClick={() => startRecording()} className={`${btn} border border-ink-200 text-ink-600 hover:bg-ink-50`}>
+            <button onClick={summarise} disabled={saving} className={`${btn} border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}>
+              <Sparkles className="h-4 w-4" />
+              AI summary
+            </button>
+            <button onClick={() => startRecording()} disabled={saving} className={`${btn} border border-ink-200 text-ink-600 hover:bg-ink-50`}>
               <Mic className="h-4 w-4" />
               Resume
             </button>
-            <button onClick={reset} className={`${btn} text-ink-500 hover:text-ink-900`}>
+            <button onClick={reset} disabled={saving} className={`${btn} text-ink-500 hover:text-ink-900`}>
               Discard
             </button>
           </div>
