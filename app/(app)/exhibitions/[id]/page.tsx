@@ -5,6 +5,7 @@ import { getExhibitions, getSuppliers, getMeetingsForExhibition } from "@/lib/da
 import { getCurrency } from "@/lib/currency";
 import ExhibitionCostEditor from "@/components/ExhibitionCostEditor";
 import ExhibitionRoleEditor from "@/components/ExhibitionRoleEditor";
+import ExhibitionPrep from "@/components/ExhibitionPrep";
 
 export default async function ExhibitionDetailPage({
   params,
@@ -69,15 +70,22 @@ const exhibition = exhibitions.find((ex) => ex.id === id);
           />
         </div>
 
-        <ExhibitionRoleEditor
-          exhibitionId={exhibition.id}
-          current={{
-            attending_as: exhibition.attending_as ?? "visiting",
-            own_hall: exhibition.own_hall,
-            own_booth_number: exhibition.own_booth_number,
-            own_stand_location: exhibition.own_stand_location,
-          }}
-        />
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ExhibitionRoleEditor
+            exhibitionId={exhibition.id}
+            current={{
+              attending_as: exhibition.attending_as ?? "visiting",
+              own_hall: exhibition.own_hall,
+              own_booth_number: exhibition.own_booth_number,
+              own_stand_location: exhibition.own_stand_location,
+            }}
+          />
+          <ExhibitionPrep
+            exhibitionId={exhibition.id}
+            attendingAs={exhibition.attending_as ?? "visiting"}
+            initialCompleted={exhibition.prep_completed ?? []}
+          />
+        </div>
 <div className="grid gap-4 lg:grid-cols-4">
   <div className="rounded-xl border border-ink-200 bg-white p-4">
     <h3 className="font-semibold">Meetings</h3>

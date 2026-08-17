@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SidebarNextExhibition from "@/components/SidebarNextExhibition";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: DashboardIcon, soon: false },
@@ -52,6 +53,8 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
           );
         })}
       </nav>
+
+      <SidebarNextExhibition />
     </aside>
   );
 }

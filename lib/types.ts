@@ -36,6 +36,7 @@ export interface Exhibition {
   own_hall: string | null;
   own_booth_number: string | null;
   own_stand_location: string | null;
+  prep_completed: string[];
   created_at: string;
 }
 
