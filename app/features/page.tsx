@@ -142,40 +142,14 @@ export default function FeaturesPage() {
                   <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
                   <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  <span className="ml-2 h-4 flex-1 rounded border border-slate-200 bg-white" />
+                  <span className="ml-2 flex h-4 flex-1 items-center rounded-full border border-slate-200 bg-white px-2 text-[9px] font-medium text-slate-400">expoleados.com</span>
                 </div>
-                <div className="p-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-900">Events dashboard</span>
-                    <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">● CHINACOAT 2026</span>
-                  </div>
-                  <div className="mb-2.5 grid grid-cols-3 gap-2">
-                    {[["142", "Connections"], ["38", "Qualified"], ["12", "Follow-ups due"]].map(([n, l]) => (
-                      <div key={l} className="rounded-xl bg-slate-50 px-3 py-2.5">
-                        <b className="block text-lg font-bold text-slate-900">{n}</b>
-                        <span className="text-[10px] text-slate-500">{l}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    <div className="min-h-[120px] rounded-xl bg-slate-50 p-2">
-                      <h4 className="mb-2 text-[10px] font-bold uppercase text-slate-500">Prospects</h4>
-                      <div className="mb-1.5 rounded-lg border border-slate-200 bg-white px-2 py-1.5"><b className="block text-[10px] font-semibold">Jiangsu Oleo</b><span className="text-[8px] text-slate-500">Oleic Acid</span></div>
-                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-1.5"><b className="block text-[10px] font-semibold">Anhui Trd.</b><span className="text-[8px] text-slate-500">Glycerine</span></div>
-                    </div>
-                    <div className="min-h-[120px] rounded-xl bg-slate-50 p-2">
-                      <h4 className="mb-2 text-[10px] font-bold uppercase text-slate-500">Qualified</h4>
-                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-1.5"><b className="block text-[10px] font-semibold">Guangzhou Ct.</b><span className="text-[8px] text-slate-500">TiO₂ 200 MT</span><br /><span className="mt-1 inline-block rounded-full bg-emerald-50 px-1.5 py-0.5 text-[8px] text-emerald-700">Healthy</span></div>
-                    </div>
-                    <div className="min-h-[120px] rounded-xl bg-slate-50 p-2">
-                      <h4 className="mb-2 text-[10px] font-bold uppercase text-slate-500">Samples</h4>
-                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-1.5"><b className="block text-[10px] font-semibold">Shanghai Fd.</b><span className="text-[8px] text-slate-500">Coconut Oil</span><br /><span className="mt-1 inline-block rounded-full bg-amber-100 px-1.5 py-0.5 text-[8px] text-amber-700">Due today</span></div>
-                    </div>
-                    <div className="min-h-[120px] rounded-xl bg-slate-50 p-2">
-                      <h4 className="mb-2 text-[10px] font-bold uppercase text-slate-500">Quotation</h4>
-                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-1.5"><b className="block text-[10px] font-semibold">Delta Impex</b><span className="text-[8px] text-slate-500">500 MT</span><br /><span className="mt-1 inline-block rounded-full bg-rose-100 px-1.5 py-0.5 text-[8px] text-rose-700">At risk</span></div>
-                    </div>
-                  </div>
+                <div className="relative w-full bg-slate-50" style={{ aspectRatio: "16 / 10" }}>
+                  <img
+                    src="/screenshots/dashboard.png"
+                    alt="ExpoLead OS dashboard"
+                    className="absolute inset-0 h-full w-full object-cover object-left-top"
+                  />
                 </div>
               </div>
             </div>
