@@ -17,8 +17,8 @@ const AVATARS = [
 const TABS = [
   {
     key: "capture",
-    label: "lead capture",
-    title: "lead capture",
+    label: "Lead capture",
+    title: "Lead capture",
     desc: "Capturing the lead is the first step, and the one most people get wrong. ExpoLead OS makes on-the-floor capture fast enough to do while you are still talking.",
     points: [
       ["Connection, contact, and product in one form", "record the company, the person, and what they deal in, all in a single quick entry at the booth."],
@@ -28,8 +28,8 @@ const TABS = [
   },
   {
     key: "pipeline",
-    label: "qualify and pipeline",
-    title: "qualify and pipeline",
+    label: "Qualify and pipeline",
+    title: "Qualify and pipeline",
     desc: "Not all leads are equal. Score and sort them while the exhibition is still live, so your best opportunities never sit idle.",
     points: [
       ["Priority and interest type", "mark each connection as high, medium, or low, and whether they are a buyer, supplier, or partner."],
@@ -39,8 +39,8 @@ const TABS = [
   },
   {
     key: "followup",
-    label: "follow-up",
-    title: "follow-up",
+    label: "Follow-up",
+    title: "Follow-up",
     desc: "The transition from show floor to closed deal is where most leads die. ExpoLead OS keeps every one moving so nothing slips through the cracks.",
     points: [
       ["Due-date reminders", "set a next follow-up date on any lead and see what is due today, this week, or overdue."],
@@ -50,8 +50,8 @@ const TABS = [
   },
   {
     key: "data",
-    label: "own your data",
-    title: "own your data",
+    label: "Own your data",
+    title: "Own your data",
     desc: "Your leads are your business. ExpoLead OS keeps them private, portable, and yours, with no lock-in and no data sold on.",
     points: [
       ["Strictly private", "row-level security at the database means no other user can ever see your records."],
@@ -185,7 +185,7 @@ export default function FeaturesPage() {
       {/* TABS */}
       <section className="bg-slate-50 px-6 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mx-auto max-w-2xl text-center text-3xl font-black leading-tight tracking-tight text-slate-900 md:text-4xl">why ExpoLead OS for exhibitions</h2>
+          <h2 className="mx-auto max-w-2xl text-center text-3xl font-black leading-tight tracking-tight text-slate-900 md:text-4xl">Why ExpoLead OS for exhibitions</h2>
           <div className="mx-auto mt-10 flex max-w-3xl flex-wrap gap-1 rounded-2xl border border-slate-200 bg-white p-1.5">
             {TABS.map((t, i) => (
               <button
@@ -216,7 +216,7 @@ export default function FeaturesPage() {
 
       {/* CTA */}
       <section className="px-6 py-20 text-center lg:px-16">
-        <h2 className="text-3xl font-black tracking-tight text-slate-900 md:text-4xl">ready to keep every booth lead alive?</h2>
+        <h2 className="text-3xl font-black tracking-tight text-slate-900 md:text-4xl">Ready to keep every booth lead alive?</h2>
         <p className="mx-auto mt-3 max-w-md text-base text-slate-600">Start a 14-day free trial. No credit card, no sales call, cancel anytime.</p>
         <Link href="/login?mode=signup" className="mt-6 inline-block rounded-xl bg-emerald-600 px-7 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">Start free trial</Link>
       </section>
