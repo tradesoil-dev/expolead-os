@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirm } from "@/components/useConfirm";
+import { useToast } from "@/components/useToast";
 
 type Person = {
   id: string;
@@ -63,6 +65,8 @@ const PER_PAGE = 10;
 
 export default function AdminPeople({ people }: { people: Person[] }) {
   const router = useRouter();
+  const { confirm, ConfirmUI } = useConfirm();
+  const { showToast, ToastUI } = useToast();
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "confirmed" | "pending" | "company" | "never">("all");
   const [page, setPage] = useState(1);
@@ -79,7 +83,13 @@ export default function AdminPeople({ people }: { people: Person[] }) {
 
   async function cleanupUnconfirmed() {
     if (deletable === 0) return;
-    if (!confirm(`Delete ${deletable} unconfirmed account${deletable === 1 ? "" : "s"} older than 24 hours? This cannot be undone.`)) return;
+    if (
+      !(await confirm(
+        `Delete ${deletable} unconfirmed account${deletable === 1 ? "" : "s"} older than 24 hours? This cannot be undone.`,
+        { title: "Delete unconfirmed accounts", confirmLabel: "Delete" }
+      ))
+    )
+      return;
     setCleaning(true);
     try {
       const res = await fetch("/api/admin/delete-unconfirmed", { method: "POST" });
@@ -87,7 +97,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
       if (!res.ok) throw new Error(json.error || "Cleanup failed");
       router.refresh();
     } catch (e: any) {
-      alert(e.message || "Cleanup failed");
+      showToast(e.message || "Cleanup failed", "error");
     } finally {
       setCleaning(false);
     }
@@ -105,7 +115,13 @@ export default function AdminPeople({ people }: { people: Person[] }) {
   // rows are never selectable, and the server refuses self/admin anyway.
   async function deleteUsers(ids: string[], noun: string) {
     if (ids.length === 0) return;
-    if (!confirm(`Permanently delete ${ids.length} ${noun}? This removes the account and all of its data and cannot be undone.`)) return;
+    if (
+      !(await confirm(
+        `Permanently delete ${ids.length} ${noun}? This removes the account and all of its data and cannot be undone.`,
+        { title: `Delete ${ids.length} ${ids.length === 1 ? "account" : "accounts"}`, confirmLabel: "Delete" }
+      ))
+    )
+      return;
     setDeleting(true);
     try {
       const res = await fetch("/api/admin/delete-users", {
@@ -118,7 +134,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
       setSelected(new Set());
       router.refresh();
     } catch (e: any) {
-      alert(e.message || "Delete failed");
+      showToast(e.message || "Delete failed", "error");
     } finally {
       setDeleting(false);
     }
@@ -178,6 +194,8 @@ export default function AdminPeople({ people }: { people: Person[] }) {
 
   return (
     <div className="space-y-5">
+      {ConfirmUI}
+      {ToastUI}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         <Stat label="Total signups" value={stats.total} sub={stats.week > 0 ? `+${stats.week} this week` : undefined} />
         <Stat label="Confirmed" value={stats.confirmed} />
