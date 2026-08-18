@@ -19,13 +19,13 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
 
   return (
     <aside className="hidden md:flex w-60 shrink-0 flex-col bg-slate-800 shadow-lg sticky top-0 h-screen self-start overflow-y-auto">
-      <div className="flex items-center gap-2 px-4 h-14 border-b border-white/10">
+      <div className="flex shrink-0 items-center gap-2 px-4 h-16 border-b border-white/10">
         <span className="flex items-center text-[17px] font-bold uppercase tracking-tight leading-none">
           <span className="text-white">EXPOLEAD</span><span className="text-emerald-400">&nbsp;OS</span>
         </span>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 pt-5 pb-4 space-y-1">
         {NAV.map(({ href, label, icon: Icon, soon }) => {
           const active =
             href === "/dashboard"
