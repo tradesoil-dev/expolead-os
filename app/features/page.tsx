@@ -111,7 +111,7 @@ export default function FeaturesPage() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_1.15fr]">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">The exhibition workspace</p>
-            <h1 className="mt-3 text-4xl font-black leading-[1.02] tracking-tight text-slate-900 md:text-5xl lg:text-[3.4rem]">capture every booth lead and follow it to a closed deal</h1>
+            <h1 className="mt-3 text-4xl font-black leading-[1.02] tracking-tight text-slate-900 md:text-5xl lg:text-[3.4rem]">Capture every booth lead and follow it to a closed deal</h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">From the first handshake at your booth to the signed order months later, ExpoLead OS keeps every conversation, product, and follow-up in one place.</p>
             <div className="mt-7 flex gap-3">
               <Link href="/login?mode=signup" className="rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">Start free trial</Link>
@@ -130,13 +130,11 @@ export default function FeaturesPage() {
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
                   <span className="ml-2 flex h-4 flex-1 items-center rounded-full border border-slate-200 bg-white px-2 text-[9px] font-medium text-slate-400">expoleados.com</span>
                 </div>
-                <div className="relative w-full bg-slate-50" style={{ aspectRatio: "16 / 10" }}>
-                  <img
-                    src="/screenshots/dashboard.png"
-                    alt="ExpoLead OS dashboard"
-                    className="absolute inset-0 h-full w-full object-cover object-left-top"
-                  />
-                </div>
+                <img
+                  src="/screenshots/dashboard.png"
+                  alt="ExpoLead OS dashboard"
+                  className="block w-full"
+                />
               </div>
             </div>
             {/* Laptop base — wider deck with a trackpad notch */}
