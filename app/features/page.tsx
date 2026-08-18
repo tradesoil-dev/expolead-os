@@ -62,9 +62,9 @@ const TABS = [
 ];
 
 const FEATURES = [
-  ["fast lead capture", "Log every connection, contact, and product the moment you meet them. No paper, no shoebox of business cards, no chaos back at the hotel."],
-  ["products and quantity", "Capture what they trade and the quantities discussed, the real negotiation lever in product trade, not just a name and a title."],
-  ["priority and follow-up health", "Flag hot leads by priority and see follow-up health at a glance, so your team knows exactly who to chase first after the show."],
+  ["Fast lead capture", "Log every connection, contact, and product the moment you meet them. No paper, no shoebox of business cards, no chaos back at the hotel."],
+  ["Products and quantity", "Capture what they trade and the quantities discussed, the real negotiation lever in product trade, not just a name and a title."],
+  ["Priority and follow-up health", "Flag hot leads by priority and see follow-up health at a glance, so your team knows exactly who to chase first after the show."],
 ];
 
 export default function FeaturesPage() {
@@ -155,7 +155,7 @@ export default function FeaturesPage() {
         <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">It all starts at the booth</p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 md:text-4xl">connect with every booth visitor</h2>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 md:text-4xl">Connect with every booth visitor</h2>
             <p className="mt-3 max-w-md text-base text-slate-600">At a busy exhibition, the difference between a won deal and a lost one is whether you captured the conversation while it was still fresh. ExpoLead OS makes that effortless.</p>
             <div className="relative mx-auto mt-8 aspect-square w-full max-w-[380px]">
               <div className="absolute inset-9 rounded-full border border-dashed border-slate-300" />
@@ -167,9 +167,8 @@ export default function FeaturesPage() {
                 ))}
               </div>
               <div className="absolute left-1/2 top-1/2 z-10 -ml-[59px] -mt-[59px] flex h-[118px] w-[118px] items-center justify-center rounded-full border border-slate-100 bg-white shadow-xl">
-                <span className="text-center font-black uppercase leading-[0.95] tracking-tight">
-                  <span className="block text-[15px] text-slate-900">EXPOLEAD</span>
-                  <span className="block text-[15px] text-emerald-500">OS</span>
+                <span className="whitespace-nowrap text-[13px] font-black uppercase tracking-tight">
+                  <span className="text-slate-900">EXPOLEAD</span> <span className="text-emerald-500">OS</span>
                 </span>
               </div>
             </div>
