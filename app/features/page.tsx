@@ -67,20 +67,6 @@ const FEATURES = [
   ["priority and follow-up health", "Flag hot leads by priority and see follow-up health at a glance, so your team knows exactly who to chase first after the show."],
 ];
 
-function BoxLogo({ size = "sm" }: { size?: "sm" | "lg" }) {
-  const box = size === "lg" ? "w-[11px] h-[11px] border-[3px] rounded-[3px]" : "w-[10px] h-[10px] border-[1.8px] rounded-[2px]";
-  const border = size === "lg" ? "border-slate-800" : "border-white";
-  const gap = size === "lg" ? "gap-[5px]" : "gap-[3.5px]";
-  return (
-    <div className={`grid grid-cols-2 ${gap} shrink-0`}>
-      <div className={`${box} ${border}`} />
-      <div className={`${box} ${border}`} />
-      <div className={`${box} ${border}`} />
-      <div className={`${box.replace("border-[3px]", "").replace("border-[1.8px]", "")} bg-emerald-500`} />
-    </div>
-  );
-}
-
 export default function FeaturesPage() {
   const [tab, setTab] = useState(0);
   const active = TABS[tab];
@@ -181,7 +167,10 @@ export default function FeaturesPage() {
                 ))}
               </div>
               <div className="absolute left-1/2 top-1/2 z-10 -ml-[59px] -mt-[59px] flex h-[118px] w-[118px] items-center justify-center rounded-full border border-slate-100 bg-white shadow-xl">
-                <BoxLogo size="lg" />
+                <span className="text-center font-black uppercase leading-[0.95] tracking-tight">
+                  <span className="block text-[15px] text-slate-900">EXPOLEAD</span>
+                  <span className="block text-[15px] text-emerald-500">OS</span>
+                </span>
               </div>
             </div>
           </div>
