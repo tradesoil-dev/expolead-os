@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/useToast";
+import { useConfirm } from "@/components/useConfirm";
 import DatePicker from "@/components/DatePicker";
 import Select from "@/components/Select";
 import EditButton from "@/components/EditButton";
@@ -18,6 +19,7 @@ export default function MeetingManager({
 }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
+  const { confirm, ConfirmUI } = useConfirm();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -44,7 +46,7 @@ export default function MeetingManager({
   }
 
   async function remove() {
-    if (!window.confirm("Delete this meeting?")) return;
+    if (!(await confirm("Delete this meeting?", { title: "Delete meeting", confirmLabel: "Delete" }))) return;
     const { error } = await createClient().from("meetings").delete().eq("id", meeting.id);
     if (error) { showToast(error.message, "error"); return; }
     showToast("Meeting deleted.", "success");
@@ -89,6 +91,7 @@ export default function MeetingManager({
   return (
     <li className="rounded-xl border border-ink-100 p-3">
       {ToastUI}
+      {ConfirmUI}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-50 text-emerald-600">

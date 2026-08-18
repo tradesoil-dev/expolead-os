@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import EditButton from "@/components/EditButton";
+import { useConfirm } from "@/components/useConfirm";
 
 type Contact = {
   id: string;
@@ -32,6 +33,7 @@ export default function ContactManager({
   contact: Contact;
 }) {
   const router = useRouter();
+  const { confirm, ConfirmUI } = useConfirm();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -71,8 +73,7 @@ export default function ContactManager({
   }
 
   async function deleteContact() {
-    const confirmed = window.confirm("Delete this contact?");
-    if (!confirmed) return;
+    if (!(await confirm("Delete this contact?", { title: "Delete contact", confirmLabel: "Delete" }))) return;
 
     await createClient().from("contacts").delete().eq("id", contact.id);
     router.refresh();
@@ -142,6 +143,7 @@ export default function ContactManager({
 
   return (
     <li className="py-3 flex flex-wrap items-start justify-between gap-4">
+      {ConfirmUI}
       <div>
         <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">
           {contact.is_primary ? "Primary contact" : "Contact"}
