@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -45,15 +45,41 @@ export default function ExhibitionPrep({
   const steps = stepsFor(attendingAs);
   const [done, setDone] = useState<Set<string>>(new Set(initialCompleted ?? []));
   const [savingKey, setSavingKey] = useState<string | null>(null);
+  const [celebrate, setCelebrate] = useState(false);
 
   const completed = steps.filter((s) => done.has(s.key)).length;
   const pct = steps.length ? Math.round((completed / steps.length) * 100) : 0;
+  const allDone = completed === steps.length;
+
+  // Confetti particles, regenerated each time a celebration fires. Only present
+  // client-side after a user click, so Math.random causes no hydration issues.
+  const confetti = useMemo(() => {
+    if (!celebrate) return [];
+    const colors = ["#10b981", "#34d399", "#f59e0b", "#f43f5e", "#38bdf8", "#a78bfa"];
+    return Array.from({ length: 44 }, (_, i) => ({
+      left: Math.random() * 100,
+      cx: (Math.random() * 2 - 1) * 70,
+      dur: 1.3 + Math.random() * 0.9,
+      delay: Math.random() * 0.25,
+      rot: Math.random() * 360,
+      color: colors[i % colors.length],
+    }));
+  }, [celebrate]);
+
+  function fireCelebration() {
+    setCelebrate(true);
+    window.setTimeout(() => setCelebrate(false), 1900);
+  }
 
   async function toggle(key: string) {
     if (!isSupabaseConfigured) return;
     const nextDone = new Set(done);
     if (nextDone.has(key)) nextDone.delete(key);
     else nextDone.add(key);
+    // Did this tick just complete the whole list? (Celebrate only on that edge,
+    // never on load or when a box is un-ticked.)
+    const nextCompleted = steps.filter((s) => nextDone.has(s.key)).length;
+    const justCompleted = completed < steps.length && nextCompleted === steps.length;
     setDone(nextDone);
     setSavingKey(key);
     const { error } = await createClient()
@@ -68,24 +94,56 @@ export default function ExhibitionPrep({
       return;
     }
     router.refresh();
+    if (justCompleted) fireCelebration();
   }
 
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
+    <div className="relative overflow-hidden rounded-xl border border-ink-200 bg-white p-5 shadow-card">
       {ToastUI}
+
+      {celebrate && (
+        <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden="true">
+          {confetti.map((c, i) => (
+            <span
+              key={i}
+              className="confetti-piece"
+              style={{
+                left: `${c.left}%`,
+                background: c.color,
+                ["--cx" as string]: `${c.cx}px`,
+                ["--dur" as string]: `${c.dur}s`,
+                ["--delay" as string]: `${c.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold">Prepare for this show</h2>
           <p className="mt-0.5 text-xs text-ink-400">A ready-made checklist to get show-ready.</p>
         </div>
-        <span className="shrink-0 text-xs font-medium text-ink-500">
-          {completed}/{steps.length} done
-        </span>
+        {allDone ? (
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+            🎉 Show-ready
+          </span>
+        ) : (
+          <span className="shrink-0 text-xs font-medium text-ink-500">
+            {completed}/{steps.length} done
+          </span>
+        )}
       </div>
 
       <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-ink-100">
         <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${pct}%` }} />
       </div>
+
+      {allDone && (
+        <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800">
+          You&rsquo;re all set for this show — go capture some leads.
+        </div>
+      )}
 
       <ul className="space-y-1">
         {steps.map((s) => {
