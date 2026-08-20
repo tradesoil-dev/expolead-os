@@ -111,22 +111,7 @@ export default function SidebarNextExhibition() {
 
   if (loading) return null;
 
-  if (!next) {
-    return (
-      <div className="mt-auto p-3">
-        <Link
-          href="/exhibitions"
-          className="block rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-slate-300 transition-colors hover:bg-white/10"
-        >
-          <span className="font-semibold text-white">Plan your shows</span>
-          <span className="mt-0.5 block text-slate-400">Add the exhibitions you&rsquo;ll attend →</span>
-        </Link>
-      </div>
-    );
-  }
-
-  const { row, upcomingCount } = next;
-  const more = upcomingCount - 1;
+  const more = next ? next.upcomingCount - 1 : 0;
   const todayDom = new Date().getDate();
   const todayMonthShown =
     calendar &&
@@ -135,17 +120,35 @@ export default function SidebarNextExhibition() {
 
   return (
     <div className="mt-auto space-y-2 p-3">
-      <Link
-        href={`/exhibitions/${row.id}`}
-        className="block rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10"
-      >
-        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-400">
-          Next exhibition
-        </p>
-        <p className="mt-1.5 text-sm font-bold leading-snug text-white">{row.name}</p>
-        {row.location && <p className="mt-0.5 text-xs leading-snug text-slate-400">{row.location}</p>}
-        <p className="mt-1.5 text-xs font-medium text-emerald-300">{statusLine(row)}</p>
-      </Link>
+      {next ? (
+        <Link
+          href={`/exhibitions/${next.row.id}`}
+          className="block rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10"
+        >
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-400">
+            Next exhibition
+          </p>
+          <p className="mt-1.5 text-sm font-bold leading-snug text-white">{next.row.name}</p>
+          {next.row.location && <p className="mt-0.5 text-xs leading-snug text-slate-400">{next.row.location}</p>}
+          <p className="mt-1.5 text-xs font-medium text-emerald-300">{statusLine(next.row)}</p>
+        </Link>
+      ) : (
+        <Link
+          href="/exhibitions"
+          className="group block rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 transition-colors hover:bg-emerald-500/20"
+        >
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-400">
+            Get started
+          </p>
+          <p className="mt-1.5 text-sm font-bold leading-snug text-white">Plan your shows</p>
+          <p className="mt-0.5 text-xs leading-snug text-slate-300">
+            Add the exhibitions you&rsquo;ll attend, then capture leads at each booth.
+          </p>
+          <span className="mt-2.5 inline-flex items-center rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors group-hover:bg-emerald-500">
+            Add an exhibition →
+          </span>
+        </Link>
+      )}
 
       {calendar && (
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
