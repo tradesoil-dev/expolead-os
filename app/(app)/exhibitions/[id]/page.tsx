@@ -12,20 +12,24 @@ export default async function ExhibitionDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-    const { id } = await params;
-  const exhibitions = await getExhibitions();
-const exhibition = exhibitions.find((ex) => ex.id === id);
+  const { id } = await params;
 
+  // Fetch everything in parallel instead of a sequential waterfall. Meetings key
+  // off the URL id (same as exhibition.id when it exists); if the exhibition is
+  // missing we notFound() below and discard the rest.
+  const [exhibitions, allSuppliers, meetings, currency] = await Promise.all([
+    getExhibitions(),
+    getSuppliers(),
+    getMeetingsForExhibition(id),
+    getCurrency(),
+  ]);
+
+  const exhibition = exhibitions.find((ex) => ex.id === id);
   if (!exhibition) {
     notFound();
   }
 
-  const suppliers = (await getSuppliers()).filter(
-    (s) => s.exhibition_id === exhibition.id
-  );
-
-  const meetings = await getMeetingsForExhibition(exhibition.id);
-  const currency = await getCurrency();
+  const suppliers = allSuppliers.filter((s) => s.exhibition_id === exhibition.id);
 
   const visited = suppliers.filter((s) => s.visited).length;
   const remaining = suppliers.length - visited;
