@@ -21,8 +21,8 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
 
         <!-- Header -->
         <tr>
-          <td style="background-color:#065f46;background-image:linear-gradient(115deg,#0f172a 0%,#065f46 48%,#10b981 100%);padding:32px 40px;">
-            <img src="https://expoleados.com/email-logo.png" width="168" height="28" alt="ExpoLead OS" style="display:block;width:168px;height:28px;border:0;" />
+          <td style="background:#ecfdf5;padding:26px 40px;border-bottom:1px solid #d1fae5;">
+            <img src="https://expoleados.com/email-logo-new.png" width="200" height="50" alt="expolead os" style="display:block;width:200px;height:50px;border:0;" />
           </td>
         </tr>
 
