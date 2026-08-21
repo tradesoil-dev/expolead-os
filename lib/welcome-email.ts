@@ -7,7 +7,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   return resend.emails.send({
-    from: "Gladwin & Gayan at ExpoLead OS <hello.expolead@tradesoil.com>",
+    from: "Gladwin & Gayan at ExpoLead OS <hello@expoleados.com>",
     to: email,
     subject: "Welcome to ExpoLead OS, your trial has started",
     html: `

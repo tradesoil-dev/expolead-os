@@ -46,7 +46,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">5. Refunds</h2>
-            <p>If you are not happy with ExpoLead OS, email us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a> within 14 days of your payment and we will refund you in full. No questions asked.</p>
+            <p>If you are not happy with ExpoLead OS, email us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a> within 14 days of your payment and we will refund you in full. No questions asked.</p>
             <p className="mt-3">This applies to your first payment on a plan and to each renewal. Refunds are returned to the original payment method and are normally processed within 5 to 10 business days, depending on your bank. Every account starts with a free trial, so we encourage you to use it fully before paying.</p>
           </section>
 
@@ -79,7 +79,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">10. Termination</h2>
-            <p>You may cancel your account at any time by contacting us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>. We reserve the right to suspend or terminate accounts that violate these terms.</p>
+            <p>You may cancel your account at any time by contacting us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>. We reserve the right to suspend or terminate accounts that violate these terms.</p>
           </section>
 
           <section>
@@ -95,7 +95,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">13. Contact</h2>
-            <p>Questions about these terms? Email us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>.</p>
+            <p>Questions about these terms? Email us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
           </section>
 
         </div>

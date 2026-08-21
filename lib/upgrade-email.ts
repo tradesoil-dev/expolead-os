@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const NOTIFY_TO = "hello.expolead@tradesoil.com";
+const NOTIFY_TO = "hello@expoleados.com";
 
 type Details = {
   customerEmail: string;
@@ -30,7 +30,7 @@ export async function sendPaymentClaimedEmail(d: Details) {
   const planLabel = d.plan.charAt(0).toUpperCase() + d.plan.slice(1);
 
   return resend.emails.send({
-    from: "ExpoLead OS <hello.expolead@tradesoil.com>",
+    from: "ExpoLead OS <hello@expoleados.com>",
     to: NOTIFY_TO,
     replyTo: d.customerEmail,
     subject: `Payment sent ${d.reference}, check the bank. ${planLabel} ${d.billingCycle}`,
@@ -76,7 +76,7 @@ export async function sendUpgradeConfirmedEmail(d: {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://expoleados.com";
 
   return resend.emails.send({
-    from: "ExpoLead OS <hello.expolead@tradesoil.com>",
+    from: "ExpoLead OS <hello@expoleados.com>",
     to: d.customerEmail,
     replyTo: NOTIFY_TO,
     subject: `Payment received, your ${planLabel} plan is active`,
@@ -99,7 +99,7 @@ export async function sendUpgradeConfirmedEmail(d: {
           </div>
           <p style="font-size: 13px; color: #6b7280;">Keep this email as your receipt. Questions, just reply.</p>
           <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-          <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · tradesoil.com</p>
+          <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · expoleados.com</p>
         </div>
       </div>`,
   });
@@ -114,7 +114,7 @@ export async function sendUpgradeRequestEmail(d: Details) {
   const planLabel = d.plan.charAt(0).toUpperCase() + d.plan.slice(1);
 
   return resend.emails.send({
-    from: "ExpoLead OS <hello.expolead@tradesoil.com>",
+    from: "ExpoLead OS <hello@expoleados.com>",
     to: NOTIFY_TO,
     replyTo: d.customerEmail,
     subject: `Upgrade request ${d.reference}, ${planLabel} ${d.billingCycle}`,

@@ -18,7 +18,7 @@ async function sendEmail(to: string, subject: string, html: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "ExpoLead OS <hello.expolead@tradesoil.com>",
+      from: "ExpoLead OS <hello@expoleados.com>",
       to,
       subject,
       html,
@@ -44,7 +44,7 @@ function emailDay7(name: string, trialEndDate: string) {
         </div>
         <p style="font-size: 13px; color: #6b7280;">Questions? Just reply to this email.</p>
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · tradesoil.com</p>
+        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · expoleados.com</p>
       </div>
     </div>`;
 }
@@ -66,7 +66,7 @@ function emailDay1(name: string, trialEndDate: string) {
         </div>
         <p style="font-size: 13px; color: #6b7280;">Questions? Just reply to this email.</p>
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · tradesoil.com</p>
+        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · expoleados.com</p>
       </div>
     </div>`;
 }
@@ -93,7 +93,7 @@ function emailExpired(name: string) {
         </div>
         <p style="font-size: 13px; color: #6b7280;">Questions? Just reply to this email.</p>
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · tradesoil.com</p>
+        <p style="font-size: 12px; color: #9ca3af; margin: 0;">ExpoLead OS · expoleados.com</p>
       </div>
     </div>`;
 }

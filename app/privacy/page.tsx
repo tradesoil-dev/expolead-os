@@ -26,7 +26,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">About this notice</h2>
               <p>We built ExpoLead OS to help trade professionals manage their exhibition leads, buyers, suppliers, and opportunities in one place. This notice explains what information we collect when you use ExpoLead OS, how we use it, and what rights you have over your data.</p>
-              <p className="mt-3">If you have any questions, contact us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>.</p>
+              <p className="mt-3">If you have any questions, contact us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
 
             <section>
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
                 <li>Each user's data is strictly isolated, no other user can access yours</li>
                 <li>Authentication is handled by Supabase, an industry-standard security platform</li>
               </ul>
-              <p className="mt-3">No system is 100% secure. If you believe your account has been compromised, contact us immediately at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>.</p>
+              <p className="mt-3">No system is 100% secure. If you believe your account has been compromised, contact us immediately at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
 
             <section>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">10. Children</h2>
-              <p>ExpoLead OS is a business tool intended for professionals aged 18 and above. We do not knowingly collect data from anyone under 18. If you believe someone under 18 has created an account, contact us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a> and we will delete the account.</p>
+              <p>ExpoLead OS is a business tool intended for professionals aged 18 and above. We do not knowingly collect data from anyone under 18. If you believe someone under 18 has created an account, contact us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a> and we will delete the account.</p>
             </section>
 
             <section>
@@ -122,7 +122,7 @@ export default function PrivacyPage() {
                 <li><strong>Object</strong> — ask us to stop processing your data in certain circumstances</li>
                 <li><strong>Withdraw consent</strong> — where we rely on consent, you can withdraw it at any time</li>
               </ul>
-              <p className="mt-3">To exercise any of these rights, email us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>. We will respond within 7 business days. We may ask you to verify your identity before processing your request.</p>
+              <p className="mt-3">To exercise any of these rights, email us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>. We will respond within 7 business days. We may ask you to verify your identity before processing your request.</p>
             </section>
 
             <section>
@@ -132,7 +132,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">14. Contact us</h2>
-              <p>For any questions about this notice or how we handle your data, email us at <a href="mailto:hello.expolead@tradesoil.com" className="text-emerald-600 hover:underline">hello.expolead@tradesoil.com</a>.</p>
+              <p>For any questions about this notice or how we handle your data, email us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
 
           </div>

@@ -9,7 +9,7 @@ import { createClient } from "@supabase/supabase-js";
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const NOTIFY_TO = "hello.expolead@tradesoil.com";
+const NOTIFY_TO = "hello@expoleados.com";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://expoleados.com";
 
 export type RenewalResult = { ok: boolean; pre: number; due: number; overdue: number; errors: number; checked: number; error?: string };
@@ -18,7 +18,7 @@ async function sendEmail(to: string, subject: string, html: string, replyTo?: st
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: "ExpoLead OS <hello.expolead@tradesoil.com>", to, subject, html, reply_to: replyTo }),
+    body: JSON.stringify({ from: "ExpoLead OS <hello@expoleados.com>", to, subject, html, reply_to: replyTo }),
   });
   return res.ok;
 }
@@ -28,7 +28,7 @@ function shell(inner: string) {
     <div style="background: #059669; padding: 22px 30px; border-radius: 12px 12px 0 0;"><h1 style="color:white;margin:0;font-size:19px;">ExpoLead OS</h1></div>
     <div style="padding: 28px 30px; background:#fff; border:1px solid #e2e8f0; border-top:none; border-radius:0 0 12px 12px;">${inner}
     <hr style="border:none;border-top:1px solid #e5e7eb;margin:22px 0;" />
-    <p style="font-size:12px;color:#9ca3af;margin:0;">ExpoLead OS &middot; tradesoil.com</p></div></div>`;
+    <p style="font-size:12px;color:#9ca3af;margin:0;">ExpoLead OS &middot; expoleados.com</p></div></div>`;
 }
 
 function fmt(d: Date) {

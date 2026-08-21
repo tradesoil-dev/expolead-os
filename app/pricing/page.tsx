@@ -58,7 +58,7 @@ export default function PricingPage() {
         <div className="mx-auto max-w-4xl">
           <p className="mb-7 text-center text-sm font-semibold text-emerald-600">
             → Larger team or many shows a year?{" "}
-            <a href="mailto:hello.expolead@tradesoil.com?subject=ExpoLead%20OS%20custom%20plan" className="underline hover:text-emerald-700">Contact us</a>{" "}
+            <a href="mailto:hello@expoleados.com?subject=ExpoLead%20OS%20custom%20plan" className="underline hover:text-emerald-700">Contact us</a>{" "}
             for a tailored plan.
           </p>
 

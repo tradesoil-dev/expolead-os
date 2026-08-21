@@ -96,7 +96,7 @@ export default async function BillingPage() {
               <Link href="/upgrade" className="rounded-lg border border-ink-200 px-4 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-50">
                 Change plan
               </Link>
-              <a href="mailto:hello.expolead@tradesoil.com?subject=Billing%20question" className="rounded-lg border border-ink-200 px-4 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-50">
+              <a href="mailto:hello@expoleados.com?subject=Billing%20question" className="rounded-lg border border-ink-200 px-4 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-50">
                 Email us about billing
               </a>
             </div>

@@ -172,7 +172,7 @@ const doc = new Document({
       bullet('Row Level Security (RLS) policies enforce strict data isolation — no user can access another user’s data;'),
       bullet('Passwords are hashed and never stored in plain text.'),
       p('However, no security system is perfect. We cannot guarantee the absolute security of data transmitted over the internet. You are responsible for protecting your password and maintaining the security of your devices.'),
-      p('If you believe your Personal Data has been compromised, please contact us immediately at hello.expolead@tradesoil.com. If we learn of a security breach, we will inform you and relevant authorities as required by applicable law.'),
+      p('If you believe your Personal Data has been compromised, please contact us immediately at hello@expoleados.com. If we learn of a security breach, we will inform you and relevant authorities as required by applicable law.'),
 
       divider(),
 
@@ -185,7 +185,7 @@ const doc = new Document({
 
       h1('8. MINORS AND CHILDREN’S PRIVACY'),
 
-      p('ExpoLead OS is not directed to or intended for individuals under the age of 18. We do not knowingly collect Personal Data from children under 18. If you are under 18, please do not use ExpoLead OS. If we learn that we have collected Personal Data from a person under 18, we will take steps to delete that information. If you are a parent or guardian and believe your child has created an account, please contact us at hello.expolead@tradesoil.com.'),
+      p('ExpoLead OS is not directed to or intended for individuals under the age of 18. We do not knowingly collect Personal Data from children under 18. If you are under 18, please do not use ExpoLead OS. If we learn that we have collected Personal Data from a person under 18, we will take steps to delete that information. If you are a parent or guardian and believe your child has created an account, please contact us at hello@expoleados.com.'),
 
       divider(),
 
@@ -193,7 +193,7 @@ const doc = new Document({
 
       p('Information you provide should be accurate, complete, and up to date for the purposes for which it is used.'),
       p('We retain your Personal Data for as long as your account is active or as necessary to provide you with ExpoLead OS Operations. If you close your account, we will delete your personal data and business records within 30 days upon request. We may retain certain information for longer periods where required by law, to resolve disputes, or to enforce our agreements.'),
-      p('To request deletion of your data, contact us at hello.expolead@tradesoil.com.'),
+      p('To request deletion of your data, contact us at hello@expoleados.com.'),
 
       divider(),
 
@@ -208,7 +208,7 @@ const doc = new Document({
       bullet('Right to object: The right to object to certain processing of your Personal Data;'),
       bullet('Right to withdraw consent: Where we rely on consent, you may withdraw it at any time without affecting the lawfulness of prior processing.'),
 
-      p('To exercise any of these rights, contact us at hello.expolead@tradesoil.com. We will respond within 7 business days. We may need to verify your identity before processing your request.'),
+      p('To exercise any of these rights, contact us at hello@expoleados.com. We will respond within 7 business days. We may need to verify your identity before processing your request.'),
 
       p('You may also update or correct your account information at any time by accessing your account settings within the Platform.'),
 
@@ -239,7 +239,7 @@ const doc = new Document({
       new Paragraph({
         spacing: { before: 40, after: 60 },
         indent: { left: 360 },
-        children: [new TextRun({ text: 'Email: hello.expolead@tradesoil.com', size: 22, font: 'Arial' })]
+        children: [new TextRun({ text: 'Email: hello@expoleados.com', size: 22, font: 'Arial' })]
       }),
       new Paragraph({
         spacing: { before: 40, after: 60 },
