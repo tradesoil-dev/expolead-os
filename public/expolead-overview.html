@@ -8,9 +8,10 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     background: #e8ecf0;
     color: #1e293b;
+    -webkit-font-smoothing: antialiased;
   }
 
   .page {
@@ -24,106 +25,113 @@
     break-after: page;
   }
 
-  /* Cover */
+  /* ---------- Cover ---------- */
   .cover {
     background: #0f172a;
+    background-image: linear-gradient(150deg, #0f172a 0%, #0b3b30 55%, #065f46 100%);
     min-height: 297mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 52px 52px 36px;
   }
-  .cover-logo { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 48px; letter-spacing: -0.3px; }
-  .cover-logo span { color: #10b981; }
+  .logo-box {
+    display: inline-block;
+    background: #ecfdf5;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 44px;
+  }
+  .logo-box img { height: 32px; width: auto; display: block; }
   .cover-bar { width: 44px; height: 4px; background: #10b981; border-radius: 2px; margin-bottom: 18px; }
-  .cover-eyebrow { font-size: 11px; letter-spacing: 0.13em; color: #6ee7b7; margin-bottom: 14px; font-weight: 600; }
-  .cover-title { font-size: 40px; font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: 18px; letter-spacing: -0.5px; }
-  .cover-sub { font-size: 15px; color: #94a3b8; line-height: 1.75; max-width: 400px; }
-  .cover-pills { display: flex; gap: 10px; margin-top: 36px; flex-wrap: wrap; }
-  .cover-pill { font-size: 11px; color: #10b981; border: 1px solid #10b981; padding: 5px 13px; border-radius: 20px; }
+  .cover-eyebrow { font-size: 11px; letter-spacing: 0.14em; color: #6ee7b7; margin-bottom: 14px; font-weight: 700; }
+  .cover-title { font-size: 42px; font-weight: 800; color: #fff; line-height: 1.12; margin-bottom: 18px; letter-spacing: -0.6px; }
+  .cover-title span { color: #34d399; }
+  .cover-sub { font-size: 15px; color: #94a3b8; line-height: 1.75; max-width: 420px; }
+  .cover-pills { display: flex; gap: 10px; margin-top: 34px; flex-wrap: wrap; }
+  .cover-pill { font-size: 11px; color: #6ee7b7; border: 1px solid #10b981; padding: 5px 13px; border-radius: 20px; }
   .cover-screenshot {
-    margin: 36px 0 0;
+    margin: 34px 0 0;
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid #1e293b;
-    max-height: 300px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
   }
-  .cover-screenshot img { width: 100%; display: block; max-height: 300px; object-fit: cover; object-position: top; }
-  .cover-footer { font-size: 11px; color: #94a3b8; border-top: 1px solid #1e293b; padding-top: 18px; display: flex; justify-content: space-between; margin-top: 32px; }
+  .cover-screenshot img { width: 100%; display: block; }
+  .cover-footer { font-size: 11px; color: #94a3b8; border-top: 1px solid #1e293b; padding-top: 18px; display: flex; justify-content: space-between; margin-top: 30px; }
 
-  /* Inner pages */
-  .inner { padding: 44px 48px 56px; min-height: 297mm; display: flex; flex-direction: column; }
+  /* ---------- Inner pages ---------- */
+  .inner { padding: 40px 48px 56px; min-height: 297mm; display: flex; flex-direction: column; }
+  .run-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
+  .run-header img { height: 20px; width: auto; display: block; }
+  .run-label { font-size: 10px; letter-spacing: 0.14em; color: #94a3b8; font-weight: 700; }
   .page-num { position: absolute; bottom: 24px; right: 48px; font-size: 11px; color: #cbd5e1; }
 
-  .eyebrow { font-size: 10px; letter-spacing: 0.14em; color: #10b981; font-weight: 700; margin-bottom: 6px; }
-  .page-title { font-size: 23px; font-weight: 700; color: #0f172a; margin-bottom: 10px; letter-spacing: -0.3px; }
-  .page-body { font-size: 13px; color: #64748b; line-height: 1.75; margin-bottom: 24px; }
+  .eyebrow { font-size: 10px; letter-spacing: 0.15em; color: #059669; font-weight: 700; margin-bottom: 7px; }
+  .page-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 10px; letter-spacing: -0.4px; }
+  .page-body { font-size: 13px; color: #64748b; line-height: 1.7; margin-bottom: 22px; max-width: 560px; }
 
   /* Screen frames */
   .screen-wrap {
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #e2e8f0;
-    margin-bottom: 6px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 10px rgba(15,23,42,0.08);
+    margin: 0 auto 8px;
   }
   .screen-wrap img { width: 100%; display: block; }
-  .screen-caption {
-    font-size: 11px;
-    color: #94a3b8;
-    text-align: center;
-    margin-bottom: 20px;
-  }
+  .feature-shot { max-width: 168mm; }
+  .screen-caption { font-size: 11px; color: #94a3b8; text-align: center; margin-bottom: 4px; }
 
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .three-quarters { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  /* Feature bullet points */
+  .pts { list-style: none; margin-top: 22px; }
+  .pts li { font-size: 13px; color: #475569; line-height: 1.55; padding: 9px 0 9px 26px; position: relative; border-bottom: 1px solid #f1f5f9; }
+  .pts li:last-child { border-bottom: none; }
+  .pts li::before { content: ""; position: absolute; left: 2px; top: 13px; width: 9px; height: 9px; border-radius: 50%; background: #10b981; }
+  .pts strong { color: #0f172a; font-weight: 600; }
 
-  /* Feature icons - app icon style */
-  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  /* Feature grid (page 2) */
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 26px; }
   .feat { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; }
-  .feat-icon-wrap {
-    width: 44px; height: 44px; border-radius: 11px;
-    background: #d1fae5;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
+  .feat-icon-wrap { width: 44px; height: 44px; border-radius: 11px; background: #d1fae5; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .feat-icon-wrap svg { width: 22px; height: 22px; }
-  .feat-text {}
   .feat-title { font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 3px; }
   .feat-desc { font-size: 12px; color: #64748b; line-height: 1.55; }
+  .badge { display: inline-block; font-size: 11px; background: #d1fae5; color: #065f46; padding: 6px 15px; border-radius: 20px; font-weight: 600; }
 
-  .badge { display: inline-block; font-size: 11px; background: #d1fae5; color: #065f46; padding: 5px 14px; border-radius: 20px; font-weight: 600; }
+  /* Reports + mobile row */
+  .split { display: grid; grid-template-columns: 1fr 150px; gap: 24px; align-items: center; margin-top: 26px; }
+  .phone { border-radius: 18px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(15,23,42,0.12); }
+  .phone img { width: 100%; display: block; }
 
-  /* Pricing cards */
-  .price-stack { display: flex; flex-direction: column; gap: 14px; }
-  .price-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 22px; }
-  .price-card.featured { border-color: #10b981; border-width: 2px; }
-  .price-name { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-  .price-amount { font-size: 26px; font-weight: 700; color: #0f172a; }
+  /* Pricing */
+  .prices { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 8px; }
+  .price-card { border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px 18px; display: flex; flex-direction: column; }
+  .price-card.featured { border-color: #10b981; border-width: 2px; box-shadow: 0 8px 24px rgba(16,185,129,0.12); }
+  .price-tag { font-size: 9px; color: #065f46; background: #d1fae5; display: inline-block; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; font-weight: 700; letter-spacing: 0.06em; align-self: flex-start; }
+  .price-name { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+  .price-tagline { font-size: 11px; color: #94a3b8; margin-bottom: 12px; min-height: 28px; }
+  .price-amount { font-size: 30px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
   .price-period { font-size: 12px; color: #94a3b8; }
-  .price-features { margin-top: 12px; list-style: none; }
-  .price-features li { font-size: 12px; color: #475569; padding: 3px 0; padding-left: 16px; position: relative; }
-  .price-features li::before { content: ""; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; background: #10b981; border-radius: 50%; }
+  .price-annual { font-size: 11px; color: #64748b; margin-top: 2px; }
+  .price-features { margin-top: 14px; list-style: none; }
+  .price-features li { font-size: 11.5px; color: #475569; padding: 4px 0; padding-left: 17px; position: relative; line-height: 1.4; }
+  .price-features li::before { content: ""; position: absolute; left: 0; top: 8px; width: 7px; height: 7px; background: #10b981; border-radius: 50%; }
+  .price-features li.soon::before { background: #cbd5e1; }
+  .soon-tag { font-size: 8px; color: #94a3b8; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1px 5px; margin-left: 5px; }
 
   /* Back cover */
   .back-cover {
     background: #0f172a;
+    background-image: linear-gradient(150deg, #0f172a 0%, #0b3b30 55%, #065f46 100%);
     min-height: 297mm;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    display: flex; align-items: center; justify-content: center; text-align: center;
     padding: 52px;
   }
-  .back-cover-inner { max-width: 420px; }
+  .back-inner { max-width: 440px; }
+  .cta-btn { background: #10b981; color: #fff; display: inline-block; padding: 14px 38px; border-radius: 8px; font-size: 15px; font-weight: 700; margin-bottom: 22px; letter-spacing: -0.2px; }
 
-  /* Section divider line */
-  .section-rule { height: 1px; background: #f1f5f9; margin: 20px 0; }
-
-  @media print {
-    body { background: #fff; }
-    .page { margin: 0; }
-  }
+  @media print { body { background: #fff; } .page { margin: 0; box-shadow: none; } }
   @page { size: A4; margin: 0; }
 </style>
 </head>
@@ -133,23 +141,23 @@
 <div class="page">
   <div class="cover">
     <div>
-      <div class="cover-logo">Expo<span>Lead</span> OS</div>
+      <div class="logo-box"><img src="email-logo-new.png" alt="ExpoLead OS" /></div>
       <div class="cover-bar"></div>
       <div class="cover-eyebrow">PRODUCT OVERVIEW · 2026</div>
-      <div class="cover-title">Turn Expo<br>Conversations<br>Into Revenue</div>
-      <div class="cover-sub">The exhibition lead management workspace built for sourcing teams, exhibitors and international trade professionals.</div>
+      <div class="cover-title">Turn expo conversations<br>into <span>revenue</span></div>
+      <div class="cover-sub">The exhibition lead-management workspace built for exhibitors, sourcing teams and international trade professionals — capture every connection, track every follow-up, close more after the show.</div>
       <div class="cover-pills">
         <div class="cover-pill">14-day free trial</div>
         <div class="cover-pill">No credit card required</div>
-        <div class="cover-pill">Built for trade professionals</div>
+        <div class="cover-pill">Built for trade shows</div>
       </div>
       <div class="cover-screenshot">
-        <img src="01-landing.png.png" alt="ExpoLead OS landing page" />
+        <img src="screenshots/dashboard.png" alt="ExpoLead OS dashboard" />
       </div>
     </div>
     <div class="cover-footer">
-      <span>tradesoil.com</span>
-      <span>ExpoLead OS - Confidential</span>
+      <span>expoleados.com</span>
+      <span>ExpoLead OS · Product Overview</span>
     </div>
   </div>
 </div>
@@ -157,236 +165,208 @@
 <!-- PAGE 2: What is ExpoLead OS -->
 <div class="page">
   <div class="inner">
+    <div class="run-header"><img src="email-logo-new.png" alt="ExpoLead OS" /><span class="run-label">PRODUCT OVERVIEW</span></div>
     <div class="eyebrow">WHAT IS EXPOLEAD OS</div>
     <div class="page-title">Your exhibition pipeline, organised</div>
-    <div class="page-body">ExpoLead OS is a purpose-built workspace that helps you capture every supplier, buyer signal and follow-up from trade shows. Nothing falls through the cracks when the exhibition ends. Start a free 14-day trial with no credit card needed.</div>
+    <div class="page-body">A purpose-built workspace that captures every connection, buyer signal and follow-up from your trade shows — so nothing falls through the cracks when the exhibition ends. Not a generic CRM: built for three days on a show floor, on your feet, meeting fifty people.</div>
 
     <div class="features">
       <div class="feat">
-        <div class="feat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <div class="feat-text">
-          <div class="feat-title">Capture suppliers instantly</div>
-          <div class="feat-desc">Log booth visits, company details, classifications and follow-up priority in seconds during the show.</div>
-        </div>
+        <div class="feat-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></div>
+        <div><div class="feat-title">Capture connections instantly</div><div class="feat-desc">Log booth visits, company details, classification and follow-up priority in seconds during the show.</div></div>
       </div>
       <div class="feat">
-        <div class="feat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </div>
-        <div class="feat-text">
-          <div class="feat-title">Manage exhibitions</div>
-          <div class="feat-desc">Organise multiple trade shows with dedicated pipelines, booth lists and visit tracking.</div>
-        </div>
+        <div class="feat-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+        <div><div class="feat-title">Manage every exhibition</div><div class="feat-desc">A dedicated workspace per show with booth lists, visit tracking and a ready-made prep checklist.</div></div>
       </div>
       <div class="feat">
-        <div class="feat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        </div>
-        <div class="feat-text">
-          <div class="feat-title">Pipeline visibility</div>
-          <div class="feat-desc">Track active opportunities by stage: Qualified, Pricing, Evaluation, Negotiating, Won or Lost.</div>
-        </div>
+        <div class="feat-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#059669" stroke="none"/></svg></div>
+        <div><div class="feat-title">Opportunity pipeline</div><div class="feat-desc">Track deals by stage — Qualified, Pricing, Evaluation, Negotiating, Won or Lost — with live volume and win rate.</div></div>
       </div>
       <div class="feat">
-        <div class="feat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        </div>
-        <div class="feat-text">
-          <div class="feat-title">Follow-up alerts</div>
-          <div class="feat-desc">Get notified when actions are due or overdue. Never miss a follow-up after the show.</div>
-        </div>
+        <div class="feat-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div><div class="feat-title">Follow-up reminders</div><div class="feat-desc">Get alerts when actions are due or overdue. Never miss a follow-up in the crucial days after a show.</div></div>
       </div>
       <div class="feat">
-        <div class="feat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </div>
-        <div class="feat-text">
-          <div class="feat-title">Export anytime</div>
-          <div class="feat-desc">Download suppliers and opportunities as CSV at any time. Your data is always yours.</div>
-        </div>
+        <div class="feat-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 4-5"/></svg></div>
+        <div><div class="feat-title">Reports &amp; insights</div><div class="feat-desc">See what each show was worth — pipeline by stage, connections by exhibition, conversion performance.</div></div>
       </div>
       <div class="feat">
-        <div class="feat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <div class="feat-text">
-          <div class="feat-title">Built for global trade</div>
-          <div class="feat-desc">Designed for international sourcing teams, B2B sales professionals and exhibition regulars.</div>
-        </div>
+        <div class="feat-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+        <div><div class="feat-title">Your data, always yours</div><div class="feat-desc">Export connections and opportunities to CSV anytime. No lock-in, ever.</div></div>
       </div>
     </div>
 
-    <div class="badge">14-day free trial · No credit card required</div>
+    <div class="badge">14-day free trial · No credit card required · Sample data included</div>
   </div>
   <div class="page-num">2</div>
 </div>
 
-<!-- PAGE 3: Sign up -->
+<!-- PAGE 3: Dashboard -->
 <div class="page">
   <div class="inner">
-    <div class="eyebrow">01 · GETTING STARTED</div>
-    <div class="page-title">Create your account</div>
-    <div class="page-body">Getting started takes under a minute. Create your account with an email and password. Your 14-day free trial starts immediately with sample exhibition data already loaded so you can explore right away.</div>
-    <div class="screen-wrap">
-      <img src="02-signup.png.png" alt="Sign up screen" />
-    </div>
-    <div class="screen-caption">Create your account</div>
-    <div class="section-rule"></div>
-    <div class="eyebrow">RETURNING USERS</div>
-    <div class="page-title" style="font-size:18px;">Sign in to your workspace</div>
-    <div class="page-body" style="margin-bottom:14px;">Returning users sign back in from the same screen. Password reset is available if needed — a secure link goes directly to your email.</div>
-    <div class="screen-wrap">
-      <img src="03-signin.png.png" alt="Sign in screen" />
-    </div>
-    <div class="screen-caption">Sign in for returning users</div>
+    <div class="run-header"><img src="email-logo-new.png" alt="ExpoLead OS" /><span class="run-label">01 · DASHBOARD</span></div>
+    <div class="eyebrow">01 · DASHBOARD</div>
+    <div class="page-title">Your pipeline at a glance</div>
+    <div class="page-body">The dashboard is your command center — every number that matters from your shows, in one view.</div>
+    <div class="screen-wrap feature-shot"><img src="screenshots/dashboard.png" alt="Dashboard" /></div>
+    <div class="screen-caption">Dashboard — exhibition pipeline and follow-up command center</div>
+    <ul class="pts">
+      <li><strong>Live pipeline metrics</strong> — active opportunities, total pipeline volume and win rate, updated automatically.</li>
+      <li><strong>Follow-ups front and center</strong> — see what's due today and what's overdue before it slips.</li>
+      <li><strong>Show activity</strong> — connections captured, booths visited and remaining, across every exhibition.</li>
+    </ul>
   </div>
   <div class="page-num">3</div>
 </div>
 
-<!-- PAGE 4: Dashboard -->
+<!-- PAGE 4: Connections -->
 <div class="page">
   <div class="inner">
-    <div class="eyebrow">02 · DASHBOARD</div>
-    <div class="page-title">Your pipeline at a glance</div>
-    <div class="page-body">The dashboard is your command center. See active opportunities, total pipeline volume, follow-ups due today, overdue actions, suppliers captured and exhibition activity all in one view.</div>
-    <div class="screen-wrap">
-      <img src="04-dashboard.png.png" alt="Dashboard" />
-    </div>
-    <div class="screen-caption">Dashboard — exhibition pipeline and follow-up command center</div>
-    <div class="section-rule"></div>
-    <div class="eyebrow">03 · SUPPLIERS</div>
-    <div class="page-title" style="font-size:18px;">Every booth contact, captured</div>
-    <div class="page-body" style="margin-bottom:14px;">Each supplier entry stores company name, exhibition, booth number, classification, country, priority and follow-up status. Filter, search and export to CSV at any time.</div>
-    <div class="screen-wrap">
-      <img src="05-suppliers.png.png" alt="Suppliers" />
-    </div>
-    <div class="screen-caption">Suppliers — full list with filters, search and CSV export</div>
+    <div class="run-header"><img src="email-logo-new.png" alt="ExpoLead OS" /><span class="run-label">02 · CONNECTIONS</span></div>
+    <div class="eyebrow">02 · CONNECTIONS</div>
+    <div class="page-title">Every booth contact, captured</div>
+    <div class="page-body">The people and companies you meet at the show — organised, searchable and never forgotten.</div>
+    <div class="screen-wrap feature-shot"><img src="screenshots/connections.png" alt="Connections" /></div>
+    <div class="screen-caption">Connections — full list with filters, search and CSV export</div>
+    <ul class="pts">
+      <li><strong>Rich records</strong> — company, country, classification, booth &amp; hall, priority and follow-up status.</li>
+      <li><strong>Where you met matters</strong> — flag whether they came to your stand or you visited their booth.</li>
+      <li><strong>Capture the conversation</strong> — notes and voice capture, so the detail is there when you follow up.</li>
+    </ul>
   </div>
   <div class="page-num">4</div>
 </div>
 
-<!-- PAGE 5: Exhibitions + Opportunities -->
+<!-- PAGE 5: Exhibitions -->
 <div class="page">
   <div class="inner">
-    <div class="eyebrow">04 · EXHIBITIONS</div>
+    <div class="run-header"><img src="email-logo-new.png" alt="ExpoLead OS" /><span class="run-label">03 · EXHIBITIONS</span></div>
+    <div class="eyebrow">03 · EXHIBITIONS</div>
     <div class="page-title">Manage every show you attend</div>
-    <div class="page-body">Each exhibition gets its own workspace with supplier count, visited booths, remaining visits and show dates. Add as many shows as you attend and switch between them instantly.</div>
-    <div class="screen-wrap">
-      <img src="06-exhibitions.png.png" alt="Exhibitions" />
-    </div>
-    <div class="screen-caption">Exhibitions — CHINACOAT 2026, Canton Fair 2026, ICIF 2026 and more</div>
-    <div class="section-rule"></div>
-    <div class="eyebrow">05 · OPPORTUNITIES</div>
-    <div class="page-title" style="font-size:18px;">From conversation to revenue</div>
-    <div class="page-body" style="margin-bottom:14px;">Track every serious lead through your sales pipeline. Stages run from Qualified through to Won or Lost. Total pipeline volume and win rate update automatically.</div>
-    <div class="screen-wrap">
-      <img src="07-opportunities.png.png" alt="Opportunities" />
-    </div>
-    <div class="screen-caption">Opportunities — stage tracking, pipeline volume and win rate</div>
+    <div class="page-body">Each exhibition gets its own workspace — add as many shows as you attend and switch between them instantly.</div>
+    <div class="screen-wrap feature-shot"><img src="screenshots/exhibitions.png" alt="Exhibitions" /></div>
+    <div class="screen-caption">Exhibitions — per-show pipeline, booths and prep</div>
+    <ul class="pts">
+      <li><strong>Exhibiting or visiting</strong> — set your posture and your own stand details for each show.</li>
+      <li><strong>Show-ready checklist</strong> — a ready-made prep list gets you organised before you travel.</li>
+      <li><strong>At-a-glance status</strong> — connections, booths visited, remaining visits and show dates.</li>
+    </ul>
   </div>
   <div class="page-num">5</div>
 </div>
 
-<!-- PAGE 6: Account + Pricing -->
+<!-- PAGE 6: Opportunities -->
 <div class="page">
   <div class="inner">
-    <div class="eyebrow">04 · ACCOUNT AND PLANS</div>
-    <div class="page-title">Your workspace and your plan</div>
-    <div class="page-body">Manage your profile, monitor trial status and upgrade when you are ready. Trial users see a live countdown in the account menu and can view plans at any time. Choose the plan that fits your team.</div>
-
-    <div class="three-quarters">
-      <div>
-        <div class="screen-wrap" style="max-width:240px; margin:0 auto 6px;">
-          <canvas id="accountCanvas" style="width:100%;display:block;"></canvas>
-        </div>
-        <div class="screen-caption">Account menu with trial status</div>
-      </div>
-      <div>
-        <div class="price-stack">
-          <div class="price-card">
-            <div class="price-name">Starter</div>
-            <div><span class="price-amount">$19</span><span class="price-period"> / month</span></div>
-            <ul class="price-features">
-              <li>Unlimited suppliers</li>
-              <li>Up to 5 exhibitions</li>
-              <li>Opportunity tracking</li>
-              <li>CSV export</li>
-              <li>Email support</li>
-            </ul>
-          </div>
-          <div class="price-card featured">
-            <div style="font-size:10px;color:#065f46;background:#d1fae5;display:inline-block;padding:2px 10px;border-radius:20px;margin-bottom:8px;font-weight:700;letter-spacing:0.05em">FOR TEAMS</div>
-            <div class="price-name">Professional</div>
-            <div><span class="price-amount">$49</span><span class="price-period"> / month</span></div>
-            <ul class="price-features">
-              <li>Everything in Starter</li>
-              <li>Unlimited exhibitions</li>
-              <li>Team collaboration</li>
-              <li>Priority support</li>
-              <li>AI features (coming soon)</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="run-header"><img src="email-logo-new.png" alt="ExpoLead OS" /><span class="run-label">04 · OPPORTUNITIES</span></div>
+    <div class="eyebrow">04 · OPPORTUNITIES</div>
+    <div class="page-title">From conversation to revenue</div>
+    <div class="page-body">Track every serious lead through your sales pipeline, from first interest to closed deal.</div>
+    <div class="screen-wrap feature-shot"><img src="screenshots/opportunities.png" alt="Opportunities" /></div>
+    <div class="screen-caption">Opportunities — stage tracking, pipeline volume and win rate</div>
+    <ul class="pts">
+      <li><strong>Clear stages</strong> — Qualified → Pricing → Evaluation → Negotiating → Won or Lost.</li>
+      <li><strong>Deal detail</strong> — value, quantity, destination market and the next follow-up, all in one place.</li>
+      <li><strong>Automatic totals</strong> — pipeline volume and win rate recalculate as deals move.</li>
+    </ul>
   </div>
   <div class="page-num">6</div>
 </div>
 
-<!-- PAGE 7: Back cover -->
+<!-- PAGE 7: Reports + Mobile -->
+<div class="page">
+  <div class="inner">
+    <div class="run-header"><img src="email-logo-new.png" alt="ExpoLead OS" /><span class="run-label">05 · REPORTS</span></div>
+    <div class="eyebrow">05 · REPORTS</div>
+    <div class="page-title">See what the show was worth</div>
+    <div class="page-body">Turn a busy three days on the floor into numbers you can act on — and share with your team.</div>
+    <div class="screen-wrap feature-shot"><img src="screenshots/reports.png" alt="Reports" /></div>
+    <div class="screen-caption">Reports — pipeline, connections and conversion at a glance</div>
+    <div class="split">
+      <ul class="pts" style="margin-top:0;">
+        <li><strong>Pipeline by stage</strong> and connections by exhibition.</li>
+        <li><strong>Conversion &amp; follow-up performance</strong> across your shows.</li>
+        <li><strong>On the go</strong> — check your numbers from your phone between meetings.</li>
+      </ul>
+      <div class="phone"><img src="screenshots/mobile-report.jpeg" alt="Reports on mobile" /></div>
+    </div>
+  </div>
+  <div class="page-num">7</div>
+</div>
+
+<!-- PAGE 8: Pricing -->
+<div class="page">
+  <div class="inner">
+    <div class="run-header"><img src="email-logo-new.png" alt="ExpoLead OS" /><span class="run-label">PLANS</span></div>
+    <div class="eyebrow">SIMPLE, HONEST PRICING</div>
+    <div class="page-title">Start free. Upgrade when it pays for itself.</div>
+    <div class="page-body">One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls. Switch between monthly and annual anytime.</div>
+
+    <div class="prices">
+      <div class="price-card">
+        <div class="price-name">Trial</div>
+        <div class="price-tagline">See the value on one real show</div>
+        <div><span class="price-amount">Free</span></div>
+        <div class="price-annual">14 days · no credit card</div>
+        <ul class="price-features">
+          <li>Full access for 14 days</li>
+          <li>1 exhibition</li>
+          <li>Up to 25 connections</li>
+          <li>Up to 25 opportunities</li>
+          <li>Follow-up tracking &amp; reminders</li>
+          <li>Exhibition library</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-tagline">Everything one person needs</div>
+        <div><span class="price-amount">$29</span><span class="price-period"> / month</span></div>
+        <div class="price-annual">or $348 / year</div>
+        <ul class="price-features">
+          <li>Unlimited exhibitions</li>
+          <li>Unlimited connections &amp; opportunities</li>
+          <li>Follow-up tracking &amp; reminders</li>
+          <li>“Met before” year-over-year memory</li>
+          <li>Reports &amp; insights</li>
+          <li>CSV export</li>
+          <li>Email support</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="price-tag">MOST POPULAR</div>
+        <div class="price-name">Growth</div>
+        <div class="price-tagline">For teams working shows together</div>
+        <div><span class="price-amount">$99</span><span class="price-period"> / month</span></div>
+        <div class="price-annual">or $1,188 / year</div>
+        <ul class="price-features">
+          <li>Everything in Starter</li>
+          <li class="soon">Up to 5 users <span class="soon-tag">SOON</span></li>
+          <li class="soon">Shared workspace <span class="soon-tag">SOON</span></li>
+          <li class="soon">Team activity &amp; reporting <span class="soon-tag">SOON</span></li>
+          <li>Priority email support</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:22px;"><span class="badge">Need a tailored plan? Email hello@expoleados.com</span></div>
+  </div>
+  <div class="page-num">8</div>
+</div>
+
+<!-- PAGE 9: Back cover -->
 <div class="page">
   <div class="back-cover">
-    <div class="back-cover-inner">
-      <div class="cover-logo" style="justify-content:center;display:flex;margin-bottom:20px;">Expo<span style="color:#10b981">Lead</span> OS</div>
-      <div class="cover-bar" style="margin:0 auto 24px;"></div>
-      <div style="font-size:11px;color:#6ee7b7;letter-spacing:0.13em;margin-bottom:16px;font-weight:600;">START YOUR FREE TRIAL TODAY</div>
-      <div style="font-size:30px;font-weight:700;color:#fff;margin-bottom:16px;line-height:1.3;letter-spacing:-0.3px;">Ready to never lose a<br>lead after a show again?</div>
-      <div style="font-size:14px;color:#94a3b8;margin-bottom:36px;line-height:1.8;">14 days free. No credit card required.<br>Sample data included so you can explore from day one.</div>
-      <div style="background:#10b981;color:#fff;display:inline-block;padding:13px 36px;border-radius:8px;font-size:15px;font-weight:700;margin-bottom:40px;letter-spacing:-0.2px;">tradesoil.com</div>
-      <div style="font-size:12px;color:#334155;">Questions? Reach us at support@tradesoil.com</div>
+    <div class="back-inner">
+      <div class="logo-box" style="margin: 0 auto 24px;"><img src="email-logo-new.png" alt="ExpoLead OS" /></div>
+      <div style="font-size:11px;color:#6ee7b7;letter-spacing:0.14em;margin-bottom:16px;font-weight:700;">START YOUR FREE TRIAL TODAY</div>
+      <div style="font-size:30px;font-weight:800;color:#fff;margin-bottom:16px;line-height:1.3;letter-spacing:-0.4px;">Never lose a lead<br>after a show again</div>
+      <div style="font-size:14px;color:#94a3b8;margin-bottom:32px;line-height:1.8;">14 days free. No credit card required.<br>Sample data included so you can explore from day one.</div>
+      <div class="cta-btn">expoleados.com</div>
+      <div style="font-size:12px;color:#94a3b8;">Questions? Reach us at hello@expoleados.com</div>
     </div>
   </div>
 </div>
-
-<script>
-(function() {
-  var img = new Image();
-  img.src = '08-account.png.png';
-  img.onload = function() {
-    var canvas = document.getElementById('accountCanvas');
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-
-    // Cover the email text with a filled rectangle matching background colour
-    var x = Math.floor(img.naturalWidth * 0.12);
-    var y = Math.floor(img.naturalHeight * 0.115);
-    var w = Math.floor(img.naturalWidth * 0.72);
-    var h = Math.floor(img.naturalHeight * 0.06);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x, y, w, h);
-
-    // Draw subtle placeholder bars to keep it looking natural
-    ctx.fillStyle = '#e2e8f0';
-    ctx.beginPath();
-    ctx.roundRect(x + 4, y + Math.floor(h * 0.3), Math.floor(w * 0.55), Math.floor(h * 0.4), 3);
-    ctx.fill();
-  };
-  img.onerror = function() {
-    var canvas = document.getElementById('accountCanvas');
-    canvas.style.display = 'none';
-    var wrap = canvas.parentNode;
-    var fallback = document.createElement('img');
-    fallback.src = '08-account.png.png';
-    fallback.style.width = '100%';
-    wrap.appendChild(fallback);
-  };
-})();
-</script>
 
 </body>
 </html>
