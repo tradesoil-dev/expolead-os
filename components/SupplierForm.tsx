@@ -266,7 +266,10 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
             </label>
           </Field>
 
-          <Field label={tradeModelHeading(form.interest_type as InterestType)} span2>
+          <div className="sm:col-span-2">
+            <span className="mb-1.5 block text-sm font-semibold text-emerald-700">
+              {tradeModelHeading(form.interest_type as InterestType)}:
+            </span>
             <div className="flex flex-wrap gap-1.5">
               {TRADE_MODELS.map((t) => {
                 const on = form.trade_models.includes(t.value);
@@ -282,8 +285,8 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
                 );
               })}
             </div>
-            <p className="mt-1.5 text-xs text-ink-400">Tick any that apply — how you&rsquo;d do business together.</p>
-          </Field>
+            <p className="mt-1.5 text-xs text-ink-400">Tick any that apply, how you&rsquo;d do business together.</p>
+          </div>
         </Grid>
       </Section>
 
