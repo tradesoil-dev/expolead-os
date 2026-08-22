@@ -210,6 +210,10 @@ export type Opportunity = {
   id: string;
   user_id: string;
 
+  // Optional link to the connection (buyer/supplier) this opportunity came from.
+  supplier_id: string | null;
+  supplier?: { id: string; company_name: string } | null;
+
   name: string;
   product: string;
   quantity: string | null;

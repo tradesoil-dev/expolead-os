@@ -12,6 +12,7 @@ import {
   priorityLabel,
   interestLabel,
   tradeModelLabel,
+  TRADE_MODELS,
   type Supplier,
 } from "@/lib/types";
 
@@ -22,6 +23,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
   const [status, setStatus] = useState("");
   const [visited, setVisited] = useState("");
   const [exhibition, setExhibition] = useState("");
+  const [tradeModel, setTradeModel] = useState("");
 
   const exhibitions = useMemo(() => {
     const map = new Map<string, string>();
@@ -43,6 +45,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
       if (visited === "yes" && !s.visited) return false;
       if (visited === "no" && s.visited) return false;
       if (exhibition && s.exhibition_id !== exhibition) return false;
+      if (tradeModel && !(s.trade_models ?? []).includes(tradeModel)) return false;
 
       if (q) {
         const hay = `${s.company_name} ${s.country ?? ""} ${s.exhibition?.name ?? ""} ${s.hall ?? ""} ${s.booth_number ?? ""}`.toLowerCase();
@@ -51,7 +54,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
 
       return true;
     });
-  }, [suppliers, q, interest, priority, status, visited, exhibition]);
+  }, [suppliers, q, interest, priority, status, visited, exhibition, tradeModel]);
 
   function exportCsv() {
     const headers = [
@@ -155,12 +158,19 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
         />
 
         {/* Filters — compact grid: 2 cols on mobile, one row of 5 on desktop */}
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           <Select
             value={exhibition}
             onChange={setExhibition}
             className="py-2"
             options={[{ value: "", label: "All exhibitions" }, ...exhibitions.map(([id, name]) => ({ value: id, label: name }))]}
+          />
+
+          <Select
+            value={tradeModel}
+            onChange={setTradeModel}
+            className="py-2"
+            options={[{ value: "", label: "All trade models" }, ...TRADE_MODELS.map((x) => ({ value: x.value, label: x.label }))]}
           />
 
           <Select

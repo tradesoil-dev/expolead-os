@@ -17,12 +17,16 @@ export default async function ReportsPage() {
 
   const exhibitionCosts = exhibitions.map((e: any) => ({ name: e.name, cost: e.cost ?? null }));
 
+  // Map a connection's trade models so opportunities can inherit them via the link.
+  const tmBySupplier = new Map<string, string[]>(suppliers.map((s) => [s.id, (s as any).trade_models ?? []]));
+
   const connections = suppliers.map((s) => ({
     id: s.id,
     created_at: (s as any).created_at ?? null,
     interest_type: s.interest_type ?? null,
     exhibition: s.exhibition?.name ?? null,
     country: s.country ?? null,
+    trade_models: (s as any).trade_models ?? [],
   }));
 
   const opps = opportunities.map((o: any) => ({
@@ -36,6 +40,8 @@ export default async function ReportsPage() {
     market: o.destination_market ?? null,
     next_follow_up_date: o.next_follow_up_date ?? null,
     next_follow_up_completed: o.next_follow_up_completed ?? null,
+    // Trade models come from the linked connection (empty if not linked).
+    trade_models: o.supplier_id ? (tmBySupplier.get(o.supplier_id) ?? []) : [],
   }));
 
   return (

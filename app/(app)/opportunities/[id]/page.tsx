@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import NextFollowUpForm from "@/components/NextFollowUpForm";
 import CompleteFollowUpButton from "@/components/CompleteFollowUpButton";
-import { getOpportunity, getOpportunityFollowUps, getOpportunityStatusHistory } from "@/lib/data";
+import { getOpportunity, getOpportunityFollowUps, getOpportunityStatusHistory, getSuppliers } from "@/lib/data";
+import OpportunityConnectionEditor from "@/components/OpportunityConnectionEditor";
 import AddOpportunityFollowUp from "@/components/AddOpportunityFollowUp";
 import OpportunityNotesEditor from "@/components/OpportunityNotesEditor";
 import {
@@ -25,6 +26,12 @@ export default async function OpportunityDetailPage({
   const statusHistory = await getOpportunityStatusHistory(id);
   const workspaceUnit = await getQuantityUnit();
   const currency = await getCurrency();
+  const suppliers = await getSuppliers();
+  const connectionOptions = suppliers.map((s) => ({
+    id: s.id,
+    company_name: s.company_name,
+    exhibition_name: s.exhibition?.name ?? null,
+  }));
 
   if (!opportunity) notFound();
 
@@ -42,6 +49,15 @@ export default async function OpportunityDetailPage({
         <p className="text-sm text-gray-500">
           Opportunity information and follow-up history
         </p>
+      </div>
+
+      <div className="rounded-xl border bg-white p-4">
+        <p className="text-xs text-gray-500 mb-1">Linked connection</p>
+        <OpportunityConnectionEditor
+          opportunityId={opportunity.id}
+          current={opportunity.supplier_id}
+          connections={connectionOptions}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-5">

@@ -5,6 +5,7 @@ import ReportChart from "@/components/ReportChart";
 import Select from "@/components/Select";
 import ReportsPresent from "@/components/ReportsPresent";
 import { formatGroupedVolume } from "@/lib/quantity-units";
+import { TRADE_MODELS } from "@/lib/types";
 import RoiPanel from "@/components/RoiPanel";
 
 const RANGE_LABELS: Record<string, string> = {
@@ -14,8 +15,8 @@ const RANGE_LABELS: Record<string, string> = {
   all: "All time",
 };
 
-type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null };
-type Opp = { id: string; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null };
+type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null; trade_models?: string[] };
+type Opp = { id: string; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null; trade_models?: string[] };
 
 const STAGE_ORDER: { key: string; label: string; color: string }[] = [
   { key: "researching", label: "Qualified", color: "#64748b" },
@@ -34,6 +35,7 @@ const TYPE_ORDER: { key: string; label: string; color: string }[] = [
 ];
 
 const EXH_COLORS = ["#10b981", "#34d399", "#6ee7b7", "#059669", "#047857", "#94a3b8"];
+const TM_COLORS = ["#10b981", "#38bdf8", "#f59e0b", "#8b5cf6", "#f43f5e", "#14b8a6"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function withinRange(dateStr: string | null, range: string): boolean {
@@ -55,6 +57,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
   const [tTime, setTTime] = useState<"line" | "bar">("line");
   const [tCountry, setTCountry] = useState<"bar" | "pie">("bar");
   const [tMarket, setTMarket] = useState<"bar" | "pie">("bar");
+  const [tTm, setTTm] = useState<"bar" | "doughnut">("bar");
   const [presenting, setPresenting] = useState(false);
 
   const exhibitionOptions = useMemo(() => {
@@ -148,6 +151,32 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
     return { labels: sorted.map(([n]) => n), data: sorted.map(([, v]) => v), colors: sorted.map((_, i) => EXH_COLORS[i % EXH_COLORS.length]) };
   }, [fOpps]);
 
+  // Connections by trade model (counts). A connection can hold several models,
+  // so this is not mutually exclusive.
+  const tradeModel = useMemo(() => {
+    const items = TRADE_MODELS
+      .map((tm) => ({ label: tm.label, count: fConns.filter((c) => (c.trade_models ?? []).includes(tm.value)).length }))
+      .filter((x) => x.count > 0);
+    return { labels: items.map((x) => x.label), data: items.map((x) => x.count), colors: items.map((_, i) => TM_COLORS[i % TM_COLORS.length]) };
+  }, [fConns]);
+
+  // Performance per trade model, using opportunities linked to connections.
+  const perTradeModel = useMemo(() => {
+    return TRADE_MODELS
+      .map((tm) => {
+        const conns = fConns.filter((c) => (c.trade_models ?? []).includes(tm.value)).length;
+        const opps = fOpps.filter((o) => (o.trade_models ?? []).includes(tm.value));
+        const won = opps.filter((o) => o.status === "won").length;
+        const lost = opps.filter((o) => o.status === "lost").length;
+        const active = opps.filter((o) => o.status !== "won" && o.status !== "lost");
+        const winRate = won + lost === 0 ? null : Math.round((won / (won + lost)) * 100);
+        const value = active.reduce((sum, o) => sum + (Number(o.deal_value) || 0), 0);
+        return { key: tm.value, label: tm.label, conns, opps: opps.length, won, winRate, value };
+      })
+      .filter((r) => r.conns > 0 || r.opps > 0)
+      .sort((a, b) => b.conns - a.conns);
+  }, [fConns, fOpps]);
+
   const funnel = useMemo(() => {
     const c = fConns.length;
     const o = fOpps.length;
@@ -207,6 +236,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             { key: "time", heading: "Connections added over time", type: "line", data: time },
             { key: "country", heading: "Connections by country", type: "bar", data: country },
             { key: "market", heading: "Opportunities by market", type: "bar", data: market },
+            ...(tradeModel.labels.length > 0 ? [{ key: "tradeModel", heading: "Connections by trade model", type: "bar", data: tradeModel }] : []),
           ]}
           funnel={funnel}
           perExhibition={perExhibition}
@@ -260,6 +290,11 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
                 <ReportChart type={tMarket} labels={market.labels} data={market.data} colors={market.colors} />
               </Card>
             )}
+            {tradeModel.labels.length > 0 && (
+              <Card title="Connections by trade model" seg={<Seg value={tTm} onChange={(v) => setTTm(v as any)} options={["bar", "doughnut"]} labels={["Bar", "Donut"]} />}>
+                <ReportChart type={tTm} labels={tradeModel.labels} data={tradeModel.data} colors={tradeModel.colors} />
+              </Card>
+            )}
           </div>
 
           <div className="rounded-2xl border border-ink-200 bg-white p-4">
@@ -302,6 +337,39 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
               </table>
             </div>
           </div>
+
+          {perTradeModel.length > 0 && (
+            <div className="rounded-2xl border border-ink-200 bg-white p-4">
+              <h3 className="mb-1 text-sm font-bold text-slate-900">Performance by trade model</h3>
+              <p className="mb-3 text-xs text-slate-500">Opportunities count, win rate and pipeline value come from opportunities linked to a connection.</p>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[560px] text-sm">
+                  <thead>
+                    <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                      <th className="py-2 pr-3">Trade model</th>
+                      <th className="py-2 pr-3 text-right">Connections</th>
+                      <th className="py-2 pr-3 text-right">Opportunities</th>
+                      <th className="py-2 pr-3 text-right">Won</th>
+                      <th className="py-2 pr-3 text-right">Win rate</th>
+                      <th className="py-2 text-right">Pipeline value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {perTradeModel.map((r) => (
+                      <tr key={r.key} className="border-b border-ink-50 last:border-0">
+                        <td className="py-2.5 pr-3 font-semibold text-slate-900">{r.label}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-slate-700">{r.conns}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-slate-700">{r.opps}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-emerald-700 font-semibold">{r.won}</td>
+                        <td className="py-2.5 pr-3 text-right tabular-nums text-slate-700">{r.winRate === null ? "—" : `${r.winRate}%`}</td>
+                        <td className="py-2.5 text-right tabular-nums text-slate-700">{r.value > 0 ? `${currency} ${r.value.toLocaleString()}` : "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

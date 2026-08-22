@@ -2,7 +2,7 @@ import PageHeader from "@/components/PageHeader";
 import AddOpportunityForm from "@/components/AddOpportunityForm";
 import OpportunitiesExportButton from "@/components/OpportunitiesExportButton";
 import OpportunityBoard from "@/components/OpportunityBoard";
-import { getOpportunities, getExhibitions } from "@/lib/data";
+import { getOpportunities, getExhibitions, getSuppliers } from "@/lib/data";
 import { getTrialStatus } from "@/lib/trial";
 import { getQuantityUnit } from "@/lib/quantity-unit";
 import { getCurrency } from "@/lib/currency";
@@ -15,13 +15,21 @@ export default async function OpportunitiesPage({
   searchParams: Promise<{ exhibition?: string }>;
 }) {
   const { exhibition: selected = "" } = await searchParams;
-  const [allOpportunities, exhibitions, trial, quantityUnit, currency] = await Promise.all([
+  const [allOpportunities, exhibitions, suppliers, trial, quantityUnit, currency] = await Promise.all([
     getOpportunities(),
     getExhibitions(),
+    getSuppliers(),
     getTrialStatus(),
     getQuantityUnit(),
     getCurrency(),
   ]);
+
+  const connectionOptions = suppliers.map((s) => ({
+    id: s.id,
+    company_name: s.company_name,
+    exhibition_name: s.exhibition?.name ?? null,
+    booth_number: s.booth_number ?? null,
+  }));
 
   // Every count, volume and column below works off the filtered set, so the
   // stat cards and the board can never disagree with the chosen show.
@@ -72,7 +80,7 @@ export default async function OpportunitiesPage({
       />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <AddOpportunityForm exhibitions={exhibitions} isLocked={trial.isExpired} quantityUnit={quantityUnit} currency={currency} />
+        <AddOpportunityForm exhibitions={exhibitions} connections={connectionOptions} isLocked={trial.isExpired} quantityUnit={quantityUnit} currency={currency} />
         {exhibitionNames.length > 1 && (
           <ExhibitionFilter exhibitions={exhibitionNames} value={selected} />
         )}

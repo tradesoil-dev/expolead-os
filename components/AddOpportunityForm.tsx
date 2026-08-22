@@ -10,7 +10,9 @@ import Select from "@/components/Select";
 import { QUANTITY_UNITS } from "@/lib/quantity-units";
 import type { Exhibition } from "@/lib/types";
 
-export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit = "MT", currency = "USD" }: { exhibitions: Exhibition[]; isLocked?: boolean; quantityUnit?: string; currency?: string }) {
+type ConnOption = { id: string; company_name: string; exhibition_name: string | null; booth_number: string | null };
+
+export default function AddOpportunityForm({ exhibitions, connections = [], isLocked, quantityUnit = "MT", currency = "USD" }: { exhibitions: Exhibition[]; connections?: ConnOption[]; isLocked?: boolean; quantityUnit?: string; currency?: string }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
   const [open, setOpen] = useState(false);
@@ -28,11 +30,24 @@ export default function AddOpportunityForm({ exhibitions, isLocked, quantityUnit
     notes: "",
 exhibition: "",
 booth: "",
+supplier_id: "",
 
   });
 
   function set<K extends keyof typeof form>(key: K, value: string) {
     setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  // Linking a connection also prefills the show and booth (only if still empty),
+  // so the opportunity inherits where it came from.
+  function pickConnection(id: string) {
+    const c = connections.find((x) => x.id === id);
+    setForm((f) => ({
+      ...f,
+      supplier_id: id,
+      exhibition: f.exhibition || (c?.exhibition_name ?? ""),
+      booth: f.booth || (c?.booth_number ?? ""),
+    }));
   }
 
   async function save() {
@@ -66,6 +81,7 @@ const { error } = await supabase.from("opportunities").insert({
   notes: form.notes || null,
 exhibition: form.exhibition || null,
 booth: form.booth || null,
+supplier_id: form.supplier_id || null,
 });
 
 if (error) {
@@ -88,6 +104,7 @@ if (error) {
       notes: "",
 exhibition: "",
 booth: "",
+supplier_id: "",
 
     });
 
@@ -142,6 +159,22 @@ booth: "",
         placeholder="Product, e.g. Used Cooking Oil"
         className={inputClass}
       />
+
+      {connections.length > 0 && (
+        <div>
+          <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Linked connection</span>
+          <Select
+            value={form.supplier_id}
+            onChange={pickConnection}
+            placeholder="Link to a connection (optional)"
+            options={[
+              { value: "", label: "Not linked to a connection" },
+              ...connections.map((c) => ({ value: c.id, label: c.exhibition_name ? `${c.company_name} · ${c.exhibition_name}` : c.company_name })),
+            ]}
+          />
+          <p className="mt-1 text-xs text-ink-400">Ties this deal to the buyer/supplier you met, powering richer reports.</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="flex gap-2">
