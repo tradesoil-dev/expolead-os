@@ -183,7 +183,7 @@ const translations = {
       col1: { heading: "ExpoLead OS", items: ["About", "Product Overview", "Exhibitions", "Trade Show Teams"] },
       col2: { heading: "Use Cases", items: ["Lead Capture", "Buyer Qualification", "Sample Tracking", "Quotation Follow-ups"] },
       col3: { heading: "Resources", items: ["Help Center", "Product Guide", "Best Practices", "Support"] },
-      col4: { heading: "Company", tradesoil: "Tradesoil", contact: "Contact" },
+      col4: { heading: "Company", contact: "Contact" },
     },
     footer: {
       lang: "English (US)",
@@ -332,7 +332,7 @@ const translations = {
       col1: { heading: "ExpoLead OS", items: ["关于我们", "产品概览", "展会", "展会团队"] },
       col2: { heading: "使用场景", items: ["线索捕捉", "买家资质评估", "样品追踪", "报价跟进"] },
       col3: { heading: "资源", items: ["帮助中心", "产品指南", "最佳实践", "支持"] },
-      col4: { heading: "公司", tradesoil: "Tradesoil", contact: "联系我们" },
+      col4: { heading: "公司", contact: "联系我们" },
     },
     footer: {
       lang: "中文（简体）",
