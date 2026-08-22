@@ -11,6 +11,7 @@ import {
   statusLabel,
   priorityLabel,
   interestLabel,
+  tradeModelLabel,
   type Supplier,
 } from "@/lib/types";
 
@@ -247,6 +248,15 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
                       <span className="ml-2 rounded bg-ink-100 px-1.5 py-0.5 text-[10px] font-medium text-ink-500">
                         TARGET
                       </span>
+                    )}
+                    {s.trade_models && s.trade_models.length > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {s.trade_models.map((t) => (
+                          <span key={t} className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
+                            {tradeModelLabel(t)}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </td>
 

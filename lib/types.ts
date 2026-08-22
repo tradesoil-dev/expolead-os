@@ -20,6 +20,17 @@ export type FollowUpStatus =
 
 export type AttendingAs = "visiting" | "exhibiting";
 
+// Trade / engagement models a connection deals in. One shared list used in both
+// directions — a supplier/manufacturer OFFERS these; a buyer/trader/distributor/
+// service provider is LOOKING FOR them (see tradeModelHeading).
+export type TradeModel =
+  | "private_label"
+  | "own_brand"
+  | "distribution"
+  | "bulk"
+  | "co_packing"
+  | "ingredient_supply";
+
 // Per-connection override for where a connection was met. null = inherit the
 // linked exhibition's attending_as posture.
 export type MetAt = "my_stand" | "their_booth";
@@ -105,6 +116,7 @@ export interface Supplier {
   follow_up_status: FollowUpStatus;
   follow_up_date: string | null;
   categories: string[];
+  trade_models: string[];
   notes: string | null;
   created_at: string;
 
@@ -173,6 +185,26 @@ export function statusLabel(s: FollowUpStatus) {
 }
 export function interestLabel(i: InterestType) {
   return INTEREST_TYPES.find((x) => x.value === i)?.label ?? i;
+}
+
+export const TRADE_MODELS: { value: TradeModel; label: string }[] = [
+  { value: "private_label", label: "Private label" },
+  { value: "own_brand", label: "Own brand" },
+  { value: "distribution", label: "Distribution" },
+  { value: "bulk", label: "Bulk supply" },
+  { value: "co_packing", label: "Co-packing" },
+  { value: "ingredient_supply", label: "Ingredient supply" },
+];
+
+export function tradeModelLabel(v: string) {
+  return TRADE_MODELS.find((t) => t.value === v)?.label ?? v;
+}
+
+// The field means different things depending on who the connection is: a
+// supplier/manufacturer OFFERS these models; anyone else (buyer, trader,
+// distributor, agent, service provider) is LOOKING FOR them.
+export function tradeModelHeading(interest: InterestType): string {
+  return interest === "supplier" ? "What they offer" : "What they're looking for";
 }
 export type Opportunity = {
   id: string;

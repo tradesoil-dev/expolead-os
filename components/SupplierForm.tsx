@@ -12,7 +12,10 @@ import {
   INTEREST_TYPES,
   PRIORITIES,
   FOLLOW_UP_STATUSES,
+  TRADE_MODELS,
+  tradeModelHeading,
   type Exhibition,
+  type InterestType,
 } from "@/lib/types";
 import { User, Building2, Tag, MapPin, StickyNote } from "lucide-react";
 import ConversationRecorder from "@/components/ConversationRecorder";
@@ -29,6 +32,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     country: "",
     website: "",
     interest_type: "supplier",
+    trade_models: [] as string[],
     priority: "medium",
     follow_up_status: "new",
     follow_up_date: "",
@@ -59,6 +63,15 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 
   function setC<K extends keyof typeof contact>(k: K, v: (typeof contact)[K]) {
     setContact((c) => ({ ...c, [k]: v }));
+  }
+
+  function toggleTradeModel(v: string) {
+    setForm((f) => ({
+      ...f,
+      trade_models: f.trade_models.includes(v)
+        ? f.trade_models.filter((x) => x !== v)
+        : [...f.trade_models, v],
+    }));
   }
 
   const selectedEx = exhibitions.find((e) => e.id === form.exhibition_id);
@@ -99,6 +112,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           country: form.country || null,
           website: form.website || null,
           interest_type: form.interest_type,
+          trade_models: form.trade_models,
           priority: form.priority,
           follow_up_status: form.follow_up_status,
           follow_up_date: form.follow_up_date || null,
@@ -250,6 +264,25 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
               />
               <span className="text-sm text-ink-700">Yes, this was a pre-show target</span>
             </label>
+          </Field>
+
+          <Field label={tradeModelHeading(form.interest_type as InterestType)} span2>
+            <div className="flex flex-wrap gap-1.5">
+              {TRADE_MODELS.map((t) => {
+                const on = form.trade_models.includes(t.value);
+                return (
+                  <button
+                    key={t.value}
+                    type="button"
+                    onClick={() => toggleTradeModel(t.value)}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${on ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-ink-200 bg-white text-ink-600 hover:border-ink-300"}`}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-1.5 text-xs text-ink-400">Tick any that apply — how you&rsquo;d do business together.</p>
           </Field>
         </Grid>
       </Section>

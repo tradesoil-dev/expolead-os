@@ -4,6 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import { PriorityBadge, InterestBadge } from "@/components/Badge";
 import StatusUpdater from "@/components/StatusUpdater";
 import ClassificationUpdater from "@/components/ClassificationUpdater";
+import TradeModelUpdater from "@/components/TradeModelUpdater";
 import AddContactForm from "@/components/AddContactForm";
 import ContactManager from "@/components/ContactManager";
 
@@ -13,6 +14,7 @@ import AddProductForm from "@/components/AddProductForm";
 import SupplierNotesEditor from "@/components/SupplierNotesEditor";
 import ConversationRecorder from "@/components/ConversationRecorder";
 import EditButton from "@/components/EditButton";
+import { tradeModelHeading } from "@/lib/types";
 import { getSupplier, getExhibitions } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
@@ -149,6 +151,11 @@ export default async function SupplierProfile({
               <p className="text-xs text-ink-400 mb-1">Follow-up status</p>
               <StatusUpdater supplierId={supplier.id} current={supplier.follow_up_status} />
             </div>
+          </div>
+
+          <div className="pt-3 border-t border-ink-100">
+            <p className="text-xs text-ink-400 mb-1.5">{tradeModelHeading(supplier.interest_type)}</p>
+            <TradeModelUpdater supplierId={supplier.id} current={supplier.trade_models ?? []} />
           </div>
         </div>
 
