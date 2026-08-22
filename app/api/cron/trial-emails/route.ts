@@ -18,7 +18,8 @@ async function sendEmail(to: string, subject: string, html: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "ExpoLead OS <hello@expoleados.com>",
+      // Automated trial reminders — no reply expected, so send from noreply.
+      from: "ExpoLead OS <noreply@expoleados.com>",
       to,
       subject,
       html,
