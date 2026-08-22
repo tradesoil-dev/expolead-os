@@ -67,7 +67,7 @@ const doc = new Document({
         children: [new TextRun({ text: 'Privacy Notice', bold: true, size: 40, font: 'Arial' })]
       }),
 
-      p('Welcome, and thank you for your interest in ExpoLead OS ("ExpoLead OS," "we," or "us"), our website at https://expoleados.com and all related services we provide (collectively, "ExpoLead OS Operations"). ExpoLead OS is a product of Tradesoil International, operated by Gladwin Gerald.'),
+      p('Welcome, and thank you for your interest in ExpoLead OS ("ExpoLead OS," "we," or "us"), our website at https://expoleados.com and all related services we provide (collectively, "ExpoLead OS Operations"). ExpoLead OS is a product of GLA Consulting (Private) Limited, operated by Gladwin Gerald.'),
 
       p('This Privacy Notice describes the information we gather when you use ExpoLead OS, how we use and disclose such information, and the steps we take to protect it.'),
 
@@ -178,7 +178,7 @@ const doc = new Document({
 
       h1('7. INTERNATIONAL DATA TRANSFERS'),
 
-      p('ExpoLead OS is operated by Tradesoil International, based in Singapore. Your data is stored on Supabase infrastructure hosted on AWS. By using ExpoLead OS, you acknowledge that your data may be transferred to and processed in countries other than your own.'),
+      p('ExpoLead OS is operated by GLA Consulting (Private) Limited, based in Sri Lanka. Your data is stored on Supabase infrastructure hosted on AWS. By using ExpoLead OS, you acknowledge that your data may be transferred to and processed in countries other than your own.'),
       p('We take appropriate measures to ensure that any such international transfers comply with applicable data protection laws, including relying on standard contractual protections where required.'),
 
       divider(),
@@ -233,7 +233,7 @@ const doc = new Document({
         spacing: { before: 80, after: 60 },
         indent: { left: 360 },
         children: [
-          new TextRun({ text: 'ExpoLead OS / Tradesoil International', bold: true, size: 22, font: 'Arial' }),
+          new TextRun({ text: 'ExpoLead OS / GLA Consulting (Private) Limited', bold: true, size: 22, font: 'Arial' }),
         ]
       }),
       new Paragraph({

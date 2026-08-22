@@ -24,7 +24,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">1. Acceptance of terms</h2>
-            <p>By creating an account or using ExpoLead OS, you agree to these Terms of Service. If you do not agree, do not use the service. These terms form a binding agreement between you and ExpoLead OS.</p>
+            <p>By creating an account or using ExpoLead OS, you agree to these Terms of Service. If you do not agree, do not use the service. ExpoLead OS is operated by GLA Consulting (Private) Limited, and these terms form a binding agreement between you and GLA Consulting (Private) Limited (in these terms, "ExpoLead OS", "we" or "us").</p>
           </section>
 
           <section>

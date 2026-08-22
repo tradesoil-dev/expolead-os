@@ -31,7 +31,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">1. Who we are</h2>
-              <p>ExpoLead OS is the data controller for the personal data described in this notice, meaning we decide how and why your personal data is processed. We do not process data on behalf of any third party.</p>
+              <p>ExpoLead OS is a product of GLA Consulting (Private) Limited, operated from Sri Lanka. GLA Consulting (Private) Limited is the data controller for the personal data described in this notice, meaning we decide how and why your personal data is processed. We do not process data on behalf of any third party.</p>
             </section>
 
             <section>
