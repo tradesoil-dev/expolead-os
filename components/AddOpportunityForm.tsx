@@ -184,7 +184,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
       </button>
       <div className="flex flex-col lg:flex-row gap-4 items-start">
         <div className="w-full max-w-2xl rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-          <h2 className="text-sm font-semibold">New Opportunity</h2>
+          <h2 className="text-sm font-bold text-emerald-700">New Opportunity</h2>
 
           {/* Connection first — it drives the rest of the form */}
           <div>
@@ -192,14 +192,14 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
             <ConnectionPicker connections={connections} value={conn} onSelect={pickConnection} />
             <p className="mt-1 text-xs text-ink-400">
               {conn
-                ? "This names the opportunity and fills in the products, exhibition and booth from what you captured. Adjust below."
+                ? "This names the opportunity and fills in the exhibition, plus any booth and products you captured on this connection. Adjust below."
                 : "Pick the buyer or supplier you spoke to and this fills in from what you captured, or leave blank to enter manually."}
             </p>
           </div>
 
           {!conn && (
             <div>
-              <span className="mb-1.5 block text-sm font-medium text-ink-700">Opportunity name</span>
+              <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Opportunity name</span>
               <input
                 value={form.name}
                 onChange={(e) => set("name", e.target.value)}
@@ -211,7 +211,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
 
           {/* Product lines — one order, many products, each with its own quantity */}
           <div>
-            <span className="mb-1.5 block text-sm font-medium text-ink-700">Products &amp; quantities</span>
+            <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Products &amp; quantities</span>
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={i} className="flex gap-2">
@@ -251,7 +251,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
             <button
               type="button"
               onClick={addLine}
-              className="mt-2 text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+              className="mt-2 inline-flex items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 transition-colors hover:bg-sky-100"
             >
               + Add another product
             </button>
@@ -259,7 +259,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <span className="mb-1.5 block text-sm font-medium text-ink-700">Exhibition</span>
+              <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Exhibition</span>
               <Select
                 value={form.exhibition}
                 onChange={(v) => set("exhibition", v)}
@@ -268,7 +268,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
               />
             </div>
             <div>
-              <span className="mb-1.5 block text-sm font-medium text-ink-700">Destination market</span>
+              <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Destination market</span>
               <input
                 value={form.destination_market}
                 onChange={(e) => set("destination_market", e.target.value)}
@@ -278,7 +278,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
             </div>
 
             <div>
-              <span className="mb-1.5 block text-sm font-medium text-ink-700">Total deal value ({currency})</span>
+              <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Total deal value ({currency})</span>
               <input
                 value={form.deal_value}
                 onChange={(e) => set("deal_value", e.target.value.replace(/[^\d.]/g, ""))}
@@ -290,7 +290,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
             </div>
             {showBooth && (
               <div>
-                <span className="mb-1.5 block text-sm font-medium text-ink-700">Their booth</span>
+                <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Their booth</span>
                 <input
                   value={form.booth}
                   onChange={(e) => set("booth", e.target.value)}
@@ -301,7 +301,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
             )}
 
             <div>
-              <span className="mb-1.5 block text-sm font-medium text-ink-700">Priority</span>
+              <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Priority</span>
               <Select
                 value={form.priority}
                 onChange={(v) => set("priority", v)}
@@ -314,7 +314,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
             </div>
 
             <div>
-              <span className="mb-1.5 block text-sm font-medium text-ink-700">Stage</span>
+              <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Stage</span>
               <Select
                 value={form.status}
                 onChange={(v) => set("status", v)}
@@ -331,7 +331,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
           </div>
 
           <div>
-            <span className="mb-1.5 block text-sm font-medium text-ink-700">Notes</span>
+            <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Notes</span>
             <textarea
               value={form.notes}
               onChange={(e) => set("notes", e.target.value)}
@@ -365,11 +365,11 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
           <div className="space-y-2.5">
             <div className="flex gap-2.5 items-start">
               <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">1</span>
-              <p className="text-xs leading-relaxed text-emerald-800">Start by picking the connection you spoke to. Their products, exhibition and booth fill in automatically.</p>
+              <p className="text-xs leading-relaxed text-emerald-800">Start by picking the connection you spoke to. The exhibition fills in, along with any booth and products you captured on that connection.</p>
             </div>
             <div className="flex gap-2.5 items-start">
               <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">2</span>
-              <p className="text-xs leading-relaxed text-emerald-800">Tick the products in this order and set a quantity for each. One order can have several products.</p>
+              <p className="text-xs leading-relaxed text-emerald-800">Add each product in this order and set a quantity for it. One order can have several products.</p>
             </div>
             <div className="flex gap-2.5 items-start">
               <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">3</span>

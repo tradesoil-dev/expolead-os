@@ -122,7 +122,7 @@ export default function OpportunityLinesEditor({
       </div>
 
       <div className="mt-3 flex items-center gap-3">
-        <button type="button" onClick={addLine} className="text-xs font-semibold text-emerald-600 hover:text-emerald-700">
+        <button type="button" onClick={addLine} className="inline-flex items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 transition-colors hover:bg-sky-100">
           + Add another product
         </button>
         <button
