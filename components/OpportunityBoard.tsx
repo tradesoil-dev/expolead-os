@@ -149,6 +149,12 @@ export default function OpportunityBoard({ opportunities, quantityUnit = "MT" }:
                         <div className="mt-3 space-y-1 text-xs text-slate-600">
                           <p><span className="font-semibold">Volume:</span> {opp.quantity || "-"} {opp.quantity_unit || quantityUnit}</p>
                           <p><span className="font-semibold">Market:</span> {opp.destination_market || "-"}</p>
+                          {opp.supplier?.company_name && (
+                            <p className="flex items-center gap-1 text-emerald-700">
+                              <svg className="h-3 w-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                              <span className="truncate font-medium">{opp.supplier.company_name}</span>
+                            </p>
+                          )}
                         </div>
                       </div>
                     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { PriorityBadge, StatusBadge, InterestBadge } from "@/components/Badge";
 import Select from "@/components/Select";
@@ -55,6 +55,14 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
       return true;
     });
   }, [suppliers, q, interest, priority, status, visited, exhibition, tradeModel]);
+
+  // Pagination — 10 rows per page. Reset to page 1 whenever the filtered set changes.
+  const PAGE_SIZE = 10;
+  const [page, setPage] = useState(1);
+  useEffect(() => { setPage(1); }, [q, interest, priority, status, visited, exhibition, tradeModel]);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   function exportCsv() {
     const headers = [
@@ -248,7 +256,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
                 </td>
               </tr>
             ) : (
-              filtered.map((s) => (
+              paged.map((s) => (
                 <tr key={s.id} className="hover:bg-ink-50 transition-colors">
                   <td className="px-4 py-3">
                     <Link href={`/connections/${s.id}`} className="font-medium text-ink-900 hover:text-brand-700">
@@ -284,9 +292,33 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
         </table>
       </div>
 
-      <p className="text-xs text-ink-400">
-        Showing {filtered.length} of {suppliers.length} connections
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-ink-400">
+          {filtered.length === 0
+            ? "No connections"
+            : `Showing ${(currentPage - 1) * PAGE_SIZE + 1}–${Math.min(currentPage * PAGE_SIZE, filtered.length)} of ${filtered.length}`}
+          {filtered.length !== suppliers.length && ` (filtered from ${suppliers.length})`}
+        </p>
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="rounded-lg border border-ink-200 px-3 py-1.5 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-50 disabled:opacity-40 disabled:hover:bg-transparent"
+            >
+              ← Prev
+            </button>
+            <span className="text-xs tabular-nums text-ink-500">Page {currentPage} of {totalPages}</span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="rounded-lg border border-ink-200 px-3 py-1.5 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-50 disabled:opacity-40 disabled:hover:bg-transparent"
+            >
+              Next →
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

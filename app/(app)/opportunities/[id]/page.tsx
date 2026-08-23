@@ -3,6 +3,7 @@ import NextFollowUpForm from "@/components/NextFollowUpForm";
 import CompleteFollowUpButton from "@/components/CompleteFollowUpButton";
 import { getOpportunity, getOpportunityFollowUps, getOpportunityStatusHistory, getSuppliers } from "@/lib/data";
 import OpportunityConnectionEditor from "@/components/OpportunityConnectionEditor";
+import DeleteOpportunityButton from "@/components/DeleteOpportunityButton";
 import AddOpportunityFollowUp from "@/components/AddOpportunityFollowUp";
 import OpportunityNotesEditor from "@/components/OpportunityNotesEditor";
 import {
@@ -38,12 +39,15 @@ export default async function OpportunityDetailPage({
   return (
     <div className="space-y-6 p-6">
       <div className="space-y-3">
-        <a
-          href="/opportunities"
-          className="text-sm font-medium text-emerald-700 hover:text-emerald-800"
-        >
-          ← Back to Opportunities
-        </a>
+        <div className="flex items-center justify-between gap-3">
+          <a
+            href="/opportunities"
+            className="text-sm font-medium text-emerald-700 hover:text-emerald-800"
+          >
+            ← Back to Opportunities
+          </a>
+          <DeleteOpportunityButton opportunityId={opportunity.id} />
+        </div>
 
         <h1 className="text-xl font-semibold">{opportunity.name}</h1>
         <p className="text-sm text-gray-500">
