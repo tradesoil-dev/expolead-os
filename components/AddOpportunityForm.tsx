@@ -12,10 +12,17 @@ import type { Exhibition } from "@/lib/types";
 
 type ConnOption = { id: string; company_name: string; exhibition_name: string | null; booth_number: string | null };
 
-export default function AddOpportunityForm({ exhibitions, connections = [], isLocked, quantityUnit = "MT", currency = "USD" }: { exhibitions: Exhibition[]; connections?: ConnOption[]; isLocked?: boolean; quantityUnit?: string; currency?: string }) {
+export default function AddOpportunityForm({ exhibitions, connections = [], isLocked, quantityUnit = "MT", currency = "USD", onOpenChange }: { exhibitions: Exhibition[]; connections?: ConnOption[]; isLocked?: boolean; quantityUnit?: string; currency?: string; onOpenChange?: (open: boolean) => void }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(false);
+
+  // Wrap setOpen so the parent (toolbar) can hide the list filter while the
+  // form is open.
+  function setOpen(v: boolean) {
+    setOpenState(v);
+    onOpenChange?.(v);
+  }
   const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({

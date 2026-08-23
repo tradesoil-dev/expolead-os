@@ -1,5 +1,5 @@
 import PageHeader from "@/components/PageHeader";
-import AddOpportunityForm from "@/components/AddOpportunityForm";
+import OpportunitiesToolbar from "@/components/OpportunitiesToolbar";
 import OpportunitiesExportButton from "@/components/OpportunitiesExportButton";
 import OpportunityBoard from "@/components/OpportunityBoard";
 import { getOpportunities, getExhibitions, getSuppliers } from "@/lib/data";
@@ -7,7 +7,6 @@ import { getTrialStatus } from "@/lib/trial";
 import { getQuantityUnit } from "@/lib/quantity-unit";
 import { getCurrency } from "@/lib/currency";
 import { formatGroupedVolume } from "@/lib/quantity-units";
-import ExhibitionFilter from "@/components/ExhibitionFilter";
 
 export default async function OpportunitiesPage({
   searchParams,
@@ -79,12 +78,15 @@ export default async function OpportunitiesPage({
         subtitle="Track exhibition conversations from qualified interest to revenue"
       />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <AddOpportunityForm exhibitions={exhibitions} connections={connectionOptions} isLocked={trial.isExpired} quantityUnit={quantityUnit} currency={currency} />
-        {exhibitionNames.length > 1 && (
-          <ExhibitionFilter exhibitions={exhibitionNames} value={selected} />
-        )}
-      </div>
+      <OpportunitiesToolbar
+        exhibitions={exhibitions}
+        connections={connectionOptions}
+        isLocked={trial.isExpired}
+        quantityUnit={quantityUnit}
+        currency={currency}
+        exhibitionNames={exhibitionNames}
+        selected={selected}
+      />
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
         <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
