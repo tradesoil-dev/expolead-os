@@ -8,7 +8,7 @@ export async function getSuppliers(): Promise<Supplier[]> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("suppliers")
-      .select("*, exhibition:exhibitions(*), contacts(*)")
+      .select("*, exhibition:exhibitions(*), contacts(*), products(*)")
       .order("created_at", { ascending: false });
     if (error) return [];
     return (data ?? []) as Supplier[];
