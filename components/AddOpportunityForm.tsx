@@ -81,8 +81,10 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
 
   async function save() {
     if (!isSupabaseConfigured) return;
-    if (!form.name.trim()) {
-      showToast("Add an opportunity name.", "error");
+    // Name comes from the connection when one is linked; only manual entries type it.
+    const name = form.name.trim() || (conn ? conn.company_name : "");
+    if (!name) {
+      showToast("Pick a connection or add an opportunity name.", "error");
       return;
     }
     const cleanLines = lines.filter((l) => l.product.trim());
@@ -105,7 +107,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
       .from("opportunities")
       .insert({
         user_id: user.id,
-        name: form.name.trim(),
+        name,
         // Legacy summary column, kept for back-compat; line items are the source of truth.
         product: cleanLines.map((l) => l.product.trim()).join(", "),
         quantity: null,
@@ -189,19 +191,23 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
             <span className="mb-1.5 block text-sm font-semibold text-emerald-700">Start with the connection</span>
             <ConnectionPicker connections={connections} value={conn} onSelect={pickConnection} />
             <p className="mt-1 text-xs text-ink-400">
-              {conn ? "Products, exhibition and booth below are pulled from this connection — adjust as needed." : "Pick the buyer/supplier you spoke to and this fills in from what you captured. Or leave blank to enter manually."}
+              {conn
+                ? "This names the opportunity and fills in the products, exhibition and booth from what you captured. Adjust below."
+                : "Pick the buyer or supplier you spoke to and this fills in from what you captured, or leave blank to enter manually."}
             </p>
           </div>
 
-          <div>
-            <span className="mb-1.5 block text-sm font-medium text-ink-700">Opportunity name</span>
-            <input
-              value={form.name}
-              onChange={(e) => set("name", e.target.value)}
-              placeholder="Auto-fills from the connection — edit if needed"
-              className={inputClass}
-            />
-          </div>
+          {!conn && (
+            <div>
+              <span className="mb-1.5 block text-sm font-medium text-ink-700">Opportunity name</span>
+              <input
+                value={form.name}
+                onChange={(e) => set("name", e.target.value)}
+                placeholder="Name this opportunity"
+                className={inputClass}
+              />
+            </div>
+          )}
 
           {/* Product lines — one order, many products, each with its own quantity */}
           <div>
@@ -252,67 +258,88 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Select
-              value={form.exhibition}
-              onChange={(v) => set("exhibition", v)}
-              placeholder="Select exhibition"
-              options={[{ value: "", label: "Select exhibition" }, ...exhibitions.map((ex) => ({ value: ex.name, label: ex.name }))]}
-            />
-            <input
-              value={form.destination_market}
-              onChange={(e) => set("destination_market", e.target.value)}
-              placeholder="Destination market, e.g. South Korea"
-              className={inputClass}
-            />
-
-            <input
-              value={form.deal_value}
-              onChange={(e) => set("deal_value", e.target.value.replace(/[^\d.]/g, ""))}
-              inputMode="decimal"
-              placeholder={`Total deal value in ${currency}, optional`}
-              title="Optional. The value of the whole order. Used to work out the return on each exhibition."
-              className={inputClass}
-            />
-            {showBooth && (
+            <div>
+              <span className="mb-1.5 block text-sm font-medium text-ink-700">Exhibition</span>
+              <Select
+                value={form.exhibition}
+                onChange={(v) => set("exhibition", v)}
+                placeholder="Select exhibition"
+                options={[{ value: "", label: "Select exhibition" }, ...exhibitions.map((ex) => ({ value: ex.name, label: ex.name }))]}
+              />
+            </div>
+            <div>
+              <span className="mb-1.5 block text-sm font-medium text-ink-700">Destination market</span>
               <input
-                value={form.booth}
-                onChange={(e) => set("booth", e.target.value)}
-                placeholder="Their booth, e.g. E3.K15"
+                value={form.destination_market}
+                onChange={(e) => set("destination_market", e.target.value)}
+                placeholder="e.g. South Korea"
                 className={inputClass}
               />
+            </div>
+
+            <div>
+              <span className="mb-1.5 block text-sm font-medium text-ink-700">Total deal value ({currency})</span>
+              <input
+                value={form.deal_value}
+                onChange={(e) => set("deal_value", e.target.value.replace(/[^\d.]/g, ""))}
+                inputMode="decimal"
+                placeholder="Whole order value, optional"
+                title="Optional. The value of the whole order. Used to work out the return on each exhibition."
+                className={inputClass}
+              />
+            </div>
+            {showBooth && (
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-ink-700">Their booth</span>
+                <input
+                  value={form.booth}
+                  onChange={(e) => set("booth", e.target.value)}
+                  placeholder="e.g. E3.K15"
+                  className={inputClass}
+                />
+              </div>
             )}
 
-            <Select
-              value={form.priority}
-              onChange={(v) => set("priority", v)}
-              options={[
-                { value: "high", label: "High priority" },
-                { value: "medium", label: "Medium priority" },
-                { value: "low", label: "Low priority" },
-              ]}
-            />
+            <div>
+              <span className="mb-1.5 block text-sm font-medium text-ink-700">Priority</span>
+              <Select
+                value={form.priority}
+                onChange={(v) => set("priority", v)}
+                options={[
+                  { value: "high", label: "High" },
+                  { value: "medium", label: "Medium" },
+                  { value: "low", label: "Low" },
+                ]}
+              />
+            </div>
 
-            <Select
-              value={form.status}
-              onChange={(v) => set("status", v)}
-              options={[
-                { value: "researching", label: "Qualified" },
-                { value: "contacted", label: "Pricing" },
-                { value: "evaluating", label: "Evaluation" },
-                { value: "negotiating", label: "Negotiating" },
-                { value: "won", label: "Won" },
-                { value: "lost", label: "Lost" },
-              ]}
-            />
+            <div>
+              <span className="mb-1.5 block text-sm font-medium text-ink-700">Stage</span>
+              <Select
+                value={form.status}
+                onChange={(v) => set("status", v)}
+                options={[
+                  { value: "researching", label: "Qualified" },
+                  { value: "contacted", label: "Pricing" },
+                  { value: "evaluating", label: "Evaluation" },
+                  { value: "negotiating", label: "Negotiating" },
+                  { value: "won", label: "Won" },
+                  { value: "lost", label: "Lost" },
+                ]}
+              />
+            </div>
           </div>
 
-          <textarea
-            value={form.notes}
-            onChange={(e) => set("notes", e.target.value)}
-            placeholder="Notes, requirements, buyer expectations, target price..."
-            rows={4}
-            className={`${inputClass} resize-y`}
-          />
+          <div>
+            <span className="mb-1.5 block text-sm font-medium text-ink-700">Notes</span>
+            <textarea
+              value={form.notes}
+              onChange={(e) => set("notes", e.target.value)}
+              placeholder="Requirements, buyer expectations, target price..."
+              rows={4}
+              className={`${inputClass} resize-y`}
+            />
+          </div>
 
           <div className="flex items-center gap-2">
             <button
