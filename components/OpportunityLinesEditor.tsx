@@ -69,7 +69,8 @@ export default function OpportunityLinesEditor({
     router.refresh();
   }
 
-  const inputClass = "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
+  // No w-full — these sit in a flex row and size via flex-1 / fixed widths.
+  const inputClass = "rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
   const totalVolume = formatGroupedVolume(
     lines.map((l) => ({ quantity: l.quantity, quantity_unit: l.unit })),
     workspaceUnit
@@ -90,7 +91,7 @@ export default function OpportunityLinesEditor({
               value={l.product}
               onChange={(e) => updateLine(i, { product: e.target.value })}
               placeholder="Product, e.g. Black tea"
-              className={`${inputClass} flex-1`}
+              className={`${inputClass} min-w-0 flex-1`}
             />
             <input
               value={l.quantity}

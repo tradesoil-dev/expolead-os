@@ -167,6 +167,9 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
 
   const inputClass =
     "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
+  // No w-full here — these sit in a flex row and size via flex-1 / fixed widths.
+  const lineInputClass =
+    "rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500";
 
   return (
     <div className="space-y-3">
@@ -210,14 +213,14 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
                     value={l.product}
                     onChange={(e) => updateLine(i, { product: e.target.value })}
                     placeholder="Product, e.g. Black tea"
-                    className={`${inputClass} flex-1`}
+                    className={`${lineInputClass} min-w-0 flex-1`}
                   />
                   <input
                     value={l.quantity}
                     onChange={(e) => updateLine(i, { quantity: e.target.value.replace(/[^\d.]/g, "") })}
                     inputMode="decimal"
                     placeholder="Qty"
-                    className={`${inputClass} w-20 shrink-0`}
+                    className={`${lineInputClass} w-20 shrink-0`}
                   />
                   <div className="w-24 shrink-0">
                     <Select
