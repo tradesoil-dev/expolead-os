@@ -16,7 +16,7 @@ const RANGE_LABELS: Record<string, string> = {
 };
 
 type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null; trade_models?: string[] };
-type Opp = { id: string; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null; trade_models?: string[] };
+type Opp = { id: string; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null; trade_models?: string[]; products?: { quantity: unknown; quantity_unit?: string | null }[] };
 
 const STAGE_ORDER: { key: string; label: string; color: string }[] = [
   { key: "researching", label: "Qualified", color: "#64748b" },
@@ -80,7 +80,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
     const active = fOpps.filter((o) => o.status !== "won" && o.status !== "lost");
     const won = fOpps.filter((o) => o.status === "won").length;
     const lost = fOpps.filter((o) => o.status === "lost").length;
-    const volume = formatGroupedVolume(active, quantityUnit);
+    const volume = formatGroupedVolume(active.flatMap((o) => o.products ?? []), quantityUnit);
     const withFu = fOpps.filter((o) => o.next_follow_up_date);
     const doneFu = withFu.filter((o) => o.next_follow_up_completed);
     const exhibitions = new Set(fConns.map((c) => c.exhibition).filter(Boolean)).size;
@@ -196,7 +196,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
         const lost = opps.filter((o) => o.status === "lost").length;
         const active = opps.filter((o) => o.status !== "won" && o.status !== "lost");
         const winRate = won + lost === 0 ? null : Math.round((won / (won + lost)) * 100);
-        return { name, conns, opps: opps.length, won, winRate, volume: formatGroupedVolume(active, quantityUnit) };
+        return { name, conns, opps: opps.length, won, winRate, volume: formatGroupedVolume(active.flatMap((o) => o.products ?? []), quantityUnit) };
       })
       .sort((a, b) => b.conns - a.conns);
   }, [fConns, fOpps, quantityUnit]);

@@ -3,9 +3,8 @@
 import { useState } from "react";
 import AddOpportunityForm from "@/components/AddOpportunityForm";
 import ExhibitionFilter from "@/components/ExhibitionFilter";
+import type { ConnOption } from "@/components/ConnectionPicker";
 import type { Exhibition } from "@/lib/types";
-
-type ConnOption = { id: string; company_name: string; exhibition_name: string | null; booth_number: string | null };
 
 // Groups the "New Opportunity" form and the list's exhibition filter so the
 // filter can hide while the form is open (it only applies to the list).

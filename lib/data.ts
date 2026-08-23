@@ -88,7 +88,7 @@ const {
 if (!user) return [];
     const { data, error } = await supabase
       .from("opportunities")
-.select("*, supplier:suppliers(id, company_name)")
+.select("*, supplier:suppliers(id, company_name), products:opportunity_products(*)")
 .eq("user_id", user.id)
 .order("created_at", { ascending: false });
 
@@ -112,7 +112,7 @@ if (!user) return null;
 
     const { data, error } = await supabase
       .from("opportunities")
-      .select("*, supplier:suppliers(id, company_name)")
+      .select("*, supplier:suppliers(id, company_name), products:opportunity_products(*)")
       .eq("id", id)
 .eq("user_id", user.id)
 .single();

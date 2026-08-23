@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { formatGroupedVolume } from "@/lib/quantity-units";
 import { useToast } from "./useToast";
 
 const STAGES = [
@@ -131,7 +132,11 @@ export default function OpportunityBoard({ opportunities, quantityUnit = "MT" }:
                         <div className="space-y-2">
                           <div>
                             <p className="text-sm font-semibold text-slate-900">{opp.name}</p>
-                            <p className="mt-1 text-xs text-slate-500">{opp.product || "No product added"}</p>
+                            <p className="mt-1 text-xs text-slate-500">
+                              {opp.products?.length
+                                ? opp.products.map((p: any) => p.product).join(", ")
+                                : opp.product || "No product added"}
+                            </p>
                           </div>
                           <span
                             className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-medium capitalize ${
@@ -147,7 +152,7 @@ export default function OpportunityBoard({ opportunities, quantityUnit = "MT" }:
                         </div>
 
                         <div className="mt-3 space-y-1 text-xs text-slate-600">
-                          <p><span className="font-semibold">Volume:</span> {opp.quantity || "-"} {opp.quantity_unit || quantityUnit}</p>
+                          <p><span className="font-semibold">Volume:</span> {opp.products?.length ? formatGroupedVolume(opp.products, quantityUnit) : `${opp.quantity || "-"} ${opp.quantity_unit || quantityUnit}`}</p>
                           <p><span className="font-semibold">Market:</span> {opp.destination_market || "-"}</p>
                           {opp.supplier?.company_name && (
                             <p className="flex items-center gap-1 text-emerald-700">

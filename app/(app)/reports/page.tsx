@@ -42,6 +42,8 @@ export default async function ReportsPage() {
     next_follow_up_completed: o.next_follow_up_completed ?? null,
     // Trade models come from the linked connection (empty if not linked).
     trade_models: o.supplier_id ? (tmBySupplier.get(o.supplier_id) ?? []) : [],
+    // Product line items — volume sums these.
+    products: (o.products ?? []).map((p: any) => ({ quantity: p.quantity, quantity_unit: p.quantity_unit })),
   }));
 
   return (

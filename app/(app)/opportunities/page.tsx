@@ -28,6 +28,10 @@ export default async function OpportunitiesPage({
     company_name: s.company_name,
     exhibition_name: s.exhibition?.name ?? null,
     booth_number: s.booth_number ?? null,
+    // Booth applies only when the user visited their booth (met at their booth,
+    // or a visiting show). It does not when they came to the user's own stand.
+    visited_their_booth: s.met_at ? s.met_at === "their_booth" : s.exhibition?.attending_as !== "exhibiting",
+    products: (s.products ?? []).map((p) => p.name),
   }));
 
   // Every count, volume and column below works off the filtered set, so the
@@ -63,7 +67,11 @@ export default async function OpportunitiesPage({
       opportunity.status !== "won" && opportunity.status !== "lost"
   );
 
-  const potentialVolume = formatGroupedVolume(activeOpps, quantityUnit);
+  // Volume now sums each opportunity's product lines (grouped by unit).
+  const potentialVolume = formatGroupedVolume(
+    activeOpps.flatMap((o: any) => o.products ?? []),
+    quantityUnit
+  );
 
   const activeCount =
     pipelineCounts.qualified +

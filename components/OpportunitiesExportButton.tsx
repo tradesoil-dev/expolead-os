@@ -25,9 +25,7 @@ export default function OpportunitiesExportButton({
   function exportCsv() {
     const headers = [
       "Name",
-      "Product",
-      "Quantity",
-      "Unit",
+      "Products",
       "Destination Market",
       "Exhibition",
       "Booth",
@@ -42,9 +40,9 @@ export default function OpportunitiesExportButton({
 
     const rows = opportunities.map((o) => [
       o.name,
-      o.product,
-      o.quantity ?? "",
-      o.quantity_unit ?? "",
+      o.products?.length
+        ? o.products.map((p) => `${p.product}${p.quantity != null ? ` ${p.quantity}${p.quantity_unit ? " " + p.quantity_unit : ""}` : ""}`).join("; ")
+        : [o.product, o.quantity, o.quantity_unit].filter(Boolean).join(" "),
       o.destination_market ?? "",
       o.exhibition ?? "",
       o.booth ?? "",

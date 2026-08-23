@@ -214,6 +214,10 @@ export type Opportunity = {
   supplier_id: string | null;
   supplier?: { id: string; company_name: string } | null;
 
+  // Product line items — one order can carry several products, each with its
+  // own quantity. Legacy single product/quantity below are kept for back-compat.
+  products?: OpportunityProduct[];
+
   name: string;
   product: string;
   quantity: string | null;
@@ -252,6 +256,15 @@ export const OPPORTUNITY_STATUSES: { value: Opportunity["status"]; label: string
 export function opportunityStatusLabel(s: Opportunity["status"]) {
   return OPPORTUNITY_STATUSES.find((x) => x.value === s)?.label ?? s;
 }
+
+export type OpportunityProduct = {
+  id: string;
+  opportunity_id: string;
+  product: string;
+  quantity: number | null;
+  quantity_unit: string | null;
+  created_at: string;
+};
 
 export type OpportunityFollowUp = {
   id: string;

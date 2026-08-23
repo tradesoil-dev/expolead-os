@@ -10,8 +10,8 @@ import {
   OpportunityStatusEditor,
   OpportunityPriorityEditor,
   OpportunityTextFieldEditor,
-  OpportunityUnitEditor,
 } from "@/components/OpportunityFieldEditor";
+import OpportunityLinesEditor from "@/components/OpportunityLinesEditor";
 import { opportunityStatusLabel } from "@/lib/types";
 import { getQuantityUnit } from "@/lib/quantity-unit";
 import { getCurrency } from "@/lib/currency";
@@ -82,21 +82,6 @@ export default async function OpportunityDetailPage({
         </div>
 
         <div className="rounded-xl border bg-white p-4">
-          <p className="text-xs text-gray-500 mb-1">Quantity</p>
-          <OpportunityTextFieldEditor
-            opportunityId={opportunity.id}
-            field="quantity"
-            current={opportunity.quantity}
-          />
-          <p className="text-xs text-gray-500 mb-1 mt-3">Unit</p>
-          <OpportunityUnitEditor
-            opportunityId={opportunity.id}
-            current={opportunity.quantity_unit}
-            workspaceDefault={workspaceUnit}
-          />
-        </div>
-
-        <div className="rounded-xl border bg-white p-4">
           <p className="text-xs text-gray-500 mb-1">Destination</p>
           <OpportunityTextFieldEditor
             opportunityId={opportunity.id}
@@ -119,6 +104,14 @@ export default async function OpportunityDetailPage({
           <p className="text-xs text-gray-500">Booth</p>
           <p className="font-semibold">{opportunity.booth || "-"}</p>
         </div>
+      </div>
+
+      <div className="rounded-xl border bg-white p-6">
+        <OpportunityLinesEditor
+          opportunityId={opportunity.id}
+          initial={opportunity.products ?? []}
+          workspaceUnit={workspaceUnit}
+        />
       </div>
 
       <div className="rounded-xl border bg-white p-6">
