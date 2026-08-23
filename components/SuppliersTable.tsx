@@ -232,7 +232,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-ink-200 bg-white shadow-card" style={{ WebkitOverflowScrolling: "touch" }}>
-        <table className="w-full min-w-[860px] text-sm">
+        <table className="w-full min-w-[1120px] text-sm whitespace-nowrap">
           <thead>
             <tr className="border-b border-ink-200 bg-ink-50 text-left text-xs font-medium text-ink-500">
               <th className="px-4 py-2.5">Company</th>
@@ -258,7 +258,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
             ) : (
               paged.map((s) => (
                 <tr key={s.id} className="hover:bg-ink-50 transition-colors">
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 align-top whitespace-normal min-w-[220px]">
                     <Link href={`/connections/${s.id}`} className="font-medium text-ink-900 hover:text-brand-700">
                       {s.company_name}
                     </Link>
