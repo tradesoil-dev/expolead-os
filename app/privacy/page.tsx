@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <div className="mx-auto max-w-3xl">
           <Link href="/" className="text-sm text-emerald-600 hover:underline">← Back to home</Link>
 
-          <p className="mt-4 text-sm text-slate-500">Last updated: 22 July 2026</p>
+          <p className="mt-4 text-sm text-slate-500">Last updated: 24 August 2026</p>
 
           <div className="mt-10 space-y-8 text-sm leading-7 text-slate-700">
 
@@ -30,8 +30,13 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-base font-bold text-slate-900 mb-2">1. Who we are</h2>
-              <p>ExpoLead OS is a product of GLA Consulting (Private) Limited, operated from Sri Lanka. GLA Consulting (Private) Limited is the data controller for the personal data described in this notice, meaning we decide how and why your personal data is processed. We do not process data on behalf of any third party.</p>
+              <h2 className="text-base font-bold text-slate-900 mb-2">1. Who we are, and our two roles</h2>
+              <p>ExpoLead OS is a product of GLA Consulting (Private) Limited, operated from Sri Lanka (&ldquo;we&rdquo;, &ldquo;us&rdquo;). How we handle data depends on whose data it is:</p>
+              <ul className="mt-3 space-y-2 list-disc list-inside">
+                <li><strong>Your account data:</strong> your email, name and login details. For this, we are the <strong>data controller</strong>, meaning we decide how and why it is processed.</li>
+                <li><strong>The business data you enter:</strong> the connections, buyers, suppliers, contacts, opportunities and notes you capture at exhibitions. This is <strong>your data</strong>. For this, we act as a <strong>data processor on your behalf</strong>, storing and processing it only to run the service for you, on your instructions. You remain the controller of that data and are responsible for having a lawful basis to collect it.</li>
+              </ul>
+              <p className="mt-3">We never use the business data you enter for our own purposes, never sell it, and never share it with advertisers or data brokers.</p>
             </section>
 
             <section>
@@ -72,6 +77,7 @@ export default function PrivacyPage() {
                 <li><strong>Resend</strong> sends transactional emails on our behalf</li>
               </ul>
               <p className="mt-3">Each provider receives only the minimum data needed to do their job. They are contractually required to keep your data confidential and cannot use it for their own purposes. We do not share your data with advertisers, data brokers, or partners.</p>
+              <p className="mt-3">Your data is hosted on AWS infrastructure via Supabase. A current list of our sub-processors and the hosting region is available on request at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
 
             <section>
@@ -83,11 +89,13 @@ export default function PrivacyPage() {
               <h2 className="text-base font-bold text-slate-900 mb-2">7. How we protect your data</h2>
               <p>We take reasonable steps to keep your data secure:</p>
               <ul className="mt-3 space-y-2 list-disc list-inside">
-                <li>All data is encrypted in transit using HTTPS</li>
+                <li>All data is encrypted in transit using HTTPS/TLS</li>
+                <li>All data is encrypted at rest (AES-256) on our infrastructure</li>
+                <li>Each customer&rsquo;s data is isolated at the database level using row-level security, so no customer can access another&rsquo;s data</li>
                 <li>Passwords are hashed and never stored in plain text</li>
-                <li>Each user's data is strictly isolated, no other user can access yours</li>
-                <li>Authentication is handled by Supabase, an industry-standard security platform</li>
+                <li>Authentication is handled by Supabase, an industry-standard security platform, and automated backups are maintained</li>
               </ul>
+              <p className="mt-3"><strong>Breach notification.</strong> If we become aware of a personal data breach that affects your data, we will notify you without undue delay after becoming aware of it, describe what happened and what data was involved, and tell you the steps we are taking.</p>
               <p className="mt-3">No system is 100% secure. If you believe your account has been compromised, contact us immediately at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
 
