@@ -232,13 +232,14 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-ink-200 bg-white shadow-card" style={{ WebkitOverflowScrolling: "touch" }}>
-        <table className="w-full min-w-[1120px] text-sm whitespace-nowrap">
+        <table className="w-full min-w-[1320px] text-sm whitespace-nowrap">
           <thead>
-            <tr className="border-b border-ink-200 bg-ink-50 text-left text-xs font-medium text-ink-500">
+            <tr className="border-b border-ink-200 bg-ink-50 text-left text-xs font-semibold uppercase tracking-wide text-emerald-700">
               <th className="px-4 py-2.5">Company</th>
               <th className="px-4 py-2.5">Exhibition</th>
               <th className="px-4 py-2.5">Booth</th>
               <th className="px-4 py-2.5">Class</th>
+              <th className="px-4 py-2.5">Trade model</th>
               <th className="px-4 py-2.5">Country</th>
               <th className="px-4 py-2.5">Priority</th>
               <th className="px-4 py-2.5">Status</th>
@@ -249,7 +250,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
           <tbody className="divide-y divide-ink-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-12 text-center text-ink-400">
+                <td colSpan={9} className="px-4 py-12 text-center text-ink-400">
                   {suppliers.length === 0
                     ? "No connections yet, add your first one."
                     : "No connections match these filters."}
@@ -267,20 +268,24 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
                         TARGET
                       </span>
                     )}
-                    {s.trade_models && s.trade_models.length > 0 && (
-                      <div className="mt-1 flex flex-wrap gap-1">
+                  </td>
+
+                  <td className="px-4 py-3 text-ink-700">{s.exhibition?.name ?? "—"}</td>
+                  <td className="px-4 py-3 text-ink-700">{s.booth_number ?? "—"}</td>
+                  <td className="px-4 py-3"><InterestBadge interest={s.interest_type} /></td>
+                  <td className="px-4 py-3 align-top whitespace-normal min-w-[210px]">
+                    {s.trade_models && s.trade_models.length > 0 ? (
+                      <div className="flex flex-wrap gap-1">
                         {s.trade_models.map((t) => (
                           <span key={t} className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
                             {tradeModelLabel(t)}
                           </span>
                         ))}
                       </div>
+                    ) : (
+                      <span className="text-ink-400">—</span>
                     )}
                   </td>
-
-                  <td className="px-4 py-3 text-ink-700">{s.exhibition?.name ?? "—"}</td>
-                  <td className="px-4 py-3 text-ink-700">{s.booth_number ?? "—"}</td>
-                  <td className="px-4 py-3"><InterestBadge interest={s.interest_type} /></td>
                   <td className="px-4 py-3 text-ink-700">{s.country ?? "—"}</td>
                   <td className="px-4 py-3"><PriorityBadge priority={s.priority} /></td>
                   <td className="px-4 py-3"><StatusBadge status={s.follow_up_status} /></td>
