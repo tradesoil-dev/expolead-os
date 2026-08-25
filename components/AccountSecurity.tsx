@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -64,7 +65,10 @@ export default function AccountSecurity() {
 
       {/* Change password */}
       <form onSubmit={changePassword} className="mt-4 space-y-3">
-        <p className="text-sm font-semibold text-slate-700">Change password</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-slate-700">Change password</p>
+          <Link href="/help/change-your-password" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">How this works →</Link>
+        </div>
         <input type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} placeholder="Current password" className={inputClass} />
         <input type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} placeholder="New password (min 8 characters)" className={inputClass} />
         <input type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm new password" className={inputClass} />
@@ -79,7 +83,10 @@ export default function AccountSecurity() {
 
       {/* Danger zone */}
       <div className="mt-6 border-t border-ink-100 pt-5">
-        <p className="text-sm font-semibold text-rose-700">Delete account</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-rose-700">Delete account</p>
+          <Link href="/help/delete-your-account" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">How this works →</Link>
+        </div>
         <p className="mt-1 text-sm text-slate-600">
           Permanently delete your account and <strong>all</strong> your data, connections, opportunities, exhibitions and follow-ups. This cannot be undone.
         </p>

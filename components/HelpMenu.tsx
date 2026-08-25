@@ -77,11 +77,14 @@ export default function HelpMenu() {
               <PlansIcon className="h-4 w-4 text-ink-400" />
               View plans
             </Link>
-            <div className="flex items-center gap-3 px-4 py-2 text-sm text-ink-300 cursor-not-allowed select-none">
-              <DocsIcon className="h-4 w-4" />
-              Documentation
-              <span className="ml-auto text-[10px] font-semibold border border-ink-200 rounded px-1.5 py-0.5">Soon</span>
-            </div>
+            <Link
+              href="/help"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors"
+            >
+              <DocsIcon className="h-4 w-4 text-ink-400" />
+              Help Center
+            </Link>
           </div>
         </div>
       )}
