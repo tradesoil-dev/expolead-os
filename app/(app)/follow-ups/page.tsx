@@ -1,8 +1,10 @@
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import MarkFollowUpDone from "@/components/MarkFollowUpDone";
-import FollowUpNoteEditor from "@/components/FollowUpNoteEditor";
+import FollowUpItem, { type FollowUpMeeting } from "@/components/FollowUpItem";
 import { getSuppliers, getOpportunities } from "@/lib/data";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export const metadata = { title: "Follow-ups — ExpoLead OS" };
 
@@ -57,6 +59,23 @@ export default async function FollowUpsPage() {
     });
   }
 
+  // Interaction history (meetings) for the connections that have a follow-up due.
+  const connIds = items.filter((i) => i.kind === "Connection").map((i) => i.rawId);
+  const meetingsById = new Map<string, FollowUpMeeting[]>();
+  if (isSupabaseConfigured && connIds.length) {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("meetings")
+      .select("id, supplier_id, met_on, notes")
+      .in("supplier_id", connIds)
+      .order("met_on", { ascending: false });
+    for (const m of (data ?? []) as { id: string; supplier_id: string; met_on: string; notes: string | null }[]) {
+      const arr = meetingsById.get(m.supplier_id) ?? [];
+      arr.push({ id: m.id, met_on: m.met_on, notes: m.notes });
+      meetingsById.set(m.supplier_id, arr);
+    }
+  }
+
   const overdue: Item[] = [];
   const dueToday: Item[] = [];
   const upcoming: Item[] = [];
@@ -94,9 +113,9 @@ export default async function FollowUpsPage() {
           </div>
         ) : (
           <div className="space-y-6 max-w-3xl">
-            <Group title="Overdue" items={overdue} tone="red" empty="Nothing overdue. Nice." />
-            <Group title="Due today" items={dueToday} tone="amber" empty="Nothing due today." />
-            <Group title="Upcoming" items={upcoming} tone="emerald" empty="Nothing scheduled ahead yet." />
+            <Group title="Overdue" items={overdue} tone="red" empty="Nothing overdue. Nice." meetings={meetingsById} />
+            <Group title="Due today" items={dueToday} tone="amber" empty="Nothing due today." meetings={meetingsById} />
+            <Group title="Upcoming" items={upcoming} tone="emerald" empty="Nothing scheduled ahead yet." meetings={meetingsById} />
           </div>
         )}
       </main>
@@ -114,7 +133,7 @@ function Stat({ label, value, tone }: { label: string; value: number; tone: "red
   );
 }
 
-function Group({ title, items, tone, empty }: { title: string; items: Item[]; tone: "red" | "amber" | "emerald"; empty: string }) {
+function Group({ title, items, tone, empty, meetings }: { title: string; items: Item[]; tone: "red" | "amber" | "emerald"; empty: string; meetings: Map<string, FollowUpMeeting[]> }) {
   const dot = tone === "red" ? "bg-rose-500" : tone === "amber" ? "bg-amber-500" : "bg-emerald-500";
   const pill = tone === "red" ? "bg-rose-50 text-rose-700" : tone === "amber" ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700";
   return (
@@ -128,27 +147,36 @@ function Group({ title, items, tone, empty }: { title: string; items: Item[]; to
         <p className="px-4 py-6 text-center text-sm text-ink-400">{empty}</p>
       ) : (
         <ul className="divide-y divide-ink-100">
-          {items.map((it) => (
-            <li key={it.key} className="px-4 py-3 transition-colors hover:bg-ink-50">
-              <div className="flex items-center gap-3">
-                <Link href={it.href} className="flex min-w-0 flex-1 items-center justify-between gap-3">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <p className="truncate text-sm font-medium text-slate-900">{it.label}</p>
-                    <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">{it.kind}</span>
-                  </div>
-                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${pill}`}>
-                    {new Date(it.date).toLocaleDateString()}
-                  </span>
-                </Link>
-                <MarkFollowUpDone kind={it.kind} id={it.rawId} />
-              </div>
-              {it.kind === "Connection" ? (
-                <FollowUpNoteEditor supplierId={it.rawId} initial={it.noteRaw ?? ""} />
-              ) : (
+          {items.map((it) =>
+            it.kind === "Connection" ? (
+              <FollowUpItem
+                key={it.key}
+                supplierId={it.rawId}
+                label={it.label}
+                href={it.href}
+                date={it.date}
+                noteInitial={it.noteRaw ?? ""}
+                meetings={meetings.get(it.rawId) ?? []}
+                pill={pill}
+              />
+            ) : (
+              <li key={it.key} className="px-4 py-3 transition-colors hover:bg-ink-50">
+                <div className="flex items-center gap-3">
+                  <Link href={it.href} className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <p className="truncate text-sm font-medium text-slate-900">{it.label}</p>
+                      <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">{it.kind}</span>
+                    </div>
+                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${pill}`}>
+                      {new Date(it.date).toLocaleDateString()}
+                    </span>
+                  </Link>
+                  <MarkFollowUpDone kind={it.kind} id={it.rawId} />
+                </div>
                 <p className="mt-0.5 truncate text-xs text-slate-500">{it.note}</p>
-              )}
-            </li>
-          ))}
+              </li>
+            )
+          )}
         </ul>
       )}
     </div>

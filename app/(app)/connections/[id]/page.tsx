@@ -8,14 +8,12 @@ import TradeModelUpdater from "@/components/TradeModelUpdater";
 import AddContactForm from "@/components/AddContactForm";
 import ContactManager from "@/components/ContactManager";
 
-import AddMeetingForm from "@/components/AddMeetingForm";
-import MeetingManager from "@/components/MeetingManager";
 import AddProductForm from "@/components/AddProductForm";
 import SupplierNotesEditor from "@/components/SupplierNotesEditor";
 import ConversationRecorder from "@/components/ConversationRecorder";
 import EditButton from "@/components/EditButton";
 import { tradeModelHeading } from "@/lib/types";
-import { getSupplier, getExhibitions } from "@/lib/data";
+import { getSupplier } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import DeleteConnectionButton from "@/components/DeleteConnectionButton";
@@ -26,7 +24,7 @@ export default async function SupplierProfile({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [supplier, exhibitions] = await Promise.all([getSupplier(id), getExhibitions()]);
+  const supplier = await getSupplier(id);
 
   if (!supplier) {
     if (!isSupabaseConfigured) {
@@ -272,11 +270,13 @@ export default async function SupplierProfile({
           <ol className="relative space-y-5 border-l border-ink-100 pl-6">
             {[
               { done: true, title: "Connection added", sub: "Company profile created" },
-              supplier.visited ? { done: true, title: "Booth visited", sub: supplier.visit_date ?? "Visit date not recorded" } : null,
-              contacts.length > 0 ? { done: true, title: "Contact captured", sub: `${contacts.length} contact${contacts.length === 1 ? "" : "s"} saved` } : null,
-              meetings.length > 0 ? { done: true, title: "Meeting logged", sub: `${meetings.length} meeting${meetings.length === 1 ? "" : "s"} recorded` } : null,
-              supplier.follow_up_date ? { done: false, title: "Follow-up scheduled", sub: supplier.follow_up_date } : null,
-            ].filter(Boolean).map((ev: any, i) => (
+              ...(supplier.visited ? [{ done: true, title: "Booth visited", sub: supplier.visit_date ?? "Visit date not recorded" }] : []),
+              ...(contacts.length > 0 ? [{ done: true, title: "Contact captured", sub: `${contacts.length} contact${contacts.length === 1 ? "" : "s"} saved` }] : []),
+              ...[...meetings]
+                .sort((a, b) => (a.met_on < b.met_on ? -1 : 1))
+                .map((m) => ({ done: true, title: `Interaction · ${new Date(m.met_on).toLocaleDateString()}`, sub: m.notes ?? "Logged" })),
+              ...(supplier.follow_up_date ? [{ done: false, title: "Next follow-up", sub: [supplier.follow_up_date, supplier.follow_up_note].filter(Boolean).join(": ") }] : []),
+            ].map((ev: any, i) => (
               <li key={i} className="relative">
                 <span className={`absolute -left-[31px] grid h-5 w-5 place-items-center rounded-full ring-4 ring-white ${ev.done ? "bg-emerald-500 text-white" : "bg-amber-400 text-white"}`}>
                   {ev.done ? (
@@ -290,30 +290,6 @@ export default async function SupplierProfile({
               </li>
             ))}
           </ol>
-        </div>
-
-        <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold">Meetings</h2>
-            <AddMeetingForm supplierId={supplier.id} exhibitions={exhibitions} />
-          </div>
-
-          <div className="flex gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3">
-            <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-            <p className="text-xs leading-relaxed text-emerald-800">
-              Log every conversation you have with this connection after the show, from a call or an office meeting to a site visit. Each one is stamped with its date and exhibition, so you build a running history of how the relationship progressed.
-            </p>
-          </div>
-
-          {meetings.length === 0 ? (
-            <p className="text-sm text-ink-400">No meetings logged yet.</p>
-          ) : (
-            <ul className="space-y-3">
-              {meetings.map((mt) => (
-                <MeetingManager key={mt.id} meeting={mt} exhibitions={exhibitions} />
-              ))}
-            </ul>
-          )}
         </div>
 
         <ConversationRecorder supplierId={supplier.id} />
