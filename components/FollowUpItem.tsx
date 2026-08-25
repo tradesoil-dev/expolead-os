@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import DatePicker from "@/components/DatePicker";
+import Select from "@/components/Select";
 import MarkFollowUpDone from "@/components/MarkFollowUpDone";
+import { MEETING_TYPES, meetingTypeLabel } from "@/lib/types";
 
-export type FollowUpMeeting = { id: string; met_on: string; notes: string | null };
+export type FollowUpMeeting = { id: string; met_on: string; notes: string | null; meeting_type: string | null };
 
 // An interactive Follow-ups row for a connection: expand to see the interaction
 // history, log a call/meeting, and advance (or clear) the next follow-up.
@@ -36,6 +38,7 @@ export default function FollowUpItem({
   const today = new Date().toISOString().slice(0, 10);
   const [logOpen, setLogOpen] = useState(false);
   const [logDate, setLogDate] = useState(today);
+  const [logType, setLogType] = useState("call");
   const [logNotes, setLogNotes] = useState("");
   const [savingLog, setSavingLog] = useState(false);
 
@@ -46,9 +49,10 @@ export default function FollowUpItem({
   async function logInteraction() {
     if (!isSupabaseConfigured || !logNotes.trim()) return;
     setSavingLog(true);
-    await createClient().from("meetings").insert({ supplier_id: supplierId, met_on: logDate || today, notes: logNotes.trim() });
+    await createClient().from("meetings").insert({ supplier_id: supplierId, met_on: logDate || today, meeting_type: logType, notes: logNotes.trim() });
     setSavingLog(false);
     setLogNotes("");
+    setLogType("call");
     setLogOpen(false);
     router.refresh();
   }
@@ -97,6 +101,7 @@ export default function FollowUpItem({
               <ul className="mt-1.5 space-y-1.5">
                 {meetings.map((m) => (
                   <li key={m.id} className="text-xs leading-relaxed text-slate-600">
+                    <span className="mr-1.5 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">{meetingTypeLabel(m.meeting_type)}</span>
                     <span className="font-semibold text-slate-700">{new Date(m.met_on).toLocaleDateString()}</span>
                     {m.notes ? <span>: {m.notes}</span> : null}
                   </li>
@@ -108,8 +113,11 @@ export default function FollowUpItem({
           {/* Log an interaction (call / meeting / touch) */}
           {logOpen ? (
             <div className="space-y-2">
-              <div className="w-40"><DatePicker value={logDate} onChange={setLogDate} /></div>
-              <textarea value={logNotes} onChange={(e) => setLogNotes(e.target.value)} rows={2} placeholder="What happened? e.g. Called, they want samples" className={`${inp} resize-y`} />
+              <div className="flex flex-wrap gap-2">
+                <div className="w-40"><DatePicker value={logDate} onChange={setLogDate} /></div>
+                <div className="w-44"><Select value={logType} onChange={setLogType} size="sm" options={MEETING_TYPES} /></div>
+              </div>
+              <textarea value={logNotes} onChange={(e) => setLogNotes(e.target.value)} rows={2} placeholder="What was discussed? e.g. Wants samples, target price 5% lower" className={`${inp} resize-y`} />
               <div className="flex items-center gap-2">
                 <button onClick={logInteraction} disabled={savingLog || !logNotes.trim()} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-50">{savingLog ? "Saving…" : "Save interaction"}</button>
                 <button onClick={() => setLogOpen(false)} className="text-xs text-ink-400 hover:text-ink-700">Cancel</button>

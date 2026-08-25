@@ -75,12 +75,26 @@ export interface Contact {
   created_at: string;
 }
 
+export const MEETING_TYPES: { value: string; label: string }[] = [
+  { value: "call", label: "Phone call" },
+  { value: "online", label: "Online meeting" },
+  { value: "their_office", label: "Met at their office" },
+  { value: "our_office", label: "Met at our office" },
+  { value: "site_visit", label: "Site visit" },
+  { value: "other", label: "Other" },
+];
+
+export function meetingTypeLabel(v: string | null | undefined): string {
+  return MEETING_TYPES.find((t) => t.value === v)?.label ?? (v || "Interaction");
+}
+
 export interface Meeting {
   id: string;
   user_id: string;
   supplier_id: string;
   exhibition_id: string | null;
   met_on: string;
+  meeting_type: string | null;
   notes: string | null;
   voice_note_path: string | null;
   created_at: string;

@@ -12,7 +12,7 @@ import AddProductForm from "@/components/AddProductForm";
 import SupplierNotesEditor from "@/components/SupplierNotesEditor";
 import ConversationRecorder from "@/components/ConversationRecorder";
 import EditButton from "@/components/EditButton";
-import { tradeModelHeading } from "@/lib/types";
+import { tradeModelHeading, meetingTypeLabel } from "@/lib/types";
 import { getSupplier } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
@@ -274,7 +274,7 @@ export default async function SupplierProfile({
               ...(contacts.length > 0 ? [{ done: true, title: "Contact captured", sub: `${contacts.length} contact${contacts.length === 1 ? "" : "s"} saved` }] : []),
               ...[...meetings]
                 .sort((a, b) => (a.met_on < b.met_on ? -1 : 1))
-                .map((m) => ({ done: true, title: `Interaction · ${new Date(m.met_on).toLocaleDateString()}`, sub: m.notes ?? "Logged" })),
+                .map((m) => ({ done: true, title: `${meetingTypeLabel(m.meeting_type)} · ${new Date(m.met_on).toLocaleDateString()}`, sub: m.notes ?? "Logged" })),
               ...(supplier.follow_up_date ? [{ done: false, title: "Next follow-up", sub: [supplier.follow_up_date, supplier.follow_up_note].filter(Boolean).join(": ") }] : []),
             ].map((ev: any, i) => (
               <li key={i} className="relative">

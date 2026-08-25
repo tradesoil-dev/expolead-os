@@ -66,12 +66,12 @@ export default async function FollowUpsPage() {
     const supabase = await createClient();
     const { data } = await supabase
       .from("meetings")
-      .select("id, supplier_id, met_on, notes")
+      .select("id, supplier_id, met_on, notes, meeting_type")
       .in("supplier_id", connIds)
       .order("met_on", { ascending: false });
-    for (const m of (data ?? []) as { id: string; supplier_id: string; met_on: string; notes: string | null }[]) {
+    for (const m of (data ?? []) as { id: string; supplier_id: string; met_on: string; notes: string | null; meeting_type: string | null }[]) {
       const arr = meetingsById.get(m.supplier_id) ?? [];
-      arr.push({ id: m.id, met_on: m.met_on, notes: m.notes });
+      arr.push({ id: m.id, met_on: m.met_on, notes: m.notes, meeting_type: m.meeting_type });
       meetingsById.set(m.supplier_id, arr);
     }
   }
