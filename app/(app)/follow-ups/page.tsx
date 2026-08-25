@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import MarkFollowUpDone from "@/components/MarkFollowUpDone";
+import FollowUpNoteEditor from "@/components/FollowUpNoteEditor";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 
 export const metadata = { title: "Follow-ups — ExpoLead OS" };
@@ -10,6 +11,7 @@ type Item = {
   rawId: string;
   label: string;
   note: string;
+  noteRaw?: string;
   date: string;
   href: string;
   kind: "Connection" | "Opportunity";
@@ -35,6 +37,7 @@ export default async function FollowUpsPage() {
       rawId: s.id,
       label: s.company_name,
       note: s.follow_up_note?.trim() || s.country || "Connection follow-up",
+      noteRaw: s.follow_up_note ?? "",
       date: s.follow_up_date,
       href: `/connections/${s.id}`,
       kind: "Connection",
@@ -126,20 +129,24 @@ function Group({ title, items, tone, empty }: { title: string; items: Item[]; to
       ) : (
         <ul className="divide-y divide-ink-100">
           {items.map((it) => (
-            <li key={it.key} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-ink-50">
-              <Link href={it.href} className="flex min-w-0 flex-1 items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
+            <li key={it.key} className="px-4 py-3 transition-colors hover:bg-ink-50">
+              <div className="flex items-center gap-3">
+                <Link href={it.href} className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-2">
                     <p className="truncate text-sm font-medium text-slate-900">{it.label}</p>
                     <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">{it.kind}</span>
                   </div>
-                  <p className="mt-0.5 truncate text-xs text-slate-500">{it.note}</p>
-                </div>
-                <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${pill}`}>
-                  {new Date(it.date).toLocaleDateString()}
-                </span>
-              </Link>
-              <MarkFollowUpDone kind={it.kind} id={it.rawId} />
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${pill}`}>
+                    {new Date(it.date).toLocaleDateString()}
+                  </span>
+                </Link>
+                <MarkFollowUpDone kind={it.kind} id={it.rawId} />
+              </div>
+              {it.kind === "Connection" ? (
+                <FollowUpNoteEditor supplierId={it.rawId} initial={it.noteRaw ?? ""} />
+              ) : (
+                <p className="mt-0.5 truncate text-xs text-slate-500">{it.note}</p>
+              )}
             </li>
           ))}
         </ul>

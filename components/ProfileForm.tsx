@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import AccountSecurity from "@/components/AccountSecurity";
 import { createClient } from "@/lib/supabase/client";
 import Select from "@/components/Select";
 import { QUANTITY_UNITS, DEFAULT_QUANTITY_UNIT } from "@/lib/quantity-units";
@@ -341,10 +342,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitial }) {
             </div>
           </div>
 
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <h3 className="text-lg font-bold text-slate-900">Account Security</h3>
-            <p className="mt-2 text-sm text-slate-600">Password and login settings will be added later.</p>
-          </div>
+          <AccountSecurity />
         </div>
       </div>
     </main>
