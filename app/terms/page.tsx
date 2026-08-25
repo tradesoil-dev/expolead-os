@@ -52,7 +52,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">6. Your data</h2>
-            <p>You own all business data you enter into ExpoLead OS — your connections, opportunities, notes and records. We do not claim any rights over your data. On any paid plan you may export your data at any time using the CSV export feature. Upon account deletion, your data will be removed within 30 days.</p>
+            <p>You own all business data you enter into ExpoLead OS, including your connections, opportunities, notes and records. We do not claim any rights over your data. On any paid plan you may export your data at any time using the CSV export feature. Upon account deletion, your data will be removed within 30 days.</p>
           </section>
 
           <section>
