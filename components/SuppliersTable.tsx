@@ -271,7 +271,13 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
                   </td>
 
                   <td className="px-4 py-3 text-ink-700">{s.exhibition?.name ?? "—"}</td>
-                  <td className="px-4 py-3 text-ink-700">{s.booth_number ?? "—"}</td>
+                  <td className="px-4 py-3 text-ink-700">
+                    {s.booth_number
+                      ? s.booth_number
+                      : (s.met_at ? s.met_at === "my_stand" : s.exhibition?.attending_as === "exhibiting")
+                        ? <span className="text-emerald-700">Your stand</span>
+                        : "—"}
+                  </td>
                   <td className="px-4 py-3"><InterestBadge interest={s.interest_type} /></td>
                   <td className="px-4 py-3 align-top whitespace-normal min-w-[210px]">
                     {s.trade_models && s.trade_models.length > 0 ? (
