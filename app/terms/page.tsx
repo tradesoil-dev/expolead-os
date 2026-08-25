@@ -61,7 +61,7 @@ export default function TermsPage() {
             <ul className="mt-3 space-y-2 list-disc list-inside">
               <li>Use the service for any unlawful purpose.</li>
               <li>Attempt to gain unauthorised access to other users' data.</li>
-              <li>Copy, resell, sublicense, or attempt to replicate the service or any part of it without our written permission.</li>
+              <li>Enter or upload personal data about others without a lawful basis or the necessary permission to do so.</li>
               <li>Use automated tools to abuse the service or its APIs.</li>
               <li>Enter false, misleading or harmful content into the platform.</li>
             </ul>
