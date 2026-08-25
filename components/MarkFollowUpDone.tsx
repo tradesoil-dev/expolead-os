@@ -7,7 +7,8 @@ import { useToast } from "@/components/useToast";
 
 // Marks a follow-up as handled, removing it from the due list.
 // Opportunity: sets next_follow_up_completed = true.
-// Connection: clears follow_up_date (no next follow-up scheduled).
+// Connection: marks follow_up_completed and clears follow_up_date so it leaves
+// the active list but still counts as completed in Reports.
 export default function MarkFollowUpDone({
   kind,
   id,
@@ -25,7 +26,7 @@ export default function MarkFollowUpDone({
     const { error } =
       kind === "Opportunity"
         ? await supabase.from("opportunities").update({ next_follow_up_completed: true }).eq("id", id)
-        : await supabase.from("suppliers").update({ follow_up_date: null }).eq("id", id);
+        : await supabase.from("suppliers").update({ follow_up_date: null, follow_up_completed: true }).eq("id", id);
     setSaving(false);
     if (error) {
       showToast(error.message, "error");

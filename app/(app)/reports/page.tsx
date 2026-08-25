@@ -27,6 +27,9 @@ export default async function ReportsPage() {
     exhibition: s.exhibition?.name ?? null,
     country: s.country ?? null,
     trade_models: (s as any).trade_models ?? [],
+    follow_up_date: s.follow_up_date ?? null,
+    follow_up_status: s.follow_up_status ?? null,
+    follow_up_completed: (s as any).follow_up_completed ?? false,
   }));
 
   const opps = opportunities.map((o: any) => ({

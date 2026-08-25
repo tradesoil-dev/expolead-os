@@ -15,7 +15,7 @@ const RANGE_LABELS: Record<string, string> = {
   all: "All time",
 };
 
-type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null; trade_models?: string[] };
+type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null; trade_models?: string[]; follow_up_date?: string | null; follow_up_status?: string | null; follow_up_completed?: boolean | null };
 type Opp = { id: string; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null; trade_models?: string[]; products?: { quantity: unknown; quantity_unit?: string | null }[] };
 
 const STAGE_ORDER: { key: string; label: string; color: string }[] = [
@@ -177,6 +177,35 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
       .sort((a, b) => b.conns - a.conns);
   }, [fConns, fOpps]);
 
+  // Follow-ups reflect current due state, so they are filtered by exhibition
+  // only (not the created-at date range) and cover connections + opportunities.
+  const followUps = useMemo(() => {
+    const startOfDay = (d: Date) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x.getTime(); };
+    const today = startOfDay(new Date());
+    let overdue = 0, due = 0, upcoming = 0, scheduled = 0, completed = 0;
+
+    const bucket = (dateStr: string) => {
+      const d = startOfDay(new Date(dateStr));
+      if (d < today) overdue++; else if (d === today) due++; else upcoming++;
+    };
+
+    connections
+      .filter((c) => !exhibition || c.exhibition === exhibition)
+      .forEach((c) => {
+        if (c.follow_up_completed) { scheduled++; completed++; return; }
+        if (c.follow_up_date && c.follow_up_status !== "closed") { scheduled++; bucket(c.follow_up_date); }
+      });
+
+    opportunities
+      .filter((o) => !exhibition || o.exhibition === exhibition)
+      .forEach((o) => {
+        if (o.next_follow_up_completed) { scheduled++; completed++; return; }
+        if (o.next_follow_up_date) { scheduled++; bucket(o.next_follow_up_date); }
+      });
+
+    return { overdue, due, upcoming, rate: scheduled === 0 ? null : Math.round((completed / scheduled) * 100) };
+  }, [connections, opportunities, exhibition]);
+
   const funnel = useMemo(() => {
     const c = fConns.length;
     const o = fOpps.length;
@@ -228,7 +257,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
         <ReportsPresent
           title={exhibition || "All exhibitions"}
           rangeLabel={RANGE_LABELS[range] ?? "This year"}
-          kpis={kpis}
+          kpis={{ ...kpis, followUpRate: followUps.rate }}
           charts={[
             { key: "stage", heading: "Pipeline by stage", type: "bar", data: stage },
             { key: "type", heading: "Connections by type", type: "doughnut", data: type },
@@ -256,8 +285,17 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             <Kpi label="Active opportunities" value={kpis.active} sub={kpis.newOpps > 0 ? `+${kpis.newOpps} in 30d` : undefined} />
             <Kpi label="Pipeline volume" value={kpis.volume} />
             <Kpi label="Win rate" value={kpis.winRate === null ? "—" : `${kpis.winRate}%`} />
-            <Kpi label="Follow-up rate" value={kpis.followUpRate === null ? "—" : `${kpis.followUpRate}%`} />
+            <Kpi label="Follow-up rate" value={followUps.rate === null ? "—" : `${followUps.rate}%`} />
             <Kpi label="Exhibitions" value={kpis.exhibitions} />
+          </div>
+
+          <div className="rounded-2xl border border-ink-200 bg-white p-4">
+            <h3 className="mb-3 text-sm font-bold text-slate-900">Follow-ups</h3>
+            <div className="grid grid-cols-3 gap-3">
+              <FuStat label="Overdue" value={followUps.overdue} tone="red" />
+              <FuStat label="Due today" value={followUps.due} tone="amber" />
+              <FuStat label="Upcoming" value={followUps.upcoming} tone="emerald" />
+            </div>
           </div>
 
           <RoiPanel
@@ -401,6 +439,16 @@ function Kpi({ label, value, unit, sub }: { label: string; value: string | numbe
         {value}{unit && <span className="ml-1 text-sm font-semibold text-slate-500">{unit}</span>}
       </p>
       {sub && <p className="mt-0.5 text-[11px] font-bold text-emerald-600">{sub}</p>}
+    </div>
+  );
+}
+
+function FuStat({ label, value, tone }: { label: string; value: number; tone: "red" | "amber" | "emerald" }) {
+  const color = tone === "red" ? "text-rose-600" : tone === "amber" ? "text-amber-600" : "text-emerald-600";
+  return (
+    <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
+      <p className={`text-2xl font-extrabold tabular-nums ${color}`}>{value}</p>
+      <p className="mt-0.5 text-xs text-slate-500">{label}</p>
     </div>
   );
 }
