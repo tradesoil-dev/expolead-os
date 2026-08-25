@@ -93,8 +93,9 @@ export default function PrivacyPage() {
                 <li>All data is encrypted at rest (AES-256) on our infrastructure</li>
                 <li>Each customer&rsquo;s data is isolated at the database level using row-level security, so no customer can access another&rsquo;s data</li>
                 <li>Passwords are hashed and never stored in plain text</li>
-                <li>Authentication is handled by Supabase, an industry-standard security platform, and automated backups are maintained</li>
+                <li>Authentication is handled by Supabase, an industry-standard security platform</li>
               </ul>
+              <p className="mt-3"><strong>Our access to your data.</strong> We do not access or review the business data you enter as part of our normal operations. We would only access it where strictly necessary: to provide support you have requested, to investigate a security issue, for essential system maintenance, or to comply with a legal obligation. Access is limited to authorised personnel.</p>
               <p className="mt-3"><strong>Breach notification.</strong> If we become aware of a personal data breach that affects your data, we will notify you without undue delay after becoming aware of it, describe what happened and what data was involved, and tell you the steps we are taking.</p>
               <p className="mt-3">No system is 100% secure. If you believe your account has been compromised, contact us immediately at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
@@ -106,7 +107,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">9. How long we keep your data</h2>
-              <p>We keep your data for as long as your account is active. If you close your account and request deletion, we will permanently delete your personal data and business records within 30 days. We may retain certain information for longer only if required by law.</p>
+              <p>We keep your data for as long as your account is active. When you delete your account from within the app, your personal data and business records are removed from our live systems immediately, and in any case within 30 days. We may retain certain information for longer only if required by law.</p>
             </section>
 
             <section>
