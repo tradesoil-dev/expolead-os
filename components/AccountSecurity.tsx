@@ -81,7 +81,7 @@ export default function AccountSecurity() {
       <div className="mt-6 border-t border-ink-100 pt-5">
         <p className="text-sm font-semibold text-rose-700">Delete account</p>
         <p className="mt-1 text-sm text-slate-600">
-          Permanently delete your account and <strong>all</strong> your data — connections, opportunities, exhibitions and follow-ups. This cannot be undone.
+          Permanently delete your account and <strong>all</strong> your data, connections, opportunities, exhibitions and follow-ups. This cannot be undone.
         </p>
 
         {!showDelete ? (
