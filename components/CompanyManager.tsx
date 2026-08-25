@@ -17,6 +17,7 @@ type CompanyManagerProps = {
     website: string | null;
     priority: string | null;
     follow_up_date: string | null;
+    follow_up_note: string | null;
     is_target: boolean | null;
   };
 };
@@ -32,6 +33,7 @@ export default function CompanyManager({ supplierId, initialData }: CompanyManag
     website: initialData.website ?? "",
     priority: initialData.priority ?? "medium",
     follow_up_date: initialData.follow_up_date ?? "",
+    follow_up_note: initialData.follow_up_note ?? "",
     is_target: initialData.is_target ?? false,
   });
 
@@ -63,6 +65,7 @@ export default function CompanyManager({ supplierId, initialData }: CompanyManag
         website: form.website || null,
         priority: form.priority,
         follow_up_date: form.follow_up_date || null,
+        follow_up_note: form.follow_up_note || null,
         is_target: form.is_target,
       })
       .eq("id", supplierId);
@@ -111,6 +114,14 @@ export default function CompanyManager({ supplierId, initialData }: CompanyManag
 
           <Field label="Follow-up date">
             <Input type="date" value={form.follow_up_date} onChange={(v) => set("follow_up_date", v)} />
+          </Field>
+
+          <Field label="Follow-up note" span2>
+            <Input
+              value={form.follow_up_note}
+              onChange={(v) => set("follow_up_note", v)}
+              placeholder="What's the next action? e.g. Send quotation for green tea"
+            />
           </Field>
 
           <Field label="Saved as target (before show)">

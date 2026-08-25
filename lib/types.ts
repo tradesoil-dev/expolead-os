@@ -115,6 +115,7 @@ export interface Supplier {
   priority: Priority;
   follow_up_status: FollowUpStatus;
   follow_up_date: string | null;
+  follow_up_note: string | null;
   categories: string[];
   trade_models: string[];
   notes: string | null;

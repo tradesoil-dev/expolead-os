@@ -39,6 +39,7 @@ export default async function EditCompanyPage({
             website: supplier.website,
             priority: supplier.priority,
             follow_up_date: supplier.follow_up_date,
+            follow_up_note: supplier.follow_up_note,
             is_target: supplier.is_target,
           }}
         />

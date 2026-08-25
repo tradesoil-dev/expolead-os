@@ -36,6 +36,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     priority: "medium",
     follow_up_status: "new",
     follow_up_date: "",
+    follow_up_note: "",
     exhibition_id: "",
     booth_number: "",
     hall: "",
@@ -116,6 +117,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           priority: form.priority,
           follow_up_status: form.follow_up_status,
           follow_up_date: form.follow_up_date || null,
+          follow_up_note: form.follow_up_note || null,
           categories: [],
           exhibition_id: form.exhibition_id || null,
           booth_number: form.booth_number || null,
@@ -252,6 +254,15 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 
           <Field label="Follow-up date">
             <Input type="date" value={form.follow_up_date} onChange={(v) => set("follow_up_date", v)} />
+          </Field>
+
+          <Field label="Follow-up note" span2>
+            <Input
+              value={form.follow_up_note}
+              onChange={(v) => set("follow_up_note", v)}
+              placeholder="What's the next action? e.g. Send quotation for green tea"
+            />
+            <p className="mt-1 text-xs text-ink-400">Shows in the Follow-ups tab so you know what you owe them.</p>
           </Field>
 
           <Field label="Saved as target (before show)">

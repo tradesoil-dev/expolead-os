@@ -140,6 +140,7 @@ export default async function SupplierProfile({
             </Row>
             <Row label="Exhibition">{supplier.exhibition?.name ?? "—"}</Row>
             <Row label="Follow-up date">{supplier.follow_up_date ?? "—"}</Row>
+            {supplier.follow_up_note && <Row label="Follow-up note">{supplier.follow_up_note}</Row>}
           </dl>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-ink-100">

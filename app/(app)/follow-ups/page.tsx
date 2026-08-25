@@ -34,7 +34,7 @@ export default async function FollowUpsPage() {
       key: `s-${s.id}`,
       rawId: s.id,
       label: s.company_name,
-      note: s.country ?? "Connection follow-up",
+      note: s.follow_up_note?.trim() || s.country || "Connection follow-up",
       date: s.follow_up_date,
       href: `/connections/${s.id}`,
       kind: "Connection",
