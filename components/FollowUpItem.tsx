@@ -22,6 +22,7 @@ export default function FollowUpItem({
   noteInitial,
   meetings,
   pill,
+  anchorId,
 }: {
   supplierId: string;
   label: string;
@@ -30,6 +31,7 @@ export default function FollowUpItem({
   noteInitial: string;
   meetings: FollowUpMeeting[];
   pill: string;
+  anchorId?: string;
 }) {
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
@@ -69,7 +71,7 @@ export default function FollowUpItem({
   const inp = "w-full rounded-lg border border-ink-200 bg-white px-2.5 py-1.5 text-xs outline-none focus:border-emerald-500";
 
   return (
-    <li className="px-4 py-3 transition-colors hover:bg-ink-50">
+    <li id={anchorId} className="scroll-mt-24 px-4 py-3 transition-colors hover:bg-ink-50">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
         <div className="flex min-w-0 flex-1 items-start gap-2">
           <button onClick={() => setExpanded((v) => !v)} className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded text-ink-400 hover:bg-ink-100 hover:text-ink-700" aria-label={expanded ? "Collapse" : "Expand"}>

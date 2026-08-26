@@ -146,3 +146,10 @@ body::before {
   will-change: transform, opacity;
   animation: confetti-fall var(--dur, 1.6s) cubic-bezier(0.2, 0.6, 0.4, 1) var(--delay, 0s) forwards;
 }
+
+/* Highlight the follow-up item a notification (bell) linked to. */
+li[id^="fu-"]:target {
+  background-color: #ecfdf5;
+  box-shadow: inset 3px 0 0 #10b981;
+  border-radius: 8px;
+}

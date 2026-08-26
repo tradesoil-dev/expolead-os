@@ -151,6 +151,7 @@ function Group({ title, items, tone, empty, meetings }: { title: string; items: 
             it.kind === "Connection" ? (
               <FollowUpItem
                 key={it.key}
+                anchorId={`fu-${it.key}`}
                 supplierId={it.rawId}
                 label={it.label}
                 href={it.href}
@@ -160,7 +161,7 @@ function Group({ title, items, tone, empty, meetings }: { title: string; items: 
                 pill={pill}
               />
             ) : (
-              <li key={it.key} className="px-4 py-3 transition-colors hover:bg-ink-50">
+              <li key={it.key} id={`fu-${it.key}`} className="scroll-mt-24 px-4 py-3 transition-colors hover:bg-ink-50">
                 <div className="flex items-center gap-3">
                   <Link href={it.href} className="flex min-w-0 flex-1 items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-2">

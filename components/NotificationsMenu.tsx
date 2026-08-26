@@ -51,10 +51,10 @@ export default function NotificationsMenu({ daysLeft, isExpired }: Props) {
     ]);
     const fromConnections: NotItem[] = (sup.data ?? [])
       .filter((s) => s.follow_up_date)
-      .map((s) => ({ key: `s-${s.id}`, label: s.company_name, date: s.follow_up_date, href: `/connections/${s.id}` }));
+      .map((s) => ({ key: `s-${s.id}`, label: s.company_name, date: s.follow_up_date, href: `/follow-ups#fu-s-${s.id}` }));
     const fromOpportunities: NotItem[] = (opp.data ?? [])
       .filter((o) => o.next_follow_up_date && !o.next_follow_up_completed)
-      .map((o) => ({ key: `o-${o.id}`, label: o.name, date: o.next_follow_up_date as string, href: `/opportunities/${o.id}` }));
+      .map((o) => ({ key: `o-${o.id}`, label: o.name, date: o.next_follow_up_date as string, href: `/follow-ups#fu-o-${o.id}` }));
     const merged = [...fromConnections, ...fromOpportunities]
       .sort((a, b) => (a.date < b.date ? -1 : 1))
       .slice(0, 6);
