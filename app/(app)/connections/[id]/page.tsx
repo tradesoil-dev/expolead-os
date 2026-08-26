@@ -122,7 +122,7 @@ export default async function SupplierProfile({
               <InterestBadge interest={supplier.interest_type} />
               <PriorityBadge priority={supplier.priority} />
               {supplier.is_target && (
-                <span className="rounded bg-ink-100 px-2 py-0.5 text-xs font-medium text-ink-500">Target</span>
+                <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Target</span>
               )}
             </div>
             <EditButton href={`/connections/${supplier.id}/edit`} />

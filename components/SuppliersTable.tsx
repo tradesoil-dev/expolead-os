@@ -259,12 +259,12 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
             ) : (
               paged.map((s) => (
                 <tr key={s.id} className="hover:bg-ink-50 transition-colors">
-                  <td className="px-4 py-3 align-top whitespace-normal min-w-[220px]">
+                  <td className="px-4 py-3 align-middle whitespace-normal min-w-[220px]">
                     <Link href={`/connections/${s.id}`} className="font-medium text-ink-900 hover:text-brand-700">
                       {s.company_name}
                     </Link>
                     {s.is_target && (
-                      <span className="ml-2 rounded bg-ink-100 px-1.5 py-0.5 text-[10px] font-medium text-ink-500">
+                      <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
                         TARGET
                       </span>
                     )}
@@ -279,7 +279,7 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
                         : "—"}
                   </td>
                   <td className="px-4 py-3"><InterestBadge interest={s.interest_type} /></td>
-                  <td className="px-4 py-3 align-top whitespace-normal min-w-[210px]">
+                  <td className="px-4 py-3 align-middle whitespace-normal min-w-[210px]">
                     {s.trade_models && s.trade_models.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {s.trade_models.map((t) => (
