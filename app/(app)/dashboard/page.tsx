@@ -7,7 +7,8 @@ import { getSuppliers, getOpportunities } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_QUANTITY_UNIT, formatGroupedVolume } from "@/lib/quantity-units";
-import { Calendar, Users, Target, CircleCheck, Clock, AlertTriangle, MapPin, BarChart3 } from "lucide-react";
+import { DEFAULT_CURRENCY, formatMoney, calcRoi } from "@/lib/currencies";
+import { Calendar, Users, Target, CircleCheck, Clock, AlertTriangle, MapPin, BarChart3, Banknote } from "lucide-react";
 
 const ICON = { size: 17, strokeWidth: 2 } as const;
 
@@ -34,7 +35,7 @@ export default async function DashboardPage() {
       if (!user) return null;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, quantity_unit")
+        .select("full_name, quantity_unit, currency")
         .eq("id", user.id)
         .single();
       return data;
@@ -43,6 +44,7 @@ export default async function DashboardPage() {
 
   const firstName = (profileResult?.full_name ?? "").trim().split(" ")[0] ?? "";
   const quantityUnit = profileResult?.quantity_unit || DEFAULT_QUANTITY_UNIT;
+  const currency = profileResult?.currency || DEFAULT_CURRENCY;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -73,33 +75,63 @@ export default async function DashboardPage() {
 
   const activeOpportunities = activeOpps.length;
 
-  const opportunityFollowUps = opportunities.filter(
-    (opportunity) =>
-      opportunity.next_follow_up_date &&
-      !opportunity.next_follow_up_completed
-  );
+  // Total deal value, same split the Reports/ROI panel uses: open pipeline
+  // (everything not yet won or lost) headlines the card, won sits beside it.
+  const dealTotals = calcRoi(opportunities, 0);
 
-  const overdueFollowUps = opportunityFollowUps.filter((opportunity) => {
-    const date = new Date(opportunity.next_follow_up_date!);
-    date.setHours(0, 0, 0, 0);
-    return date.getTime() < today.getTime();
-  });
+  // Follow-ups shown on the dashboard mirror the Follow-ups tab exactly:
+  // connections (with a follow-up date, not closed) AND opportunities (with a
+  // next follow-up, not completed). Anything due lands you on the Follow-ups
+  // tab at the specific item.
+  type FollowUp = {
+    key: string;
+    label: string;
+    date: string;
+    note: string;
+    href: string;
+    kind: "Connection" | "Opportunity";
+  };
 
-  const dueTodayFollowUps = opportunityFollowUps.filter((opportunity) => {
-    const date = new Date(opportunity.next_follow_up_date!);
-    date.setHours(0, 0, 0, 0);
-    return date.getTime() === today.getTime();
-  });
+  const followUps: FollowUp[] = [];
+  for (const s of suppliers) {
+    if (!s.follow_up_date || s.follow_up_status === "closed") continue;
+    followUps.push({
+      key: `s-${s.id}`,
+      label: s.company_name,
+      date: s.follow_up_date,
+      note: s.follow_up_note?.trim() || s.country || "Connection follow-up",
+      href: `/follow-ups#fu-s-${s.id}`,
+      kind: "Connection",
+    });
+  }
+  for (const o of opportunities) {
+    if (!o.next_follow_up_date || o.next_follow_up_completed) continue;
+    followUps.push({
+      key: `o-${o.id}`,
+      label: o.name,
+      date: o.next_follow_up_date,
+      note: o.next_follow_up_note || o.product || "Opportunity follow-up",
+      href: `/follow-ups#fu-o-${o.id}`,
+      kind: "Opportunity",
+    });
+  }
 
-  const upcomingFollowUps = opportunityFollowUps
-    .filter((opportunity) => {
-      const date = new Date(opportunity.next_follow_up_date!);
-      date.setHours(0, 0, 0, 0);
-      return date.getTime() > today.getTime();
-    })
-    .sort((a, b) =>
-      a.next_follow_up_date! < b.next_follow_up_date! ? -1 : 1
-    )
+  const dayOf = (dateStr: string) => {
+    const d = new Date(dateStr);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+  const byDate = (a: FollowUp, b: FollowUp) => (a.date < b.date ? -1 : 1);
+
+  const overdueFollowUps = followUps
+    .filter((f) => dayOf(f.date) < today.getTime())
+    .sort(byDate);
+  const dueTodayFollowUps = followUps
+    .filter((f) => dayOf(f.date) === today.getTime())
+    .sort(byDate);
+  const upcomingFollowUps = followUps
+    .filter((f) => dayOf(f.date) > today.getTime())
+    .sort(byDate)
     .slice(0, 5);
 
   const recentOpportunities = opportunities.slice(0, 5);
@@ -174,6 +206,36 @@ export default async function DashboardPage() {
           />
         </section>
 
+        {/* Pipeline value — total deal value entered on opportunities */}
+        <section className="rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-5 shadow-card">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white">
+                <Banknote size={24} strokeWidth={2} />
+              </span>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Pipeline value</p>
+                <p className="text-3xl font-bold tabular-nums text-emerald-900">{formatMoney(dealTotals.open, currency)}</p>
+                <p className="mt-0.5 text-xs text-emerald-700/80">
+                  Total deal value across {activeOpportunities} open {activeOpportunities === 1 ? "opportunity" : "opportunities"}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-white/70 px-4 py-2.5 text-center">
+                <p className="text-[11px] font-medium text-ink-500">Won</p>
+                <p className="text-lg font-bold tabular-nums text-emerald-700">{formatMoney(dealTotals.won, currency)}</p>
+              </div>
+              {dealTotals.lost > 0 && (
+                <div className="rounded-xl bg-white/70 px-4 py-2.5 text-center">
+                  <p className="text-[11px] font-medium text-ink-500">Lost</p>
+                  <p className="text-lg font-bold tabular-nums text-rose-500">{formatMoney(dealTotals.lost, currency)}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
         <section className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
           <div className="mb-4 flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold text-ink-900">Pipeline at a glance</h2>
@@ -196,43 +258,37 @@ export default async function DashboardPage() {
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Panel
             title="Overdue follow-ups"
-            href="/opportunities"
-            linkLabel="View pipeline"
+            href="/follow-ups"
+            linkLabel="View follow-ups"
           >
             {overdueFollowUps.length === 0 ? (
               <EmptyRow text="No overdue follow-ups. You're up to date." />
             ) : (
-              <OpportunityList
-                opportunities={overdueFollowUps.slice(0, 5)}
-                tone="red"
-              />
+              <FollowUpList items={overdueFollowUps.slice(0, 5)} tone="red" />
             )}
           </Panel>
 
           <Panel
             title="Due today"
-            href="/opportunities"
-            linkLabel="View pipeline"
+            href="/follow-ups"
+            linkLabel="View follow-ups"
           >
             {dueTodayFollowUps.length === 0 ? (
               <EmptyRow text="No follow-ups due today." />
             ) : (
-              <OpportunityList
-                opportunities={dueTodayFollowUps.slice(0, 5)}
-                tone="amber"
-              />
+              <FollowUpList items={dueTodayFollowUps.slice(0, 5)} tone="amber" />
             )}
           </Panel>
 
           <Panel
             title="Upcoming follow-ups"
-            href="/opportunities"
-            linkLabel="View pipeline"
+            href="/follow-ups"
+            linkLabel="View follow-ups"
           >
             {upcomingFollowUps.length === 0 ? (
               <EmptyRow text="Nothing scheduled yet." />
             ) : (
-              <OpportunityList opportunities={upcomingFollowUps} tone="emerald" />
+              <FollowUpList items={upcomingFollowUps} tone="emerald" />
             )}
           </Panel>
         </section>
@@ -327,11 +383,11 @@ export default async function DashboardPage() {
   );
 }
 
-function OpportunityList({
-  opportunities,
+function FollowUpList({
+  items,
   tone,
 }: {
-  opportunities: Awaited<ReturnType<typeof getOpportunities>>;
+  items: { key: string; label: string; date: string; note: string; href: string; kind: "Connection" | "Opportunity" }[];
   tone: "red" | "amber" | "emerald";
 }) {
   const toneClass =
@@ -343,21 +399,22 @@ function OpportunityList({
 
   return (
     <ul className="divide-y divide-ink-100">
-      {opportunities.map((opportunity) => (
-        <li key={opportunity.id}>
+      {items.map((item) => (
+        <li key={item.key}>
           <Link
-            href={`/opportunities/${opportunity.id}`}
+            href={item.href}
             className="block px-4 py-3 transition-colors hover:bg-ink-50"
           >
             <div className="flex items-center justify-between gap-3">
-              <p className="truncate text-sm font-medium">{opportunity.name}</p>
-              <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${toneClass}`}>
-                {new Date(opportunity.next_follow_up_date!).toLocaleDateString()}
+              <div className="flex min-w-0 items-center gap-2">
+                <p className="truncate text-sm font-medium">{item.label}</p>
+                <span className="shrink-0 rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">{item.kind}</span>
+              </div>
+              <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${toneClass}`}>
+                {new Date(item.date).toLocaleDateString()}
               </span>
             </div>
-            <p className="mt-1 truncate text-xs text-ink-500">
-              {opportunity.next_follow_up_note || "No reminder note"}
-            </p>
+            <p className="mt-1 truncate text-xs text-ink-500">{item.note}</p>
           </Link>
         </li>
       ))}
