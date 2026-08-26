@@ -15,6 +15,9 @@ import { useToast } from "@/components/useToast";
 
 type Phase = "idle" | "consent" | "recording" | "transcribing" | "review" | "summarizing" | "summary";
 
+// Cap each recording so the audio upload stays under the transcription limit.
+const MAX_SECONDS = 180;
+
 export default function ConversationRecorder({
   supplierId,
   onAppend,
@@ -97,6 +100,16 @@ export default function ConversationRecorder({
       /* onstop handles the rest */
     }
   }
+
+  // Auto-stop each recording at 3 minutes so the audio upload stays under the
+  // transcription request-size limit. Users can record again to continue.
+  useEffect(() => {
+    if (phase === "recording" && elapsed >= MAX_SECONDS) {
+      stopRecording();
+      showToast("Reached the 3-minute limit. This segment is saved. Record again to continue the conversation.", "success");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elapsed, phase]);
 
   async function handleStopped(mimeType: string) {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -226,8 +239,14 @@ export default function ConversationRecorder({
         </span>
         <h2 className="text-sm font-semibold">Capture conversation</h2>
       </div>
-      <p className="mb-4 text-xs text-ink-400">
+      <p className="mb-1.5 text-xs text-ink-400">
         Records the conversation and transcribes it with speaker labels. Save the transcript to Notes, or turn it into an AI summary. Only the text is kept, no audio is stored.
+      </p>
+      <p className="mb-1.5 text-xs text-ink-500">
+        Keep each recording to about <strong>3 minutes</strong>. You can record again to continue the same conversation.
+      </p>
+      <p className="mb-4 text-xs font-medium text-amber-600">
+        AI summary is in beta and may not always be available yet.
       </p>
 
       {/* Fallback: device can't record audio */}
@@ -275,7 +294,7 @@ export default function ConversationRecorder({
         <div className="flex items-center justify-between rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
           <span className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600">
             <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-rose-500" />
-            Recording… <span className="tabular-nums font-normal text-rose-500">{mmss}</span>
+            Recording… <span className="tabular-nums font-normal text-rose-500">{mmss} / 3:00</span>
           </span>
           <button onClick={stopRecording} className={`${btn} bg-slate-900 text-white hover:bg-slate-700`}>
             <Square className="h-3.5 w-3.5" />
