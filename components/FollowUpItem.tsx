@@ -70,24 +70,28 @@ export default function FollowUpItem({
 
   return (
     <li className="px-4 py-3 transition-colors hover:bg-ink-50">
-      <div className="flex items-center gap-2">
-        <button onClick={() => setExpanded((v) => !v)} className="shrink-0 grid h-6 w-6 place-items-center rounded text-ink-400 hover:bg-ink-100 hover:text-ink-700" aria-label={expanded ? "Collapse" : "Expand"}>
-          <svg className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-90" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-        </button>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <Link href={href} className="truncate text-sm font-medium text-slate-900 hover:text-emerald-700">{label}</Link>
-            <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">Connection</span>
-            {meetings.length > 0 && (
-              <span className="shrink-0 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">{meetings.length} touch{meetings.length > 1 ? "es" : ""}</span>
-            )}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+        <div className="flex min-w-0 flex-1 items-start gap-2">
+          <button onClick={() => setExpanded((v) => !v)} className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded text-ink-400 hover:bg-ink-100 hover:text-ink-700" aria-label={expanded ? "Collapse" : "Expand"}>
+            <svg className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-90" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <Link href={href} className="truncate text-sm font-medium text-slate-900 hover:text-emerald-700">{label}</Link>
+              <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">Connection</span>
+              {meetings.length > 0 && (
+                <span className="shrink-0 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">{meetings.length} touch{meetings.length > 1 ? "es" : ""}</span>
+              )}
+            </div>
+            <p className="mt-0.5 truncate text-xs text-slate-500">
+              {note?.trim() ? note : <span className="italic text-slate-400">No next action set</span>}
+            </p>
           </div>
-          <p className="mt-0.5 truncate text-xs text-slate-500">
-            {note?.trim() ? note : <span className="italic text-slate-400">No next action set</span>}
-          </p>
         </div>
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${pill}`}>{new Date(date).toLocaleDateString()}</span>
-        <MarkFollowUpDone kind="Connection" id={supplierId} />
+        <div className="flex shrink-0 items-center gap-2 pl-8 sm:pl-0">
+          <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${pill}`}>{new Date(date).toLocaleDateString()}</span>
+          <MarkFollowUpDone kind="Connection" id={supplierId} />
+        </div>
       </div>
 
       {expanded && (
