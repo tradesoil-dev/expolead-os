@@ -14,7 +14,7 @@ type Step = { key: string; label: string };
 function stepsFor(attendingAs: AttendingAs): Step[] {
   const base: Step[] = [
     { key: "targets", label: "Line up target companies and people to meet" },
-    { key: "materials", label: "Prepare materials — brochures, cards, price lists" },
+    { key: "materials", label: "Prepare materials: brochures, cards, price lists" },
     { key: "samples", label: "Pack samples to show or hand out" },
     { key: "travel", label: "Book travel and accommodation" },
     { key: "team", label: "Brief your team and split who covers what" },
@@ -35,10 +35,12 @@ export default function ExhibitionPrep({
   exhibitionId,
   attendingAs,
   initialCompleted,
+  firstName,
 }: {
   exhibitionId: string;
   attendingAs: AttendingAs;
   initialCompleted: string[];
+  firstName?: string;
 }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
@@ -141,7 +143,7 @@ export default function ExhibitionPrep({
 
       {allDone && (
         <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800">
-          You&rsquo;re all set for this show — go capture some leads.
+          {firstName ? `${firstName}, you're all set for this show, let's capture some connections.` : "You're all set for this show, let's capture some connections."}
         </div>
       )}
 

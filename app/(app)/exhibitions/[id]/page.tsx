@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
-import { getExhibitions, getSuppliers, getMeetingsForExhibition } from "@/lib/data";
+import { getExhibitions, getSuppliers, getMeetingsForExhibition, getOpportunities } from "@/lib/data";
 import { getCurrency } from "@/lib/currency";
+import { formatMoney } from "@/lib/currencies";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import ExhibitionCostEditor from "@/components/ExhibitionCostEditor";
-import ExhibitionRoleEditor from "@/components/ExhibitionRoleEditor";
-import ExhibitionPrep from "@/components/ExhibitionPrep";
+import ExhibitionSetup from "@/components/ExhibitionSetup";
 
 export default async function ExhibitionDetailPage({
   params,
@@ -17,11 +19,20 @@ export default async function ExhibitionDetailPage({
   // Fetch everything in parallel instead of a sequential waterfall. Meetings key
   // off the URL id (same as exhibition.id when it exists); if the exhibition is
   // missing we notFound() below and discard the rest.
-  const [exhibitions, allSuppliers, meetings, currency] = await Promise.all([
+  const [exhibitions, allSuppliers, meetings, currency, opportunities, firstName] = await Promise.all([
     getExhibitions(),
     getSuppliers(),
     getMeetingsForExhibition(id),
     getCurrency(),
+    getOpportunities(),
+    (async () => {
+      if (!isSupabaseConfigured) return "";
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return "";
+      const { data } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+      return (data?.full_name ?? "").trim().split(" ")[0] ?? "";
+    })(),
   ]);
 
   const exhibition = exhibitions.find((ex) => ex.id === id);
@@ -37,6 +48,13 @@ export default async function ExhibitionDetailPage({
   const followUpsScheduled = suppliers.filter(
     (s) => s.follow_up_date && s.follow_up_status !== "closed"
   ).length;
+
+  // Opportunities are linked to a show by its name (the field the opportunity
+  // form stores). Sum their deal value for this exhibition's revenue pipeline.
+  const showOpps = opportunities.filter(
+    (o) => o.exhibition && exhibition.name && o.exhibition === exhibition.name
+  );
+  const pipelineValue = showOpps.reduce((sum, o) => sum + (Number(o.deal_value) || 0), 0);
 
   return (
     <>
@@ -74,25 +92,20 @@ export default async function ExhibitionDetailPage({
           />
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <ExhibitionRoleEditor
-            exhibitionId={exhibition.id}
-            current={{
-              attending_as: exhibition.attending_as ?? "visiting",
-              own_hall: exhibition.own_hall,
-              own_booth_number: exhibition.own_booth_number,
-              own_stand_location: exhibition.own_stand_location,
-            }}
-          />
-          <ExhibitionPrep
-            exhibitionId={exhibition.id}
-            attendingAs={exhibition.attending_as ?? "visiting"}
-            initialCompleted={exhibition.prep_completed ?? []}
-          />
-        </div>
+        <ExhibitionSetup
+          exhibitionId={exhibition.id}
+          current={{
+            attending_as: exhibition.attending_as ?? "visiting",
+            own_hall: exhibition.own_hall,
+            own_booth_number: exhibition.own_booth_number,
+            own_stand_location: exhibition.own_stand_location,
+          }}
+          initialCompleted={exhibition.prep_completed ?? []}
+          firstName={firstName}
+        />
 <div className="grid gap-4 lg:grid-cols-4">
   <div className="rounded-xl border border-ink-200 bg-white p-4">
-    <h3 className="font-semibold">Meetings</h3>
+    <h3 className="font-semibold text-emerald-700">Meetings</h3>
     <p className="mt-2 text-sm text-ink-500">
   {meetings.length === 0
     ? "No meetings recorded."
@@ -101,7 +114,7 @@ export default async function ExhibitionDetailPage({
   </div>
 
   <div className="rounded-xl border border-ink-200 bg-white p-4">
-    <h3 className="font-semibold">Exhibition Intelligence</h3>
+    <h3 className="font-semibold text-emerald-700">Exhibition Intelligence</h3>
     <div className="mt-3 space-y-2 text-sm">
   <div className="flex justify-between">
     <span className="text-ink-500">Connections</span>
@@ -129,7 +142,7 @@ export default async function ExhibitionDetailPage({
   </div>
 
   <div className="rounded-xl border border-ink-200 bg-white p-4">
-    <h3 className="font-semibold">Follow-ups</h3>
+    <h3 className="font-semibold text-emerald-700">Follow-ups</h3>
     <p className="mt-2 text-sm text-ink-500">
       {followUpsScheduled === 0
         ? "No follow-ups scheduled."
@@ -138,15 +151,24 @@ export default async function ExhibitionDetailPage({
   </div>
 
   <div className="rounded-xl border border-ink-200 bg-white p-4">
-    <h3 className="font-semibold">Revenue Pipeline</h3>
-    <p className="mt-2 text-sm text-ink-500">
-      Not tracked yet — opportunities aren't linked to exhibitions.
-    </p>
+    <h3 className="font-semibold text-emerald-700">Revenue Pipeline</h3>
+    {showOpps.length === 0 ? (
+      <p className="mt-2 text-sm text-ink-500">
+        No opportunities linked to this show yet.
+      </p>
+    ) : (
+      <div className="mt-2">
+        <p className="text-xl font-bold tabular-nums text-emerald-700">{formatMoney(pipelineValue, currency)}</p>
+        <p className="mt-0.5 text-sm text-ink-500">
+          Across {showOpps.length} {showOpps.length === 1 ? "opportunity" : "opportunities"}
+        </p>
+      </div>
+    )}
   </div>
 </div>
         <div className="rounded-xl border border-ink-200 bg-white">
           <div className="border-b border-ink-100 px-4 py-3">
-            <h2 className="font-semibold">Connections at this Exhibition</h2>
+            <h2 className="font-semibold text-emerald-700">Connections at this Exhibition</h2>
           </div>
 
           {suppliers.length === 0 ? (

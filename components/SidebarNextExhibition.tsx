@@ -21,13 +21,13 @@ function dayMs(dateStr: string): number {
 const DAY = 86400000;
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
-function pickNext(rows: Row[]): { row: Row; upcomingCount: number } | null {
+// Upcoming (or live) shows, soonest first. The card pages through these.
+function upcomingRows(rows: Row[]): Row[] {
   const today = startOfToday();
-  const relevant = rows
+  return rows
     .filter((r) => r.start_date)
     .filter((r) => (r.end_date ? dayMs(r.end_date) : dayMs(r.start_date!)) >= today)
     .sort((a, b) => dayMs(a.start_date!) - dayMs(b.start_date!));
-  return relevant.length ? { row: relevant[0], upcomingCount: relevant.length } : null;
 }
 
 function statusLine(row: Row): string {
@@ -50,6 +50,8 @@ export default function SidebarNextExhibition() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState<Row[]>([]);
+  // Which upcoming show the card is pointing at (index into the upcoming list).
+  const [idx, setIdx] = useState(0);
   // Month currently shown in the mini calendar (first-of-month timestamp).
   const [monthAnchor, setMonthAnchor] = useState<number | null>(null);
 
@@ -65,14 +67,15 @@ export default function SidebarNextExhibition() {
       .then(({ data }) => {
         const rs = ((data ?? []) as Row[]).filter((r) => r.start_date);
         setRows(rs);
-        const next = pickNext(rs);
-        const anchorDate = next ? new Date(dayMs(next.row.start_date!)) : new Date();
+        const list = upcomingRows(rs);
+        const anchorDate = list.length ? new Date(dayMs(list[0].start_date!)) : new Date();
         setMonthAnchor(new Date(anchorDate.getFullYear(), anchorDate.getMonth(), 1).getTime());
         setLoading(false);
       });
   }, []);
 
-  const next = useMemo(() => pickNext(rows), [rows]);
+  const upcoming = useMemo(() => upcomingRows(rows), [rows]);
+  const current = upcoming.length ? upcoming[Math.min(idx, upcoming.length - 1)] : null;
 
   const calendar = useMemo(() => {
     if (monthAnchor == null) return null;
@@ -109,9 +112,18 @@ export default function SidebarNextExhibition() {
     setMonthAnchor(new Date(a.getFullYear(), a.getMonth() + delta, 1).getTime());
   }
 
+  // Step to another upcoming show, wrapping around, and move the mini calendar
+  // to that show's month so the two stay in sync.
+  function step(delta: number) {
+    if (upcoming.length < 2) return;
+    const nextIdx = (idx + delta + upcoming.length) % upcoming.length;
+    setIdx(nextIdx);
+    const s = new Date(dayMs(upcoming[nextIdx].start_date!));
+    setMonthAnchor(new Date(s.getFullYear(), s.getMonth(), 1).getTime());
+  }
+
   if (loading) return null;
 
-  const more = next ? next.upcomingCount - 1 : 0;
   const todayDom = new Date().getDate();
   const todayMonthShown =
     calendar &&
@@ -120,18 +132,40 @@ export default function SidebarNextExhibition() {
 
   return (
     <div className="mt-auto space-y-2 p-3">
-      {next ? (
-        <Link
-          href={`/exhibitions/${next.row.id}`}
-          className="block rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10"
-        >
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-400">
-            Next exhibition
-          </p>
-          <p className="mt-1.5 text-sm font-bold leading-snug text-white">{next.row.name}</p>
-          {next.row.location && <p className="mt-0.5 text-xs leading-snug text-slate-400">{next.row.location}</p>}
-          <p className="mt-1.5 text-xs font-medium text-emerald-300">{statusLine(next.row)}</p>
-        </Link>
+      {current ? (
+        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-400">
+              {idx === 0 ? "Next exhibition" : "Upcoming exhibition"}
+            </p>
+            {upcoming.length > 1 && (
+              <div className="flex items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => step(-1)}
+                  className="grid h-5 w-5 place-items-center rounded text-slate-400 hover:bg-white/10 hover:text-white"
+                  aria-label="Previous exhibition"
+                >
+                  ‹
+                </button>
+                <span className="px-0.5 text-[10px] tabular-nums text-slate-400">{idx + 1}/{upcoming.length}</span>
+                <button
+                  type="button"
+                  onClick={() => step(1)}
+                  className="grid h-5 w-5 place-items-center rounded text-slate-400 hover:bg-white/10 hover:text-white"
+                  aria-label="Next exhibition"
+                >
+                  ›
+                </button>
+              </div>
+            )}
+          </div>
+          <Link href={`/exhibitions/${current.id}`} className="group mt-1.5 block">
+            <p className="text-sm font-bold leading-snug text-white group-hover:text-emerald-200">{current.name}</p>
+            {current.location && <p className="mt-0.5 text-xs leading-snug text-slate-400">{current.location}</p>}
+            <p className="mt-1.5 text-xs font-medium text-emerald-300">{statusLine(current)}</p>
+          </Link>
+        </div>
       ) : (
         <Link
           href="/exhibitions"
@@ -204,11 +238,6 @@ export default function SidebarNextExhibition() {
         </div>
       )}
 
-      {more > 0 && (
-        <Link href="/exhibitions" className="block px-1 text-[11px] text-slate-400 hover:text-slate-200">
-          {more} more planned →
-        </Link>
-      )}
     </div>
   );
 }

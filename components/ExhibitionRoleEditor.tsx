@@ -15,9 +15,12 @@ type Props = {
     own_booth_number: string | null;
     own_stand_location: string | null;
   };
+  // Fired the moment the mode changes, so a sibling (the prep checklist) can
+  // react before Save is pressed.
+  onAttendingChange?: (value: AttendingAs) => void;
 };
 
-export default function ExhibitionRoleEditor({ exhibitionId, current }: Props) {
+export default function ExhibitionRoleEditor({ exhibitionId, current, onAttendingChange }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +36,7 @@ export default function ExhibitionRoleEditor({ exhibitionId, current }: Props) {
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
     setSavedNote(false);
+    if (key === "attending_as") onAttendingChange?.(value as AttendingAs);
   }
 
   async function save() {
