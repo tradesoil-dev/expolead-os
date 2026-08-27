@@ -104,6 +104,25 @@ export default async function FollowUpsPage() {
           <Stat label="Upcoming" value={upcoming.length} tone="emerald" />
         </section>
 
+        {/* Guide note — coaches first-time users, mirrors the connection form guide */}
+        <div className="w-full max-w-3xl rounded-xl border border-emerald-100 bg-emerald-50 p-5">
+          <p className="text-sm font-bold text-emerald-900 mb-3">New here? Working your follow-ups</p>
+          <div className="space-y-2.5">
+            <div className="flex gap-2.5 items-start">
+              <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">1</span>
+              <p className="text-xs leading-relaxed text-emerald-800">Anything with a next follow-up date lands here automatically, pulled from your connections and opportunities and sorted into Overdue, Due today and Upcoming.</p>
+            </div>
+            <div className="flex gap-2.5 items-start">
+              <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">2</span>
+              <p className="text-xs leading-relaxed text-emerald-800">Open a row to see the contact and your past interactions, and add a quick note to record what happened.</p>
+            </div>
+            <div className="flex gap-2.5 items-start">
+              <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">3</span>
+              <p className="text-xs leading-relaxed text-emerald-800">Once you have actioned a lead, mark it done to clear it. To add more, set a next follow-up date on any connection or opportunity.</p>
+            </div>
+          </div>
+        </div>
+
         {total === 0 ? (
           <div className="rounded-xl border border-ink-200 bg-white px-4 py-16 text-center">
             <p className="text-sm font-semibold text-slate-900">You&rsquo;re all caught up</p>

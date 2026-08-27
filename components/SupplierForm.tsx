@@ -421,15 +421,15 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
       <div className="space-y-2.5">
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">1</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Start with the person you met — their name (required), role, and how to reach them: email, WhatsApp or WeChat.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Start with the person you met: their name (required), role, and how to reach them by email, WhatsApp or WeChat.</p>
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">2</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Add their company — name, country and what they trade. Tick &ldquo;target&rdquo; if it&rsquo;s one you plan to visit.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Add their company: name, country and what they trade. Tick &ldquo;target&rdquo; if it&rsquo;s one you plan to visit.</p>
         </div>
         <div className="flex gap-2.5 items-start">
           <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">3</span>
-          <p className="text-xs leading-relaxed text-emerald-800">Classify, set a follow-up date, link the exhibition and add notes — then save.</p>
+          <p className="text-xs leading-relaxed text-emerald-800">Classify, set a follow-up date, link the exhibition and add notes, then save.</p>
         </div>
       </div>
     </div>
