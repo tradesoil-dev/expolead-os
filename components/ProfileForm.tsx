@@ -51,7 +51,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitial }) {
     setSavingUnit(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setSavingUnit(false); return; }
-    const { error } = await supabase.from("profiles").upsert({ id: user.id, quantity_unit: unit });
+    const { error } = await supabase.from("profiles").update({ quantity_unit: unit }).eq("id", user.id);
     setSavingUnit(false);
     showToast(error ? error.message : "Quantity unit saved.", error ? "error" : "success");
   }
@@ -61,7 +61,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitial }) {
     setSavingCurrency(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setSavingCurrency(false); return; }
-    const { error } = await supabase.from("profiles").upsert({ id: user.id, currency: next });
+    const { error } = await supabase.from("profiles").update({ currency: next }).eq("id", user.id);
     setSavingCurrency(false);
     showToast(error ? error.message : "Currency saved.", error ? "error" : "success");
   }
@@ -79,7 +79,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitial }) {
     setAvatarUrl(url);
     setPosY(50);
     setAdjusting(true);
-    await supabase.from("profiles").upsert({ id: user.id, avatar_url: url, avatar_position_y: 50 });
+    await supabase.from("profiles").update({ avatar_url: url, avatar_position_y: 50 }).eq("id", user.id);
     setUploading(false);
   }
 
@@ -123,7 +123,7 @@ export default function ProfileForm({ initial }: { initial: ProfileInitial }) {
   async function savePosition() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    await supabase.from("profiles").upsert({ id: user.id, avatar_position_y: Math.round(posY) });
+    await supabase.from("profiles").update({ avatar_position_y: Math.round(posY) }).eq("id", user.id);
     setAdjusting(false);
   }
 
@@ -131,11 +131,11 @@ export default function ProfileForm({ initial }: { initial: ProfileInitial }) {
     setSaving(true);
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) { showToast("Please login again.", "error"); setSaving(false); return; }
-    const { error } = await supabase.from("profiles").upsert({
-      id: user.id, full_name: fullName, company_name: companyName,
+    const { error } = await supabase.from("profiles").update({
+      full_name: fullName, company_name: companyName,
       role, country, linkedin_url: linkedinUrl, about,
       avatar_url: avatarUrl, avatar_position_y: Math.round(posY),
-    });
+    }).eq("id", user.id);
     setSaving(false);
     if (error) { showToast(error.message, "error"); return; }
     showToast("Profile saved successfully.", "success");
