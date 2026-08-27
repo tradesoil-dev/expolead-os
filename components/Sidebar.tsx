@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import SidebarNextExhibition from "@/components/SidebarNextExhibition";
 
 const NAV = [
@@ -14,18 +15,58 @@ const NAV = [
   { href: "/profile", label: "Settings", icon: GearIcon, soon: false },
 ];
 
+const STORAGE_KEY = "el-sidebar-collapsed";
+
 export default function Sidebar({ email: _email }: { email: string | null }) {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  // Restore the last choice on mount (per browser). Kept out of the initial
+  // render so server and client markup match, then synced from localStorage.
+  useEffect(() => {
+    try {
+      setCollapsed(localStorage.getItem(STORAGE_KEY) === "1");
+    } catch {
+      /* private mode / storage blocked: stay expanded */
+    }
+  }, []);
+
+  function toggle() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col bg-slate-800 shadow-lg sticky top-0 h-screen self-start overflow-y-auto">
-      <div className="flex shrink-0 items-center gap-2 px-4 h-16 border-b border-white/10">
-        <span className="flex items-center text-[17px] font-bold uppercase tracking-tight leading-none">
-          <span className="text-white">EXPOLEAD</span><span className="text-emerald-400">&nbsp;OS</span>
-        </span>
+    <aside
+      className={[
+        "hidden md:flex shrink-0 flex-col bg-slate-800 shadow-lg sticky top-0 h-screen self-start overflow-y-auto overflow-x-hidden transition-[width] duration-200",
+        collapsed ? "w-[76px]" : "w-60",
+      ].join(" ")}
+    >
+      <div className={`flex shrink-0 items-center h-16 border-b border-white/10 ${collapsed ? "justify-center px-2" : "gap-2 px-4"}`}>
+        {!collapsed && (
+          <span className="flex items-center text-[17px] font-bold uppercase tracking-tight leading-none">
+            <span className="text-white">EXPOLEAD</span><span className="text-emerald-400">&nbsp;OS</span>
+          </span>
+        )}
+        <button
+          onClick={toggle}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className={`grid h-9 w-9 place-items-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white ${collapsed ? "" : "ml-auto"}`}
+        >
+          <ChevronIcon className={`h-5 w-5 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+        </button>
       </div>
 
-      <nav className="flex-1 px-3 pt-5 pb-4 space-y-1">
+      <nav className={`flex-1 space-y-1 pt-5 pb-4 ${collapsed ? "px-2.5" : "px-3"}`}>
         {NAV.map(({ href, label, icon: Icon, soon }) => {
           const active =
             href === "/dashboard"
@@ -35,16 +76,19 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
             <Link
               key={href}
               href={href}
+              title={collapsed ? label : undefined}
+              aria-label={label}
               className={[
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center rounded-lg text-sm font-medium transition-colors",
+                collapsed ? "h-11 justify-center" : "gap-3 px-3 py-2",
                 active
                   ? "bg-emerald-600 text-white"
-                  : "text-slate-400 hover:bg-white/10 hover:text-white"
+                  : "text-slate-400 hover:bg-white/10 hover:text-white",
               ].join(" ")}
             >
-              <Icon className="h-4 w-4" />
-              {label}
-              {soon && (
+              <Icon className={collapsed ? "h-[22px] w-[22px] shrink-0" : "h-4 w-4 shrink-0"} />
+              {!collapsed && label}
+              {!collapsed && soon && (
                 <span className="ml-auto rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-slate-300">
                   Soon
                 </span>
@@ -54,8 +98,16 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
         })}
       </nav>
 
-      <SidebarNextExhibition />
+      {!collapsed && <SidebarNextExhibition />}
     </aside>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 6l-6 6 6 6" />
+    </svg>
   );
 }
 
