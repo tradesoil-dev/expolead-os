@@ -8,13 +8,11 @@ import {
   FOLLOW_UP_STATUSES,
   INTEREST_TYPES,
   PRIORITIES,
-  statusLabel,
-  priorityLabel,
-  interestLabel,
   tradeModelLabel,
   TRADE_MODELS,
   type Supplier,
 } from "@/lib/types";
+import { filterSuppliers, type SupplierFilters } from "@/lib/suppliers-filter";
 
 export default function SuppliersTable({ suppliers, canExport }: { suppliers: Supplier[]; canExport: boolean }) {
   const [q, setQ] = useState("");
@@ -37,24 +35,11 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
     return Array.from(map.entries()).sort((a, b) => a[1].localeCompare(b[1]));
   }, [suppliers]);
 
-  const filtered = useMemo(() => {
-    return suppliers.filter((s) => {
-      if (interest && s.interest_type !== interest) return false;
-      if (priority && s.priority !== priority) return false;
-      if (status && s.follow_up_status !== status) return false;
-      if (visited === "yes" && !s.visited) return false;
-      if (visited === "no" && s.visited) return false;
-      if (exhibition && s.exhibition_id !== exhibition) return false;
-      if (tradeModel && !(s.trade_models ?? []).includes(tradeModel)) return false;
-
-      if (q) {
-        const hay = `${s.company_name} ${s.country ?? ""} ${s.exhibition?.name ?? ""} ${s.hall ?? ""} ${s.booth_number ?? ""}`.toLowerCase();
-        if (!hay.includes(q.toLowerCase())) return false;
-      }
-
-      return true;
-    });
-  }, [suppliers, q, interest, priority, status, visited, exhibition, tradeModel]);
+  const filters = useMemo<SupplierFilters>(
+    () => ({ q, interest, priority, status, visited, exhibition, tradeModel }),
+    [q, interest, priority, status, visited, exhibition, tradeModel],
+  );
+  const filtered = useMemo(() => filterSuppliers(suppliers, filters), [suppliers, filters]);
 
   // Pagination — 10 rows per page. Reset to page 1 whenever the filtered set changes.
   const PAGE_SIZE = 10;
@@ -64,68 +49,46 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
   const currentPage = Math.min(page, totalPages);
   const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-  function exportCsv() {
-    const headers = [
-      "Company",
-      "Interest",
-      "Country",
-      "Website",
-      "Exhibition",
-      "Hall",
-      "Booth number",
-      "Stand location",
-      "Visited",
-      "Visit date",
-      "Priority",
-      "Follow-up status",
-      "Follow-up date",
-      "Target",
-      "Notes",
-      "Contact Name",
-      "Contact Position",
-      "Contact Email",
-      "Contact Phone",
-      "Contact WhatsApp",
-    ];
+  // CSV generation and the plan re-check happen server-side. The button hits the
+  // gated route with the current filters; the browser only triggers the download.
+  const [exporting, setExporting] = useState(false);
+  async function exportCsv() {
+    setExporting(true);
+    try {
+      const params = new URLSearchParams();
+      if (q) params.set("q", q);
+      if (interest) params.set("interest", interest);
+      if (priority) params.set("priority", priority);
+      if (status) params.set("status", status);
+      if (visited) params.set("visited", visited);
+      if (exhibition) params.set("exhibition", exhibition);
+      if (tradeModel) params.set("tradeModel", tradeModel);
 
-    const rows = filtered.map((s) => {
-      const contact = s.contacts?.find((c) => c.is_primary) ?? s.contacts?.[0];
+      const res = await fetch(`/api/export/connections?${params.toString()}`);
+      if (res.status === 401) { window.location.href = "/login"; return; }
+      if (res.status === 403) { window.location.href = "/upgrade"; return; }
+      if (!res.ok) {
+        let message = "Could not export. Please try again.";
+        try {
+          const body = await res.json();
+          if (body?.error) message = body.error;
+        } catch {}
+        alert(message);
+        return;
+      }
 
-      return [
-        s.company_name,
-        interestLabel(s.interest_type),
-        s.country ?? "",
-        s.website ?? "",
-        s.exhibition?.name ?? "",
-        s.hall ?? "",
-        s.booth_number ?? "",
-        s.stand_location ?? "",
-        s.visited ? "Yes" : "No",
-        s.visit_date ?? "",
-        priorityLabel(s.priority),
-        statusLabel(s.follow_up_status),
-        s.follow_up_date ?? "",
-        s.is_target ? "Yes" : "No",
-        (s.notes ?? "").replace(/\n/g, " "),
-        contact?.full_name ?? "",
-        contact?.position ?? "",
-        contact?.email ?? "",
-        contact?.phone ?? "",
-        contact?.whatsapp ?? "",
-      ];
-    });
-
-    const csv = [headers, ...rows]
-      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
-      .join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `expolead-connections-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `expolead-connections-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
   }
   const totalSuppliers = suppliers.length;
   const targetSuppliers = suppliers.filter((s) => s.is_target).length;
@@ -214,10 +177,10 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
           {canExport ? (
             <button
               onClick={exportCsv}
-              disabled={filtered.length === 0}
+              disabled={filtered.length === 0 || exporting}
               className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium hover:bg-ink-50 disabled:opacity-50 md:w-auto"
             >
-              Export CSV
+              {exporting ? "Exporting…" : "Export CSV"}
             </button>
           ) : (
             <Link

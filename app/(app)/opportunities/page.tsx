@@ -157,7 +157,7 @@ export default async function OpportunitiesPage({
           </h2>
 
           <div className="flex items-center gap-2">
-            <OpportunitiesExportButton opportunities={opportunities} canExport={trial.canExport} />
+            <OpportunitiesExportButton opportunities={opportunities} canExport={trial.canExport} exhibition={selected} />
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
               Board View
             </span>
