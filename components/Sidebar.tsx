@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import SidebarNextExhibition from "@/components/SidebarNextExhibition";
 
 const NAV = [
@@ -111,16 +112,18 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
 
       {!collapsed && <SidebarNextExhibition />}
 
-      {collapsed && tip && (
-        <div
-          role="tooltip"
-          style={{ top: tip.top, left: tip.left }}
-          className="pointer-events-none fixed z-[9999] -translate-y-1/2 rounded-md bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-lg ring-1 ring-white/10"
-        >
-          {tip.label}
-          <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
-        </div>
-      )}
+      {collapsed && tip && typeof document !== "undefined" &&
+        createPortal(
+          <div
+            role="tooltip"
+            style={{ top: tip.top, left: tip.left }}
+            className="pointer-events-none fixed z-[9999] -translate-y-1/2 rounded-md bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-lg ring-1 ring-white/10"
+          >
+            {tip.label}
+            <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+          </div>,
+          document.body
+        )}
     </aside>
   );
 }
