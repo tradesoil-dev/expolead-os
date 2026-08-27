@@ -20,6 +20,15 @@ const STORAGE_KEY = "el-sidebar-collapsed";
 export default function Sidebar({ email: _email }: { email: string | null }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  // Custom hover tooltip for the collapsed rail. Positioned with fixed
+  // coordinates so it escapes the sidebar's own clipping.
+  const [tip, setTip] = useState<{ label: string; top: number; left: number } | null>(null);
+
+  function showTip(e: React.MouseEvent<HTMLAnchorElement>, label: string) {
+    if (!collapsed) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    setTip({ label, top: r.top + r.height / 2, left: r.right + 10 });
+  }
 
   // Restore the last choice on mount (per browser). Kept out of the initial
   // render so server and client markup match, then synced from localStorage.
@@ -32,6 +41,7 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
   }, []);
 
   function toggle() {
+    setTip(null);
     setCollapsed((prev) => {
       const next = !prev;
       try {
@@ -76,8 +86,9 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
             <Link
               key={href}
               href={href}
-              title={collapsed ? label : undefined}
               aria-label={label}
+              onMouseEnter={(e) => showTip(e, label)}
+              onMouseLeave={() => setTip(null)}
               className={[
                 "flex items-center rounded-lg text-sm font-medium transition-colors",
                 collapsed ? "h-11 justify-center" : "gap-3 px-3 py-2",
@@ -99,6 +110,17 @@ export default function Sidebar({ email: _email }: { email: string | null }) {
       </nav>
 
       {!collapsed && <SidebarNextExhibition />}
+
+      {collapsed && tip && (
+        <div
+          role="tooltip"
+          style={{ top: tip.top, left: tip.left }}
+          className="pointer-events-none fixed z-[9999] -translate-y-1/2 rounded-md bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-lg ring-1 ring-white/10"
+        >
+          {tip.label}
+          <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+        </div>
+      )}
     </aside>
   );
 }
