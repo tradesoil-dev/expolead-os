@@ -89,7 +89,7 @@ All user data tables enforce RLS keyed on `auth.uid() = user_id`:
 
 ## 6. Trial and plan enforcement
 
-- `profiles` carries `plan`, `trial_ends_at` (default now + 14 days), `subscription_status` (default `trialing`), `early_access`, and Stripe id placeholders.
+- `profiles` carries `plan`, `trial_ends_at` (default now + 14 days), `subscription_status` (default `trialing`), and `early_access`. There is no payment-gateway integration; billing is manual bank transfer with admin confirmation.
 - `lib/trial.ts` computes `TrialStatus` (expired, warning ≤ 7 days, days left). Active subscription or early access bypasses the lock.
 - UI enforcement: `TrialBanner` warns/blocks; create buttons render as `LockedButton` when expired.
 - DB enforcement: `user_can_create()` blocks inserts after expiry (defence in depth).

@@ -127,10 +127,10 @@ Stance: full price, no discounts. Early customers get access and roadmap influen
 ## 10. Roadmap (high level)
 
 Near-term: finish sales collateral (deck), founding-customer pilots.
-Post-pilot: ROI money layer (optional deal value + exhibition cost → value ÷ cost per show), Stripe payments (card-on-file), email follow-up automation, business-card scanning, exhibition editions (year-over-year linkage). The living roadmap is maintained separately as the single source of truth.
+Post-pilot: ROI money layer (optional deal value + exhibition cost → value ÷ cost per show), online card payments (provider to be decided; no gateway integrated yet), email follow-up automation, business-card scanning, exhibition editions (year-over-year linkage). The living roadmap is maintained separately as the single source of truth.
 
 ## 11. Open questions / decisions pending
 
-- Whether to gate CSV export behind payment (anti trial-cycling). Current decision: keep open; defend cycling with card-on-file when Stripe lands.
+- CSV export is gated to paid plans server-side (anti trial-cycling), implemented 2026-08-27. Card-on-file defence deferred until an online payment gateway is integrated.
 - Currency and cost model for true financial ROI (post-demo).
 - Team/multi-tenancy timing (gated on demand).

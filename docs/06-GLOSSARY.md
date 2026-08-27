@@ -182,10 +182,10 @@ The company that legally sells to your customer, takes their money, and is respo
 
 Why it matters: selling software worldwide means VAT in Europe, sales tax in the US, and dozens of other rules. A merchant of record takes all of that on. You get paid a lump sum and never file a foreign tax return.
 
-*ExpoLead example:* Paddle is your merchant of record. Their name, not yours, appears on the customer's card statement. They charge more than a plain card processor, and handling the tax is what you are paying for.
+*ExpoLead example:* ExpoLead has not integrated a merchant of record yet. If one is adopted later, their name, not yours, would appear on the customer's card statement; they charge more than a plain card processor, and handling the tax is what you pay for.
 
 **Payment processor**
-The narrower alternative: they move the money and leave the tax to you. Stripe is the best known. Not available to Sri Lankan businesses, which is why you are on Paddle.
+The narrower alternative: they move the money and leave the tax to you. Stripe is the best known but is not available to Sri Lankan businesses. ExpoLead has not integrated any payment gateway yet; billing is currently manual bank transfer.
 
 **Webhook**
 An automatic message one system sends another when something happens, so nobody has to sit there checking.

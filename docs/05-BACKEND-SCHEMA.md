@@ -55,8 +55,6 @@ One row per user; created on sign-up. Holds identity, workspace preferences, tri
 | trial_ends_at | timestamptz not null default now()+14d | (0007) |
 | subscription_status | text not null default 'trialing' | (0007) `trialing` / `active` / etc. |
 | plan_updated_at | timestamptz | (0007) |
-| stripe_customer_id | text | (0007) placeholder for payments |
-| stripe_subscription_id | text | (0007) placeholder for payments |
 | early_access | boolean not null default false | (0009) bypasses trial lock |
 | is_admin | boolean not null default false | (0013) |
 | signup_country | text | (0018) from Vercel geo header |
