@@ -100,9 +100,14 @@ function emailExpired(name: string) {
 }
 
 export async function GET(request: Request) {
-  // Verify the request is from Vercel Cron
+  // Only Vercel Cron (or a caller holding the secret) may run this. Fail CLOSED:
+  // if CRON_SECRET is not configured, refuse rather than run this service-role
+  // endpoint unguarded.
+  if (!CRON_SECRET) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
   const authHeader = request.headers.get("authorization");
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
