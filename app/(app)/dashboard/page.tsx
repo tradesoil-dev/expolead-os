@@ -8,7 +8,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_QUANTITY_UNIT, formatGroupedVolume } from "@/lib/quantity-units";
 import { DEFAULT_CURRENCY, formatMoney, calcRoi } from "@/lib/currencies";
-import { Calendar, Users, Target, CircleCheck, Clock, AlertTriangle, MapPin, BarChart3, Banknote } from "lucide-react";
+import { Calendar, Users, Target, CircleCheck, Clock, AlertTriangle, MapPin, BarChart3, Trophy, XCircle } from "lucide-react";
 
 const ICON = { size: 17, strokeWidth: 2 } as const;
 
@@ -131,8 +131,7 @@ export default async function DashboardPage() {
     .sort(byDate);
   const upcomingFollowUps = followUps
     .filter((f) => dayOf(f.date) > today.getTime())
-    .sort(byDate)
-    .slice(0, 5);
+    .sort(byDate);
 
   const recentOpportunities = opportunities.slice(0, 5);
 
@@ -210,8 +209,8 @@ export default async function DashboardPage() {
         <section className="rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-5 shadow-card">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white">
-                <Banknote size={24} strokeWidth={2} />
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-emerald-600 text-2xl font-semibold text-white">
+                $
               </span>
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Pipeline value</p>
@@ -221,67 +220,94 @@ export default async function DashboardPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="rounded-xl bg-white/70 px-4 py-2.5 text-center">
-                <p className="text-[11px] font-medium text-ink-500">Won</p>
-                <p className="text-lg font-bold tabular-nums text-emerald-700">{formatMoney(dealTotals.won, currency)}</p>
+            <div className="flex flex-wrap gap-2.5">
+              <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-white px-3.5 py-2">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-emerald-100 text-emerald-700">
+                  <Trophy size={15} strokeWidth={2} />
+                </span>
+                <div>
+                  <p className="text-[11px] text-ink-500">Won</p>
+                  <p className="text-base font-bold tabular-nums text-emerald-700">{formatMoney(dealTotals.won, currency)}</p>
+                </div>
               </div>
               {dealTotals.lost > 0 && (
-                <div className="rounded-xl bg-white/70 px-4 py-2.5 text-center">
-                  <p className="text-[11px] font-medium text-ink-500">Lost</p>
-                  <p className="text-lg font-bold tabular-nums text-rose-500">{formatMoney(dealTotals.lost, currency)}</p>
+                <div className="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-white px-3.5 py-2">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-rose-100 text-rose-700">
+                    <XCircle size={15} strokeWidth={2} />
+                  </span>
+                  <div>
+                    <p className="text-[11px] text-ink-500">Lost</p>
+                    <p className="text-base font-bold tabular-nums text-rose-600">{formatMoney(dealTotals.lost, currency)}</p>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </section>
 
-        <section className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <h2 className="text-sm font-semibold text-ink-900">Pipeline at a glance</h2>
-            <Link href="/opportunities" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
-              View pipeline →
-            </Link>
-          </div>
-          <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
-            {PIPELINE_STAGES.map((s) => (
-              <div key={s.key} className={`rounded-xl border ${s.box} p-3 text-center`}>
-                <p className={`text-2xl font-bold tabular-nums ${s.num}`}>
-                  {opportunities.filter((o) => o.status === s.key).length}
-                </p>
-                <p className="mt-0.5 text-[11px] font-medium text-ink-500">{s.label}</p>
-              </div>
-            ))}
+        <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <DonutCard
+            title="Deal value by outcome"
+            centerLabel={currency}
+            centerValue={compactNumber(dealTotals.open + dealTotals.won + dealTotals.lost)}
+            segments={[
+              { label: "Open", value: dealTotals.open, color: "#3b82f6" },
+              { label: "Won", value: dealTotals.won, color: "#10b981" },
+              { label: "Lost", value: dealTotals.lost, color: "#ef4444" },
+            ]}
+            currency={currency}
+          />
+
+          <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card lg:col-span-2">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold text-ink-900">Pipeline at a glance</h2>
+              <Link href="/opportunities" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
+                View pipeline →
+              </Link>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {PIPELINE_STAGES.map((s) => (
+                <div key={s.key} className={`rounded-xl border ${s.box} p-3 text-center`}>
+                  <p className={`text-2xl font-bold tabular-nums ${s.num}`}>
+                    {opportunities.filter((o) => o.status === s.key).length}
+                  </p>
+                  <p className="mt-0.5 text-[11px] font-medium text-ink-500">{s.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Panel
             title="Overdue follow-ups"
+            count={overdueFollowUps.length}
             href="/follow-ups"
             linkLabel="View follow-ups"
           >
             {overdueFollowUps.length === 0 ? (
               <EmptyRow text="No overdue follow-ups. You're up to date." />
             ) : (
-              <FollowUpList items={overdueFollowUps.slice(0, 5)} tone="red" />
+              <FollowUpList items={overdueFollowUps} tone="red" />
             )}
           </Panel>
 
           <Panel
             title="Due today"
+            count={dueTodayFollowUps.length}
             href="/follow-ups"
             linkLabel="View follow-ups"
           >
             {dueTodayFollowUps.length === 0 ? (
               <EmptyRow text="No follow-ups due today." />
             ) : (
-              <FollowUpList items={dueTodayFollowUps.slice(0, 5)} tone="amber" />
+              <FollowUpList items={dueTodayFollowUps} tone="amber" />
             )}
           </Panel>
 
           <Panel
             title="Upcoming follow-ups"
+            count={upcomingFollowUps.length}
             href="/follow-ups"
             linkLabel="View follow-ups"
           >
@@ -398,7 +424,7 @@ function FollowUpList({
       : "bg-emerald-50 text-emerald-700";
 
   return (
-    <ul className="divide-y divide-ink-100">
+    <ul className="max-h-[228px] divide-y divide-ink-100 overflow-y-auto">
       {items.map((item) => (
         <li key={item.key}>
           <Link
@@ -424,11 +450,13 @@ function FollowUpList({
 
 function Panel({
   title,
+  count,
   href,
   linkLabel,
   children,
 }: {
   title: string;
+  count?: number;
   href: string;
   linkLabel: string;
   children: React.ReactNode;
@@ -436,7 +464,12 @@ function Panel({
   return (
     <div className="rounded-xl border border-ink-200 bg-white shadow-card">
       <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3">
-        <h2 className="text-sm font-semibold">{title}</h2>
+        <h2 className="text-sm font-semibold">
+          {title}
+          {count !== undefined && count > 0 && (
+            <span className="ml-1.5 font-medium text-ink-400">({count})</span>
+          )}
+        </h2>
         <Link
           href={href}
           className="text-xs font-medium text-brand-600 hover:text-brand-700"
@@ -445,6 +478,80 @@ function Panel({
         </Link>
       </div>
       {children}
+    </div>
+  );
+}
+
+// A compact number for the donut centre: 373500 -> "374k", 1_200_000 -> "1.2M".
+function compactNumber(value: number): string {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+  if (value >= 1_000) return `${Math.round(value / 1_000)}k`;
+  return `${Math.round(value)}`;
+}
+
+// A pure-SVG donut (no client JS): normalised with pathLength="100" so each
+// segment's dasharray is just its percentage. Rotated -90° to start at 12 o'clock.
+function DonutCard({
+  title,
+  segments,
+  centerLabel,
+  centerValue,
+  currency,
+}: {
+  title: string;
+  segments: { label: string; value: number; color: string }[];
+  centerLabel: string;
+  centerValue: string;
+  currency: string;
+}) {
+  const shown = segments.filter((s) => s.value > 0);
+  const total = shown.reduce((sum, s) => sum + s.value, 0);
+  let acc = 0;
+
+  return (
+    <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
+      <h2 className="mb-4 text-sm font-semibold text-ink-900">{title}</h2>
+      {total === 0 ? (
+        <p className="py-8 text-center text-sm text-ink-400">No deal values recorded yet.</p>
+      ) : (
+        <div className="flex items-center gap-5">
+          <svg viewBox="0 0 120 120" className="h-28 w-28 shrink-0">
+            <g transform="rotate(-90 60 60)">
+              <circle cx="60" cy="60" r="54" fill="none" stroke="#eef2f0" strokeWidth="12" pathLength="100" />
+              {shown.map((s) => {
+                const len = (s.value / total) * 100;
+                const off = -acc;
+                acc += len;
+                return (
+                  <circle
+                    key={s.label}
+                    cx="60"
+                    cy="60"
+                    r="54"
+                    fill="none"
+                    stroke={s.color}
+                    strokeWidth="12"
+                    pathLength="100"
+                    strokeDasharray={`${len} ${100 - len}`}
+                    strokeDashoffset={off}
+                  />
+                );
+              })}
+            </g>
+            <text x="60" y="56" textAnchor="middle" fontSize="11" fill="#6b7280">{centerLabel}</text>
+            <text x="60" y="73" textAnchor="middle" fontSize="14" fontWeight="600" fill="#0f172a">{centerValue}</text>
+          </svg>
+          <ul className="min-w-0 flex-1 space-y-2 text-xs">
+            {shown.map((s) => (
+              <li key={s.label} className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: s.color }} />
+                <span className="text-ink-700">{s.label}</span>
+                <span className="ml-auto font-semibold tabular-nums text-ink-900">{formatMoney(s.value, currency)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
