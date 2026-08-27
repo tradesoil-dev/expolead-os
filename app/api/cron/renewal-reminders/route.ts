@@ -8,17 +8,15 @@ import { processRenewals } from "@/lib/renewals";
 const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function GET(request: Request) {
-  // Vercel Cron sends the secret in an Authorization header. For manual runs
-  // the same secret can be passed as ?key=, since a browser cannot set an
-  // Authorization header from a plain URL. Fail CLOSED: no secret configured
-  // means refuse, never run unguarded.
+  // Only Vercel Cron (or a caller holding the secret) may run this. The secret
+  // is accepted ONLY via the Authorization header, never a URL query, because
+  // URLs land in logs and monitoring. Fail CLOSED: no secret configured means
+  // refuse. Admins trigger a manual run through /api/admin/run-renewals instead.
   if (!CRON_SECRET) {
     return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
   }
   const authHeader = request.headers.get("authorization");
-  const key = new URL(request.url).searchParams.get("key");
-  const authorised = authHeader === `Bearer ${CRON_SECRET}` || key === CRON_SECRET;
-  if (!authorised) {
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
