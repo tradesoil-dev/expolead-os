@@ -2,6 +2,7 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import MarkFollowUpDone from "@/components/MarkFollowUpDone";
 import FollowUpItem, { type FollowUpMeeting } from "@/components/FollowUpItem";
+import AddFollowUpButton from "@/components/AddFollowUpButton";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -96,7 +97,20 @@ export default async function FollowUpsPage() {
 
   return (
     <>
-      <PageHeader title="Follow-ups" subtitle="Every lead you owe an action, in one place" />
+      <PageHeader
+        title="Follow-ups"
+        subtitle="Every lead you owe an action, in one place"
+        action={
+          <AddFollowUpButton
+            connections={suppliers.map((s) => ({
+              id: s.id,
+              company_name: s.company_name,
+              follow_up_date: s.follow_up_date ?? null,
+              follow_up_note: s.follow_up_note ?? null,
+            }))}
+          />
+        }
+      />
       <main className="flex-1 space-y-6 p-6 md:p-8">
         <section className="grid grid-cols-3 gap-4 max-w-2xl">
           <Stat label="Overdue" value={overdue.length} tone="red" />
