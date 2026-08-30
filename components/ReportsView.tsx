@@ -10,8 +10,7 @@ import RoiPanel from "@/components/RoiPanel";
 
 const RANGE_LABELS: Record<string, string> = {
   year: "This year",
-  "90": "Last 90 days",
-  "30": "Last 30 days",
+  lastyear: "Last year",
   all: "All time",
 };
 
@@ -34,18 +33,22 @@ const TYPE_ORDER: { key: string; label: string; color: string }[] = [
   { key: "other", label: "Other", color: "#64748b" },
 ];
 
-const EXH_COLORS = ["#10b981", "#34d399", "#6ee7b7", "#059669", "#047857", "#94a3b8"];
+// Distinct categorical hues so pie / doughnut slices and bars are easy to tell
+// apart (the old all-green ramp blended together in a pie). Emerald stays first
+// to keep the brand accent leading.
+const EXH_COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444", "#14b8a6", "#ec4899", "#f97316", "#06b6d4", "#84cc16"];
 const TM_COLORS = ["#10b981", "#38bdf8", "#f59e0b", "#8b5cf6", "#f43f5e", "#14b8a6"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function withinRange(dateStr: string | null, range: string): boolean {
   if (range === "all") return true;
   if (!dateStr) return false;
-  const d = new Date(dateStr).getTime();
-  const now = Date.now();
-  if (range === "year") return new Date(dateStr).getFullYear() === new Date().getFullYear();
-  const days = range === "30" ? 30 : 90;
-  return d >= now - days * 86400000;
+  // Exhibitions are annual, so the report reasons in calendar years, not rolling
+  // day-windows (a 30/90-day window rarely lines up with a show).
+  const year = new Date(dateStr).getFullYear();
+  const thisYear = new Date().getFullYear();
+  if (range === "lastyear") return year === thisYear - 1;
+  return year === thisYear; // "year" = this year (the default)
 }
 
 export default function ReportsView({ connections, opportunities, quantityUnit = "MT", currency = "USD", exhibitionCosts = [] }: { connections: Conn[]; opportunities: Opp[]; quantityUnit?: string; currency?: string; exhibitionCosts?: { name: string; cost: number | null }[] }) {
@@ -84,14 +87,9 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
     const withFu = fOpps.filter((o) => o.next_follow_up_date);
     const doneFu = withFu.filter((o) => o.next_follow_up_completed);
     const exhibitions = new Set(fConns.map((c) => c.exhibition).filter(Boolean)).size;
-    const cutoff = Date.now() - 30 * 86400000;
-    const newConns = fConns.filter((c) => c.created_at && new Date(c.created_at).getTime() >= cutoff).length;
-    const newOpps = fOpps.filter((o) => o.created_at && new Date(o.created_at).getTime() >= cutoff).length;
     return {
       connections: fConns.length,
-      newConns,
       active: active.length,
-      newOpps,
       volume,
       winRate: won + lost === 0 ? null : Math.round((won / (won + lost)) * 100),
       followUpRate: withFu.length === 0 ? null : Math.round((doneFu.length / withFu.length) * 100),
@@ -133,7 +131,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
     return {
       labels: keys.map((k) => { const [y, m] = k.split("-"); return `${MONTHS[Number(m)]} ${String(y).slice(2)}`; }),
       data: keys.map((k) => map.get(k) ?? 0),
-      colors: ["#10b981"],
+      colors: keys.map((_, i) => EXH_COLORS[i % EXH_COLORS.length]),
     };
   }, [fConns]);
 
@@ -247,8 +245,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
         <div className="w-48"><Select value={exhibition} onChange={setExhibition} options={exhibitionOptions} className="py-2" /></div>
         <div className="w-40"><Select value={range} onChange={setRange} className="py-2" options={[
           { value: "year", label: "This year" },
-          { value: "90", label: "Last 90 days" },
-          { value: "30", label: "Last 30 days" },
+          { value: "lastyear", label: "Last year" },
           { value: "all", label: "All time" },
         ]} /></div>
       </div>
@@ -262,7 +259,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             { key: "stage", heading: "Pipeline by stage", type: "bar", data: stage },
             { key: "type", heading: "Connections by type", type: "doughnut", data: type },
             { key: "exh", heading: "Leads by exhibition", type: "bar", data: exh },
-            { key: "time", heading: "Connections added over time", type: "line", data: time },
+            ...(!exhibition ? [{ key: "time", heading: "Connections added over time", type: "line" as const, data: time }] : []),
             { key: "country", heading: "Connections by country", type: "bar", data: country },
             { key: "market", heading: "Opportunities by market", type: "bar", data: market },
             ...(tradeModel.labels.length > 0 ? [{ key: "tradeModel", heading: "Connections by trade model", type: "bar", data: tradeModel }] : []),
@@ -281,8 +278,8 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-            <Kpi label="Connections" value={kpis.connections} sub={kpis.newConns > 0 ? `+${kpis.newConns} in 30d` : undefined} />
-            <Kpi label="Active opportunities" value={kpis.active} sub={kpis.newOpps > 0 ? `+${kpis.newOpps} in 30d` : undefined} />
+            <Kpi label="Connections" value={kpis.connections} />
+            <Kpi label="Active opportunities" value={kpis.active} />
             <Kpi label="Pipeline volume" value={kpis.volume} />
             <Kpi label="Win rate" value={kpis.winRate === null ? "—" : `${kpis.winRate}%`} />
             <Kpi label="Follow-up rate" value={followUps.rate === null ? "—" : `${followUps.rate}%`} />
@@ -290,7 +287,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
           </div>
 
           <div className="rounded-2xl border border-ink-200 bg-white p-4">
-            <h3 className="mb-3 text-sm font-bold text-slate-900">Follow-ups</h3>
+            <h3 className="mb-3 text-sm font-bold text-emerald-800">Follow-ups</h3>
             <div className="grid grid-cols-3 gap-3">
               <FuStat label="Overdue" value={followUps.overdue} tone="red" />
               <FuStat label="Due today" value={followUps.due} tone="amber" />
@@ -315,9 +312,11 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             <Card title="Leads by exhibition" seg={<Seg value={tExh} onChange={(v) => setTExh(v as any)} options={["bar", "line"]} labels={["Bar", "Line"]} />}>
               <ReportChart type={tExh} labels={exh.labels} data={exh.data} colors={exh.colors} />
             </Card>
-            <Card title="Connections added over time" seg={<Seg value={tTime} onChange={(v) => setTTime(v as any)} options={["line", "bar"]} labels={["Line", "Bar"]} />}>
-              <ReportChart type={tTime} labels={time.labels} data={time.data} colors={time.colors} />
-            </Card>
+            {!exhibition && (
+              <Card title="Connections added over time" seg={<Seg value={tTime} onChange={(v) => setTTime(v as any)} options={["line", "bar"]} labels={["Line", "Bar"]} />}>
+                <ReportChart type={tTime} labels={time.labels} data={time.data} colors={time.colors} />
+              </Card>
+            )}
             {country.labels.length > 0 && (
               <Card title="Connections by country" seg={<Seg value={tCountry} onChange={(v) => setTCountry(v as any)} options={["bar", "pie"]} labels={["Bar", "Pie"]} />}>
                 <ReportChart type={tCountry} labels={country.labels} data={country.data} colors={country.colors} />
@@ -336,18 +335,18 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
           </div>
 
           <div className="rounded-2xl border border-ink-200 bg-white p-4">
-            <h3 className="mb-3 text-sm font-bold text-slate-900">Conversion funnel</h3>
+            <h3 className="mb-3 text-sm font-bold text-emerald-800">Conversion funnel</h3>
             <FunnelBar label="Connections captured" value={funnel.c} max={funnel.c} color="#10b981" />
             <FunnelBar label="Opportunities created" value={funnel.o} max={funnel.c} color="#38bdf8" pct={funnel.c ? Math.round((funnel.o / funnel.c) * 100) : null} />
             <FunnelBar label="Deals won" value={funnel.w} max={funnel.c} color="#8b5cf6" pct={funnel.c ? Math.round((funnel.w / funnel.c) * 100) : null} />
           </div>
 
           <div className="rounded-2xl border border-ink-200 bg-white p-4">
-            <h3 className="mb-3 text-sm font-bold text-slate-900">Performance by exhibition</h3>
+            <h3 className="mb-3 text-sm font-bold text-emerald-800">Performance by exhibition</h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px] text-sm">
                 <thead>
-                  <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-emerald-700">
                     <th className="py-2 pr-3">Exhibition</th>
                     <th className="py-2 pr-3 text-right">Connections</th>
                     <th className="py-2 pr-3 text-right">Opportunities</th>
@@ -378,12 +377,12 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
 
           {perTradeModel.length > 0 && (
             <div className="rounded-2xl border border-ink-200 bg-white p-4">
-              <h3 className="mb-1 text-sm font-bold text-slate-900">Performance by trade model</h3>
+              <h3 className="mb-1 text-sm font-bold text-emerald-800">Performance by trade model</h3>
               <p className="mb-3 text-xs text-slate-500">Opportunities count, win rate and pipeline value come from opportunities linked to a connection.</p>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[560px] text-sm">
                   <thead>
-                    <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                    <tr className="border-b border-ink-100 text-left text-[11px] font-bold uppercase tracking-wide text-emerald-700">
                       <th className="py-2 pr-3">Trade model</th>
                       <th className="py-2 pr-3 text-right">Connections</th>
                       <th className="py-2 pr-3 text-right">Opportunities</th>
