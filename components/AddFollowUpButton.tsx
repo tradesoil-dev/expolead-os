@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -30,6 +31,9 @@ export default function AddFollowUpButton({ connections }: { connections: Choice
   const [date, setDate] = useState(tomorrow);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  // Portal target is only available on the client; gate to avoid an SSR mismatch.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -74,7 +78,7 @@ export default function AddFollowUpButton({ connections }: { connections: Choice
         <span className="text-base leading-none">+</span> Add follow-up
       </button>
 
-      {open && (
+      {open && mounted && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={close}>
           <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between">
@@ -161,7 +165,8 @@ export default function AddFollowUpButton({ connections }: { connections: Choice
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
