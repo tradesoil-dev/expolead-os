@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import ModernSelect from "@/components/Select";
 import DatePicker from "@/components/DatePicker";
+import { COUNTRIES } from "@/lib/countries";
 import {
   INTEREST_TYPES,
   PRIORITIES,
@@ -221,7 +222,12 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           </Field>
 
           <Field label="Country">
-            <Input value={form.country} onChange={(v) => set("country", v)} placeholder="China" />
+            <Input value={form.country} onChange={(v) => set("country", v)} placeholder="Start typing, e.g. Aus" list="country-options" />
+            <datalist id="country-options">
+              {COUNTRIES.map((c) => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
           </Field>
 
           <Field label="Website">
@@ -307,7 +313,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
             <Select
               value={form.exhibition_id}
               onChange={(v) => set("exhibition_id", v)}
-              options={[{ value: "", label: "— None —" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
+              options={[{ value: "", label: "None" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
             />
           </Field>
 
@@ -479,11 +485,13 @@ function Input({
   onChange,
   placeholder,
   type = "text",
+  list,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
   type?: string;
+  list?: string;
 }) {
   if (type === "date") {
     return <DatePicker value={value} onChange={onChange} />;
@@ -494,6 +502,7 @@ function Input({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
+      list={list}
       className={inputClass}
     />
   );
