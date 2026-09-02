@@ -18,7 +18,7 @@ import {
   type Exhibition,
   type InterestType,
 } from "@/lib/types";
-import { User, Building2, Tag, MapPin, StickyNote } from "lucide-react";
+import { User, Tag, MapPin, StickyNote } from "lucide-react";
 import ConversationRecorder from "@/components/ConversationRecorder";
 
 const SI = { size: 15, strokeWidth: 2 } as const;
@@ -183,7 +183,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </p>
       )}
 
-      <Section title="Primary contact" icon={<User {...SI} />}>
+      <Section title="Primary Contact & Company Details" icon={<User {...SI} />}>
         <Grid>
           <Field label="Full name *">
             <Input value={contact.full_name} onChange={(v) => setC("full_name", v)} placeholder="Li Wei" />
@@ -208,11 +208,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           <Field label="WeChat">
             <Input value={contact.wechat} onChange={(v) => setC("wechat", v)} />
           </Field>
-        </Grid>
-      </Section>
 
-      <Section title="Company" icon={<Building2 {...SI} />}>
-        <Grid>
           <Field label="Company name *" span2>
             <Input
               value={form.company_name}
@@ -233,18 +229,10 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           <Field label="Website">
             <Input value={form.website} onChange={(v) => set("website", v)} placeholder="https://…" />
           </Field>
-
-          <Field label="Products discussed (comma-separated)" span2>
-            <Input
-              value={form.products}
-              onChange={(v) => set("products", v)}
-              placeholder="e.g. Oleic Acid, Stearic Acid, Glycerine"
-            />
-          </Field>
         </Grid>
       </Section>
 
-      <Section title="Classification" icon={<Tag {...SI} />}>
+      <Section title="Classification & Products Discussed" icon={<Tag {...SI} />}>
         <Grid>
           <Field label="Classification">
             <Select value={form.interest_type} onChange={(v) => set("interest_type", v)} options={INTEREST_TYPES} />
@@ -304,6 +292,14 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
             </div>
             <p className="mt-1.5 text-xs text-ink-400">Tick any that apply, how you&rsquo;d do business together.</p>
           </div>
+
+          <Field label="Products discussed (comma-separated)" span2>
+            <Input
+              value={form.products}
+              onChange={(v) => set("products", v)}
+              placeholder="e.g. Oleic Acid, Stearic Acid, Glycerine"
+            />
+          </Field>
         </Grid>
       </Section>
 
