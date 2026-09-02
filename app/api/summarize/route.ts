@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { allowAiRequest } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -16,6 +17,13 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+  }
+
+  if (!(await allowAiRequest(supabase, "summarize"))) {
+    return NextResponse.json(
+      { error: "You have reached the AI summary limit for now. Please try again later." },
+      { status: 429 },
+    );
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;

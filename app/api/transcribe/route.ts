@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { allowAiRequest } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,13 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+  }
+
+  if (!(await allowAiRequest(supabase, "transcribe"))) {
+    return NextResponse.json(
+      { error: "You have reached the recording limit for now. Please try again later." },
+      { status: 429 },
+    );
   }
 
   const apiKey = process.env.DEEPGRAM_API_KEY;
