@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { ExhibitionLibraryItem } from "@/lib/types";
 
@@ -41,6 +41,14 @@ export default function TradeShowsDirectory({ shows }: { shows: ExhibitionLibrar
     });
   }, [shows, active, query]);
 
+  // Pagination — 10 shows per page. Reset to page 1 when the filter changes.
+  const PAGE_SIZE = 10;
+  const [page, setPage] = useState(1);
+  useEffect(() => { setPage(1); }, [active, query]);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   return (
     <div>
       {/* Search */}
@@ -78,31 +86,67 @@ export default function TradeShowsDirectory({ shows }: { shows: ExhibitionLibrar
       {filtered.length === 0 ? (
         <p className="py-16 text-center text-sm text-slate-400">No exhibitions match your search.</p>
       ) : (
-        <div className="border-t border-slate-200">
-          {filtered.map((s) => (
-            <div
-              key={s.id}
-              className="grid grid-cols-1 items-center gap-2 border-b border-slate-200 px-4 py-6 transition-colors hover:bg-white md:grid-cols-[200px_1fr_auto_auto] md:gap-8"
-            >
-              <p className="font-mono text-xs uppercase tracking-wide text-slate-500">{formatDateRange(s.start_date, s.end_date)}</p>
-              <div>
-                <p className="text-lg font-bold text-slate-900">{s.name}</p>
-                {s.location && <p className="mt-0.5 text-sm text-slate-500">{s.location}</p>}
-              </div>
-              {s.sector ? (
-                <span className="font-mono text-[11px] font-semibold uppercase tracking-wide text-emerald-600 md:text-right">{s.sector}</span>
-              ) : (
-                <span className="md:text-right" />
-              )}
-              <Link
-                href="/login?mode=signup"
-                className="justify-self-start whitespace-nowrap border-b border-slate-900 pb-0.5 text-sm font-semibold text-slate-900 transition-colors hover:border-emerald-600 hover:text-emerald-700 md:justify-self-end"
+        <>
+          {/* Column headings (desktop) */}
+          <div className="hidden px-4 pb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 md:grid md:grid-cols-[200px_1fr_auto_auto] md:gap-8">
+            <span>Date</span>
+            <span>Exhibition</span>
+            <span className="md:text-right">Sector</span>
+            <span />
+          </div>
+
+          <div className="border-t border-slate-200">
+            {paged.map((s) => (
+              <div
+                key={s.id}
+                className="grid grid-cols-1 items-center gap-2 border-b border-slate-200 px-4 py-6 transition-colors hover:bg-white md:grid-cols-[200px_1fr_auto_auto] md:gap-8"
               >
-                Track this →
-              </Link>
+                <p className="font-mono text-xs uppercase tracking-wide text-slate-500">{formatDateRange(s.start_date, s.end_date)}</p>
+                <div>
+                  <p className="text-lg font-bold text-slate-900">{s.name}</p>
+                  {s.location && <p className="mt-0.5 text-sm text-slate-500">{s.location}</p>}
+                </div>
+                {s.sector ? (
+                  <span className="font-mono text-[11px] font-semibold uppercase tracking-wide text-emerald-600 md:text-right">{s.sector}</span>
+                ) : (
+                  <span className="md:text-right" />
+                )}
+                <Link
+                  href="/login?mode=signup"
+                  className="justify-self-start whitespace-nowrap border-b border-slate-900 pb-0.5 text-sm font-semibold text-slate-900 transition-colors hover:border-emerald-600 hover:text-emerald-700 md:justify-self-end"
+                >
+                  Track this →
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-xs text-slate-400">
+                Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length}
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-white disabled:opacity-40 disabled:hover:bg-transparent"
+                >
+                  ← Prev
+                </button>
+                <span className="font-mono text-xs tabular-nums text-slate-500">Page {currentPage} of {totalPages}</span>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-white disabled:opacity-40 disabled:hover:bg-transparent"
+                >
+                  Next →
+                </button>
+              </div>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* Dark CTA band */}
