@@ -154,7 +154,7 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
             </div>
             <h3 className="text-center text-base font-bold text-slate-900">Delete &ldquo;{confirmTarget.name}&rdquo;?</h3>
             <p className="mt-2 text-center text-sm text-slate-500">
-              It will disappear from /trade-shows and every user&rsquo;s library picker. This can&rsquo;t be undone.
+              It will disappear from the public exhibitions directory and every user&rsquo;s library picker. This can&rsquo;t be undone.
             </p>
             <div className="mt-6 flex gap-3">
               <button onClick={() => setConfirmTarget(null)} disabled={deleting} className="flex-1 rounded-lg border border-ink-200 px-4 py-2.5 text-sm font-semibold text-ink-600 hover:bg-ink-50 transition-colors disabled:opacity-50">
@@ -174,7 +174,7 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
             <h1 className="text-xl font-bold text-slate-900">Exhibition Library</h1>
             <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">Admin only</span>
           </div>
-          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">Shows here appear on /trade-shows and in every user&rsquo;s library picker.</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">Shows added here appear on the public exhibitions directory and in every user&rsquo;s library picker.</p>
         </div>
         {!showForm && (
           <button onClick={openAdd} className="shrink-0 self-start rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
