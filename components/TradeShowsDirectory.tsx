@@ -89,7 +89,7 @@ export default function TradeShowsDirectory({ shows }: { shows: ExhibitionLibrar
       ) : (
         <>
           {/* Column headings (desktop) */}
-          <div className="hidden px-4 pb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 md:grid md:grid-cols-[200px_1fr_auto_auto] md:gap-8">
+          <div className="hidden px-4 pb-3 font-mono text-[13px] font-bold uppercase tracking-[0.14em] text-emerald-600 md:grid md:grid-cols-[200px_1fr_auto_auto] md:gap-8">
             <span>Date</span>
             <span>Exhibition</span>
             <span className="md:text-right">Sector</span>
