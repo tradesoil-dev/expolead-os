@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { ExhibitionLibraryItem } from "@/lib/types";
+import { ensureHttps } from "@/lib/url";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -111,12 +112,18 @@ export default function TradeShowsDirectory({ shows }: { shows: ExhibitionLibrar
                 ) : (
                   <span className="md:text-right" />
                 )}
-                <Link
-                  href="/login?mode=signup"
-                  className="justify-self-start whitespace-nowrap border-b border-slate-900 pb-0.5 text-sm font-semibold text-slate-900 transition-colors hover:border-emerald-600 hover:text-emerald-700 md:justify-self-end"
-                >
-                  Track this →
-                </Link>
+                {ensureHttps(s.website) ? (
+                  <a
+                    href={ensureHttps(s.website)!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="justify-self-start whitespace-nowrap border-b border-slate-900 pb-0.5 text-sm font-semibold text-slate-900 transition-colors hover:border-emerald-600 hover:text-emerald-700 md:justify-self-end"
+                  >
+                    Visit site →
+                  </a>
+                ) : (
+                  <span className="md:justify-self-end" />
+                )}
               </div>
             ))}
           </div>

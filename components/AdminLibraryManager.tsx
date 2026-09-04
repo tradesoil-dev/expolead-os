@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ExhibitionLibraryItem } from "@/lib/types";
 import DatePicker from "@/components/DatePicker";
+import { ensureHttps } from "@/lib/url";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -19,7 +20,7 @@ function fmt(start: string | null, end: string | null): string {
     : `${sMon} ${s.getUTCDate()} – ${eMon} ${e.getUTCDate()}, ${year}`;
 }
 
-const EMPTY = { name: "", location: "", start_date: "", end_date: "", sector: "" };
+const EMPTY = { name: "", location: "", start_date: "", end_date: "", sector: "", website: "" };
 
 export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibraryItem[] }) {
   const [rows, setRows] = useState<ExhibitionLibraryItem[]>(shows);
@@ -83,6 +84,7 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
       start_date: r.start_date ?? "",
       end_date: r.end_date ?? "",
       sector: r.sector ?? "",
+      website: r.website ?? "",
     });
     setShowForm(true);
   }
@@ -103,6 +105,7 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
       start_date: f.start_date || null,
       end_date: f.end_date || null,
       sector: f.sector || null,
+      website: ensureHttps(f.website),
     };
     if (editingId) {
       const { data, error } = await supabase.from("exhibition_library").update(payload).eq("id", editingId).select().single();
@@ -206,6 +209,10 @@ export default function AdminLibraryManager({ shows }: { shows: ExhibitionLibrar
               <datalist id="sector-options">
                 {sectors.map((s) => <option key={s} value={s} />)}
               </datalist>
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-semibold text-slate-600">Website</label>
+              <input className={inp} value={f.website} onChange={(e) => set("website", e.target.value)} placeholder="e.g. gulfood.com (shown as a Visit site link on /trade-shows)" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">

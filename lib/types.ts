@@ -58,6 +58,7 @@ export interface ExhibitionLibraryItem {
   start_date: string | null;
   end_date: string | null;
   sector: string | null;
+  website: string | null;
   created_at: string;
 }
 
