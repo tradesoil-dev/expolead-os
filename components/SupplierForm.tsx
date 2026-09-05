@@ -9,6 +9,8 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import ModernSelect from "@/components/Select";
 import DatePicker from "@/components/DatePicker";
 import { COUNTRIES } from "@/lib/countries";
+import CardScanner, { type ScannedFields } from "@/components/CardScanner";
+import { ensureHttps } from "@/lib/url";
 import {
   INTEREST_TYPES,
   PRIORITIES,
@@ -170,6 +172,19 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     }
   }
 
+  // Pre-fill the contact and company fields from a scanned business card. Only
+  // fills fields the scan actually returned; the user reviews before saving.
+  function applyScannedCard(f: ScannedFields) {
+    if (f.full_name) setC("full_name", f.full_name);
+    if (f.position) setC("position", f.position);
+    if (f.email) setC("email", f.email);
+    if (f.phone) setC("phone", f.phone);
+    if (f.whatsapp) setC("whatsapp", f.whatsapp);
+    if (f.company_name) set("company_name", f.company_name);
+    if (f.website) set("website", ensureHttps(f.website) ?? f.website);
+    if (f.country) set("country", f.country);
+  }
+
   return (
     <div className="space-y-3">
       <Link href="/connections" className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
@@ -184,6 +199,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
       )}
 
       <Section title="Primary Contact & Company Details" icon={<User {...SI} />}>
+        <CardScanner onExtract={applyScannedCard} />
         <Grid>
           <Field label="Full name *">
             <Input value={contact.full_name} onChange={(v) => setC("full_name", v)} placeholder="Li Wei" />
