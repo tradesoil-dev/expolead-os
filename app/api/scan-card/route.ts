@@ -107,10 +107,14 @@ export async function POST(req: Request) {
       const v = parsed[k];
       return typeof v === "string" && v.trim() ? v.trim() : null;
     };
+    // Capitalise the first letter of each word in a personal name (e.g. "gerald"
+    // -> "Gerald"), leaving the rest as-is so "McDonald" survives.
+    const titleCaseName = (s: string | null) =>
+      s ? s.split(/(\s+)/).map((w) => (/\p{L}/u.test(w) ? w[0].toUpperCase() + w.slice(1) : w)).join("") : null;
 
     return NextResponse.json({
       fields: {
-        full_name: pick("full_name"),
+        full_name: titleCaseName(pick("full_name")),
         position: pick("position"),
         company_name: pick("company_name"),
         email: pick("email"),

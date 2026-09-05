@@ -48,18 +48,31 @@ export async function POST(req: Request) {
   // Guard against runaway input (and cost). A booth chat is short; clip anything huge.
   const clipped = transcript.slice(0, 12000);
 
+  // Refer to the recorder by their own account name, not a generic role.
+  const { data: profileRow } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+  const userName = (profileRow?.full_name ?? "").trim();
+  const firstName = userName.split(/\s+/)[0] || "";
+  const nameClause = userName
+    ? `The ExpoLead user who recorded this conversation is named ${userName}; when the summary refers to them, use their name (for example "${firstName}"), not a generic role like "a supplier". `
+    : "";
+
+  const system =
+    "You summarise a single conversation captured at a trade-exhibition booth for a lead-management app. " +
+    nameClause +
+    "Write the summary as short, scannable bullet points: put each point on its own line, beginning with a bullet character '• '. " +
+    "Cover, when present: what the other company or person deals in, products and quantities discussed, and samples or pricing mentioned. " +
+    "Then add a line that says 'Next steps:' followed by bullet points for any agreed next actions or follow-ups. " +
+    "Use only what is in the transcript. Do not invent names, numbers, or commitments. " +
+    "The text comes from speech-to-text and may contain errors, so read for meaning. " +
+    "The transcript may be in any language or a mix of languages; always write your summary in English, translating as needed. " +
+    "Output only the summary, with no preamble or extra headings beyond the 'Next steps:' label.";
+
   const anthropic = new Anthropic({ apiKey });
   try {
     const msg = await anthropic.messages.create({
       model: "claude-haiku-4-5",
       max_tokens: 600,
-      system:
-        "You summarise a single conversation captured at a trade-exhibition booth for a lead-management app. " +
-        "Write a concise, factual summary (a short paragraph or a few plain lines) covering, when present: what the company or person deals in, products and quantities discussed, samples or pricing mentioned, and any agreed next steps or follow-ups. " +
-        "Use only what is in the transcript. Do not invent names, numbers, or commitments. " +
-        "The text comes from speech-to-text and may contain errors, so read for meaning. " +
-        "The transcript may be in any language or a mix of languages; always write your summary in English, translating as needed. " +
-        "Output only the summary, with no preamble or headings.",
+      system,
       messages: [{ role: "user", content: `Transcript:\n\n${clipped}` }],
     });
 
