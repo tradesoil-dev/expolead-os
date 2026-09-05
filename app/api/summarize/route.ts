@@ -58,6 +58,7 @@ export async function POST(req: Request) {
         "Write a concise, factual summary (a short paragraph or a few plain lines) covering, when present: what the company or person deals in, products and quantities discussed, samples or pricing mentioned, and any agreed next steps or follow-ups. " +
         "Use only what is in the transcript. Do not invent names, numbers, or commitments. " +
         "The text comes from speech-to-text and may contain errors, so read for meaning. " +
+        "The transcript may be in any language or a mix of languages; always write your summary in English, translating as needed. " +
         "Output only the summary, with no preamble or headings.",
       messages: [{ role: "user", content: `Transcript:\n\n${clipped}` }],
     });

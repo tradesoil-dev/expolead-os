@@ -43,6 +43,9 @@ export async function POST(req: Request) {
     smart_format: "true",
     punctuate: "true",
     diarize: "true",
+    // Auto-detect the spoken language so non-English booth conversations
+    // (e.g. a buyer speaking through a translator) are transcribed, not dropped.
+    detect_language: "true",
   });
 
   try {
