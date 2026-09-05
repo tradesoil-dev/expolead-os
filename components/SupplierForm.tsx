@@ -419,14 +419,12 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         />
       </Section>
 
-      {form.summary.trim() && (
-        <Section title="Summary" icon={<StickyNote {...SI} />}>
-          <p className="mb-2 text-xs text-ink-400">AI summaries of your recorded conversations, saved with the connection.</p>
-          <div className="rounded-xl border border-ink-200 bg-ink-50/50 p-3">
-            <RichNotes text={form.summary} />
-          </div>
-        </Section>
-      )}
+      <Section title="Summary" icon={<StickyNote {...SI} />}>
+        <p className="mb-2 text-xs text-ink-400">AI summaries of your recorded conversations. Record above, choose AI summary, and it appears here, saved with the connection.</p>
+        <div className="rounded-xl border border-ink-200 bg-ink-50/50 p-3">
+          <RichNotes text={form.summary} empty="No summary yet. Record a conversation and choose AI summary." />
+        </div>
+      </Section>
 
       <div className="flex items-center gap-3">
         <button
