@@ -117,7 +117,7 @@ export default function PricingPlans() {
                 </span>
               )}
 
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">{plan.name}</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">{plan.name}</p>
               <p className="mt-1 text-sm font-semibold text-slate-800">{plan.tagline}</p>
 
               <div className="mt-4 flex items-end gap-1.5">
