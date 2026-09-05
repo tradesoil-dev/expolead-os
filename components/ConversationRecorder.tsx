@@ -21,9 +21,11 @@ const MAX_SECONDS = 180;
 export default function ConversationRecorder({
   supplierId,
   onAppend,
+  onAppendSummary,
 }: {
   supplierId?: string;
   onAppend?: (block: string) => void;
+  onAppendSummary?: (block: string) => void;
 }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
@@ -40,6 +42,9 @@ export default function ConversationRecorder({
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Form-mode entry counters (DB mode counts existing entries in the column).
+  const noteSeq = useRef(0);
+  const summarySeq = useRef(0);
 
   useEffect(() => {
     const ok =
@@ -179,45 +184,57 @@ export default function ConversationRecorder({
     }
   }
 
-  async function appendToNotes(text: string, label: string) {
+  function entryHeader(label: string, n: number) {
+    const dt = new Date().toLocaleString(undefined, {
+      day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit",
+    });
+    return `${label} ${n} · ${dt}`;
+  }
+
+  // Transcripts go to Notes; AI summaries go to the Summary field. Each entry is
+  // appended under a numbered, dated header so a connection keeps a history.
+  async function appendEntry(kind: "note" | "summary", text: string) {
     const value = text.trim();
     if (!value) {
       showToast("Nothing to save yet.", "error");
       return;
     }
-    const stamp = new Date().toLocaleDateString();
-    const block = `${label} (${stamp}):\n${value}`;
+    const label = kind === "summary" ? "Summary" : "Note";
+    const field = kind === "summary" ? "summary" : "notes";
 
-    // Form mode: hand it to the form's Notes field; it saves with the connection.
-    if (onAppend) {
-      onAppend(block);
+    // Form mode: hand the block to the form; it saves with the connection.
+    const cb = kind === "summary" ? onAppendSummary : onAppend;
+    if (cb) {
+      const seq = kind === "summary" ? summarySeq : noteSeq;
+      seq.current += 1;
+      cb(`${entryHeader(label, seq.current)}\n${value}`);
       reset();
-      showToast("Added to notes.", "success");
+      showToast(kind === "summary" ? "Added to summary." : "Added to notes.", "success");
       return;
     }
 
-    // DB mode: append directly to the existing connection's notes.
+    // DB mode: append to the connection's notes or summary column.
     if (!supplierId) return;
     setSaving(true);
     const supabase = createClient();
-    const { data } = await supabase.from("suppliers").select("notes").eq("id", supplierId).single();
-    const existing = data?.notes?.trim() ? data.notes.trim() + "\n\n" : "";
-    const { error } = await supabase
-      .from("suppliers")
-      .update({ notes: existing + block })
-      .eq("id", supplierId);
+    const { data } = await supabase.from("suppliers").select(field).eq("id", supplierId).single();
+    const existing = (((data as Record<string, string | null> | null)?.[field]) ?? "").trim();
+    const n = (existing.match(new RegExp(`^${label} \\d+ ·`, "gm")) || []).length + 1;
+    const block = `${entryHeader(label, n)}\n${value}`;
+    const next = existing ? existing + "\n\n" + block : block;
+    const { error } = await supabase.from("suppliers").update({ [field]: next }).eq("id", supplierId);
     setSaving(false);
     if (error) {
       showToast(error.message, "error");
       return;
     }
     reset();
-    showToast("Saved to notes.", "success");
+    showToast(kind === "summary" ? "Saved to summary." : "Saved to notes.", "success");
     router.refresh();
   }
 
-  const addToNotes = () => appendToNotes(summary, "Conversation summary");
-  const saveTranscript = () => appendToNotes(transcript, "Conversation notes");
+  const addToSummary = () => appendEntry("summary", summary);
+  const saveTranscript = () => appendEntry("note", transcript);
 
   function reset() {
     setTranscript("");
@@ -240,7 +257,7 @@ export default function ConversationRecorder({
         <h2 className="text-sm font-semibold">Capture conversation</h2>
       </div>
       <p className="mb-1.5 text-xs text-ink-400">
-        Records the conversation and transcribes it with speaker labels. Save the transcript to Notes, or turn it into an AI summary. Only the text is kept, no audio is stored.
+        Records the conversation and transcribes it with speaker labels. Save the transcript to the Notes card, or turn it into an AI summary that goes to the Summary card. Only the text is kept, no audio is stored.
       </p>
       <p className="mb-1.5 text-xs text-ink-500">
         Keep each recording to about <strong>3 minutes</strong>. You can record again to continue the same conversation.
@@ -260,7 +277,7 @@ export default function ConversationRecorder({
           </div>
           <ManualBox transcript={transcript} setTranscript={setTranscript} onSave={saveTranscript} onSummarise={summarise} phase={phase} saving={saving} btn={btn} />
           {phase === "summary" && (
-            <SummaryBlock summary={summary} saving={saving} onAdd={addToNotes} onRedo={summarise} onCancel={reset} btn={btn} />
+            <SummaryBlock summary={summary} saving={saving} onAdd={addToSummary} onRedo={summarise} onCancel={reset} btn={btn} />
           )}
         </div>
       ) : phase === "idle" ? (
@@ -340,7 +357,7 @@ export default function ConversationRecorder({
           Summarising…
         </div>
       ) : (
-        <SummaryBlock summary={summary} saving={saving} onAdd={addToNotes} onRedo={summarise} onCancel={reset} btn={btn} />
+        <SummaryBlock summary={summary} saving={saving} onAdd={addToSummary} onRedo={summarise} onCancel={reset} btn={btn} />
       )}
     </div>
   );
@@ -410,7 +427,7 @@ function SummaryBlock({
       <div className="flex flex-wrap gap-2">
         <button onClick={onAdd} disabled={saving} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          {saving ? "Adding…" : "Add to notes"}
+          {saving ? "Adding…" : "Add to summary"}
         </button>
         <button onClick={onRedo} disabled={saving} className={`${btn} border border-ink-200 text-ink-600 hover:bg-ink-50`}>
           Redo

@@ -295,7 +295,25 @@ export default async function SupplierProfile({
         <ConversationRecorder supplierId={supplier.id} />
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
-          <SupplierNotesEditor supplierId={supplier.id} initialNotes={supplier.notes} />
+          <SupplierNotesEditor
+            supplierId={supplier.id}
+            initial={supplier.notes}
+            field="notes"
+            title="Notes"
+            description="Your own notes and saved transcripts. Recording a conversation and saving the transcript adds it here."
+            placeholder="What did you discuss? Products, pricing, next steps…"
+          />
+        </div>
+
+        <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
+          <SupplierNotesEditor
+            supplierId={supplier.id}
+            initial={supplier.summary}
+            field="summary"
+            title="Summary"
+            description="AI summaries of your recorded conversations. Each one is added here with a date and time, so you keep a running history."
+            placeholder="AI summaries appear here. You can also edit them."
+          />
         </div>
       </main>
     </>

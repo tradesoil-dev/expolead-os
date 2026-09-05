@@ -134,6 +134,7 @@ export interface Supplier {
   categories: string[];
   trade_models: string[];
   notes: string | null;
+  summary: string | null;
   created_at: string;
 
     exhibition?: Exhibition | null;

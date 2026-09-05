@@ -10,6 +10,7 @@ import ModernSelect from "@/components/Select";
 import DatePicker from "@/components/DatePicker";
 import { COUNTRIES } from "@/lib/countries";
 import CardScanner, { type ScannedFields } from "@/components/CardScanner";
+import RichNotes from "@/components/RichNotes";
 import { ensureHttps } from "@/lib/url";
 import {
   INTEREST_TYPES,
@@ -49,6 +50,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     met_at: "",
     is_target: false,
     notes: "",
+    summary: "",
     products: "",
   });
 
@@ -131,6 +133,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           met_at: form.met_at || null,
           is_target: form.is_target,
           notes: form.notes || null,
+          summary: form.summary || null,
         })
         .select("id")
         .single();
@@ -402,9 +405,11 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 
       <ConversationRecorder
         onAppend={(block) => set("notes", form.notes ? form.notes + "\n\n" + block : block)}
+        onAppendSummary={(block) => set("summary", form.summary ? form.summary + "\n\n" + block : block)}
       />
 
       <Section title="Notes" icon={<StickyNote {...SI} />}>
+        <p className="mb-2 text-xs text-ink-400">Your own notes and saved transcripts.</p>
         <textarea
           value={form.notes}
           onChange={(e) => set("notes", e.target.value)}
@@ -413,6 +418,15 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
           className={`${inputClass} resize-y`}
         />
       </Section>
+
+      {form.summary.trim() && (
+        <Section title="Summary" icon={<StickyNote {...SI} />}>
+          <p className="mb-2 text-xs text-ink-400">AI summaries of your recorded conversations, saved with the connection.</p>
+          <div className="rounded-xl border border-ink-200 bg-ink-50/50 p-3">
+            <RichNotes text={form.summary} />
+          </div>
+        </Section>
+      )}
 
       <div className="flex items-center gap-3">
         <button
