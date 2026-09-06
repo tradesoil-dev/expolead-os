@@ -16,6 +16,7 @@ type Plan = {
   badge?: { label: string; tone: "emerald" | "amber" };
   features: Feature[];
   inheritsFrom?: string;
+  comingSoon?: boolean;
 };
 
 const PLANS: Plan[] = [
@@ -64,6 +65,7 @@ const PLANS: Plan[] = [
     outcome: "Your whole team, one shared exhibition memory",
     cta: { label: "Get started", href: "/login?mode=signup" },
     badge: { label: "Coming soon", tone: "amber" },
+    comingSoon: true,
     inheritsFrom: "Starter",
     features: [
       { label: "Up to 5 users", soon: true },
@@ -76,6 +78,7 @@ const PLANS: Plan[] = [
 
 export default function PricingPlans() {
   const [annual, setAnnual] = useState(true);
+  const [comingSoonPlan, setComingSoonPlan] = useState<string | null>(null);
 
   return (
     <div>
@@ -134,12 +137,29 @@ export default function PricingPlans() {
                 <p className="mt-0.5 text-[13px] font-medium leading-snug text-slate-700">{plan.outcome}</p>
               </div>
 
-              <Link
-                href={plan.cta.href}
-                className={`mt-5 block rounded-full py-2.5 text-center text-sm font-semibold transition-colors ${plan.featured ? "bg-emerald-600 text-white hover:bg-emerald-500" : "border border-slate-300 text-slate-700 hover:bg-slate-50"}`}
-              >
-                {plan.cta.label}
-              </Link>
+              {plan.comingSoon ? (
+                <div className="mt-5">
+                  <button
+                    type="button"
+                    onClick={() => setComingSoonPlan(plan.name)}
+                    className="block w-full rounded-full border border-slate-300 py-2.5 text-center text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                  >
+                    {plan.cta.label}
+                  </button>
+                  {comingSoonPlan === plan.name && (
+                    <p className="mt-2 text-center text-xs font-medium text-amber-700">
+                      {plan.name} is not available yet. We will let you know the moment it launches.
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href={plan.cta.href}
+                  className={`mt-5 block rounded-full py-2.5 text-center text-sm font-semibold transition-colors ${plan.featured ? "bg-emerald-600 text-white hover:bg-emerald-500" : "border border-slate-300 text-slate-700 hover:bg-slate-50"}`}
+                >
+                  {plan.cta.label}
+                </Link>
+              )}
 
               <ul className="mt-5 space-y-2.5">
                 {plan.inheritsFrom && (
