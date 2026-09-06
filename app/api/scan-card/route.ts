@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { allowAiRequest } from "@/lib/rate-limit";
+import { peekTrialQuota, bumpTrialQuota, isTrialExhausted } from "@/lib/trial-quota";
 
 export const runtime = "nodejs";
 
@@ -21,6 +22,22 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { error: "You have reached the card-scan limit for now. Please try again later." },
       { status: 429 },
+    );
+  }
+
+  // Trial cap: a trial account gets a fixed number of card scans for the whole
+  // trial. Gate BEFORE Claude so an exhausted account never triggers a billable
+  // call. Only a successful scan is counted (bump below).
+  const quota = await peekTrialQuota(supabase, "card_scan");
+  if (isTrialExhausted(quota)) {
+    return NextResponse.json(
+      {
+        error: `You have used all ${quota?.limit ?? 10} trial card scans. Upgrade to Starter to keep scanning business cards.`,
+        code: "trial_limit",
+        feature: "card_scan",
+        upgrade: true,
+      },
+      { status: 402 },
     );
   }
 
@@ -112,6 +129,8 @@ export async function POST(req: Request) {
     const titleCaseName = (s: string | null) =>
       s ? s.split(/(\s+)/).map((w) => (/\p{L}/u.test(w) ? w[0].toUpperCase() + w.slice(1) : w)).join("") : null;
 
+    // Count this successful scan against the trial cap and report what is left.
+    const usage = await bumpTrialQuota(supabase, "card_scan");
     return NextResponse.json({
       fields: {
         full_name: titleCaseName(pick("full_name")),
@@ -123,6 +142,7 @@ export async function POST(req: Request) {
         website: pick("website"),
         country: pick("country"),
       },
+      usage,
     });
   } catch {
     return NextResponse.json({ error: "Could not read the card. Please try again." }, { status: 502 });

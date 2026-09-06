@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mic, Square, Sparkles, Loader2, Info } from "lucide-react";
+import Link from "next/link";
+import { Mic, Square, Sparkles, Loader2, Info, Lock } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/useToast";
+
+type Usage = { unlimited: boolean; used: number; limit: number; remaining: number | null };
 
 // Records a booth conversation and transcribes it with speaker labels via
 // Deepgram (/api/transcribe), then either saves the transcript to Notes or
@@ -37,6 +40,9 @@ export default function ConversationRecorder({
   const [summary, setSummary] = useState("");
   const [elapsed, setElapsed] = useState(0);
   const [saving, setSaving] = useState(false);
+  // Trial cap on recordings (transcribe + summary). null = unknown / unlimited.
+  const [usage, setUsage] = useState<Usage | null>(null);
+  const [upsell, setUpsell] = useState<string | null>(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -57,6 +63,23 @@ export default function ConversationRecorder({
       streamRef.current?.getTracks().forEach((t) => t.stop());
     };
   }, []);
+
+  // Load how many trial recordings are left so we can nudge before the wall.
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/ai-usage")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (alive && d?.recording) setUsage(d.recording as Usage);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // A trial account with no recordings left. Unlimited (paid) accounts never hit this.
+  const exhausted = !!usage && !usage.unlimited && (usage.remaining ?? 1) <= 0;
 
   async function startRecording() {
     let stream: MediaStream;
@@ -136,11 +159,18 @@ export default function ConversationRecorder({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        if (res.status === 402 || data?.code === "trial_limit") {
+          setUpsell(data?.error ?? "You have used all your trial recordings.");
+          setUsage((u) => (u ? { ...u, remaining: 0 } : u));
+          setPhase("idle");
+          return;
+        }
         showToast(data?.error ?? "Transcription failed.", "error");
         setTranscript("");
         setPhase("review");
         return;
       }
+      if (data?.usage) setUsage(data.usage as Usage);
       setTranscript(data.transcript ?? "");
       setPhase("review");
     } catch {
@@ -172,6 +202,12 @@ export default function ConversationRecorder({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        if (res.status === 402 || data?.code === "trial_limit") {
+          setUpsell(data?.error ?? "AI summary is a paid feature once your trial recordings are used up.");
+          setUsage((u) => (u ? { ...u, remaining: 0 } : u));
+          setPhase("review");
+          return;
+        }
         showToast(data?.error ?? "Summary failed.", "error");
         setPhase("review");
         return;
@@ -266,6 +302,26 @@ export default function ConversationRecorder({
         AI summary is in beta and may not always be available yet.
       </p>
 
+      {/* Trial usage nudge / upsell */}
+      {(upsell || exhausted) ? (
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3.5">
+          <p className="flex items-center gap-2 text-sm font-semibold text-amber-800">
+            <Lock className="h-4 w-4 shrink-0" />
+            {upsell ?? `You have used all ${usage?.limit ?? 5} trial recordings.`}
+          </p>
+          <Link
+            href="/upgrade"
+            className="mt-2 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+          >
+            Upgrade to Starter
+          </Link>
+        </div>
+      ) : usage && !usage.unlimited && usage.remaining !== null ? (
+        <p className="mb-4 text-xs font-medium text-ink-500">
+          {usage.remaining} of {usage.limit} trial recordings left
+        </p>
+      ) : null}
+
       {/* Fallback: device can't record audio */}
       {!supported ? (
         <div className="space-y-3">
@@ -281,10 +337,12 @@ export default function ConversationRecorder({
           )}
         </div>
       ) : phase === "idle" ? (
-        <button onClick={onRecordClick} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
-          <Mic className="h-4 w-4" />
-          Record conversation
-        </button>
+        exhausted ? null : (
+          <button onClick={onRecordClick} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+            <Mic className="h-4 w-4" />
+            Record conversation
+          </button>
+        )
       ) : phase === "consent" ? (
         <div className="space-y-3 rounded-lg border border-emerald-100 bg-emerald-50 p-4">
           <p className="text-sm font-semibold text-emerald-900">Before you record</p>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { allowAiRequest } from "@/lib/rate-limit";
+import { peekTrialQuota, isTrialExhausted } from "@/lib/trial-quota";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,22 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { error: "You have reached the AI summary limit for now. Please try again later." },
       { status: 429 },
+    );
+  }
+
+  // AI summary is part of the "recording" trial allowance (a recording is a
+  // transcript plus its summary). Gate on that same budget, but do NOT consume:
+  // the recording already counted, and this keeps standalone summaries from
+  // costing beyond the trial's recording allowance.
+  if (isTrialExhausted(await peekTrialQuota(supabase, "recording"))) {
+    return NextResponse.json(
+      {
+        error: "AI summary is a paid feature once your trial recordings are used up. Upgrade to Starter to keep using it.",
+        code: "trial_limit",
+        feature: "recording",
+        upgrade: true,
+      },
+      { status: 402 },
     );
   }
 

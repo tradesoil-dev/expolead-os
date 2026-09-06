@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { allowAiRequest } from "@/lib/rate-limit";
+import { peekTrialQuota, bumpTrialQuota, isTrialExhausted } from "@/lib/trial-quota";
 
 export const runtime = "nodejs";
 
@@ -21,6 +22,22 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { error: "You have reached the recording limit for now. Please try again later." },
       { status: 429 },
+    );
+  }
+
+  // Trial cap: a trial account gets a fixed number of recordings for the whole
+  // trial. Gate BEFORE Deepgram so an exhausted account never triggers a
+  // billable call. Only a successful transcription is counted (bump below).
+  const quota = await peekTrialQuota(supabase, "recording");
+  if (isTrialExhausted(quota)) {
+    return NextResponse.json(
+      {
+        error: `You have used all ${quota?.limit ?? 5} trial recordings. Upgrade to Starter to keep recording and summarising conversations.`,
+        code: "trial_limit",
+        feature: "recording",
+        upgrade: true,
+      },
+      { status: 402 },
     );
   }
 
@@ -84,7 +101,9 @@ export async function POST(req: Request) {
     if (!transcript.trim()) {
       return NextResponse.json({ error: "No speech detected in the recording." }, { status: 502 });
     }
-    return NextResponse.json({ transcript });
+    // Count this successful recording against the trial cap and report what is left.
+    const usage = await bumpTrialQuota(supabase, "recording");
+    return NextResponse.json({ transcript, usage });
   } catch {
     return NextResponse.json({ error: "Transcription failed. Please try again." }, { status: 502 });
   }

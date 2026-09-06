@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Camera, Upload, Loader2, X, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Camera, Upload, Loader2, X, Sparkles, Lock } from "lucide-react";
+
+type Usage = { unlimited: boolean; used: number; limit: number; remaining: number | null };
 
 export type ScannedFields = {
   full_name: string | null;
@@ -23,6 +26,9 @@ export default function CardScanner({ onExtract }: { onExtract: (fields: Scanned
   const [phase, setPhase] = useState<Phase>("idle");
   const [message, setMessage] = useState("");
   const [count, setCount] = useState(0);
+  // Trial cap on card scans. null = unknown / unlimited.
+  const [usage, setUsage] = useState<Usage | null>(null);
+  const [upsell, setUpsell] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -32,6 +38,23 @@ export default function CardScanner({ onExtract }: { onExtract: (fields: Scanned
     return () => stopCamera();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Load how many trial card scans are left so we can nudge before the wall.
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/ai-usage")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (alive && d?.card_scan) setUsage(d.card_scan as Usage);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // A trial account with no scans left. Unlimited (paid) accounts never hit this.
+  const exhausted = !!usage && !usage.unlimited && (usage.remaining ?? 1) <= 0;
 
   function stopCamera() {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -111,10 +134,17 @@ export default function CardScanner({ onExtract }: { onExtract: (fields: Scanned
       if (res.status === 401) { window.location.href = "/login"; return; }
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        if (res.status === 402 || data?.code === "trial_limit") {
+          setUpsell(data?.error ?? "You have used all your trial card scans.");
+          setUsage((u) => (u ? { ...u, remaining: 0 } : u));
+          setPhase("idle");
+          return;
+        }
         setMessage(data?.error ?? "Could not read the card. Please try again.");
         setPhase("error");
         return;
       }
+      if (data?.usage) setUsage(data.usage as Usage);
       const f = (data?.fields ?? {}) as ScannedFields;
       const filled = Object.values(f).filter((v) => v).length;
       if (filled === 0) {
@@ -165,14 +195,37 @@ export default function CardScanner({ onExtract }: { onExtract: (fields: Scanned
             <p className="text-sm font-semibold text-emerald-900">Scan a business card</p>
           </div>
           <p className="text-xs text-emerald-800">Snap or upload a card and we fill in the contact details for you. The photo is not stored. Review the fields before saving.</p>
-          <div className="flex flex-wrap gap-2 pt-1">
-            <button type="button" onClick={openCamera} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
-              <Camera className="h-4 w-4" /> Scan with camera
-            </button>
-            <button type="button" onClick={() => fileRef.current?.click()} className={`${btn} border border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-100`}>
-              <Upload className="h-4 w-4" /> Upload photo
-            </button>
-          </div>
+
+          {(upsell || exhausted) ? (
+            <div className="mt-1 rounded-lg border border-amber-200 bg-amber-100/60 p-3">
+              <p className="flex items-center gap-2 text-sm font-semibold text-amber-800">
+                <Lock className="h-4 w-4 shrink-0" />
+                {upsell ?? `You have used all ${usage?.limit ?? 10} trial card scans.`}
+              </p>
+              <Link
+                href="/upgrade"
+                className="mt-2 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+              >
+                Upgrade to Starter
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <button type="button" onClick={openCamera} className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}>
+                  <Camera className="h-4 w-4" /> Scan with camera
+                </button>
+                <button type="button" onClick={() => fileRef.current?.click()} className={`${btn} border border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-100`}>
+                  <Upload className="h-4 w-4" /> Upload photo
+                </button>
+              </div>
+              {usage && !usage.unlimited && usage.remaining !== null && (
+                <p className="pt-1 text-xs font-medium text-emerald-700">
+                  {usage.remaining} of {usage.limit} trial card scans left
+                </p>
+              )}
+            </>
+          )}
           {phase === "done" && (
             <p className="flex items-center gap-1.5 pt-1 text-xs font-semibold text-emerald-700">
               <Sparkles className="h-3.5 w-3.5" /> Filled {count} field{count === 1 ? "" : "s"}. Check them below, then save.
