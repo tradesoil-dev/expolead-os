@@ -33,6 +33,7 @@ const PLANS: Plan[] = [
       { label: "Up to 25 opportunities" },
       { label: "Follow-up tracking & reminders" },
       { label: "Exhibition library" },
+      { label: "Reports & insights" },
     ],
   },
   {
