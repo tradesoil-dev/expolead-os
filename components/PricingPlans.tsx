@@ -43,6 +43,8 @@ const PLANS: Plan[] = [
     annual: 348,
     outcome: "Never lose a lead, run your full pipeline solo",
     cta: { label: "Get started", href: "/login?mode=signup" },
+    featured: true,
+    badge: { label: "Most popular", tone: "emerald" },
     features: [
       { label: "Unlimited exhibitions" },
       { label: "Unlimited connections & opportunities" },
@@ -61,8 +63,7 @@ const PLANS: Plan[] = [
     annual: 1188,
     outcome: "Your whole team, one shared exhibition memory",
     cta: { label: "Get started", href: "/login?mode=signup" },
-    featured: true,
-    badge: { label: "Most popular", tone: "emerald" },
+    badge: { label: "Coming soon", tone: "amber" },
     inheritsFrom: "Starter",
     features: [
       { label: "Up to 5 users", soon: true },
