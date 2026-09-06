@@ -21,7 +21,7 @@ const SHOWS = ["ANUGA", "SIAL CHINA", "CHINACOAT", "GULFOOD"];
 
 const FAQ = [
   { q: "Is this just another CRM?", a: "No. A CRM is built for a sales team working a pipeline all year from a desk. ExpoLead OS is built for three days on a show floor, on your feet, meeting hundreds of people. It captures connections, products and quantities the way exhibition work actually happens, and there is nothing to configure before you can use it." },
-  { q: "What is the difference between Trial and Starter?", a: "Trial is free and lets you capture one show (1 exhibition, up to 25 connections, up to 25 opportunities) to see the value. Starter unlocks unlimited exhibitions, connections and opportunities, plus reports and CSV export." },
+  { q: "What is the difference between Trial and Starter?", a: "Trial is free and lets you capture one show (1 exhibition, up to 25 connections, up to 25 opportunities) to see the value. Starter unlocks unlimited exhibitions, connections and opportunities, plus CSV export. Reports are included on the trial too." },
   { q: "Do I need a credit card to start?", a: "No. Every account starts on a free 14-day trial with no card, so you can capture a real show before paying anything." },
   { q: "What happens after the 14 days?", a: "Nothing disappears. You keep full access to every connection, opportunity and follow-up you captured, and you can still view and edit them. To add new records after day 14, move to Starter or Growth." },
   { q: "Can I switch between monthly and annual?", a: "Yes, anytime from your billing settings." },
