@@ -14,6 +14,8 @@ type Props = {
 const PLAN_FEATURES: Record<PlanId, string[]> = {
   starter: [
     "Unlimited exhibitions, connections and opportunities",
+    "Business-card scanning",
+    "Conversation recording & AI summary",
     "CSV export",
     "Reports and ROI view",
     "“Met before” year-over-year memory",
@@ -26,9 +28,14 @@ const PLAN_FEATURES: Record<PlanId, string[]> = {
   ],
 };
 
+// Plans that are announced but not purchasable yet. They show a "Coming soon"
+// label and cannot be selected for payment.
+const COMING_SOON: PlanId[] = ["growth"];
+
 export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Props) {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const [plan, setPlan] = useState<PlanId>("starter");
+  const [comingSoonPlan, setComingSoonPlan] = useState<PlanId | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
   const [reference, setReference] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -178,17 +185,31 @@ export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Prop
       <p className="mt-2 text-xs text-ink-400">Annual is billed as twelve months up front. It is not a discounted rate.</p>
 
       <div className="mt-4 space-y-3">
-        {(Object.keys(PLAN_PRICES) as PlanId[]).map((id) => (
+        {(Object.keys(PLAN_PRICES) as PlanId[]).map((id) => {
+          const soon = COMING_SOON.includes(id);
+          return (
           <button
             key={id}
-            onClick={() => setPlan(id)}
+            onClick={() => {
+              if (soon) {
+                setComingSoonPlan(id);
+                return;
+              }
+              setComingSoonPlan(null);
+              setPlan(id);
+            }}
             className={`w-full rounded-xl border p-4 text-left transition-colors ${
-              plan === id ? "border-emerald-500 bg-emerald-50" : "border-ink-200 hover:border-ink-300"
+              plan === id && !soon ? "border-emerald-500 bg-emerald-50" : "border-ink-200 hover:border-ink-300"
             }`}
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="font-bold text-ink-900">{PLAN_LABELS[id].name}</p>
+                <p className="flex items-center gap-2 font-bold text-ink-900">
+                  {PLAN_LABELS[id].name}
+                  {soon && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">Coming soon</span>
+                  )}
+                </p>
                 <p className="mt-0.5 text-xs text-ink-500">{PLAN_LABELS[id].tagline}</p>
               </div>
               <div className="shrink-0 text-right">
@@ -204,8 +225,14 @@ export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Prop
                 </li>
               ))}
             </ul>
+            {soon && comingSoonPlan === id && (
+              <p className="mt-3 text-xs font-medium text-amber-700">
+                {PLAN_LABELS[id].name} is not available yet. We will let you know the moment it launches.
+              </p>
+            )}
           </button>
-        ))}
+          );
+        })}
       </div>
 
       {error && <p className="mt-4 text-sm text-rose-600">{error}</p>}
