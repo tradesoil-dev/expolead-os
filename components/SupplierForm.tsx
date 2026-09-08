@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { saveErrorMessage } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import {
+  findDuplicates,
+  type ExistingSupplier,
+  type ExistingContact,
+  type DuplicateReason,
+} from "@/lib/duplicates";
 import ModernSelect from "@/components/Select";
 import DatePicker from "@/components/DatePicker";
 import { COUNTRIES } from "@/lib/countries";
@@ -21,10 +27,17 @@ import {
   type Exhibition,
   type InterestType,
 } from "@/lib/types";
-import { User, Tag, MapPin, StickyNote } from "lucide-react";
+import { User, Tag, MapPin, StickyNote, AlertTriangle, X } from "lucide-react";
 import ConversationRecorder from "@/components/ConversationRecorder";
 
 const SI = { size: 15, strokeWidth: 2 } as const;
+
+// Short reason shown next to a possible duplicate.
+const DUP_REASON: Record<DuplicateReason, string> = {
+  email: "same email",
+  phone: "same phone or WhatsApp",
+  company: "same company",
+};
 
 export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[] }) {
   const router = useRouter();
@@ -62,6 +75,44 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     whatsapp: "",
     wechat: "",
   });
+
+  // Duplicate guard: load the user's own existing connections once, then check
+  // what they type against them (non-blocking). RLS scopes this to their data.
+  const [existingSuppliers, setExistingSuppliers] = useState<ExistingSupplier[]>([]);
+  const [existingContacts, setExistingContacts] = useState<ExistingContact[]>([]);
+  const [dupDismissedKey, setDupDismissedKey] = useState("");
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    let alive = true;
+    const supabase = createClient();
+    (async () => {
+      const [sup, con] = await Promise.all([
+        supabase.from("suppliers").select("id, company_name, exhibition_id"),
+        supabase.from("contacts").select("supplier_id, full_name, email, phone, whatsapp"),
+      ]);
+      if (!alive) return;
+      if (sup.data) setExistingSuppliers(sup.data as ExistingSupplier[]);
+      if (con.data) setExistingContacts(con.data as ExistingContact[]);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const duplicates = useMemo(
+    () =>
+      findDuplicates(
+        { company_name: form.company_name, email: contact.email, phone: contact.phone, whatsapp: contact.whatsapp },
+        existingSuppliers,
+        existingContacts,
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [form.company_name, contact.email, contact.phone, contact.whatsapp, existingSuppliers, existingContacts],
+  );
+
+  const dupKey = duplicates.map((d) => d.supplierId).join(",");
+  const showDuplicates = duplicates.length > 0 && dupKey !== dupDismissedKey;
 
   function set<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -203,6 +254,49 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 
       <Section title="Primary Contact & Company Details" icon={<User {...SI} />}>
         <CardScanner onExtract={applyScannedCard} />
+
+        {showDuplicates && (
+          <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3.5">
+            <div className="flex items-start justify-between gap-3">
+              <p className="flex items-center gap-2 text-sm font-semibold text-amber-800">
+                <AlertTriangle className="h-4 w-4 shrink-0" />
+                You may have already added this
+              </p>
+              <button
+                type="button"
+                onClick={() => setDupDismissedKey(dupKey)}
+                aria-label="Dismiss duplicate hint"
+                className="text-amber-600 hover:text-amber-800"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <ul className="mt-2 space-y-1.5">
+              {duplicates.map((d) => {
+                const exName = exhibitions.find((e) => e.id === d.exhibitionId)?.name;
+                const bits = [d.contactName, exName].filter(Boolean).join(" · ");
+                return (
+                  <li key={d.supplierId} className="text-xs text-amber-900">
+                    <Link
+                      href={`/connections/${d.supplierId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold underline decoration-amber-400 underline-offset-2 hover:text-amber-950"
+                    >
+                      {d.company || "Existing connection"}
+                    </Link>
+                    {bits ? <span className="text-amber-700"> — {bits}</span> : null}
+                    <span className="ml-1 text-amber-500">({DUP_REASON[d.reason]})</span>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mt-2 text-[11px] leading-relaxed text-amber-700">
+              Opens in a new tab so you do not lose what you have typed. If this is a different person at the same company, carry on.
+            </p>
+          </div>
+        )}
+
         <Grid>
           <Field label="Full name *">
             <Input value={contact.full_name} onChange={(v) => setC("full_name", v)} placeholder="Li Wei" />
