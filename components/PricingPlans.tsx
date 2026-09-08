@@ -32,6 +32,8 @@ const PLANS: Plan[] = [
       { label: "1 exhibition" },
       { label: "Up to 25 connections" },
       { label: "Up to 25 opportunities" },
+      { label: "Business-card scanning (10 on trial)" },
+      { label: "Conversation recording & AI summary (5 on trial)" },
       { label: "Follow-up tracking & reminders" },
       { label: "Exhibition library" },
       { label: "Reports & insights" },
@@ -49,6 +51,8 @@ const PLANS: Plan[] = [
     features: [
       { label: "Unlimited exhibitions" },
       { label: "Unlimited connections & opportunities" },
+      { label: "Business-card scanning" },
+      { label: "Conversation recording & AI summary" },
       { label: "Follow-up tracking & reminders" },
       { label: "Exhibition library" },
       { label: "“Met before” year-over-year memory" },
