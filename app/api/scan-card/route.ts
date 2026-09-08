@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthedClient } from "@/lib/supabase/authed";
 import { allowAiRequest } from "@/lib/rate-limit";
 import { peekTrialQuota, bumpTrialQuota, isTrialExhausted } from "@/lib/trial-quota";
 
@@ -10,10 +10,7 @@ export const runtime = "nodejs";
 // connection form. The image is sent to Claude for extraction and is NOT stored.
 // Dormant until ANTHROPIC_API_KEY is set (returns 503), like /api/summarize.
 export async function POST(req: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await getAuthedClient(req);
   if (!user) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }

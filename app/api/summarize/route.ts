@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthedClient } from "@/lib/supabase/authed";
 import { allowAiRequest } from "@/lib/rate-limit";
 import { peekTrialQuota, isTrialExhausted } from "@/lib/trial-quota";
 
@@ -12,10 +12,7 @@ export const runtime = "nodejs";
 // both post transcript text here.
 export async function POST(req: Request) {
   // Require a signed-in user so the endpoint can't be abused anonymously.
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await getAuthedClient(req);
   if (!user) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
