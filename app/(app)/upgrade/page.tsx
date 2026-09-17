@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getTrialStatus } from "@/lib/trial";
+import { getPricing } from "@/lib/pricing";
 import UpgradeFlow from "@/components/UpgradeFlow";
 
 export const metadata = { title: "Upgrade — ExpoLead OS" };
@@ -34,10 +35,11 @@ export default async function UpgradePage() {
     );
   }
 
-  const [{ count: connections }, { count: opportunities }, { count: exhibitions }] = await Promise.all([
+  const [{ count: connections }, { count: opportunities }, { count: exhibitions }, pricing] = await Promise.all([
     supabase.from("suppliers").select("*", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("opportunities").select("*", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("exhibitions").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+    getPricing(),
   ]);
 
   return (
@@ -61,6 +63,7 @@ export default async function UpgradePage() {
               exhibitions: exhibitions ?? 0,
             }}
             limits={LIMITS}
+            pricing={pricing}
           />
         </div>
       </div>

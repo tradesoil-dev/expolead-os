@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import PricingPlans from "@/components/PricingPlans";
 import PublicHeader from "@/components/PublicHeader";
 import SmoothScroll from "@/components/SmoothScroll";
+import { getPricing } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "Pricing — ExpoLead OS",
-  description: "Free 14-day trial, no credit card. Paid plans from $29/month ($348/year Starter). One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
+  description: "Free 14-day trial, no credit card. Simple monthly or annual plans. One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
   alternates: { canonical: "https://expoleados.com/pricing" },
 };
 
@@ -34,7 +35,8 @@ const FAQ = [
 const GRADIENT = "linear-gradient(115deg, #0f172a 0%, #065f46 48%, #10b981 100%)";
 const GRADIENT_STRIP = "linear-gradient(100deg, #0f172a 0%, #065f46 60%, #10b981 100%)";
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const pricing = await getPricing();
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <SmoothScroll />
@@ -62,7 +64,7 @@ export default function PricingPage() {
             for a tailored plan.
           </p>
 
-          <PricingPlans />
+          <PricingPlans pricing={pricing} />
 
           {/* Trust / security strip */}
           <div className="mt-12">

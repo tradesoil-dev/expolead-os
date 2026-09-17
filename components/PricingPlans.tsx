@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import type { Pricing } from "@/lib/pricing";
+import type { PlanId } from "@/lib/plans";
 
 type Feature = { label: string; soon?: boolean };
 
 type Plan = {
   name: string;
+  id?: PlanId;
   tagline: string;
   monthly: number;
   annual: number;
@@ -41,9 +44,10 @@ const PLANS: Plan[] = [
   },
   {
     name: "Starter",
+    id: "starter",
     tagline: "Everything one person needs",
-    monthly: 29,
-    annual: 348,
+    monthly: 39,
+    annual: 468,
     outcome: "Never lose a lead, run your full pipeline solo",
     cta: { label: "Get started", href: "/login?mode=signup" },
     featured: true,
@@ -63,6 +67,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "Growth",
+    id: "growth",
     tagline: "For teams working shows together",
     monthly: 99,
     annual: 1188,
@@ -80,7 +85,7 @@ const PLANS: Plan[] = [
   },
 ];
 
-export default function PricingPlans() {
+export default function PricingPlans({ pricing }: { pricing: Pricing }) {
   const [annual, setAnnual] = useState(true);
   const [comingSoonPlan, setComingSoonPlan] = useState<string | null>(null);
 
@@ -106,14 +111,20 @@ export default function PricingPlans() {
 
       <div className="grid gap-4 md:grid-cols-3">
         {PLANS.map((plan) => {
-          const free = plan.monthly === 0;
-          const priceLabel = free ? "$0" : annual ? `$${plan.annual}` : `$${plan.monthly}`;
+          const pp = plan.id ? pricing[plan.id] : null;
+          const monthly = pp ? pp.monthly : plan.monthly;
+          const annualPrice = pp ? pp.annual : plan.annual;
+          const free = monthly === 0;
+          const priceLabel = free ? "$0" : annual ? `$${annualPrice}` : `$${monthly}`;
           const perLabel = free ? "" : annual ? "/year" : "/month";
           const subLabel = free
             ? "No card required to start"
             : annual
             ? "Billed once a year"
             : "Billed monthly";
+          // Introductory offer (monthly cycle only). Ongoing price stays the
+          // headline so a customer is never surprised at renewal.
+          const showIntro = !!pp && pp.introEnabled && !annual && pp.introMonthly < monthly;
 
           return (
             <div
@@ -134,6 +145,13 @@ export default function PricingPlans() {
                 {perLabel && <span className="mb-1.5 text-sm text-slate-500">{perLabel}</span>}
               </div>
               <p className="mt-1 text-xs text-slate-400">{subLabel}</p>
+
+              {showIntro && pp && (
+                <p className="mt-2 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700">
+                  {pp.introLabel ? `${pp.introLabel}: ` : ""}${pp.introMonthly} for your first{" "}
+                  {pp.introMonths > 1 ? `${pp.introMonths} months` : "month"}, then ${monthly}/month
+                </p>
+              )}
 
               {/* What that covers */}
               <div className="mt-4 rounded-lg border-l-[3px] border-emerald-500 bg-emerald-50/60 px-3 py-2.5">

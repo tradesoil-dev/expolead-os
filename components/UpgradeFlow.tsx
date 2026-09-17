@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PLAN_PRICES, PLAN_LABELS, BANK_DETAILS, type PlanId, type BillingCycle } from "@/lib/plans";
+import type { Pricing } from "@/lib/pricing";
 
 type Props = {
   daysLeft: number;
   isExpired: boolean;
   usage: { connections: number; opportunities: number; exhibitions: number };
   limits: { connections: number; opportunities: number; exhibitions: number };
+  pricing: Pricing;
 };
 
 const PLAN_FEATURES: Record<PlanId, string[]> = {
@@ -32,17 +34,19 @@ const PLAN_FEATURES: Record<PlanId, string[]> = {
 // label and cannot be selected for payment.
 const COMING_SOON: PlanId[] = ["growth"];
 
-export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Props) {
+export default function UpgradeFlow({ daysLeft, isExpired, usage, limits, pricing }: Props) {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const [plan, setPlan] = useState<PlanId>("starter");
   const [comingSoonPlan, setComingSoonPlan] = useState<PlanId | null>(null);
+
+  const priceOf = (id: PlanId, c: BillingCycle) => (c === "monthly" ? pricing[id].monthly : pricing[id].annual);
   const [step, setStep] = useState<1 | 2>(1);
   const [reference, setReference] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const amount = PLAN_PRICES[plan][cycle];
+  const amount = priceOf(plan, cycle);
 
   async function requestUpgrade() {
     setSubmitting(true);
@@ -213,10 +217,16 @@ export default function UpgradeFlow({ daysLeft, isExpired, usage, limits }: Prop
                 <p className="mt-0.5 text-xs text-ink-500">{PLAN_LABELS[id].tagline}</p>
               </div>
               <div className="shrink-0 text-right">
-                <p className="text-lg font-bold text-ink-900">${PLAN_PRICES[id][cycle]}</p>
+                <p className="text-lg font-bold text-ink-900">${priceOf(id, cycle)}</p>
                 <p className="text-xs text-ink-400">/{cycle === "monthly" ? "month" : "year"}</p>
               </div>
             </div>
+            {pricing[id].introEnabled && cycle === "monthly" && pricing[id].introMonthly < pricing[id].monthly && (
+              <p className="mt-2 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700">
+                {pricing[id].introLabel ? `${pricing[id].introLabel}: ` : ""}${pricing[id].introMonthly} for your first{" "}
+                {pricing[id].introMonths > 1 ? `${pricing[id].introMonths} months` : "month"}, then ${pricing[id].monthly}/month
+              </p>
+            )}
             <ul className="mt-3 space-y-1">
               {PLAN_FEATURES[id].map((f) => (
                 <li key={f} className="flex gap-2 text-xs text-ink-600">

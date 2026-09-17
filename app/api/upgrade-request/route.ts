@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { sendUpgradeRequestEmail } from "@/lib/upgrade-email";
-import { PLAN_PRICES, type PlanId, type BillingCycle } from "@/lib/plans";
+import { type PlanId, type BillingCycle } from "@/lib/plans";
+import { getPricing, standardAmount } from "@/lib/pricing";
 
 /**
  * Records an upgrade request and notifies Gladwin. Called when a logged-in
  * user submits the in-app upgrade form.
  *
- * The price is looked up server-side from PLAN_PRICES rather than taken from
- * the request body, so a tampered browser cannot record a $1 Growth plan.
+ * The price is looked up server-side from the admin-managed pricing table
+ * rather than taken from the request body, so a tampered browser cannot record
+ * a $1 Growth plan.
  */
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -34,7 +36,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unknown billing cycle" }, { status: 400 });
   }
 
-  const amountUsd = PLAN_PRICES[plan][billingCycle];
+  const pricing = await getPricing();
+  const amountUsd = standardAmount(pricing, plan, billingCycle);
 
   const { data: reference, error: refError } = await supabase.rpc("new_upgrade_reference");
   if (refError || !reference) {

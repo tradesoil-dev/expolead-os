@@ -6,7 +6,7 @@
  * procurement, NOT a discount, and no "save two months" claim may be made.
  */
 export const PLAN_PRICES = {
-  starter: { monthly: 29, annual: 348 },
+  starter: { monthly: 39, annual: 468 },
   growth: { monthly: 99, annual: 1188 },
 } as const;
 
