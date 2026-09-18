@@ -20,15 +20,22 @@ export type ExistingContact = {
 
 export type DuplicateReason = "email" | "phone" | "company";
 
+// "duplicate" = probably the same person again (same email/phone, or the same
+// company AND the same name), so warn. "same_company" = a company we already
+// have but a different person, which is fine, so just inform, never alarm.
+export type DuplicateKind = "duplicate" | "same_company";
+
 export type DuplicateMatch = {
   supplierId: string;
   company: string;
   contactName: string | null;
   exhibitionId: string | null;
   reason: DuplicateReason;
+  kind: DuplicateKind;
 };
 
 export type DuplicateInput = {
+  full_name: string;
   company_name: string;
   email: string;
   phone: string;
@@ -48,6 +55,12 @@ export function normalizeCompany(s: string): string {
     .replace(/\b(co|ltd|inc|llc|plc|pvt|private|limited|company|corp|corporation|gmbh|sa|srl|bv)\b/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+// Lower-cased, whitespace-collapsed name, so "Li  Wei" and "li wei" compare
+// equal when deciding if an entered contact is the same person or a new one.
+function normalizeName(s: string): string {
+  return (s || "").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
 // Digits only, so "+94 77 123 4567" and "0771234567" can be compared.
@@ -79,7 +92,12 @@ export function findDuplicates(
   const supById = new Map(suppliers.map((s) => [s.id, s]));
   const best = new Map<string, DuplicateMatch>();
 
-  const consider = (supplierId: string, reason: DuplicateReason, contactName: string | null) => {
+  const consider = (
+    supplierId: string,
+    reason: DuplicateReason,
+    contactName: string | null,
+    kind: DuplicateKind,
+  ) => {
     const sup = supById.get(supplierId);
     if (!sup) return;
     const existing = best.get(supplierId);
@@ -90,15 +108,17 @@ export function findDuplicates(
       contactName: contactName?.trim() || null,
       exhibitionId: sup.exhibition_id,
       reason,
+      kind,
     });
   };
 
   const email = input.email.trim().toLowerCase();
   const hasPhone = digitsOnly(input.phone).length >= 7 || digitsOnly(input.whatsapp).length >= 7;
 
+  // A matching email or phone means it is very likely the same card again.
   for (const c of contacts) {
     if (email && c.email && c.email.trim().toLowerCase() === email) {
-      consider(c.supplier_id, "email", c.full_name);
+      consider(c.supplier_id, "email", c.full_name, "duplicate");
       continue;
     }
     if (
@@ -108,17 +128,29 @@ export function findDuplicates(
         phoneMatch(input.whatsapp, c.phone ?? "") ||
         phoneMatch(input.whatsapp, c.whatsapp ?? ""))
     ) {
-      consider(c.supplier_id, "phone", c.full_name);
+      consider(c.supplier_id, "phone", c.full_name, "duplicate");
     }
   }
 
   const company = normalizeCompany(input.company_name);
+  const inputName = normalizeName(input.full_name);
   if (company.length >= 2) {
     for (const s of suppliers) {
       if (s.company_name && normalizeCompany(s.company_name) === company) {
-        // Prefer the primary contact's name if we have one for this supplier.
-        const primary = contacts.find((c) => c.supplier_id === s.id);
-        consider(s.id, "company", primary?.full_name ?? null);
+        const companyContacts = contacts.filter((c) => c.supplier_id === s.id);
+        // Same company AND a name we already hold here = probably the same
+        // person again (warn). A new name at a known company is a different
+        // person (just inform).
+        const nameMatches =
+          !!inputName &&
+          companyContacts.some((c) => normalizeName(c.full_name ?? "") === inputName);
+        const primary = companyContacts[0];
+        consider(
+          s.id,
+          "company",
+          primary?.full_name ?? null,
+          nameMatches ? "duplicate" : "same_company",
+        );
       }
     }
   }

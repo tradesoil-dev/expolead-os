@@ -27,7 +27,7 @@ import {
   type Exhibition,
   type InterestType,
 } from "@/lib/types";
-import { User, Tag, MapPin, StickyNote, AlertTriangle, X } from "lucide-react";
+import { User, Users, Tag, MapPin, StickyNote, AlertTriangle, X } from "lucide-react";
 import ConversationRecorder from "@/components/ConversationRecorder";
 
 const SI = { size: 15, strokeWidth: 2 } as const;
@@ -81,6 +81,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
   const [existingSuppliers, setExistingSuppliers] = useState<ExistingSupplier[]>([]);
   const [existingContacts, setExistingContacts] = useState<ExistingContact[]>([]);
   const [dupDismissedKey, setDupDismissedKey] = useState("");
+  const [sameCompanyDismissedKey, setSameCompanyDismissedKey] = useState("");
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
@@ -103,16 +104,29 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
   const duplicates = useMemo(
     () =>
       findDuplicates(
-        { company_name: form.company_name, email: contact.email, phone: contact.phone, whatsapp: contact.whatsapp },
+        {
+          full_name: contact.full_name,
+          company_name: form.company_name,
+          email: contact.email,
+          phone: contact.phone,
+          whatsapp: contact.whatsapp,
+        },
         existingSuppliers,
         existingContacts,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [form.company_name, contact.email, contact.phone, contact.whatsapp, existingSuppliers, existingContacts],
+    [form.company_name, contact.full_name, contact.email, contact.phone, contact.whatsapp, existingSuppliers, existingContacts],
   );
 
-  const dupKey = duplicates.map((d) => d.supplierId).join(",");
-  const showDuplicates = duplicates.length > 0 && dupKey !== dupDismissedKey;
+  // Likely the same person again (warn) vs a new person at a company we already
+  // have (just inform). Kept in two separate, independently dismissible notes.
+  const dupes = duplicates.filter((d) => d.kind === "duplicate");
+  const sameCompany = duplicates.filter((d) => d.kind === "same_company");
+
+  const dupKey = dupes.map((d) => d.supplierId).join(",");
+  const showDuplicates = dupes.length > 0 && dupKey !== dupDismissedKey;
+  const sameCompanyKey = sameCompany.map((d) => d.supplierId).join(",");
+  const showSameCompany = sameCompany.length > 0 && sameCompanyKey !== sameCompanyDismissedKey;
 
   function set<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -272,7 +286,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
               </button>
             </div>
             <ul className="mt-2 space-y-1.5">
-              {duplicates.map((d) => {
+              {dupes.map((d) => {
                 const exName = exhibitions.find((e) => e.id === d.exhibitionId)?.name;
                 const bits = [d.contactName, exName].filter(Boolean).join(" · ");
                 return (
@@ -285,7 +299,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
                     >
                       {d.company || "Existing connection"}
                     </Link>
-                    {bits ? <span className="text-amber-700"> — {bits}</span> : null}
+                    {bits ? <span className="text-amber-700"> · {bits}</span> : null}
                     <span className="ml-1 text-amber-500">({DUP_REASON[d.reason]})</span>
                   </li>
                 );
@@ -293,6 +307,47 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
             </ul>
             <p className="mt-2 text-[11px] leading-relaxed text-amber-700">
               Opens in a new tab so you do not lose what you have typed. If this is a different person at the same company, carry on.
+            </p>
+          </div>
+        )}
+
+        {showSameCompany && (
+          <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5">
+            <div className="flex items-start justify-between gap-3">
+              <p className="flex items-center gap-2 text-sm font-semibold text-emerald-800">
+                <Users className="h-4 w-4 shrink-0" />
+                You already have a connection at this company
+              </p>
+              <button
+                type="button"
+                onClick={() => setSameCompanyDismissedKey(sameCompanyKey)}
+                aria-label="Dismiss same-company note"
+                className="text-emerald-600 hover:text-emerald-800"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <ul className="mt-2 space-y-1.5">
+              {sameCompany.map((d) => {
+                const exName = exhibitions.find((e) => e.id === d.exhibitionId)?.name;
+                const bits = [d.contactName, exName].filter(Boolean).join(" · ");
+                return (
+                  <li key={d.supplierId} className="text-xs text-emerald-900">
+                    <Link
+                      href={`/connections/${d.supplierId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold underline decoration-emerald-400 underline-offset-2 hover:text-emerald-950"
+                    >
+                      {d.company || "Existing connection"}
+                    </Link>
+                    {bits ? <span className="text-emerald-700"> · {bits}</span> : null}
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mt-2 text-[11px] leading-relaxed text-emerald-700">
+              This looks like a different person, so go ahead and save. It will be added as a separate connection under the same company.
             </p>
           </div>
         )}
