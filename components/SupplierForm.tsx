@@ -82,6 +82,8 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
   const [existingContacts, setExistingContacts] = useState<ExistingContact[]>([]);
   const [dupDismissedKey, setDupDismissedKey] = useState("");
   const [sameCompanyDismissedKey, setSameCompanyDismissedKey] = useState("");
+  // Which existing connection we are attaching the current person to (if any).
+  const [attachingId, setAttachingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
@@ -240,6 +242,39 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
     }
   }
 
+  // Attach the person currently in the form to an existing connection as a
+  // secondary contact, instead of creating a duplicate company. Company-level
+  // fields are not needed here; the existing connection keeps its own.
+  async function addAsContact(supplierId: string) {
+    if (!isSupabaseConfigured) return;
+    const hasContact = Object.values(contact).some((v) => v.trim());
+    if (!hasContact) {
+      setError("Add the person's details first, then add them to the connection.");
+      return;
+    }
+    setError(null);
+    setAttachingId(supplierId);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("contacts").insert({
+        supplier_id: supplierId,
+        full_name: contact.full_name || null,
+        position: contact.position || null,
+        email: contact.email || null,
+        phone: contact.phone || null,
+        whatsapp: contact.whatsapp || null,
+        wechat: contact.wechat || null,
+        is_primary: false,
+      });
+      if (error) throw error;
+      router.push(`/connections/${supplierId}`);
+      router.refresh();
+    } catch (err) {
+      setError(saveErrorMessage(err, "connection", "Could not add the contact."));
+      setAttachingId(null);
+    }
+  }
+
   // Pre-fill the contact and company fields from a scanned business card. Only
   // fills fields the scan actually returned; the user reviews before saving.
   function applyScannedCard(f: ScannedFields) {
@@ -332,22 +367,32 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
                 const exName = exhibitions.find((e) => e.id === d.exhibitionId)?.name;
                 const bits = [d.contactName, exName].filter(Boolean).join(" · ");
                 return (
-                  <li key={d.supplierId} className="text-xs text-emerald-900">
-                    <Link
-                      href={`/connections/${d.supplierId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold underline decoration-emerald-400 underline-offset-2 hover:text-emerald-950"
+                  <li key={d.supplierId} className="flex flex-wrap items-center justify-between gap-2 text-xs text-emerald-900">
+                    <span>
+                      <Link
+                        href={`/connections/${d.supplierId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold underline decoration-emerald-400 underline-offset-2 hover:text-emerald-950"
+                      >
+                        {d.company || "Existing connection"}
+                      </Link>
+                      {bits ? <span className="text-emerald-700"> · {bits}</span> : null}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => addAsContact(d.supplierId)}
+                      disabled={attachingId !== null}
+                      className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-60"
                     >
-                      {d.company || "Existing connection"}
-                    </Link>
-                    {bits ? <span className="text-emerald-700"> · {bits}</span> : null}
+                      {attachingId === d.supplierId ? "Adding…" : "Add to this connection"}
+                    </button>
                   </li>
                 );
               })}
             </ul>
             <p className="mt-2 text-[11px] leading-relaxed text-emerald-700">
-              This looks like a different person. Save to add them as a separate connection, or open the existing one and use &quot;+ Add contact&quot; to keep both people under the same company.
+              A different person at a company you already have? Use &quot;Add to this connection&quot; to save them as a contact under it, instead of creating a separate connection.
             </p>
           </div>
         )}
