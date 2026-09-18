@@ -39,6 +39,24 @@ export default function CardScanner({ onExtract }: { onExtract: (fields: Scanned
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Attach the live stream once the <video> is actually in the DOM. Doing this
+  // here (not from a single requestAnimationFrame in openCamera) avoids a race
+  // where, on the first camera-permission grant, the frame fired before React
+  // had rendered the element, so the ref was null and the preview stayed black.
+  useEffect(() => {
+    if (phase !== "camera") return;
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    if (!video || !stream) return;
+    video.srcObject = stream;
+    const play = () => void video.play().catch(() => {});
+    if (video.readyState >= 1) play();
+    else video.onloadedmetadata = play;
+    return () => {
+      if (video) video.onloadedmetadata = null;
+    };
+  }, [phase]);
+
   // Load how many trial card scans are left so we can nudge before the wall.
   useEffect(() => {
     let alive = true;
@@ -68,14 +86,9 @@ export default function CardScanner({ onExtract }: { onExtract: (fields: Scanned
         video: { facingMode: { ideal: "environment" } },
       });
       streamRef.current = stream;
+      // The effect keyed on phase === "camera" attaches the stream once the
+      // <video> is rendered, so the preview shows on the first permission grant.
       setPhase("camera");
-      // Attach after render so the <video> exists.
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          void videoRef.current.play().catch(() => {});
-        }
-      });
     } catch {
       setMessage("Could not open the camera. Try Upload photo instead.");
       setPhase("error");
@@ -170,7 +183,7 @@ export default function CardScanner({ onExtract }: { onExtract: (fields: Scanned
       {phase === "camera" ? (
         <div className="space-y-3">
           <div className="overflow-hidden rounded-lg bg-black">
-            <video ref={videoRef} playsInline muted className="max-h-64 w-full object-contain" />
+            <video ref={videoRef} autoPlay playsInline muted className="max-h-64 w-full object-contain" />
           </div>
           <p className="text-xs text-emerald-800">Fill the frame with the card, then capture. On a laptop the preview may look mirrored, the captured photo is correct.</p>
           <div className="flex gap-2">
