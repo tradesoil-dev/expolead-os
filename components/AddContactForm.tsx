@@ -35,8 +35,18 @@ export default function AddContactForm({ supplierId }: { supplierId: string }) {
     if (!hasData) return;
 
     setSaving(true);
+    const supabase = createClient();
 
-    await createClient().from("contacts").insert({
+    // Exactly one primary per connection: if this new contact is primary,
+    // demote any current primary first. RLS scopes it to the user's own rows.
+    if (c.is_primary) {
+      await supabase
+        .from("contacts")
+        .update({ is_primary: false })
+        .eq("supplier_id", supplierId);
+    }
+
+    await supabase.from("contacts").insert({
       supplier_id: supplierId,
       full_name: c.full_name || null,
       position: c.position || null,

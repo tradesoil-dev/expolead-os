@@ -29,8 +29,10 @@ type ContactForm = {
 
 export default function ContactManager({
   contact,
+  supplierId,
 }: {
   contact: Contact;
+  supplierId: string;
 }) {
   const router = useRouter();
   const { confirm, ConfirmUI } = useConfirm();
@@ -53,8 +55,19 @@ export default function ContactManager({
 
   async function updateContact() {
     setSaving(true);
+    const supabase = createClient();
 
-    await createClient()
+    // Exactly one primary per connection: promoting this contact demotes the
+    // others first. RLS keeps this scoped to the current user's own rows.
+    if (form.is_primary) {
+      await supabase
+        .from("contacts")
+        .update({ is_primary: false })
+        .eq("supplier_id", supplierId)
+        .neq("id", contact.id);
+    }
+
+    await supabase
       .from("contacts")
       .update({
         full_name: form.full_name || null,

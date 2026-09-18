@@ -37,7 +37,10 @@ export default async function SupplierProfile({
     notFound();
   }
 
-  const contacts = supplier.contacts ?? [];
+  // Primary contact first, then the rest in their existing order.
+  const contacts = [...(supplier.contacts ?? [])].sort(
+    (a, b) => Number(!!b.is_primary) - Number(!!a.is_primary),
+  );
   const meetings = [...(supplier.meetings ?? [])].sort((a, b) =>
     a.met_on < b.met_on ? 1 : -1
   );
@@ -169,7 +172,7 @@ export default async function SupplierProfile({
           ) : (
             <ul className="divide-y divide-ink-100">
               {contacts.map((ct) => (
-                <ContactManager key={ct.id} contact={ct} />
+                <ContactManager key={ct.id} contact={ct} supplierId={supplier.id} />
               ))}
             </ul>
           )}

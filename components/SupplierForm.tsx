@@ -347,7 +347,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
               })}
             </ul>
             <p className="mt-2 text-[11px] leading-relaxed text-emerald-700">
-              This looks like a different person, so go ahead and save. It will be added as a separate connection under the same company.
+              This looks like a different person. Save to add them as a separate connection, or open the existing one and use &quot;+ Add contact&quot; to keep both people under the same company.
             </p>
           </div>
         )}
