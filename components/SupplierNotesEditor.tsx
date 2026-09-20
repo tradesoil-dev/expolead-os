@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/useToast";
@@ -17,6 +17,7 @@ export default function SupplierNotesEditor({
   title = "Notes",
   description,
   placeholder,
+  icon,
 }: {
   supplierId: string;
   initial: string | null;
@@ -24,6 +25,7 @@ export default function SupplierNotesEditor({
   title?: string;
   description?: string;
   placeholder?: string;
+  icon?: ReactNode;
 }) {
   const router = useRouter();
   const { showToast, ToastUI } = useToast();
@@ -45,7 +47,10 @@ export default function SupplierNotesEditor({
     <div>
       {ToastUI}
       <div className="mb-1 flex items-center justify-between">
-        <h2 className="text-sm font-semibold">{title}</h2>
+        <h2 className="flex items-center gap-2 text-sm font-semibold">
+          {icon && <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">{icon}</span>}
+          {title}
+        </h2>
         {!editing && <EditButton onClick={() => setEditing(true)} />}
       </div>
       {description && <p className="mb-3 text-xs text-ink-400">{description}</p>}

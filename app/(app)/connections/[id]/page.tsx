@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { User, Users, MapPin, Package, Clock, StickyNote } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { PriorityBadge, InterestBadge } from "@/components/Badge";
 import StatusUpdater from "@/components/StatusUpdater";
@@ -121,14 +122,21 @@ export default async function SupplierProfile({
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
           <div className="flex items-start justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <InterestBadge interest={supplier.interest_type} />
-              <PriorityBadge priority={supplier.priority} />
-              {supplier.is_target && (
-                <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Target</span>
-              )}
-            </div>
+            <h2 className="flex items-center gap-2 text-sm font-semibold">
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+                <User size={15} strokeWidth={2} />
+              </span>
+              Primary Contact &amp; Company Details
+            </h2>
             <EditButton href={`/connections/${supplier.id}/edit`} />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <InterestBadge interest={supplier.interest_type} />
+            <PriorityBadge priority={supplier.priority} />
+            {supplier.is_target && (
+              <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Target</span>
+            )}
           </div>
 
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -163,7 +171,12 @@ export default async function SupplierProfile({
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold">Contacts</h2>
+            <h2 className="flex items-center gap-2 text-sm font-semibold">
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+                <Users size={15} strokeWidth={2} />
+              </span>
+              Contacts
+            </h2>
             <AddContactForm supplierId={supplier.id} />
           </div>
 
@@ -180,10 +193,14 @@ export default async function SupplierProfile({
 
                 <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
           <div className="flex items-center justify-between">
-  <h2 className="text-sm font-semibold">Booth & Exhibition</h2>
-
-  <EditButton href={`/connections/${supplier.id}/booth/edit`} />
-</div>
+          <h2 className="flex items-center gap-2 text-sm font-semibold">
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+              <MapPin size={15} strokeWidth={2} />
+            </span>
+            Booth &amp; Exhibition
+          </h2>
+          <EditButton href={`/connections/${supplier.id}/booth/edit`} />
+        </div>
 
           {exhibiting ? (
             <>
@@ -238,7 +255,12 @@ export default async function SupplierProfile({
         
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold">Products Discussed</h2>
+            <h2 className="flex items-center gap-2 text-sm font-semibold">
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+                <Package size={15} strokeWidth={2} />
+              </span>
+              Products Discussed
+            </h2>
             <AddProductForm supplierId={supplier.id} />
           </div>
 
@@ -269,7 +291,12 @@ export default async function SupplierProfile({
         </div>
 
         <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-card">
-          <h2 className="mb-4 text-sm font-semibold">Activity Timeline</h2>
+          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold">
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+              <Clock size={15} strokeWidth={2} />
+            </span>
+            Activity Timeline
+          </h2>
           <ol className="relative space-y-5 border-l border-ink-100 pl-6">
             {[
               { done: true, title: "Connection added", sub: "Company profile created" },
@@ -303,6 +330,7 @@ export default async function SupplierProfile({
             initial={supplier.notes}
             field="notes"
             title="Notes"
+            icon={<StickyNote size={15} strokeWidth={2} />}
             description="Your own notes and saved transcripts. Recording a conversation and saving the transcript adds it here."
             placeholder="What did you discuss? Products, pricing, next steps…"
           />
@@ -314,6 +342,7 @@ export default async function SupplierProfile({
             initial={supplier.summary}
             field="summary"
             title="Summary"
+            icon={<StickyNote size={15} strokeWidth={2} />}
             description="AI summaries of your recorded conversations. Each one is added here with a date and time, so you keep a running history."
             placeholder="AI summaries appear here. You can also edit them."
           />
