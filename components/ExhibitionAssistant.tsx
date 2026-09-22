@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sparkles, Loader2, ClipboardList, Bot } from "lucide-react";
 import { formatMoney } from "@/lib/currencies";
+import AiMarkdown from "@/components/AiMarkdown";
 
 type Facts = {
   connections: number;
@@ -11,6 +12,10 @@ type Facts = {
   followUpsScheduled: number;
   pipelineValue: number;
   opportunities: number;
+  quotationRequested: number;
+  highPriority: number;
+  avgDealValue: number;
+  metrics: { visitRate: number; followUpCoverage: number; quotationRate: number; highPriorityShare: number };
   connectionList: { company: string; status: string; visited: boolean; priority: string; country: string | null }[];
 };
 
@@ -54,11 +59,6 @@ export default function ExhibitionAssistant({
     }
   }
 
-  const observationLines = (result?.observations ?? "")
-    .split("\n")
-    .map((l) => l.replace(/^[-•]\s*/, "").trim())
-    .filter(Boolean);
-
   return (
     <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -101,24 +101,23 @@ export default function ExhibitionAssistant({
               <Fact label="Opportunities" value={String(result.facts.opportunities)} />
               <Fact label="Pipeline value" value={formatMoney(result.facts.pipelineValue, currency)} />
             </div>
+
+            <div className="mt-3 flex flex-wrap gap-2 border-t border-emerald-50 pt-3">
+              <Metric label="Visit rate" value={`${result.facts.metrics.visitRate}%`} />
+              <Metric label="Follow-up coverage" value={`${result.facts.metrics.followUpCoverage}%`} />
+              <Metric label="Quotation stage" value={`${result.facts.metrics.quotationRate}%`} />
+              <Metric label="High priority" value={`${result.facts.metrics.highPriorityShare}%`} />
+              {result.facts.opportunities > 0 && (
+                <Metric label="Avg deal value" value={formatMoney(result.facts.avgDealValue, currency)} />
+              )}
+            </div>
           </div>
 
           <div className="rounded-lg border border-emerald-100 bg-white p-3.5">
             <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-emerald-700">
               <Bot className="h-3.5 w-3.5" /> AI observations
             </p>
-            {observationLines.length > 0 ? (
-              <ul className="mt-2 space-y-1.5">
-                {observationLines.map((line, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-ink-700">
-                    <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-emerald-500" />
-                    <span>{line}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-2 whitespace-pre-wrap text-sm text-ink-700">{result.observations}</p>
-            )}
+            <AiMarkdown text={result.observations} className="mt-2" />
             <p className="mt-2.5 text-[11px] leading-relaxed text-ink-400">
               AI-generated from your own data. Treat as observations, not recorded facts, and check against the records before acting.
             </p>
@@ -135,5 +134,14 @@ function Fact({ label, value }: { label: string; value: string }) {
       <span className="text-ink-500">{label}</span>
       <span className="font-semibold text-ink-900 tabular-nums">{value}</span>
     </div>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="inline-flex items-baseline gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1 text-xs">
+      <span className="text-emerald-700">{label}</span>
+      <span className="font-bold tabular-nums text-emerald-900">{value}</span>
+    </span>
   );
 }

@@ -27,8 +27,20 @@ type Facts = {
   followUpsScheduled: number;
   pipelineValue: number;
   opportunities: number;
+  quotationRequested: number;
+  highPriority: number;
+  avgDealValue: number;
+  // Percentages (0-100, rounded) for an at-a-glance analytical read.
+  metrics: {
+    visitRate: number;
+    followUpCoverage: number;
+    quotationRate: number;
+    highPriorityShare: number;
+  };
   connectionList: { company: string; status: string; visited: boolean; priority: string; country: string | null }[];
 };
+
+const pct = (part: number, whole: number) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
 
 function clip(s: unknown, n: number): string {
   return typeof s === "string" ? s.slice(0, n).trim() : "";
@@ -104,14 +116,28 @@ export async function POST(req: Request) {
   const opportunities = opps ?? [];
 
   // Deterministic facts (never the model's job).
+  const connections = sup.length;
   const visited = sup.filter((s: any) => s.visited).length;
+  const followUpsScheduled = sup.filter((s: any) => s.follow_up_date && s.follow_up_status !== "closed").length;
+  const quotationRequested = sup.filter((s: any) => s.follow_up_status === "quotation_requested").length;
+  const highPriority = sup.filter((s: any) => s.priority === "high").length;
+  const pipelineValue = opportunities.reduce((n: number, o: any) => n + (Number(o.deal_value) || 0), 0);
   const facts: Facts = {
-    connections: sup.length,
+    connections,
     visited,
-    remaining: sup.length - visited,
-    followUpsScheduled: sup.filter((s: any) => s.follow_up_date && s.follow_up_status !== "closed").length,
-    pipelineValue: opportunities.reduce((n: number, o: any) => n + (Number(o.deal_value) || 0), 0),
+    remaining: connections - visited,
+    followUpsScheduled,
+    pipelineValue,
     opportunities: opportunities.length,
+    quotationRequested,
+    highPriority,
+    avgDealValue: opportunities.length > 0 ? Math.round(pipelineValue / opportunities.length) : 0,
+    metrics: {
+      visitRate: pct(visited, connections),
+      followUpCoverage: pct(followUpsScheduled, connections),
+      quotationRate: pct(quotationRequested, connections),
+      highPriorityShare: pct(highPriority, connections),
+    },
     connectionList: sup.map((s: any) => ({
       company: s.company_name ?? "(no name)",
       status: s.follow_up_status ?? "new",
@@ -151,14 +177,20 @@ export async function POST(req: Request) {
 
   const dossierMeetings = (meetings ?? []).slice(0, 20).map((m: any) => clip(m.notes, 400)).filter(Boolean).join("\n---\n");
 
-  const factLine = `Recorded totals: ${facts.connections} connections, ${facts.visited} visited, ${facts.followUpsScheduled} follow-ups scheduled, ${facts.opportunities} opportunities.`;
+  const factLine =
+    `Recorded totals: ${facts.connections} connections, ${facts.visited} visited (${facts.metrics.visitRate}%), ` +
+    `${facts.followUpsScheduled} follow-ups scheduled (${facts.metrics.followUpCoverage}% coverage), ` +
+    `${facts.quotationRequested} at quotation stage (${facts.metrics.quotationRate}%), ` +
+    `${facts.highPriority} high priority (${facts.metrics.highPriorityShare}%), ` +
+    `${facts.opportunities} opportunities, pipeline ${facts.pipelineValue}.`;
 
   const system =
-    "You are ExpoLead OS's exhibition intelligence assistant. You are given structured data about ONE trade exhibition that belongs to the signed-in user: the companies they captured, notes, and any linked opportunities. " +
-    "Write a concise set of OBSERVATIONS and a suggested focus for after the show. " +
-    "Rules: use ONLY the data provided; never invent company names, numbers, quantities, or commitments; if the data is thin or missing, say what is missing instead of guessing. " +
-    "These are observations and suggestions, not recorded facts. Write in clear English as short bullet points, each on its own line beginning with '- '. " +
-    "Keep it practical for a salesperson deciding what to do next. No preamble, no headings.";
+    "You are ExpoLead OS's exhibition intelligence assistant. You are given structured data about ONE trade exhibition that belongs to the signed-in user: the companies they captured, notes, any linked opportunities, and the recorded totals with percentages. " +
+    "Write a concise, analytical briefing with exactly two markdown sections, each introduced by a level-2 heading:\n" +
+    "## Observations\n(3 to 6 bullet points on what stands out: strong leads, momentum, gaps, and risks. Weave in the given percentages where they make a point, e.g. 'only 40% have a follow-up scheduled'. Reference companies by name.)\n" +
+    "## Prioritise next\n(3 to 6 bullet points of concrete next actions, most important first.)\n" +
+    "Rules: use ONLY the data provided; never invent company names, numbers, quantities, or commitments; only cite percentages that are given, do not compute new ones; if the data is thin, say what is missing instead of guessing. " +
+    "These are observations and suggestions, not recorded facts. Use markdown: '## ' headings, '- ' bullets, and '**bold**' for the few most important names or figures. Keep it practical for a salesperson. No preamble before the first heading.";
 
   const content =
     `Exhibition: ${exhibition.name}${exhibition.location ? ` (${exhibition.location})` : ""}\n` +
@@ -166,7 +198,7 @@ export async function POST(req: Request) {
     `CONNECTIONS:\n${dossierConnections}\n\n` +
     (dossierOpps ? `OPPORTUNITIES:\n${dossierOpps}\n\n` : "") +
     (dossierMeetings ? `MEETING NOTES:\n${dossierMeetings}\n\n` : "") +
-    "Give observations about what stands out (strong leads, gaps, risks) and a short 'what to prioritise next' list.";
+    "Write the two-section briefing now.";
 
   const anthropic = new Anthropic({ apiKey });
   let observations = "";
