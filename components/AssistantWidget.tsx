@@ -87,10 +87,10 @@ export default function AssistantWidget() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label="Open AI assistant"
+          aria-label="Open ELOS assistant"
           className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-emerald-700"
         >
-          <Bot className="h-5 w-5" /> Ask AI
+          <Bot className="h-5 w-5" /> Ask ELOS
         </button>
       )}
 
@@ -105,8 +105,8 @@ export default function AssistantWidget() {
                   <Bot className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-ink-900">Exhibition assistant</p>
-                  <p className="text-[11px] text-ink-400">Grounded in your data</p>
+                  <p className="text-sm font-semibold text-ink-900">ELOS</p>
+                  <p className="text-[11px] text-ink-400">Your ExpoLead OS assistant</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -141,7 +141,7 @@ export default function AssistantWidget() {
               {messages.length === 0 && (
                 <div className="space-y-3">
                   <p className="text-sm text-ink-500">
-                    Ask about your connections, follow-ups, opportunities and shows. I answer only from your own data.
+                    Ask ELOS about your connections, follow-ups, opportunities and shows. It answers only from your own data.
                   </p>
                   <div className="space-y-1.5">
                     {suggestions.map((s) => (

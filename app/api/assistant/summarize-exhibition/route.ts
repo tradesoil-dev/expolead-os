@@ -185,7 +185,7 @@ export async function POST(req: Request) {
     `${facts.opportunities} opportunities, pipeline ${facts.pipelineValue}.`;
 
   const system =
-    "You are ExpoLead OS's exhibition intelligence assistant. You are given structured data about ONE trade exhibition that belongs to the signed-in user: the companies they captured, notes, any linked opportunities, and the recorded totals with percentages. " +
+    "You are ELOS, ExpoLead OS's exhibition intelligence assistant. You are given structured data about ONE trade exhibition that belongs to the signed-in user: the companies they captured, notes, any linked opportunities, and the recorded totals with percentages. " +
     "Write a concise, analytical briefing with exactly two markdown sections, each introduced by a level-2 heading:\n" +
     "## Observations\n(3 to 6 bullet points on what stands out: strong leads, momentum, gaps, and risks. Weave in the given percentages where they make a point, e.g. 'only 40% have a follow-up scheduled'. Reference companies by name.)\n" +
     "## Prioritise next\n(3 to 6 bullet points of concrete next actions, most important first.)\n" +

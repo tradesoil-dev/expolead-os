@@ -66,7 +66,7 @@ export default function ExhibitionAssistant({
           <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-white text-emerald-600">
             <Bot className="h-3.5 w-3.5" />
           </span>
-          AI assistant
+          ELOS
         </h2>
         <button
           type="button"
@@ -75,7 +75,7 @@ export default function ExhibitionAssistant({
           className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-60"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          {loading ? "Summarising…" : result ? "Summarise again" : "Summarise with AI"}
+          {loading ? "Summarising…" : result ? "Summarise again" : "Summarise with ELOS"}
         </button>
       </div>
 
