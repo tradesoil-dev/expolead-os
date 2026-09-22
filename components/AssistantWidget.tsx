@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { Bot, X, Send, Plus, Loader2, Sparkles } from "lucide-react";
+import { Bot, X, Send, Plus, Loader2, Sparkles, Minus } from "lucide-react";
 import AiMarkdown from "@/components/AiMarkdown";
 
 type Citation = { type: "connection" | "exhibition"; id: string; label: string };
@@ -36,6 +36,32 @@ export default function AssistantWidget() {
       setExhibitions((data ?? []) as Exh[]);
     })();
   }, [open, exhibitions.length]);
+
+  // Resume the most recent saved conversation when the drawer opens with an
+  // empty thread (e.g. after a page refresh). While the app stays open the
+  // in-memory thread is kept, so this only rehydrates when there is nothing.
+  useEffect(() => {
+    if (!open || !isSupabaseConfigured || messages.length > 0 || conversationId) return;
+    (async () => {
+      const supabase = createClient();
+      const { data: conv } = await supabase
+        .from("ai_conversations")
+        .select("id")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!conv) return;
+      const { data: msgs } = await supabase
+        .from("ai_messages")
+        .select("role, content, citations")
+        .eq("conversation_id", conv.id)
+        .order("created_at", { ascending: true });
+      if (msgs && msgs.length > 0) {
+        setConversationId(conv.id);
+        setMessages(msgs.map((m: any) => ({ role: m.role, content: m.content, citations: m.citations ?? [] })));
+      }
+    })();
+  }, [open]);
 
   useEffect(() => {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
@@ -113,7 +139,10 @@ export default function AssistantWidget() {
                 <button type="button" onClick={newChat} title="New chat" className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-50">
                   <Plus className="h-3.5 w-3.5" /> New
                 </button>
-                <button type="button" onClick={() => setOpen(false)} aria-label="Close" className="rounded-lg p-1.5 text-ink-500 hover:bg-ink-50">
+                <button type="button" onClick={() => setOpen(false)} aria-label="Minimize" title="Minimize (keeps this chat)" className="rounded-lg p-1.5 text-ink-500 hover:bg-ink-50">
+                  <Minus className="h-4 w-4" />
+                </button>
+                <button type="button" onClick={() => setOpen(false)} aria-label="Close" title="Close (keeps this chat)" className="rounded-lg p-1.5 text-ink-500 hover:bg-ink-50">
                   <X className="h-4 w-4" />
                 </button>
               </div>
