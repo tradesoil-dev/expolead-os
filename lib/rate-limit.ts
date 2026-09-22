@@ -8,6 +8,9 @@ export const AI_LIMITS = {
   transcribe: { limit: 60, windowSeconds: 3600 },
   summarize: { limit: 60, windowSeconds: 3600 },
   scan_card: { limit: 60, windowSeconds: 3600 },
+  // AI Exhibition Intelligence assistant (e.g. summarise-exhibition). Kept
+  // tighter than the capture endpoints since each call reads a whole show.
+  assistant: { limit: 30, windowSeconds: 3600 },
 } as const;
 
 export type RateBucket = keyof typeof AI_LIMITS;

@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import ExhibitionCostEditor from "@/components/ExhibitionCostEditor";
 import ExhibitionSetup from "@/components/ExhibitionSetup";
+import ExhibitionAssistant from "@/components/ExhibitionAssistant";
 
 export default async function ExhibitionDetailPage({
   params,
@@ -19,21 +20,25 @@ export default async function ExhibitionDetailPage({
   // Fetch everything in parallel instead of a sequential waterfall. Meetings key
   // off the URL id (same as exhibition.id when it exists); if the exhibition is
   // missing we notFound() below and discard the rest.
-  const [exhibitions, allSuppliers, meetings, currency, opportunities, firstName] = await Promise.all([
+  const [exhibitions, allSuppliers, meetings, currency, opportunities, profile] = await Promise.all([
     getExhibitions(),
     getSuppliers(),
     getMeetingsForExhibition(id),
     getCurrency(),
     getOpportunities(),
     (async () => {
-      if (!isSupabaseConfigured) return "";
+      if (!isSupabaseConfigured) return { firstName: "", isAdmin: false };
       const supabase = await createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return "";
-      const { data } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
-      return (data?.full_name ?? "").trim().split(" ")[0] ?? "";
+      if (!user) return { firstName: "", isAdmin: false };
+      const { data } = await supabase.from("profiles").select("full_name, is_admin").eq("id", user.id).single();
+      return {
+        firstName: (data?.full_name ?? "").trim().split(" ")[0] ?? "",
+        isAdmin: !!data?.is_admin,
+      };
     })(),
   ]);
+  const firstName = profile.firstName;
 
   const exhibition = exhibitions.find((ex) => ex.id === id);
   if (!exhibition) {
@@ -166,6 +171,14 @@ export default async function ExhibitionDetailPage({
     )}
   </div>
 </div>
+        {profile.isAdmin && (
+          <ExhibitionAssistant
+            exhibitionId={exhibition.id}
+            exhibitionName={exhibition.name}
+            currency={currency}
+          />
+        )}
+
         <div className="rounded-xl border border-ink-200 bg-white">
           <div className="border-b border-ink-100 px-4 py-3">
             <h2 className="font-semibold text-emerald-700">Connections at this Exhibition</h2>
