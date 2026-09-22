@@ -5,6 +5,7 @@ import TrialBanner from "@/components/TrialBanner";
 import HelpMenu from "@/components/HelpMenu";
 import NotificationsMenu from "@/components/NotificationsMenu";
 import GlobalSearch from "@/components/GlobalSearch";
+import AssistantWidget from "@/components/AssistantWidget";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -117,6 +118,7 @@ export default async function AppLayout({
         />
         {children}
       </div>
+      {headerProfile.is_admin && <AssistantWidget />}
     </div>
   );
 }
