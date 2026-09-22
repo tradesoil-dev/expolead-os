@@ -58,9 +58,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Not available yet." }, { status: 403 });
   }
 
+  if (!(await allowAiRequest(supabase, "assistant_month"))) {
+    return NextResponse.json(
+      { error: "You have reached your monthly ELOS limit. It resets soon." },
+      { status: 429 },
+    );
+  }
   if (!(await allowAiRequest(supabase, "assistant"))) {
     return NextResponse.json(
-      { error: "You have reached the assistant limit for now. Please try again later." },
+      { error: "You are using ELOS very quickly. Please wait a moment and try again." },
       { status: 429 },
     );
   }

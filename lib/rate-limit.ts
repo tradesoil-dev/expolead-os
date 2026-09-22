@@ -8,9 +8,12 @@ export const AI_LIMITS = {
   transcribe: { limit: 60, windowSeconds: 3600 },
   summarize: { limit: 60, windowSeconds: 3600 },
   scan_card: { limit: 60, windowSeconds: 3600 },
-  // AI Exhibition Intelligence assistant (e.g. summarise-exhibition). Kept
-  // tighter than the capture endpoints since each call reads a whole show.
+  // ELOS assistant, short-term burst guard (per user per hour).
   assistant: { limit: 30, windowSeconds: 3600 },
+  // ELOS assistant, per-user monthly cost cap (~30 days). This is the business
+  // backstop so no single account can run up the bill; tune here. The true hard
+  // ceiling is the monthly budget limit set in the Anthropic console.
+  assistant_month: { limit: 300, windowSeconds: 2592000 },
 } as const;
 
 export type RateBucket = keyof typeof AI_LIMITS;

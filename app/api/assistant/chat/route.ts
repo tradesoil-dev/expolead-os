@@ -24,8 +24,11 @@ export async function POST(req: Request) {
   const { data: prof } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
   if (!prof?.is_admin) return NextResponse.json({ error: "Not available yet." }, { status: 403 });
 
+  if (!(await allowAiRequest(supabase, "assistant_month"))) {
+    return NextResponse.json({ error: "You have reached your monthly ELOS limit. It resets soon." }, { status: 429 });
+  }
   if (!(await allowAiRequest(supabase, "assistant"))) {
-    return NextResponse.json({ error: "You have reached the assistant limit for now. Please try again later." }, { status: 429 });
+    return NextResponse.json({ error: "You are asking ELOS very quickly. Please wait a moment and try again." }, { status: 429 });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
