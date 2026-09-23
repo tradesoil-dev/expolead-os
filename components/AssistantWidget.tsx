@@ -172,6 +172,9 @@ export default function AssistantWidget() {
                   <p className="text-sm text-ink-500">
                     Ask ELOS about your connections, follow-ups, opportunities and shows. It answers only from your own data.
                   </p>
+                  <p className="text-[11px] text-ink-400">
+                    You can ask up to 30 questions an hour.
+                  </p>
                   <div className="space-y-1.5">
                     {suggestions.map((s) => (
                       <button

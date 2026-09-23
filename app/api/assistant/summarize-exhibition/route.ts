@@ -196,7 +196,7 @@ export async function POST(req: Request) {
     "## Observations\n(3 to 6 bullet points on what stands out: strong leads, momentum, gaps, and risks. Weave in the given percentages where they make a point, e.g. 'only 40% have a follow-up scheduled'. Reference companies by name.)\n" +
     "## Prioritise next\n(3 to 6 bullet points of concrete next actions, most important first.)\n" +
     "Rules: use ONLY the data provided; never invent company names, numbers, quantities, or commitments; only cite percentages that are given, do not compute new ones; if the data is thin, say what is missing instead of guessing. " +
-    "These are observations and suggestions, not recorded facts. Use markdown: '## ' headings, '- ' bullets, and '**bold**' for the few most important names or figures. Keep it practical for a salesperson. No preamble before the first heading.";
+    "These are observations and suggestions, not recorded facts. Write in plain, natural language, the way a person would speak, never stiff or robotic. Do not use em dashes or any long dashes anywhere; use commas, full stops or shorter sentences instead. Use markdown: '## ' headings, '- ' bullets, and '**bold**' for the few most important names or figures. Keep it practical for a salesperson. No preamble before the first heading.";
 
   const content =
     `Exhibition: ${exhibition.name}${exhibition.location ? ` (${exhibition.location})` : ""}\n` +

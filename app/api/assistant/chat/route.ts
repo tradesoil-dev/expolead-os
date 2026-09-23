@@ -75,6 +75,7 @@ export async function POST(req: Request) {
     contextLine + " " +
     "Rules: answer ONLY from data returned by the tools. Call tools to fetch what you need; never invent companies, numbers, quantities or commitments. If a tool returns nothing, say so plainly. Only cite percentages that get_metrics returns; do not compute your own. " +
     "Distinguish recorded facts from your own suggestions. Be concise and practical for someone deciding what to do next. " +
+    "Write the way a helpful colleague talks: natural, warm and plain, never stiff or robotic. Do not use em dashes or any long dashes anywhere in your answer; use commas, full stops or shorter sentences instead. " +
     "Format in clean markdown: short paragraphs, '## ' headings when helpful, '- ' bullets, and '**bold**' for key company names or figures.";
 
   const messages: Anthropic.MessageParam[] = [...history, { role: "user", content: message }];
