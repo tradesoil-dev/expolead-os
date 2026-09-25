@@ -60,10 +60,10 @@ export default function ExhibitionAssistant({
   }
 
   return (
-    <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+    <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-emerald-900">
-          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-white text-emerald-600">
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-indigo-900">
+          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-white text-indigo-600">
             <Bot className="h-3.5 w-3.5" />
           </span>
           ELOS
@@ -72,7 +72,7 @@ export default function ExhibitionAssistant({
           type="button"
           onClick={run}
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           {loading ? "Summarising…" : result ? "Summarise again" : "Summarise with ELOS"}
@@ -80,7 +80,7 @@ export default function ExhibitionAssistant({
       </div>
 
       {!result && !loading && !error && (
-        <p className="mt-2 text-xs text-emerald-800">
+        <p className="mt-2 text-xs text-indigo-800">
           Get a grounded recap of {exhibitionName}: recorded facts from your data, plus AI observations on what to prioritise. Nothing is invented.
         </p>
       )}
@@ -89,8 +89,8 @@ export default function ExhibitionAssistant({
 
       {result && (
         <div className="mt-3 space-y-4">
-          <div className="rounded-lg border border-emerald-100 bg-white p-3.5">
-            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-emerald-700">
+          <div className="rounded-lg border border-indigo-100 bg-white p-3.5">
+            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-indigo-700">
               <ClipboardList className="h-3.5 w-3.5" /> Recorded facts
             </p>
             <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm sm:grid-cols-3">
@@ -102,7 +102,7 @@ export default function ExhibitionAssistant({
               <Fact label="Pipeline value" value={formatMoney(result.facts.pipelineValue, currency)} />
             </div>
 
-            <div className="mt-3 flex flex-wrap gap-2 border-t border-emerald-50 pt-3">
+            <div className="mt-3 flex flex-wrap gap-2 border-t border-indigo-50 pt-3">
               <Metric label="Visit rate" value={`${result.facts.metrics.visitRate}%`} />
               <Metric label="Follow-up coverage" value={`${result.facts.metrics.followUpCoverage}%`} />
               <Metric label="Quotation stage" value={`${result.facts.metrics.quotationRate}%`} />
@@ -113,8 +113,8 @@ export default function ExhibitionAssistant({
             </div>
           </div>
 
-          <div className="rounded-lg border border-emerald-100 bg-white p-3.5">
-            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-emerald-700">
+          <div className="rounded-lg border border-indigo-100 bg-white p-3.5">
+            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-indigo-700">
               <Bot className="h-3.5 w-3.5" /> AI observations
             </p>
             <AiMarkdown text={result.observations} className="mt-2" />
@@ -139,9 +139,9 @@ function Fact({ label, value }: { label: string; value: string }) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <span className="inline-flex items-baseline gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1 text-xs">
-      <span className="text-emerald-700">{label}</span>
-      <span className="font-bold tabular-nums text-emerald-900">{value}</span>
+    <span className="inline-flex items-baseline gap-1.5 rounded-lg bg-indigo-50 px-2.5 py-1 text-xs">
+      <span className="text-indigo-700">{label}</span>
+      <span className="font-bold tabular-nums text-indigo-900">{value}</span>
     </span>
   );
 }

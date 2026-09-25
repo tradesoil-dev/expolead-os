@@ -43,3 +43,29 @@ export async function allowAiRequest(supabase: ServerClient, bucket: RateBucket)
     return true; // fail open
   }
 }
+
+/**
+ * Read-only companion to allowAiRequest: how many requests remain in the
+ * current window for this user + bucket, WITHOUT consuming one (peek_rate_limit,
+ * migration 0049). Returns null if the peek is unavailable (migration not
+ * applied / transient error) so callers can just hide the counter.
+ */
+export async function peekAiRemaining(
+  supabase: ServerClient,
+  bucket: RateBucket,
+): Promise<{ remaining: number; limit: number } | null> {
+  const cfg = AI_LIMITS[bucket];
+  try {
+    const { data, error } = await supabase.rpc("peek_rate_limit", {
+      p_bucket: bucket,
+      p_window_seconds: cfg.windowSeconds,
+      p_limit: cfg.limit,
+    });
+    if (error || !data || typeof data !== "object") return null;
+    const d = data as { remaining?: number; limit?: number };
+    if (typeof d.remaining !== "number") return null;
+    return { remaining: d.remaining, limit: typeof d.limit === "number" ? d.limit : cfg.limit };
+  } catch {
+    return null;
+  }
+}
