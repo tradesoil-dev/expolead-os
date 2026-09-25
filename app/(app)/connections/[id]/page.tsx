@@ -297,6 +297,7 @@ export default async function SupplierProfile({
             </span>
             Activity Timeline
           </h2>
+          <div className="-ml-3 max-h-96 overflow-y-auto py-1 pl-3 pr-1">
           <ol className="relative space-y-5 border-l border-ink-100 pl-6">
             {[
               { done: true, title: "Connection added", sub: "Company profile created" },
@@ -320,6 +321,7 @@ export default async function SupplierProfile({
               </li>
             ))}
           </ol>
+          </div>
         </div>
 
         <ConversationRecorder supplierId={supplier.id} />

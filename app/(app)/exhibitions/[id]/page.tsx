@@ -189,7 +189,7 @@ export default async function ExhibitionDetailPage({
               No connections linked to this exhibition yet.
             </p>
           ) : (
-            <div className="divide-y divide-ink-100">
+            <div className="max-h-[32rem] divide-y divide-ink-100 overflow-y-auto">
               {suppliers.map((supplier) => (
                 <Link
                   key={supplier.id}
