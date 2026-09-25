@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { Bot, X, Send, Plus, Loader2, Sparkles, Minus } from "lucide-react";
+import { Bot, X, Send, Plus, Loader2, Sparkles, Minus, Clock } from "lucide-react";
 import AiMarkdown from "@/components/AiMarkdown";
 
 type Citation = { type: "connection" | "exhibition"; id: string; label: string };
@@ -172,8 +172,8 @@ export default function AssistantWidget() {
                   <p className="text-sm text-ink-500">
                     Ask ELOS about your connections, follow-ups, opportunities and shows. It answers only from your own data.
                   </p>
-                  <p className="text-[11px] text-ink-400">
-                    You can ask up to 30 questions an hour.
+                  <p className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700 ring-1 ring-emerald-100">
+                    <Clock className="h-3 w-3 shrink-0" /> You can ask up to 30 questions an hour.
                   </p>
                   <div className="space-y-1.5">
                     {suggestions.map((s) => (
