@@ -16,7 +16,7 @@ type Usage = { remaining: number; limit: number };
 // Floating "Ask ELOS" button that opens a right-side chat drawer. ELOS answers
 // only from the user's own data (grounded, read-only) via /api/assistant/chat.
 // Admin-only while in build (rendered from the app layout behind is_admin).
-// ELOS uses an indigo accent so it reads as its own AI surface, distinct from
+// ELOS uses an emerald accent so it reads as its own AI surface, distinct from
 // the emerald app chrome.
 export default function AssistantWidget() {
   const [open, setOpen] = useState(false);
@@ -182,7 +182,7 @@ export default function AssistantWidget() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Open ELOS assistant"
-          className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-indigo-700"
+          className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-emerald-700"
         >
           <Bot className="h-5 w-5" /> Ask ELOS
         </button>
@@ -195,7 +195,7 @@ export default function AssistantWidget() {
             {/* Header */}
             <div className="flex items-center justify-between gap-3 border-b border-ink-100 px-4 py-3">
               <div className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
                   <Bot className="h-4 w-4" />
                 </span>
                 <div>
@@ -204,7 +204,7 @@ export default function AssistantWidget() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={openHistory} title="Chat history" aria-label="Chat history" className={`rounded-lg p-1.5 hover:bg-ink-50 ${view === "history" ? "text-indigo-600" : "text-ink-500"}`}>
+                <button type="button" onClick={openHistory} title="Chat history" aria-label="Chat history" className={`rounded-lg p-1.5 hover:bg-ink-50 ${view === "history" ? "text-emerald-600" : "text-ink-500"}`}>
                   <History className="h-4 w-4" />
                 </button>
                 <button type="button" onClick={newChat} title="New chat" className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-50">
@@ -242,9 +242,9 @@ export default function AssistantWidget() {
                         <button
                           type="button"
                           onClick={() => openConversation(c.id)}
-                          className={`flex w-full items-start gap-2.5 px-4 py-3 text-left hover:bg-ink-50 ${c.id === conversationId ? "bg-indigo-50/60" : ""}`}
+                          className={`flex w-full items-start gap-2.5 px-4 py-3 text-left hover:bg-ink-50 ${c.id === conversationId ? "bg-emerald-50/60" : ""}`}
                         >
-                          <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                          <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
                           <span className="min-w-0">
                             <span className="block truncate text-sm font-medium text-ink-900">{c.title || "Untitled chat"}</span>
                             <span className="block text-[11px] text-ink-400">
@@ -266,7 +266,7 @@ export default function AssistantWidget() {
                     <select
                       value={exhibitionId}
                       onChange={(e) => setExhibitionId(e.target.value)}
-                      className="flex-1 rounded-lg border border-ink-200 bg-white px-2 py-1.5 text-xs text-ink-800 outline-none focus:border-indigo-500"
+                      className="flex-1 rounded-lg border border-ink-200 bg-white px-2 py-1.5 text-xs text-ink-800 outline-none focus:border-emerald-500"
                     >
                       <option value="">All exhibitions</option>
                       {exhibitions.map((e) => (
@@ -283,7 +283,7 @@ export default function AssistantWidget() {
                       <p className="text-sm text-ink-500">
                         Ask ELOS about your connections, follow-ups, opportunities and shows. It answers only from your own data.
                       </p>
-                      <p className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 ring-1 ring-indigo-100">
+                      <p className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-300">
                         <Clock className="h-3 w-3 shrink-0" />
                         {usage ? `${usage.remaining} of ${usage.limit} questions left this hour` : "You can ask up to 30 questions an hour."}
                       </p>
@@ -293,9 +293,9 @@ export default function AssistantWidget() {
                             key={s}
                             type="button"
                             onClick={() => send(s)}
-                            className="flex w-full items-center gap-2 rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-left text-sm text-indigo-800 transition-colors hover:bg-indigo-100"
+                            className="flex w-full items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 text-left text-sm text-emerald-800 transition-colors hover:bg-emerald-100"
                           >
-                            <Sparkles className="h-3.5 w-3.5 shrink-0 text-indigo-600" /> {s}
+                            <Sparkles className="h-3.5 w-3.5 shrink-0 text-emerald-600" /> {s}
                           </button>
                         ))}
                       </div>
@@ -305,7 +305,7 @@ export default function AssistantWidget() {
                   {messages.map((m, i) =>
                     m.role === "user" ? (
                       <div key={i} className="flex justify-end">
-                        <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-indigo-600 px-3.5 py-2 text-sm text-white">
+                        <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-emerald-600 px-3.5 py-2 text-sm text-white">
                           {m.content}
                         </div>
                       </div>
@@ -320,7 +320,7 @@ export default function AssistantWidget() {
                                 href={c.type === "exhibition" ? `/exhibitions/${c.id}` : `/connections/${c.id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-700 hover:bg-indigo-100"
+                                className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 hover:bg-emerald-100"
                               >
                                 {c.label}
                               </Link>
@@ -342,7 +342,7 @@ export default function AssistantWidget() {
                 {/* Input */}
                 <div className="border-t border-ink-100 p-3">
                   {messages.length > 0 && usage && (
-                    <p className="mb-2 inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-700">
+                    <p className="mb-2 inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-300">
                       <Clock className="h-3 w-3 shrink-0" /> {usage.remaining} of {usage.limit} questions left this hour
                     </p>
                   )}
@@ -358,13 +358,13 @@ export default function AssistantWidget() {
                       }}
                       rows={1}
                       placeholder="Ask about your shows…"
-                      className="max-h-32 flex-1 resize-none rounded-xl border border-ink-200 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                      className="max-h-32 flex-1 resize-none rounded-xl border border-ink-200 px-3 py-2 text-sm outline-none focus:border-emerald-500"
                     />
                     <button
                       type="submit"
                       disabled={sending || !input.trim()}
                       aria-label="Send"
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-indigo-600 text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
                     >
                       <Send className="h-4 w-4" />
                     </button>
