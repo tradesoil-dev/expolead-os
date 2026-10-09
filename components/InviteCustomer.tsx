@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserPlus, Loader2, Check } from "lucide-react";
+import DatePicker from "@/components/DatePicker";
 
 // Admin tool: provision a customer/pilot by email. Creates the account with
 // full self-expiring access (and optional ELOS) and emails them a set-your-own-
@@ -104,15 +105,10 @@ export default function InviteCustomer() {
                 className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500"
               />
             </label>
-            <label className="block">
+            <div>
               <span className="mb-1 block text-xs font-medium text-ink-600">Access until</span>
-              <input
-                type="date"
-                value={accessUntil}
-                onChange={(e) => setAccessUntil(e.target.value)}
-                className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500"
-              />
-            </label>
+              <DatePicker value={accessUntil} onChange={setAccessUntil} />
+            </div>
             <label className="block">
               <span className="mb-1 block text-xs font-medium text-ink-600">Full name (optional)</span>
               <input
