@@ -16,7 +16,7 @@ export async function sendPilotInviteEmail(
   return resend.emails.send({
     from: "Gladwin & Gayan at ExpoLead OS <hello@expoleados.com>",
     to: email,
-    subject: "You have been given access to ExpoLead OS",
+    subject: "You're invited to use ExpoLead OS at your next exhibition",
     html: `
 <!DOCTYPE html>
 <html>
@@ -38,7 +38,13 @@ export async function sendPilotInviteEmail(
           <td style="padding:40px 40px 32px;">
             <p style="margin:0 0 24px;font-size:18px;font-weight:600;color:#0f172a;">Hi ${name}, your ExpoLead OS access is ready</p>
             <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
-              You have been given full access to ExpoLead OS to use at your next exhibition. Capture every lead at the booth, keep your connections and follow-ups organised, and build a clear pipeline of the business each show creates.
+              If you exhibit at or visit trade shows, you know the real work starts after the show. Business cards, notes and conversations end up scattered, and the leads you invested in often go cold before they become business.
+            </p>
+            <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
+              We built ExpoLead OS to change that. It is one simple workspace for every connection you make, from the first conversation at the booth to the follow-up, the quotation and the closed deal. You can see your progress clearly and get the most out of every exhibition you invest in.
+            </p>
+            <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
+              We are inviting a small group of exporters to use it early and tell us honestly what works for them and what does not. Your feedback will shape what we build next.
             </p>
             <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#475569;">
               Click below to set your password and sign in. Your access runs until <strong>${accessUntilLabel}</strong>.
