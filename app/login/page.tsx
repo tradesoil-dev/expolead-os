@@ -12,6 +12,8 @@ import {
   Package,
   FileText,
   CircleCheck,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 type Mode = "signin" | "signup";
@@ -84,6 +86,7 @@ function LoginForm() {
   );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(
@@ -259,14 +262,25 @@ function LoginForm() {
                   <Link href="/reset-password" className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">Forgot password?</Link>
                 )}
               </div>
-              <input
-                type="password"
-                value={password}
-                required
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Your password"
-                className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  required
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Your password"
+                  className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 pr-11 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  title={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-ink-400 hover:text-ink-600"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
 
             {error && (

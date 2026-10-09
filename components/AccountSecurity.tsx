@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useToast } from "@/components/useToast";
+import { Eye, EyeOff } from "lucide-react";
 
 const inputClass =
   "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition";
@@ -19,6 +20,7 @@ export default function AccountSecurity() {
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
   const [savingPw, setSavingPw] = useState(false);
+  const [showPw, setShowPw] = useState(false);
 
   async function changePassword(e: React.FormEvent) {
     e.preventDefault();
@@ -67,11 +69,21 @@ export default function AccountSecurity() {
       <form onSubmit={changePassword} className="mt-4 space-y-3">
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm font-semibold text-slate-700">Change password</p>
-          <Link href="/help/change-your-password" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">How this works →</Link>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowPw((s) => !s)}
+              className="inline-flex items-center gap-1 text-xs font-medium text-ink-500 hover:text-ink-700"
+            >
+              {showPw ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              {showPw ? "Hide" : "Show"}
+            </button>
+            <Link href="/help/change-your-password" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">How this works →</Link>
+          </div>
         </div>
-        <input type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} placeholder="Current password" className={inputClass} />
-        <input type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} placeholder="New password (min 8 characters)" className={inputClass} />
-        <input type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm new password" className={inputClass} />
+        <input type={showPw ? "text" : "password"} autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} placeholder="Current password" className={inputClass} />
+        <input type={showPw ? "text" : "password"} autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} placeholder="New password (min 8 characters)" className={inputClass} />
+        <input type={showPw ? "text" : "password"} autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm new password" className={inputClass} />
         <button
           type="submit"
           disabled={savingPw || !current || !next || !confirm}

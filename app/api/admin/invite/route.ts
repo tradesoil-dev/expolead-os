@@ -51,30 +51,39 @@ export async function POST(req: Request) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expoleados.com";
   const redirectTo = `${siteUrl}/update-password`;
 
-  // Create + invite the user. If they already exist, fall back to a recovery
-  // (set-password) link so returning people can still be re-provisioned.
+  // Brand-new account -> send a set-your-own-password link.
+  // Existing account -> grant access only, NEVER send a password link (so a
+  // re-invite can never disturb someone's existing password), and NEVER touch
+  // an admin account at all.
   let actionLink = "";
   let userId = "";
   let existing = false;
 
   const invite = await admin.auth.admin.generateLink({ type: "invite", email, options: { redirectTo } });
-  if (invite.error) {
-    const recovery = await admin.auth.admin.generateLink({ type: "recovery", email, options: { redirectTo } });
-    if (recovery.error || !recovery.data?.properties?.action_link || !recovery.data?.user?.id) {
+  if (!invite.error) {
+    // New user: handle_new_user created the profile; we send the set-password link.
+    userId = invite.data?.user?.id ?? "";
+    actionLink = invite.data?.properties?.action_link ?? "";
+    if (!userId || !actionLink) {
+      return NextResponse.json({ error: "Could not create the account." }, { status: 500 });
+    }
+  } else {
+    // Existing user. Resolve the id without sending anything (the generated link
+    // is never delivered, so it cannot change their password).
+    existing = true;
+    const lookup = await admin.auth.admin.generateLink({ type: "recovery", email, options: { redirectTo } });
+    userId = lookup.data?.user?.id ?? "";
+    if (!userId) {
+      return NextResponse.json({ error: invite.error.message || "Could not find that account." }, { status: 400 });
+    }
+    // Safeguard: this tool never modifies an admin account.
+    const { data: target } = await admin.from("profiles").select("is_admin").eq("id", userId).single();
+    if (target?.is_admin) {
       return NextResponse.json(
-        { error: recovery.error?.message || invite.error.message || "Could not create the invite." },
+        { error: "That is an admin account. Admin access is managed separately and is not changed from here." },
         { status: 400 },
       );
     }
-    actionLink = recovery.data.properties.action_link;
-    userId = recovery.data.user.id;
-    existing = true;
-  } else {
-    actionLink = invite.data?.properties?.action_link ?? "";
-    userId = invite.data?.user?.id ?? "";
-  }
-  if (!userId || !actionLink) {
-    return NextResponse.json({ error: "Could not create the account link." }, { status: 500 });
   }
 
   // Grant pilot access on the profile (handle_new_user already created the row).
@@ -91,15 +100,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Account created but access was not set: ${upErr.message}` }, { status: 500 });
   }
 
-  // Send the branded set-password link via Resend.
-  let emailSent = true;
-  try {
-    const accessLabel = accessUntil
-      ? new Date(`${accessUntil}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
-      : "further notice";
-    await sendPilotInviteEmail(email, fullName.split(" ")[0] || "there", actionLink, accessLabel);
-  } catch {
-    emailSent = false;
+  // Only brand-new accounts receive a set-your-own-password link. Existing
+  // accounts are granted access silently, never emailed a password link.
+  let emailSent = false;
+  if (!existing && actionLink) {
+    try {
+      const accessLabel = accessUntil
+        ? new Date(`${accessUntil}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+        : "further notice";
+      await sendPilotInviteEmail(email, fullName.split(" ")[0] || "there", actionLink, accessLabel);
+      emailSent = true;
+    } catch {
+      emailSent = false;
+    }
   }
 
   return NextResponse.json({ ok: true, existing, emailSent });

@@ -6,12 +6,14 @@ import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { friendlyPasswordError } from "@/lib/errors";
+import { Eye, EyeOff } from "lucide-react";
 
 function UpdatePasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(true);
   const [linkError, setLinkError] = useState<string | null>(null);
@@ -110,20 +112,31 @@ function UpdatePasswordForm() {
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <label className="block">
               <span className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-2">New password</span>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
-                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 8 characters"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 pr-11 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  title={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-600"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </label>
 
             <label className="block">
               <span className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-2">Confirm password</span>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}

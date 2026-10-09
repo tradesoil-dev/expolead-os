@@ -49,9 +49,9 @@ export default function InviteCustomer() {
       if (!res.ok) throw new Error(data?.error || "Could not send the invite.");
       const who = email;
       setDone(
-        `${data.existing ? "Set-password link re-sent to" : "Invite sent to"} ${who}${
-          data.emailSent === false ? ", but the email did not send, check Resend." : "."
-        }`,
+        data.existing
+          ? `Access updated for ${who}. This account already exists, so no password email was sent and its password was not touched.`
+          : `Invite sent to ${who}${data.emailSent === false ? ", but the email did not send, check Resend." : "."}`,
       );
       setEmail("");
       setFullName("");
