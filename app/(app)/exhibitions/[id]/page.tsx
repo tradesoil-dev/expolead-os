@@ -27,14 +27,15 @@ export default async function ExhibitionDetailPage({
     getCurrency(),
     getOpportunities(),
     (async () => {
-      if (!isSupabaseConfigured) return { firstName: "", isAdmin: false };
+      if (!isSupabaseConfigured) return { firstName: "", isAdmin: false, elosEnabled: false };
       const supabase = await createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return { firstName: "", isAdmin: false };
-      const { data } = await supabase.from("profiles").select("full_name, is_admin").eq("id", user.id).single();
+      if (!user) return { firstName: "", isAdmin: false, elosEnabled: false };
+      const { data } = await supabase.from("profiles").select("full_name, is_admin, elos_enabled").eq("id", user.id).single();
       return {
         firstName: (data?.full_name ?? "").trim().split(" ")[0] ?? "",
         isAdmin: !!data?.is_admin,
+        elosEnabled: !!data?.is_admin || !!data?.elos_enabled,
       };
     })(),
   ]);
@@ -171,7 +172,7 @@ export default async function ExhibitionDetailPage({
     )}
   </div>
 </div>
-        {profile.isAdmin && (
+        {profile.elosEnabled && (
           <ExhibitionAssistant
             exhibitionId={exhibition.id}
             exhibitionName={exhibition.name}

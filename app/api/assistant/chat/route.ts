@@ -21,8 +21,8 @@ export async function POST(req: Request) {
   const { supabase, user } = await getAuthedClient(req);
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
-  const { data: prof } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-  if (!prof?.is_admin) return NextResponse.json({ error: "Not available yet." }, { status: 403 });
+  const { data: prof } = await supabase.from("profiles").select("is_admin, elos_enabled").eq("id", user.id).single();
+  if (!prof?.is_admin && !prof?.elos_enabled) return NextResponse.json({ error: "Not available yet." }, { status: 403 });
 
   if (!(await allowAiRequest(supabase, "assistant_month"))) {
     return NextResponse.json({ error: "You have reached your monthly ELOS limit. It resets soon." }, { status: 429 });

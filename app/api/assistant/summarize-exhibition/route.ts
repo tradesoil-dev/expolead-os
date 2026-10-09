@@ -53,8 +53,8 @@ export async function POST(req: Request) {
   }
 
   // Admin-only while the feature is in build.
-  const { data: prof } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-  if (!prof?.is_admin) {
+  const { data: prof } = await supabase.from("profiles").select("is_admin, elos_enabled").eq("id", user.id).single();
+  if (!prof?.is_admin && !prof?.elos_enabled) {
     return NextResponse.json({ error: "Not available yet." }, { status: 403 });
   }
 

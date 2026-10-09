@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/PageHeader";
 import AdminPeople from "@/components/AdminPeople";
+import InviteCustomer from "@/components/InviteCustomer";
 
 export const metadata = { title: "People — Admin" };
 
@@ -24,7 +25,8 @@ export default async function AdminPeoplePage() {
   return (
     <>
       <PageHeader title="People" subtitle="Everyone who has signed up, your traction at a glance" />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 space-y-5 p-6 md:p-8">
+        <InviteCustomer />
         <AdminPeople people={people} />
       </main>
     </>

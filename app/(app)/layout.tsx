@@ -24,6 +24,7 @@ export default async function AppLayout({
 }) {
   let email: string | null = null;
   let trial: TrialStatus = TRIAL_FALLBACK;
+  let elosEnabled = false;
   let headerProfile = {
     full_name: null as string | null,
     company_name: null as string | null,
@@ -42,7 +43,7 @@ export default async function AppLayout({
     if (user) {
       const { data: prof } = await supabase
         .from("profiles")
-        .select("signup_country, welcome_sent, full_name, company_name, avatar_url, avatar_position_y, is_admin, plan, trial_ends_at, subscription_status, early_access")
+        .select("signup_country, welcome_sent, full_name, company_name, avatar_url, avatar_position_y, is_admin, plan, trial_ends_at, subscription_status, early_access, early_access_until, elos_enabled")
         .eq("id", user.id)
         .single();
 
@@ -54,6 +55,7 @@ export default async function AppLayout({
           avatar_position_y: prof.avatar_position_y ?? null,
           is_admin: !!prof.is_admin,
         };
+        elosEnabled = !!prof.is_admin || !!prof.elos_enabled;
         // Compute trial state from the row we already have, rather than a
         // second getUser + profile query.
         trial = computeTrialStatus(prof);
@@ -118,7 +120,7 @@ export default async function AppLayout({
         />
         {children}
       </div>
-      {headerProfile.is_admin && <AssistantWidget />}
+      {elosEnabled && <AssistantWidget />}
     </div>
   );
 }

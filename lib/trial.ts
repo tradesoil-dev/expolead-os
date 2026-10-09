@@ -30,6 +30,7 @@ type TrialProfileRow = {
   trial_ends_at: string | null;
   subscription_status: string | null;
   early_access: boolean | null;
+  early_access_until?: string | null;
 } | null;
 
 /**
@@ -44,6 +45,11 @@ export function computeTrialStatus(data: TrialProfileRow): TrialStatus {
     return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan ?? "trial", subscriptionStatus: "active", canExport: true };
   }
   if (data.early_access) {
+    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan ?? "trial", subscriptionStatus: "early_access", canExport: true };
+  }
+  // Pilot: full access until a date, then it auto-locks (falls through to the
+  // normal trial logic below, which by then reads as expired).
+  if (data.early_access_until && new Date(data.early_access_until).getTime() > Date.now()) {
     return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan ?? "trial", subscriptionStatus: "early_access", canExport: true };
   }
 
@@ -79,7 +85,7 @@ export async function getTrialStatus(): Promise<TrialStatus> {
 
   const { data } = await supabase
     .from("profiles")
-    .select("plan, trial_ends_at, subscription_status, early_access")
+    .select("plan, trial_ends_at, subscription_status, early_access, early_access_until")
     .eq("id", user.id)
     .single();
 
@@ -92,6 +98,11 @@ export async function getTrialStatus(): Promise<TrialStatus> {
 
   // Early access granted — bypass trial lock entirely
   if (data.early_access) {
+    return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "early_access", canExport: true };
+  }
+
+  // Pilot window — full access until early_access_until, then it auto-locks.
+  if (data.early_access_until && new Date(data.early_access_until).getTime() > Date.now()) {
     return { isExpired: false, isWarning: false, daysLeft: 999, plan: data.plan, subscriptionStatus: "early_access", canExport: true };
   }
 
