@@ -40,8 +40,16 @@ export default function AccountSecurity() {
     const { error } = await supabase.auth.updateUser({ password: next });
     setSavingPw(false);
     if (error) { showToast(error.message || "Could not update password.", "error"); return; }
+    // Notify + audit the change (best-effort; never blocks the success state).
+    try {
+      await fetch("/api/account/password-changed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "your account settings" }),
+      });
+    } catch { /* non-fatal */ }
     setCurrent(""); setNext(""); setConfirm("");
-    showToast("Password updated.", "success");
+    showToast("Password updated. We have emailed you a confirmation.", "success");
   }
 
   // --- delete account ---

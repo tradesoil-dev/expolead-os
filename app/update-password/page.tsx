@@ -71,6 +71,14 @@ function UpdatePasswordForm() {
     const { error } = await createClient().auth.updateUser({ password });
     setLoading(false);
     if (error) { setSubmitError(friendlyPasswordError(error) ?? error.message); return; }
+    // Notify + audit the change (best-effort; never blocks the redirect).
+    try {
+      await fetch("/api/account/password-changed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "the password reset page" }),
+      });
+    } catch { /* non-fatal */ }
     router.push("/dashboard");
   }
 
