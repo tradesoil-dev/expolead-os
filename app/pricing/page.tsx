@@ -50,7 +50,7 @@ export default async function PricingPage() {
             Pricing built for the<br />exhibition floor
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-white/85">
-            Find the plan that fits how you work the show — and everything after it.
+            Find the plan that fits how you work the show, and everything after it.
           </p>
         </div>
       </div>
