@@ -77,10 +77,10 @@ function UpdatePasswordForm() {
     if (password.length < 8) { setSubmitError("Password must be at least 8 characters."); return; }
     if (!isSupabaseConfigured) return;
     setLoading(true);
-    const { error } = await createClient().auth.updateUser({ password });
-    setLoading(false);
-    if (error) { setSubmitError(friendlyPasswordError(error) ?? error.message); return; }
-    // Notify + audit the change (best-effort; never blocks the redirect).
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) { setLoading(false); setSubmitError(friendlyPasswordError(error) ?? error.message); return; }
+    // Notify + audit the change (best-effort), while the session is still active.
     try {
       await fetch("/api/account/password-changed", {
         method: "POST",
@@ -88,7 +88,11 @@ function UpdatePasswordForm() {
         body: JSON.stringify({ source: "the set-password page" }),
       });
     } catch { /* non-fatal */ }
-    router.push("/dashboard");
+    // Professional flow: sign out and send them to the login page to sign in
+    // with their new password, rather than dropping straight into the app. The
+    // welcome email then fires when they first land in the app after logging in.
+    try { await supabase.auth.signOut(); } catch { /* non-fatal */ }
+    router.push("/login?reset=1");
   }
 
   return (

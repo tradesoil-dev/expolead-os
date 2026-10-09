@@ -82,7 +82,11 @@ export default async function AppLayout({
           .select("id");
         if (claimed && claimed.length > 0) {
           try {
-            await sendWelcomeEmail(user.email, (prof.full_name ?? "").split(" ")[0] || "there");
+            const isPilot = !!prof.early_access_until || !!prof.early_access;
+            const accessUntilLabel = prof.early_access_until
+              ? new Date(prof.early_access_until).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+              : undefined;
+            await sendWelcomeEmail(user.email, (prof.full_name ?? "").split(" ")[0] || "there", { pilot: isPilot, accessUntilLabel });
           } catch {
             // non-fatal — never block the app render on email delivery
           }

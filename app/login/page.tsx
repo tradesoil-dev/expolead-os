@@ -90,7 +90,11 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(
-    searchParams.get("confirmed") === "1" ? "Email confirmed. Please sign in to continue." : null
+    searchParams.get("confirmed") === "1"
+      ? "Email confirmed. Please sign in to continue."
+      : searchParams.get("reset") === "1"
+      ? "Your password has been set. Please sign in to continue."
+      : null
   );
   const [activeStep, setActiveStep] = useState(0);
 

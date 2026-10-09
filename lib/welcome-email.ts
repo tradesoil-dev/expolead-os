@@ -2,8 +2,19 @@ import { Resend } from "resend";
 
 // Sends the trial welcome email via Resend. Called once per user, after their
 // email is confirmed (from the app layout), not at signup.
-export async function sendWelcomeEmail(email: string, firstName: string) {
+export async function sendWelcomeEmail(
+  email: string,
+  firstName: string,
+  opts?: { pilot?: boolean; accessUntilLabel?: string },
+) {
   const name = (firstName || "there").trim() || "there";
+  const pilot = !!opts?.pilot;
+  const intro = pilot
+    ? `Your full access to ExpoLead OS is ready${opts?.accessUntilLabel ? ` until ${opts.accessUntilLabel}` : ""}. You can capture connections, create opportunities, and manage your exhibition pipeline.`
+    : `Your 14-day free trial of ExpoLead OS has started. You now have full access to capture connections, create opportunities, and manage your exhibition pipeline.`;
+  const getMost = pilot
+    ? "Here are two things to do right now to get the most out of it:"
+    : "Here are two things to do right now to get the most out of your trial:";
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   return resend.emails.send({
@@ -31,10 +42,10 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
           <td style="padding:40px 40px 32px;">
             <p style="margin:0 0 24px;font-size:18px;font-weight:600;color:#0f172a;">Hey ${name}, welcome aboard!</p>
             <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
-              Your 14-day free trial of ExpoLead OS has started. You now have full access to capture connections, create opportunities, and manage your exhibition pipeline.
+              ${intro}
             </p>
             <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#475569;">
-              Here are two things to do right now to get the most out of your trial:
+              ${getMost}
             </p>
 
             <!-- Tips -->
