@@ -145,6 +145,19 @@ export default function AccountMenu({ email, profile, daysLeft, isExpired }: { e
                 <span className="ml-auto rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">Admin</span>
               </Link>
               <Link
+                href="/admin/pilot-invite"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-100 transition-colors"
+              >
+                <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M19 8v6M22 11h-6" />
+                </svg>
+                Pilot invite
+                <span className="ml-auto rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">Admin</span>
+              </Link>
+              <Link
                 href="/admin/library"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-100 transition-colors"

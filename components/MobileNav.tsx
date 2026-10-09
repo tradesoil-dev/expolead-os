@@ -118,6 +118,10 @@ export default function MobileNav({ email, profile }: { email?: string | null; p
                     People
                     <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">Admin</span>
                   </Link>
+                  <Link href="/admin/pilot-invite" onClick={() => setOpen(false)} className={`${item} text-ink-700 hover:bg-ink-50`}>
+                    Pilot invite
+                    <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">Admin</span>
+                  </Link>
                 </>
               )}
 
