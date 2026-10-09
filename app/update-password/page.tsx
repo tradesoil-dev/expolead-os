@@ -24,41 +24,50 @@ function UpdatePasswordForm() {
     if (!isSupabaseConfigured) { setVerifying(false); return; }
     const supabase = createClient();
 
+    // 1. Expired / already-used link: Supabase redirects back with the error in
+    //    the URL hash. Show it clearly instead of spinning forever.
+    if (typeof window !== "undefined" && window.location.hash.includes("error")) {
+      const p = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      if (p.get("error") || p.get("error_code")) {
+        setLinkError("This link has expired or has already been used. Request a new one below.");
+        setVerifying(false);
+        return;
+      }
+    }
+
+    // 2. PKCE flow: token_hash in the URL — works for both password reset and invite.
     const tokenHash = searchParams.get("token_hash");
     const type = searchParams.get("type");
-
-    // PKCE flow: token_hash in URL — verify it directly, result is immediate
-    if (tokenHash && type === "recovery") {
-      supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" })
+    if (tokenHash && (type === "recovery" || type === "invite")) {
+      supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as "recovery" | "invite" })
         .then(({ error }) => {
-          if (error) {
-            setLinkError("This reset link has expired or has already been used. Please request a new one.");
-          } else {
-            setSessionReady(true);
-          }
+          if (error) setLinkError("This link has expired or has already been used. Request a new one below.");
+          else setSessionReady(true);
           setVerifying(false);
         });
       return;
     }
 
-    // Implicit flow: session arrives via URL hash fragment
-    // Check if a recovery session is already active (e.g. page reload)
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        setSessionReady(true);
-        setVerifying(false);
-      }
-    });
+    // 3. Implicit flow: the session arrives in the URL hash and the client
+    //    establishes it. Accept a password-reset session OR an invite / sign-in
+    //    session, so invite links open the form too (not just reset links).
+    let settled = false;
+    const ready = (session: unknown) => {
+      if (session && !settled) { settled = true; setSessionReady(true); setVerifying(false); }
+    };
+    supabase.auth.getSession().then(({ data }) => ready(data.session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => ready(session));
 
-    // Listen for the PASSWORD_RECOVERY event fired by Supabase
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" && session) {
-        setSessionReady(true);
+    // If no session is established shortly, stop spinning and offer a new link.
+    const timer = setTimeout(() => {
+      if (!settled) {
+        settled = true;
         setVerifying(false);
+        setLinkError("This link could not be verified. It may have expired. Request a new one below.");
       }
-    });
+    }, 6000);
 
-    return () => { subscription.unsubscribe(); };
+    return () => { subscription.unsubscribe(); clearTimeout(timer); };
   }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -76,7 +85,7 @@ function UpdatePasswordForm() {
       await fetch("/api/account/password-changed", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source: "the password reset page" }),
+        body: JSON.stringify({ source: "the set-password page" }),
       });
     } catch { /* non-fatal */ }
     router.push("/dashboard");
