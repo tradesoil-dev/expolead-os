@@ -82,6 +82,7 @@ export async function POST(req: Request) {
     early_access_until: fullAccess ? accessUntilIso : null,
     elos_enabled: elos,
   };
+  if (fullAccess) profileUpdate.pilot_invited_at = new Date().toISOString();
   if (fullName) profileUpdate.full_name = fullName;
   if (companyName) profileUpdate.company_name = companyName;
 
