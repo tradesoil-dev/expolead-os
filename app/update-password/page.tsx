@@ -23,19 +23,37 @@ function UpdatePasswordForm() {
   useEffect(() => {
     if (!isSupabaseConfigured) { setVerifying(false); return; }
     const supabase = createClient();
+    const hashParams = new URLSearchParams(
+      typeof window !== "undefined" ? window.location.hash.replace(/^#/, "") : "",
+    );
 
-    // 1. Expired / already-used link: Supabase redirects back with the error in
-    //    the URL hash. Show it clearly instead of spinning forever.
-    if (typeof window !== "undefined" && window.location.hash.includes("error")) {
-      const p = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-      if (p.get("error") || p.get("error_code")) {
-        setLinkError("This link has expired or has already been used. Request a new one below.");
-        setVerifying(false);
-        return;
-      }
+    // 1. Error returned in the hash (expired / already used).
+    if (hashParams.get("error") || hashParams.get("error_code")) {
+      setLinkError("This link has expired or has already been used. Request a new one below.");
+      setVerifying(false);
+      return;
     }
 
-    // 2. PKCE flow: token_hash in the URL — works for both password reset and invite.
+    // 2. Implicit flow: the session tokens are in the URL hash (invite and reset
+    //    links both land here). Establish the session explicitly from them; the
+    //    client does not auto-consume implicit hash tokens here.
+    const accessToken = hashParams.get("access_token");
+    const refreshToken = hashParams.get("refresh_token");
+    if (accessToken && refreshToken) {
+      supabase.auth
+        .setSession({ access_token: accessToken, refresh_token: refreshToken })
+        .then(({ data, error }) => {
+          if (error || !data.session) {
+            setLinkError("This link could not be verified. It may have expired. Request a new one below.");
+          } else {
+            setSessionReady(true);
+          }
+          setVerifying(false);
+        });
+      return;
+    }
+
+    // 3. PKCE flow: token_hash in the query (reset or invite).
     const tokenHash = searchParams.get("token_hash");
     const type = searchParams.get("type");
     if (tokenHash && (type === "recovery" || type === "invite")) {
@@ -48,17 +66,13 @@ function UpdatePasswordForm() {
       return;
     }
 
-    // 3. Implicit flow: the session arrives in the URL hash and the client
-    //    establishes it. Accept a password-reset session OR an invite / sign-in
-    //    session, so invite links open the form too (not just reset links).
+    // 4. Fallback: a session may already be active (page reload) or arrive async.
     let settled = false;
     const ready = (session: unknown) => {
       if (session && !settled) { settled = true; setSessionReady(true); setVerifying(false); }
     };
     supabase.auth.getSession().then(({ data }) => ready(data.session));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => ready(session));
-
-    // If no session is established shortly, stop spinning and offer a new link.
     const timer = setTimeout(() => {
       if (!settled) {
         settled = true;
@@ -66,7 +80,6 @@ function UpdatePasswordForm() {
         setLinkError("This link could not be verified. It may have expired. Request a new one below.");
       }
     }, 6000);
-
     return () => { subscription.unsubscribe(); clearTimeout(timer); };
   }, [searchParams]);
 
