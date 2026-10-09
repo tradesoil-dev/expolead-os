@@ -20,7 +20,7 @@ export async function sendWelcomeEmail(
   return resend.emails.send({
     from: "Gladwin & Gayan at ExpoLead OS <hello@expoleados.com>",
     to: email,
-    subject: "Welcome to ExpoLead OS, your trial has started",
+    subject: pilot ? "Welcome to ExpoLead OS, your access is ready" : "Welcome to ExpoLead OS, your trial has started",
     html: `
 <!DOCTYPE html>
 <html>
