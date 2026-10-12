@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { friendlyPasswordError } from "@/lib/errors";
 import { Eye, EyeOff } from "lucide-react";
+
+const SESSION_LOST =
+  "Your link session ended before the password was saved. This can happen if ExpoLead OS is open in another tab. Close other ExpoLead OS tabs, then request a new link below.";
 
 function UpdatePasswordForm() {
   const router = useRouter();
@@ -19,10 +22,23 @@ function UpdatePasswordForm() {
   const [linkError, setLinkError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
+  // The session this link established. Kept in memory so the password update
+  // still works (and can only ever target this account) even if another tab
+  // on this site signs out or swaps the shared session cookie meanwhile.
+  const linkSession = useRef<{ access_token: string; refresh_token: string; userId: string } | null>(null);
+  const remember = (session: { access_token: string; refresh_token: string; user: { id: string } } | null | undefined) => {
+    if (!session) return;
+    if (linkSession.current && linkSession.current.userId !== session.user.id) return;
+    linkSession.current = { access_token: session.access_token, refresh_token: session.refresh_token, userId: session.user.id };
+  };
 
   useEffect(() => {
     if (!isSupabaseConfigured) { setVerifying(false); return; }
     const supabase = createClient();
+    // Track token refreshes for the link's user while the page is open.
+    const { data: { subscription: tokenWatch } } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (session && linkSession.current) remember(session);
+    });
     const hashParams = new URLSearchParams(
       typeof window !== "undefined" ? window.location.hash.replace(/^#/, "") : "",
     );
@@ -31,7 +47,7 @@ function UpdatePasswordForm() {
     if (hashParams.get("error") || hashParams.get("error_code")) {
       setLinkError("This link has expired or has already been used. Request a new one below.");
       setVerifying(false);
-      return;
+      return () => tokenWatch.unsubscribe();
     }
 
     // 2. Implicit flow: the session tokens are in the URL hash (invite and reset
@@ -46,11 +62,12 @@ function UpdatePasswordForm() {
           if (error || !data.session) {
             setLinkError("This link could not be verified. It may have expired. Request a new one below.");
           } else {
+            remember(data.session);
             setSessionReady(true);
           }
           setVerifying(false);
         });
-      return;
+      return () => tokenWatch.unsubscribe();
     }
 
     // 3. PKCE flow: token_hash in the query (reset or invite).
@@ -58,18 +75,18 @@ function UpdatePasswordForm() {
     const type = searchParams.get("type");
     if (tokenHash && (type === "recovery" || type === "invite")) {
       supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as "recovery" | "invite" })
-        .then(({ error }) => {
+        .then(({ data, error }) => {
           if (error) setLinkError("This link has expired or has already been used. Request a new one below.");
-          else setSessionReady(true);
+          else { remember(data.session); setSessionReady(true); }
           setVerifying(false);
         });
-      return;
+      return () => tokenWatch.unsubscribe();
     }
 
     // 4. Fallback: a session may already be active (page reload) or arrive async.
     let settled = false;
-    const ready = (session: unknown) => {
-      if (session && !settled) { settled = true; setSessionReady(true); setVerifying(false); }
+    const ready = (session: { access_token: string; refresh_token: string; user: { id: string } } | null) => {
+      if (session && !settled) { settled = true; remember(session); setSessionReady(true); setVerifying(false); }
     };
     supabase.auth.getSession().then(({ data }) => ready(data.session));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => ready(session));
@@ -80,7 +97,7 @@ function UpdatePasswordForm() {
         setLinkError("This link could not be verified. It may have expired. Request a new one below.");
       }
     }, 6000);
-    return () => { subscription.unsubscribe(); clearTimeout(timer); };
+    return () => { subscription.unsubscribe(); tokenWatch.unsubscribe(); clearTimeout(timer); };
   }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -91,7 +108,29 @@ function UpdatePasswordForm() {
     if (!isSupabaseConfigured) return;
     setLoading(true);
     const supabase = createClient();
+    // Make sure the active session is still the one this link created. If
+    // another tab changed it, restore it; never update a different account.
+    const expected = linkSession.current;
+    if (expected) {
+      const { data: { session: current } } = await supabase.auth.getSession();
+      if (!current || current.user.id !== expected.userId) {
+        const { data: restored, error: restoreError } = await supabase.auth.setSession({
+          access_token: expected.access_token,
+          refresh_token: expected.refresh_token,
+        });
+        if (restoreError || restored.session?.user.id !== expected.userId) {
+          setLoading(false);
+          setSubmitError(SESSION_LOST);
+          return;
+        }
+      }
+    }
     const { error } = await supabase.auth.updateUser({ password });
+    if (error && /session missing|session_not_found|not authenticated|jwt/i.test(error.message)) {
+      setLoading(false);
+      setSubmitError(SESSION_LOST);
+      return;
+    }
     if (error) { setLoading(false); setSubmitError(friendlyPasswordError(error) ?? error.message); return; }
     // Notify + audit the change (best-effort), while the session is still active.
     try {
@@ -139,7 +178,7 @@ function UpdatePasswordForm() {
             <p className="text-sm font-semibold text-rose-700">Link expired</p>
             <p className="mt-1 text-sm text-rose-600">{linkError}</p>
             <a href="/reset-password" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">
-              Request a new reset link
+              Request a new link
             </a>
           </div>
         ) : sessionReady ? (
@@ -194,6 +233,11 @@ function UpdatePasswordForm() {
             {submitError && (
               <p className="text-sm text-rose-700 bg-rose-50 ring-1 ring-inset ring-rose-600/20 rounded-lg px-3 py-2">
                 {submitError}
+                {submitError === SESSION_LOST && (
+                  <a href="/reset-password" className="mt-2 block font-medium text-emerald-600 hover:text-emerald-700">
+                    Request a new link
+                  </a>
+                )}
               </p>
             )}
 
