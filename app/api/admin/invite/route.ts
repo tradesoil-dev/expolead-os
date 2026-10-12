@@ -63,7 +63,13 @@ export async function POST(req: Request) {
   if (!invite.error) {
     // New user: handle_new_user created the profile; we send the set-password link.
     userId = invite.data?.user?.id ?? "";
-    actionLink = invite.data?.properties?.action_link ?? "";
+    // Link to our own page with the token hash rather than Supabase's verify
+    // URL: the page only uses the token after a real click, so corporate email
+    // scanners cannot consume it, and it works on any device.
+    const hashed = invite.data?.properties?.hashed_token;
+    actionLink = hashed
+      ? `${siteUrl}/update-password?token_hash=${encodeURIComponent(hashed)}&type=invite`
+      : invite.data?.properties?.action_link ?? "";
     if (!userId || !actionLink) {
       return NextResponse.json({ error: "Could not create the account." }, { status: 500 });
     }

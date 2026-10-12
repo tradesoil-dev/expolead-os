@@ -22,6 +22,10 @@ function UpdatePasswordForm() {
   const [linkError, setLinkError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
+  // A token_hash link waits for a real click before it is used, so email
+  // security scanners that open links automatically cannot burn it.
+  const [pendingOtp, setPendingOtp] = useState<{ tokenHash: string; type: "recovery" | "invite" } | null>(null);
+  const [continuing, setContinuing] = useState(false);
   // The session this link established. Kept in memory so the password update
   // still works (and can only ever target this account) even if another tab
   // on this site signs out or swaps the shared session cookie meanwhile.
@@ -74,12 +78,8 @@ function UpdatePasswordForm() {
     const tokenHash = searchParams.get("token_hash");
     const type = searchParams.get("type");
     if (tokenHash && (type === "recovery" || type === "invite")) {
-      supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as "recovery" | "invite" })
-        .then(({ data, error }) => {
-          if (error) setLinkError("This link has expired or has already been used. Request a new one below.");
-          else { remember(data.session); setSessionReady(true); }
-          setVerifying(false);
-        });
+      setPendingOtp({ tokenHash, type });
+      setVerifying(false);
       return () => tokenWatch.unsubscribe();
     }
 
@@ -99,6 +99,23 @@ function UpdatePasswordForm() {
     }, 6000);
     return () => { subscription.unsubscribe(); tokenWatch.unsubscribe(); clearTimeout(timer); };
   }, [searchParams]);
+
+  async function handleContinue() {
+    if (!pendingOtp || continuing) return;
+    setContinuing(true);
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.verifyOtp({ token_hash: pendingOtp.tokenHash, type: pendingOtp.type });
+    setContinuing(false);
+    if (error || !data.session) {
+      setLinkError("This link has expired or has already been used. Request a new one below.");
+      return;
+    }
+    remember(data.session);
+    // Drop the used token from the address bar so a reload does not retry it.
+    try { window.history.replaceState(null, "", "/update-password"); } catch { /* ignore */ }
+    setPendingOtp(null);
+    setSessionReady(true);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -180,6 +197,18 @@ function UpdatePasswordForm() {
             <a href="/reset-password" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">
               Request a new link
             </a>
+          </div>
+        ) : pendingOtp && !sessionReady ? (
+          <div className="mt-8">
+            <p className="text-sm text-slate-600">Click below to continue and set your password.</p>
+            <button
+              type="button"
+              onClick={handleContinue}
+              disabled={continuing}
+              className="mt-5 w-full rounded-lg bg-emerald-600 px-3.5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors disabled:opacity-60"
+            >
+              {continuing ? "Verifying..." : "Continue"}
+            </button>
           </div>
         ) : sessionReady ? (
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
