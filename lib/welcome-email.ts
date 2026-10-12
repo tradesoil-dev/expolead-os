@@ -13,8 +13,8 @@ export async function sendWelcomeEmail(
     ? `Your full access to ExpoLead OS is ready${opts?.accessUntilLabel ? ` until ${opts.accessUntilLabel}` : ""}. You can capture connections, create opportunities, and manage your exhibition pipeline.`
     : `Your 14-day free trial of ExpoLead OS has started. You now have full access to capture connections, create opportunities, and manage your exhibition pipeline.`;
   const getMost = pilot
-    ? "Here are two things to do right now to get the most out of it:"
-    : "Here are two things to do right now to get the most out of your trial:";
+    ? "Here are three simple steps to get the most out of it:"
+    : "Here are three simple steps to get the most out of your trial:";
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   return resend.emails.send({
@@ -53,16 +53,24 @@ export async function sendWelcomeEmail(
               <tr>
                 <td style="background:#f0fdf4;border-left:3px solid #10b981;border-radius:6px;padding:16px 20px;">
                   <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;">Step 1</p>
-                  <p style="margin:0;font-size:14px;color:#0f172a;font-weight:500;">Add your first connection</p>
-                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Go to Connections and add someone you met at a recent exhibition: name, company, what you discussed.</p>
+                  <p style="margin:0;font-size:14px;color:#0f172a;font-weight:500;">Add your exhibition</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Go to Exhibitions and add the show you are taking part in. Most major shows are already in the Exhibition library with dates and venue filled in.</p>
                 </td>
               </tr>
               <tr><td style="height:10px;"></td></tr>
               <tr>
                 <td style="background:#f0fdf4;border-left:3px solid #10b981;border-radius:6px;padding:16px 20px;">
                   <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;">Step 2</p>
-                  <p style="margin:0;font-size:14px;color:#0f172a;font-weight:500;">Log an opportunity</p>
-                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Under Opportunities, track a deal or follow-up in progress: stage, value, next action.</p>
+                  <p style="margin:0;font-size:14px;color:#0f172a;font-weight:500;">Capture your first connection</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Add someone you meet at that show: name, company and what you discussed. Scan their business card to save typing.</p>
+                </td>
+              </tr>
+              <tr><td style="height:10px;"></td></tr>
+              <tr>
+                <td style="background:#f0fdf4;border-left:3px solid #10b981;border-radius:6px;padding:16px 20px;">
+                  <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;">Step 3</p>
+                  <p style="margin:0;font-size:14px;color:#0f172a;font-weight:500;">Track the deal</p>
+                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">When a conversation turns into business, log it under Opportunities: products, value and next follow-up.</p>
                 </td>
               </tr>
             </table>
