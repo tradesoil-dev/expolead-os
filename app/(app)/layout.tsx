@@ -7,6 +7,7 @@ import NotificationsMenu from "@/components/NotificationsMenu";
 import GlobalSearch from "@/components/GlobalSearch";
 import AssistantWidget from "@/components/AssistantWidget";
 import { headers } from "next/headers";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { computeTrialStatus, TRIAL_FALLBACK, type TrialStatus } from "@/lib/trial";
@@ -81,15 +82,21 @@ export default async function AppLayout({
           .eq("welcome_sent", false)
           .select("id");
         if (claimed && claimed.length > 0) {
-          try {
-            const isPilot = !!prof.early_access_until || !!prof.early_access;
-            const accessUntilLabel = prof.early_access_until
-              ? new Date(prof.early_access_until).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
-              : undefined;
-            await sendWelcomeEmail(user.email, (prof.full_name ?? "").split(" ")[0] || "there", { pilot: isPilot, accessUntilLabel });
-          } catch {
-            // non-fatal — never block the app render on email delivery
-          }
+          const to = user.email;
+          const firstName = (prof.full_name ?? "").split(" ")[0] || "there";
+          const isPilot = !!prof.early_access_until || !!prof.early_access;
+          const accessUntilLabel = prof.early_access_until
+            ? new Date(prof.early_access_until).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+            : undefined;
+          // Send after the response so the first login never waits on the
+          // email provider. Non-fatal either way.
+          after(async () => {
+            try {
+              await sendWelcomeEmail(to, firstName, { pilot: isPilot, accessUntilLabel });
+            } catch {
+              // never let email delivery affect the app
+            }
+          });
         }
       }
     }
