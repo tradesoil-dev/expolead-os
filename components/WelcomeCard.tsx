@@ -12,7 +12,7 @@ export default function WelcomeCard() {
       <div>
         <p className="text-sm font-semibold text-emerald-800">Welcome to ExpoLead OS</p>
         <p className="mt-1 text-sm text-emerald-700">
-          New here? We've added sample data to help you explore.{" "}
+          New here? Start by adding the exhibition you’re attending, then capture your first connection.{" "}
           <Link href="/getting-started" className="font-bold underline hover:text-emerald-900">
             Read the getting started guide →
           </Link>
