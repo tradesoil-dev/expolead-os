@@ -41,7 +41,10 @@ export async function sendPilotInviteEmail(
               If you exhibit at or visit trade shows, you know the real work starts after the show. Business cards, notes and conversations end up scattered, and the leads you invested in often go cold before they become business.
             </p>
             <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
-              We built ExpoLead OS to change that. It is one simple workspace for every connection you make, from the first conversation at the booth to the follow-up, the quotation and the closed deal. You can see your progress clearly and get the most out of every exhibition you invest in.
+              An exhibition is one of your most powerful sales channels compared to cold calls, cold emails or directories. In just a few days you meet more buyers than months of those can bring. So why should everything from that show end up spread across business cards, notebooks, inboxes and phone notes?
+            </p>
+            <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
+              <strong style="color:#0f172a;">ExpoLead OS changes that.</strong> Every connection, conversation, quotation request, sample request and order request from an exhibition you attend stays together in one workspace, from the first conversation at the booth to the closed deal. You see exactly what each show brings to your business.
             </p>
             <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#475569;">
               We are inviting a small group of exporters to use it early and tell us honestly what works for them and what does not. Your feedback will shape what we build next.
