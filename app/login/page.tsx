@@ -1,50 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, Suspense, Fragment } from "react";
+import { useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { friendlyPasswordError } from "@/lib/errors";
-import {
-  Users,
-  MessageSquare,
-  Package,
-  FileText,
-  CircleCheck,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import LoginShowcase from "@/components/LoginShowcase";
 
 type Mode = "signin" | "signup";
-
-const stages = [
-  {
-    title: "Booth Visit",
-    subtitle: "Capture contact",
-    icon: <Users size={20} />,
-  },
-  {
-    title: "Discussion",
-    subtitle: "Explore opportunity",
-    icon: <MessageSquare size={20} strokeWidth={1.5} />,
-  },
-  {
-    title: "Sample",
-    subtitle: "Evaluate product",
-    icon: <Package size={20} />,
-  },
-  {
-    title: "Quote Review",
-    subtitle: "Review pricing",
-    icon: <FileText size={20} />,
-  },
-  {
-    title: "Order Ready",
-    subtitle: "Commercial ready",
-    icon: <CircleCheck size={20} />,
-  },
-];
 
 export default function LoginPage() {
   return (
@@ -96,21 +61,12 @@ function LoginForm() {
       ? "Your password has been set. Please sign in to continue."
       : null
   );
-  const [activeStep, setActiveStep] = useState(0);
 
   // Bot traps (signup only, no third party): a hidden field a real person
   // never sees or fills, and a minimum time-on-page. A form-fill bot trips one
   // or the other regardless of what email domain it uses. See signup handler.
   const [trap, setTrap] = useState("");
   const pageLoadedAt = useRef<number>(Date.now());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveStep((current) => (current === 4 ? 0 : current + 1));
-    }, 2500);
-
-    return () => clearInterval(timer);
-  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -171,64 +127,7 @@ function LoginForm() {
 
   return (
     <div className="h-screen grid lg:grid-cols-[1fr_1fr] bg-white overflow-hidden">
-      <section
-        className="hidden lg:flex h-screen flex-col items-center justify-center px-10"
-        style={{ background: "linear-gradient(150deg, #0f172a 0%, #065f46 50%, #10b981 100%)" }}
-      >
-        <Link href="/" className="absolute top-8 left-10 inline-block" aria-label="Go to ExpoLead OS home">
-          <span className="text-[22px] font-bold uppercase tracking-tight leading-none">
-            <span className="text-white">EXPOLEAD</span>
-            <span className="text-emerald-300">&nbsp;OS</span>
-          </span>
-        </Link>
-        <div className="w-full max-w-[520px] rounded-[2rem] border border-white/15 bg-white/10 p-6 shadow-xl backdrop-blur">
-          <div className="flex justify-center py-10">
-  <div className="scale-[5] text-emerald-300">
-    {stages[activeStep].icon}
-  </div>
-</div>
-
-          <div className="mt-16 mx-auto flex w-full max-w-sm items-center justify-center gap-2">
-            {stages.map((stage, index) => {
-              const completed = index < activeStep;
-              const active = index === activeStep;
-              return (
-                <Fragment key={stage.title}>
-                  <div
-                    className={`grid h-14 w-14 shrink-0 place-items-center rounded-full transition-colors duration-500 ${
-                      completed || active
-                        ? "bg-white text-emerald-700 shadow-sm"
-                        : "border-2 border-white/40 text-white/70"
-                    }`}
-                  >
-                    {completed
-                      ? <span className="text-lg font-bold">✓</span>
-                      : <span className={active ? "text-emerald-700" : "text-white/70"}>{stage.icon}</span>
-                    }
-                  </div>
-                  {index < stages.length - 1 && (
-                    <span className={`h-0.5 flex-1 transition-colors duration-500 ${index < activeStep ? "bg-white" : "bg-white/30"}`} />
-                  )}
-                </Fragment>
-              );
-            })}
-          </div>
-
-          <div className="mt-14 text-center">
-            <div className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
-              ExpoLead Workspace
-            </div>
-
-            <h2 className="mt-4 text-4xl font-bold tracking-tight text-white">
-              {stages[activeStep].title}
-            </h2>
-
-            <p className="mt-3 text-base text-white/70">
-              {stages[activeStep].subtitle}
-            </p>
-          </div>
-        </div>
-      </section>
+      <LoginShowcase mode={mode} />
 
       <section className="min-h-screen flex items-center justify-center px-8">
         <div className="w-full max-w-md self-center">
