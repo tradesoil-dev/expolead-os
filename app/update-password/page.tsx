@@ -20,6 +20,7 @@ function UpdatePasswordForm() {
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(true);
   const [linkError, setLinkError] = useState<string | null>(null);
+  const [inviteExpired, setInviteExpired] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
   // A token_hash link waits for a real click before it is used, so email
@@ -107,7 +108,12 @@ function UpdatePasswordForm() {
     const { data, error } = await supabase.auth.verifyOtp({ token_hash: pendingOtp.tokenHash, type: pendingOtp.type });
     setContinuing(false);
     if (error || !data.session) {
-      setLinkError("This link has expired or has already been used. Request a new one below.");
+      if (pendingOtp.type === "invite") {
+        setInviteExpired(true);
+        setLinkError("Your invitation link has expired or has already been used. Enter your email on the next page and we will send you a new link to set your password.");
+      } else {
+        setLinkError("This link has expired or has already been used. Request a new one below.");
+      }
       return;
     }
     remember(data.session);
@@ -192,10 +198,13 @@ function UpdatePasswordForm() {
           </div>
         ) : linkError ? (
           <div className="mt-8 rounded-xl bg-rose-50 border border-rose-200 px-5 py-4">
-            <p className="text-sm font-semibold text-rose-700">Link expired</p>
+            <p className="text-sm font-semibold text-rose-700">{inviteExpired ? "Invitation link expired" : "Link expired"}</p>
             <p className="mt-1 text-sm text-rose-600">{linkError}</p>
-            <a href="/reset-password" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">
-              Request a new link
+            <a
+              href={inviteExpired ? "/reset-password?from=invite" : "/reset-password"}
+              className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700"
+            >
+              {inviteExpired ? "Send me a new link" : "Request a new link"}
             </a>
           </div>
         ) : pendingOtp && !sessionReady ? (

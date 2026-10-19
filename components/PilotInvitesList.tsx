@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, Loader2 } from "lucide-react";
+import { Users, Loader2, Send } from "lucide-react";
 import { useConfirm } from "@/components/useConfirm";
 import { useToast } from "@/components/useToast";
 
@@ -33,12 +33,36 @@ function accessStatus(until: string | null): { label: string; cls: string } {
 
 // Tracker of everyone invited as a pilot: when sent, when access ends, whether
 // they accepted (set their password / confirmed) and last active. Each row can
-// be revoked (clears their access and removes them from this list).
+// be revoked (clears their access and removes them from this list), and a
+// pilot who has not accepted yet can be sent a fresh invite.
 export default function PilotInvitesList({ rows }: { rows: PilotRow[] }) {
   const router = useRouter();
   const { confirm, ConfirmUI } = useConfirm();
   const { showToast, ToastUI } = useToast();
   const [busy, setBusy] = useState<string | null>(null);
+
+  async function resend(r: PilotRow) {
+    const ok = await confirm(
+      `Send ${r.email} a fresh invite? They get the same invitation email with a new link to set their password. Any earlier link stops working.`,
+      { title: "Resend invite", confirmLabel: "Send invite" },
+    );
+    if (!ok) return;
+    setBusy(r.id);
+    try {
+      const res = await fetch("/api/admin/resend-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: r.id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Could not resend the invite.");
+      showToast(`New invite sent to ${r.email}.`, "success");
+    } catch (e: any) {
+      showToast(e.message || "Could not resend the invite.", "error");
+    } finally {
+      setBusy(null);
+    }
+  }
 
   async function revoke(r: PilotRow) {
     const ok = await confirm(
@@ -134,6 +158,17 @@ export default function PilotInvitesList({ rows }: { rows: PilotRow[] }) {
                       {r.last_sign_in_at ? fmt(r.last_sign_in_at) : <span className="text-ink-400">Never</span>}
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-right">
+                      {!accepted && (
+                        <button
+                          type="button"
+                          onClick={() => resend(r)}
+                          disabled={busy === r.id}
+                          className="mr-2 inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 transition-colors hover:bg-emerald-50 disabled:opacity-50"
+                        >
+                          <Send className="h-3.5 w-3.5" />
+                          Resend invite
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => revoke(r)}
