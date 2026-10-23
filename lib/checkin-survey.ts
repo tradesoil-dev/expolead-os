@@ -25,8 +25,8 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
   {
     id: "capture",
     kind: "multi",
-    title: "How did you capture leads at {exhibition}?",
-    label: "How they capture leads",
+    title: "How did you capture contacts at {exhibition}?",
+    label: "How they capture contacts",
     hint: "Tick all that apply",
     required: true,
     options: [
@@ -34,7 +34,6 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
       { id: "notebook", label: "Notebook or paper" },
       { id: "phone", label: "Phone notes or photos" },
       { id: "excel", label: "Excel or a spreadsheet" },
-      { id: "crm", label: "A CRM or another app" },
       { id: "memory", label: "From memory" },
     ],
   },
@@ -56,14 +55,13 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
   {
     id: "where",
     kind: "multi",
-    title: "Where are those leads now?",
-    label: "Where the leads are now",
+    title: "Where are those contacts now?",
+    label: "Where the contacts are now",
     hint: "Tick all that apply",
     required: true,
     options: [
       { id: "cards", label: "Still a stack of cards" },
       { id: "excel", label: "In Excel" },
-      { id: "crm", label: "In our CRM or ERP" },
       { id: "email", label: "In email or WhatsApp" },
       { id: "colleague", label: "With a colleague" },
       { id: "none", label: "Not organised yet" },
@@ -74,7 +72,7 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     kind: "scale",
     title: "How easy is it to remember what each buyer discussed with you?",
     label: "Remembering what each buyer said",
-    hint: "1 is very hard, 5 is very easy",
+    hint: "1 is very easy, 5 is very hard",
     required: true,
   },
   {
@@ -111,7 +109,7 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
   {
     id: "call",
     kind: "single",
-    title: "Would a 15 minute call to set up your {exhibition} leads help?",
+    title: "Would a 15 minute call to set up your {exhibition} contacts help?",
     label: "Wants a call",
     hint: "Pick one",
     required: true,
@@ -125,8 +123,8 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     kind: "text",
     title: "What is your biggest headache after a show?",
     label: "Biggest headache after a show",
-    hint: "Optional. One line is plenty",
-    required: false,
+    hint: "One line is plenty",
+    required: true,
   },
 ];
 

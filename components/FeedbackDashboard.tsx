@@ -218,7 +218,7 @@ export default function FeedbackDashboard({ rows }: { rows: CheckinRow[] }) {
                 return (
                   <div key={q.id}>
                     <p className="text-sm font-semibold text-ink-900">{q.label}</p>
-                    <p className="mb-2 text-[11px] text-ink-400">Average on a 1 to 5 scale (5 is very easy)</p>
+                    <p className="mb-2 text-[11px] text-ink-400">Average on a 1 to 5 scale (1 is very easy, 5 is very hard)</p>
                     <p className="text-3xl font-bold text-ink-900">
                       {vals.length ? avg.toFixed(1) : "n/a"} <span className="text-sm font-medium text-ink-400">of 5</span>
                     </p>

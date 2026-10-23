@@ -25,7 +25,8 @@ export default function CheckinSurvey({
     () =>
       required.filter((q) => {
         const v = answers[q.id];
-        return Array.isArray(v) ? v.length > 0 : v !== undefined && v !== "";
+        if (Array.isArray(v)) return v.length > 0;
+        return typeof v === "string" ? v.trim() !== "" : v !== undefined;
       }).length,
     [answers, required],
   );
@@ -79,7 +80,7 @@ export default function CheckinSurvey({
         </div>
         <h1 className="text-xl font-bold text-slate-900">Thank you{firstName ? `, ${firstName}` : ""}</h1>
         <p className="mx-auto mt-2 max-w-md text-[15px] leading-relaxed text-slate-600">
-          Your answers help us make ExpoLead OS fit how you really work. Your {exhibition} leads are still worth
+          Your answers help us make ExpoLead OS fit how you really work. Your {exhibition} contacts are still worth
           following up, and the steps in our email show how to bring them in.
         </p>
         <a
@@ -153,8 +154,8 @@ export default function CheckinSurvey({
                 ))}
               </div>
               <div className="mt-1.5 flex justify-between text-xs text-slate-400">
-                <span>Very hard</span>
                 <span>Very easy</span>
+                <span>Very hard</span>
               </div>
             </>
           )}
