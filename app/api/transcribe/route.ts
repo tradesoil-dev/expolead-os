@@ -60,6 +60,9 @@ export async function POST(req: Request) {
     // Auto-detect the spoken language so non-English booth conversations
     // (e.g. a buyer speaking through a translator) are transcribed, not dropped.
     detect_language: "true",
+    // Opt out of Deepgram's Model Improvement Program so customer audio is
+    // never used to train their models (our Privacy Notice promises this).
+    mip_opt_out: "true",
   });
 
   try {

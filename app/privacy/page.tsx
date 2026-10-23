@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <div className="mx-auto max-w-3xl">
           <Link href="/" className="text-sm text-emerald-600 hover:underline">← Back to home</Link>
 
-          <p className="mt-4 text-sm text-slate-500">Last updated: 24 August 2026</p>
+          <p className="mt-4 text-sm text-slate-500">Last updated: 23 October 2026</p>
 
           <div className="mt-10 space-y-8 text-sm leading-7 text-slate-700">
 
@@ -44,6 +44,7 @@ export default function PrivacyPage() {
               <ul className="mt-3 space-y-2 list-disc list-inside">
                 <li><strong>Account signup:</strong> Your email address and password. Your password is encrypted before storage and we never store or see your plain-text password. You may optionally provide your name.</li>
                 <li><strong>Platform usage:</strong> Any business data you enter, including connections, buyers, suppliers, opportunities, exhibition records, notes, sample details, and follow-up records. This is your business data and you own it at all times.</li>
+                <li><strong>AI features (optional):</strong> If you scan a business card, record a conversation, or ask the ELOS assistant a question, that content is sent to our AI providers to produce the result. We do not store card photos or audio recordings. Only the text you choose to save, such as contact details, a transcript or a summary, is kept in your workspace. Your ELOS conversations are saved in your workspace so you can return to them, and are deleted when you delete your account.</li>
                 <li><strong>Website visits:</strong> Basic technical information your browser sends automatically, such as your IP address, browser type, and operating system. We use this only for security monitoring and debugging.</li>
                 <li><strong>What we do not collect:</strong> We do not collect sensitive personal data such as health information, financial account numbers, government ID numbers, or political views.</li>
               </ul>
@@ -60,7 +61,9 @@ export default function PrivacyPage() {
               <ul className="mt-3 space-y-2 list-disc list-inside">
                 <li>To create and maintain your account</li>
                 <li>To store and retrieve the business data you enter</li>
+                <li>To provide the optional AI features you choose to use: business card scanning, conversation transcription and summaries, and the ELOS assistant</li>
                 <li>To send you transactional emails such as account confirmation, welcome email, trial expiry reminders, and security alerts</li>
+                <li>To ask for your feedback on ExpoLead OS, for example a short survey after an exhibition. Answering is always optional</li>
                 <li>To monitor for security issues and prevent fraud</li>
                 <li>To respond to your support requests</li>
                 <li>To comply with legal obligations if required</li>
@@ -75,8 +78,11 @@ export default function PrivacyPage() {
                 <li><strong>Supabase</strong> stores your account and business data (hosted on AWS infrastructure)</li>
                 <li><strong>Vercel</strong> hosts and delivers the ExpoLead OS application</li>
                 <li><strong>Resend</strong> sends transactional emails on our behalf</li>
+                <li><strong>Anthropic</strong> powers business card scanning, conversation summaries and the ELOS assistant, only when you use these features</li>
+                <li><strong>Deepgram</strong> transcribes conversation recordings, only when you record</li>
               </ul>
               <p className="mt-3">Each provider receives only the minimum data needed to do their job. They are contractually required to keep your data confidential and cannot use it for their own purposes. We do not share your data with advertisers, data brokers, or partners.</p>
+              <p className="mt-3">Our AI providers receive only the content needed for the feature you use, such as a card photo, a recording, or the question you ask ELOS. They process it on our behalf and do not use it to train their models.</p>
               <p className="mt-3">Your data is hosted on AWS infrastructure via Supabase. A current list of our sub-processors and the hosting region is available on request at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
 
@@ -102,7 +108,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">8. International data transfers</h2>
-              <p>ExpoLead OS is operated from Sri Lanka. Your data is stored on Supabase infrastructure hosted on AWS, which may be located in data centres outside your home country. By using ExpoLead OS, you acknowledge that your data may be processed internationally. We rely on the security and contractual commitments of our service providers to protect it during any such transfers.</p>
+              <p>ExpoLead OS is operated from Sri Lanka. Your data is stored on Supabase infrastructure hosted on AWS, which may be located in data centres outside your home country. When you use an AI feature, the content you submit is processed by our AI providers, which may happen in the United States. By using ExpoLead OS, you acknowledge that your data may be processed internationally. We rely on the security and contractual commitments of our service providers to protect it during any such transfers.</p>
             </section>
 
             <section>
@@ -124,12 +130,12 @@ export default function PrivacyPage() {
               <h2 className="text-base font-bold text-slate-900 mb-2">12. Your rights</h2>
               <p>Depending on where you are located, you may have the right to:</p>
               <ul className="mt-3 space-y-2 list-disc list-inside">
-                <li><strong>Access</strong> — request a copy of the personal data we hold about you</li>
-                <li><strong>Correct</strong> — ask us to fix inaccurate or incomplete data</li>
-                <li><strong>Delete</strong> — ask us to delete your personal data</li>
-                <li><strong>Export</strong> — download your business data using the CSV export feature inside the platform, available on any paid plan. If you are on a free trial, email us and we will provide a copy of your data</li>
-                <li><strong>Object</strong> — ask us to stop processing your data in certain circumstances</li>
-                <li><strong>Withdraw consent</strong> — where we rely on consent, you can withdraw it at any time</li>
+                <li><strong>Access:</strong> request a copy of the personal data we hold about you</li>
+                <li><strong>Correct:</strong> ask us to fix inaccurate or incomplete data</li>
+                <li><strong>Delete:</strong> ask us to delete your personal data</li>
+                <li><strong>Export:</strong> download your business data using the CSV export feature inside the platform, available on any paid plan. If you are on a free trial, email us and we will provide a copy of your data</li>
+                <li><strong>Object:</strong> ask us to stop processing your data in certain circumstances</li>
+                <li><strong>Withdraw consent:</strong> where we rely on consent, you can withdraw it at any time</li>
               </ul>
               <p className="mt-3">To exercise any of these rights, email us at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>. We will respond within 7 business days. We may ask you to verify your identity before processing your request.</p>
             </section>
