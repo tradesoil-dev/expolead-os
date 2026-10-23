@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import PageHeader from "@/components/PageHeader";
 import InviteCustomer from "@/components/InviteCustomer";
 import PilotInvitesList, { type PilotRow, type LatestCheckin } from "@/components/PilotInvitesList";
+import type { LibraryShow } from "@/components/ExhibitionPicker";
 
 export const metadata = { title: "Pilot invite — Admin" };
 
@@ -47,6 +48,15 @@ export default async function AdminPilotInvitePage() {
     }
   }
 
+  // Exhibition Library shows for the Send check-in picker (public read data).
+  let library: LibraryShow[] = [];
+  try {
+    const { data } = await supabase.from("exhibition_library").select("name, location, start_date, end_date");
+    library = (data ?? []) as LibraryShow[];
+  } catch {
+    /* picker falls back to typing */
+  }
+
   return (
     <>
       <PageHeader
@@ -61,7 +71,7 @@ export default async function AdminPilotInvitePage() {
           locks automatically. Use it for pilots and one-off access grants. Your subscriber list and
           traction stay on the People page.
         </p>
-        <PilotInvitesList rows={pilots} checkins={checkins} />
+        <PilotInvitesList rows={pilots} checkins={checkins} library={library} />
       </main>
     </>
   );

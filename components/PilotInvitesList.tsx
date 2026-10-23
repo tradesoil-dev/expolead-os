@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Users, Loader2, Send, MessageSquareText, X } from "lucide-react";
 import { useConfirm } from "@/components/useConfirm";
 import { useToast } from "@/components/useToast";
+import ExhibitionPicker, { campaignFor, type LibraryShow } from "@/components/ExhibitionPicker";
 
 export type PilotRow = {
   id: string;
@@ -40,9 +41,11 @@ function accessStatus(until: string | null): { label: string; cls: string } {
 export default function PilotInvitesList({
   rows,
   checkins = {},
+  library = [],
 }: {
   rows: PilotRow[];
   checkins?: Record<string, LatestCheckin>;
+  library?: LibraryShow[];
 }) {
   const router = useRouter();
   const { confirm, ConfirmUI } = useConfirm();
@@ -51,13 +54,21 @@ export default function PilotInvitesList({
   const [checkinFor, setCheckinFor] = useState<PilotRow | null>(null);
   const [exhibition, setExhibition] = useState("");
   const [campaign, setCampaign] = useState("");
+  const [campaignEdited, setCampaignEdited] = useState(false);
   const [sending, setSending] = useState(false);
 
   function openCheckin(r: PilotRow) {
-    const last = checkins[r.id];
     setExhibition("");
-    setCampaign(last?.campaign ?? "");
+    setCampaign("");
+    setCampaignEdited(false);
     setCheckinFor(r);
+  }
+
+  // Picking a library show fills the campaign as "<name> <year>" unless the
+  // admin has typed their own campaign name.
+  function pickShow(show: LibraryShow | null) {
+    if (campaignEdited) return;
+    setCampaign(show ? campaignFor(show) : "");
   }
 
   async function sendCheckin(confirmRepeat = false): Promise<void> {
@@ -160,27 +171,32 @@ export default function PilotInvitesList({
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <label className="mt-4 block text-xs font-semibold text-ink-700">
+            <div className="mt-4 text-xs font-semibold text-ink-700">
               Exhibition
-              <input
+              <ExhibitionPicker
+                shows={library}
                 value={exhibition}
-                onChange={(e) => setExhibition(e.target.value)}
-                maxLength={80}
-                placeholder="e.g. SIAL Paris"
-                className="mt-1 w-full rounded-lg border border-ink-200 px-3 py-2 text-sm font-normal focus:border-emerald-500 focus:outline-none"
+                onChange={(t) => {
+                  setExhibition(t);
+                  if (!campaignEdited) setCampaign("");
+                }}
+                onPick={pickShow}
               />
               <span className="mt-1 block font-normal text-ink-400">Used in the email and survey: &ldquo;How did SIAL Paris go?&rdquo;</span>
-            </label>
+            </div>
             <label className="mt-3 block text-xs font-semibold text-ink-700">
               Campaign <span className="font-normal text-ink-400">(optional)</span>
               <input
                 value={campaign}
-                onChange={(e) => setCampaign(e.target.value)}
+                onChange={(e) => {
+                  setCampaign(e.target.value);
+                  setCampaignEdited(e.target.value.trim() !== "");
+                }}
                 maxLength={80}
                 placeholder="e.g. SIAL Paris 2026"
                 className="mt-1 w-full rounded-lg border border-ink-200 px-3 py-2 text-sm font-normal focus:border-emerald-500 focus:outline-none"
               />
-              <span className="mt-1 block font-normal text-ink-400">Groups answers on the Feedback page. Leave empty to use the exhibition name.</span>
+              <span className="mt-1 block font-normal text-ink-400">Groups answers on the Feedback page. Filled in when you pick a show; leave empty to use the exhibition name.</span>
             </label>
             <div className="mt-5 flex justify-end gap-2">
               <button
