@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import PageHeader from "@/components/PageHeader";
 import InviteCustomer from "@/components/InviteCustomer";
-import PilotInvitesList, { type PilotRow } from "@/components/PilotInvitesList";
+import PilotInvitesList, { type PilotRow, type LatestCheckin } from "@/components/PilotInvitesList";
 
 export const metadata = { title: "Pilot invite — Admin" };
 
@@ -27,6 +28,25 @@ export default async function AdminPilotInvitePage() {
     // Migration not applied yet, or transient error: show an empty list.
   }
 
+  // Latest check-in per pilot, for the "Check-in sent / Answered" note on each
+  // row. Server-only table, read with the service role after the admin check.
+  // Best-effort: before migration 0054 the rows simply show no note.
+  const checkins: Record<string, LatestCheckin> = {};
+  if (pilots.length) {
+    try {
+      const { data } = await createServiceClient()
+        .from("feedback_checkins")
+        .select("user_id, campaign, sent_at, answered_at")
+        .in("user_id", pilots.map((p) => p.id))
+        .order("sent_at", { ascending: false });
+      for (const c of data ?? []) {
+        if (!checkins[c.user_id]) checkins[c.user_id] = { campaign: c.campaign, sent_at: c.sent_at, answered_at: c.answered_at };
+      }
+    } catch {
+      /* no notes */
+    }
+  }
+
   return (
     <>
       <PageHeader
@@ -41,7 +61,7 @@ export default async function AdminPilotInvitePage() {
           locks automatically. Use it for pilots and one-off access grants. Your subscriber list and
           traction stay on the People page.
         </p>
-        <PilotInvitesList rows={pilots} />
+        <PilotInvitesList rows={pilots} checkins={checkins} />
       </main>
     </>
   );

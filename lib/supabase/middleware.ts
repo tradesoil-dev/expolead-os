@@ -33,7 +33,9 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   const publicRoutes = ["/", "/login", "/reset-password", "/update-password", "/pricing", "/features", "/about", "/privacy", "/terms", "/trade-shows", "/getting-started", "/opengraph-image", "/email-logo", "/auth/callback"];
-  const isPublicRoute = publicRoutes.includes(path) || path === "/resources" || path.startsWith("/resources/") || path === "/hero-preview";
+  // /checkin/<token> and its submit API are the sign-in free post-show survey;
+  // the private token in the link is their only credential.
+  const isPublicRoute = publicRoutes.includes(path) || path === "/resources" || path.startsWith("/resources/") || path === "/hero-preview" || path.startsWith("/checkin/") || path === "/api/checkin/submit";
   const isAuthRoute = path === "/login";
 
   if (!user && !isPublicRoute) {
