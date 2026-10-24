@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, Loader2, Send, MessageSquareText, X } from "lucide-react";
+import { Users, Loader2, Send, MessageSquareText, X, Copy, Check } from "lucide-react";
 import { useConfirm } from "@/components/useConfirm";
 import { useToast } from "@/components/useToast";
 import ExhibitionPicker, { campaignFor, type LibraryShow } from "@/components/ExhibitionPicker";
@@ -56,12 +56,43 @@ export default function PilotInvitesList({
   const [campaign, setCampaign] = useState("");
   const [campaignEdited, setCampaignEdited] = useState(false);
   const [sending, setSending] = useState(false);
+  // After sending: the pilot's survey link, shown once so it can also go on WhatsApp.
+  const [sentLink, setSentLink] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   function openCheckin(r: PilotRow) {
     setExhibition("");
     setCampaign("");
     setCampaignEdited(false);
+    setSentLink(null);
+    setCopiedLink(false);
     setCheckinFor(r);
+  }
+
+  function closeCheckin() {
+    if (sending) return;
+    const wasSent = !!sentLink;
+    setCheckinFor(null);
+    setSentLink(null);
+    if (wasSent) router.refresh();
+  }
+
+  async function copySentLink() {
+    if (!sentLink) return;
+    try {
+      await navigator.clipboard.writeText(sentLink);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 1800);
+    } catch {
+      window.prompt("Copy this link", sentLink);
+    }
+  }
+
+  function whatsappHref(r: PilotRow, link: string) {
+    const first = (r.full_name ?? "").trim().split(" ")[0] || "there";
+    const show = exhibition.trim() || "the show";
+    const text = `Hi ${first}, hope ${show} went well! I have just emailed you a quick 3 minute post-show check. Here is the link too in case it is easier: ${link}`;
+    return `https://wa.me/?text=${encodeURIComponent(text)}`;
   }
 
   // Picking a library show fills the campaign as "<name> <year>" unless the
@@ -98,8 +129,8 @@ export default function PilotInvitesList({
       }
       if (!res.ok) throw new Error(data?.error || "Could not send the check-in.");
       showToast(`Check-in sent to ${r.email}.`, "success");
-      setCheckinFor(null);
-      router.refresh();
+      if (typeof data?.surveyUrl === "string") setSentLink(data.surveyUrl);
+      else closeCheckin();
     } catch (e: any) {
       showToast(e.message || "Could not send the check-in.", "error");
     } finally {
@@ -158,19 +189,55 @@ export default function PilotInvitesList({
       {ConfirmUI}
       {ToastUI}
       {checkinFor && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/40 p-4" onClick={() => !sending && setCheckinFor(null)}>
+        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/40 p-4" onClick={closeCheckin}>
           <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-base font-semibold text-ink-900">Send check-in</p>
+                <p className="text-base font-semibold text-ink-900">{sentLink ? "Check-in sent" : "Send check-in"}</p>
                 <p className="mt-0.5 text-xs text-ink-500">
-                  To {checkinFor.email}. A short survey, then the steps to bring their show leads in.
+                  {sentLink
+                    ? `Emailed to ${checkinFor.email}. You can also share the same link on WhatsApp.`
+                    : `To ${checkinFor.email}. A short survey, then the steps to bring their show leads in.`}
                 </p>
               </div>
-              <button type="button" onClick={() => !sending && setCheckinFor(null)} className="text-ink-400 hover:text-ink-700" aria-label="Close">
+              <button type="button" onClick={closeCheckin} className="text-ink-400 hover:text-ink-700" aria-label="Close">
                 <X className="h-4 w-4" />
               </button>
             </div>
+            {sentLink ? (
+              <div className="mt-4">
+                <p className="text-xs font-semibold text-ink-700">Their survey link</p>
+                <code className="mt-1 block truncate rounded-lg bg-ink-50 px-3 py-2 text-xs text-ink-600" title={sentLink}>{sentLink}</code>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-ink-400">
+                  The same link as in their email, and it can be answered once. It is shown only now, so copy it before closing. If it gets lost, send the check-in again.
+                </p>
+                <div className="mt-4 flex flex-wrap justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={copySentLink}
+                    className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-emerald-200 px-3.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-50"
+                  >
+                    {copiedLink ? <><Check className="h-4 w-4" /> Copied</> : <><Copy className="h-4 w-4" /> Copy link</>}
+                  </button>
+                  <a
+                    href={whatsappHref(checkinFor, sentLink)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-10 items-center rounded-lg bg-emerald-600 px-3.5 text-sm font-semibold text-white hover:bg-emerald-700"
+                  >
+                    Open WhatsApp
+                  </a>
+                  <button
+                    type="button"
+                    onClick={closeCheckin}
+                    className="inline-flex min-h-10 items-center rounded-lg border border-ink-200 px-3.5 text-sm font-medium text-ink-600 hover:bg-ink-50"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : (
+            <>
             <div className="mt-4 text-xs font-semibold text-ink-700">
               Exhibition
               <ExhibitionPicker
@@ -201,7 +268,7 @@ export default function PilotInvitesList({
             <div className="mt-5 flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setCheckinFor(null)}
+                onClick={closeCheckin}
                 disabled={sending}
                 className="rounded-lg border border-ink-200 px-3.5 py-2 text-sm font-medium text-ink-600 hover:bg-ink-50 disabled:opacity-50"
               >
@@ -217,6 +284,8 @@ export default function PilotInvitesList({
                 Send email
               </button>
             </div>
+            </>
+            )}
           </div>
         </div>
       )}

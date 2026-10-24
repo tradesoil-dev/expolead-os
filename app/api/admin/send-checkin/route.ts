@@ -155,5 +155,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "The email could not be sent. Please try again." }, { status: 502 });
   }
 
-  return NextResponse.json({ ok: true });
+  // The link is returned once so the admin can also share it (e.g. on WhatsApp);
+  // only its hash is stored, so it cannot be shown again later.
+  return NextResponse.json({ ok: true, surveyUrl: `${siteUrl}/checkin/${token}` });
 }
