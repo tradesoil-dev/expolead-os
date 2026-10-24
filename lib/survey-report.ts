@@ -102,7 +102,7 @@ export function buildReport(a: Answers, exhibition: string): SurveyReportData {
 
   const capture = (a.capture as string[] | undefined) ?? [];
   const habits: Habit[] = [
-    { name: "Capture", long: "how you capture", score: !capture.length ? 2 : capture.every((v) => v === "memory") ? 1 : capture.some((v) => ["excel", "badge", "phone"].includes(v)) ? 3 : 2 },
+    { name: "Capture", long: "how you capture", score: !capture.length ? 2 : capture.every((v) => v === "memory") ? 1 : capture.some((v) => ["excel", "phone"].includes(v)) ? 3 : 2 },
     { name: "Notes", long: "taking notes", score: ({ all: 3, key: 2, little: 1, none: 1 } as Record<string, 1 | 2 | 3>)[str(a, "notes")] ?? 2 },
     { name: "Speed", long: "follow-up speed", score: ({ "2d": 3, "1w": 2, "4w": 1, later: 1 } as Record<string, 1 | 2 | 3>)[str(a, "speed")] ?? 2 },
     { name: "Team", long: "sharing with your team", score: ({ "1": 3, "2_3": 2, "4p": 1 } as Record<string, 1 | 2 | 3>)[str(a, "holders")] ?? 2 },

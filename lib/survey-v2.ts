@@ -116,7 +116,6 @@ export const SECTIONS: Section[] = [
           { id: "notebook", label: "Notebook or paper" },
           { id: "phone", label: "Phone notes or photos" },
           { id: "excel", label: "Excel or a spreadsheet" },
-          { id: "badge", label: "The organiser's badge scanner" },
           { id: "memory", label: "From memory" },
         ],
       },
