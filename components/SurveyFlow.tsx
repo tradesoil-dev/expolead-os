@@ -8,6 +8,7 @@ import {
 } from "@/lib/survey-v2";
 import { buildReport } from "@/lib/survey-report";
 import SurveyReport from "@/components/SurveyReport";
+import { buildSurveyReportEmail } from "@/lib/survey-report-email-html";
 
 // The post-show survey (version 2) for both the public link and the pilot
 // check-in. One topic per page, every question required, numbered in the
@@ -24,6 +25,7 @@ export default function SurveyFlow({
   source = "",
   firstName = "",
   preparedFor = "",
+  preview = false,
 }: {
   mode: SurveyMode;
   exhibition: string;
@@ -33,6 +35,8 @@ export default function SurveyFlow({
   source?: string;
   firstName?: string;
   preparedFor?: string;
+  // Admin preview: nothing is saved or emailed; the exact email shows under the report.
+  preview?: boolean;
 }) {
   const [a, setA] = useState<Answers>({});
   const [c, setC] = useState<Contact>({ email: "", name: "", company: "", whatsapp: "", linkedin: "", nextShow: "", results: false, consent: false });
@@ -89,6 +93,11 @@ export default function SurveyFlow({
 
   async function submit() {
     if (!canNext || sending) return;
+    if (preview) {
+      setDone(true);
+      window.scrollTo(0, 0);
+      return;
+    }
     setSending(true);
     setError("");
     try {
@@ -116,6 +125,9 @@ export default function SurveyFlow({
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {preview && (
+        <div className="bg-amber-100 px-4 py-2 text-center text-xs font-semibold text-amber-900">Admin preview. Answers are not saved and no email is sent.</div>
+      )}
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-4 py-3.5">
         <div className={`mx-auto flex items-center justify-between gap-3 ${done ? "max-w-[880px]" : "max-w-2xl"}`}>
           <span className="text-[17px] font-extrabold tracking-wide text-slate-900">EXPOLEAD <span className="text-emerald-600">OS</span></span>
@@ -128,7 +140,10 @@ export default function SurveyFlow({
 
       <main className={`mx-auto px-4 pb-14 pt-6 ${done ? "max-w-[880px]" : "max-w-2xl"}`}>
         {done ? (
-          <SurveyReport data={buildReport(a, exhibition)} exhibition={campaignLabel} preparedFor={who} />
+          <>
+            <SurveyReport data={buildReport(a, exhibition)} exhibition={campaignLabel} preparedFor={who} />
+            {preview && <EmailPreview mode={mode} a={a} c={c} exhibition={exhibition} campaignLabel={campaignLabel} firstName={firstName} />}
+          </>
         ) : step === 0 ? (
           <div>
             <span className="inline-block rounded-full border border-yellow-400 bg-yellow-300 px-3 py-1 text-xs font-bold text-yellow-950">{campaignLabel}</span>
@@ -330,5 +345,27 @@ function QuestionCard({ q, n, a, set, exhibition }: { q: Question; n: number; a:
         />
       )}
     </section>
+  );
+}
+
+// Admin preview only: the exact report email this person would receive.
+function EmailPreview({ mode, a, c, exhibition, campaignLabel, firstName }: { mode: SurveyMode; a: Answers; c: Contact; exhibition: string; campaignLabel: string; firstName: string }) {
+  if (mode === "pilot") {
+    return (
+      <div className="mt-6 rounded-2xl border border-dashed border-amber-300 bg-amber-50 p-5 text-sm leading-relaxed text-amber-900">
+        <p className="font-semibold">Email copy for pilots</p>
+        Pilots do not get a report email yet. That is item 2 of the planned email changes. Today they see this report on screen only.
+      </div>
+    );
+  }
+  const email = buildSurveyReportEmail({ firstName: c.name.trim().split(" ")[0] || firstName, company: c.company, exhibition, campaignLabel, answers: a });
+  return (
+    <div className="mt-6">
+      <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">The email they receive</p>
+      <p className="mb-3 mt-1 text-sm text-slate-600">
+        To <strong>{c.email || "their business email"}</strong> · From Gladwin &amp; Gayan at ExpoLead OS &lt;hello@expoleados.com&gt; · Subject: <strong>{email.subject}</strong>
+      </p>
+      <iframe title="Report email preview" srcDoc={email.html} className="h-[1100px] w-full rounded-2xl border border-slate-200 bg-white" />
+    </div>
   );
 }

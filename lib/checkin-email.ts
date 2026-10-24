@@ -23,8 +23,7 @@ function step(n: number, title: string, body: string) {
                   </tr>`;
 }
 
-export async function sendCheckinEmail(opts: {
-  email: string;
+export type CheckinEmailOpts = {
   firstName: string;
   exhibition: string;
   surveyUrl: string;
@@ -32,18 +31,17 @@ export async function sendCheckinEmail(opts: {
   accessUntilLabel: string;
   // True when the account has captured nothing yet; changes one paragraph.
   notUsedYet: boolean;
-}) {
+};
+
+// Builds the email (subject + HTML) without sending, so Admin can preview the exact email.
+export function buildCheckinEmail(opts: CheckinEmailOpts) {
   const name = esc((opts.firstName || "there").trim() || "there");
   const show = esc(opts.exhibition);
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
   const usageLine = opts.notUsedYet
     ? "We noticed you have not had the chance to use ExpoLead OS yet, and that is completely fine. Show days are busy. Every exhibitor handles leads differently, and we would love to learn how you do it today."
     : "Every exhibitor handles leads differently, and we would love to learn how the show went for you and how you handle your leads today.";
 
-  return resend.emails.send({
-    from: "Gladwin & Gayan at ExpoLead OS <hello@expoleados.com>",
-    to: opts.email,
+  return {
     subject: `How did ${opts.exhibition} go? 3 minutes of your feedback`,
     html: `
 <!DOCTYPE html>
@@ -154,5 +152,11 @@ export async function sendCheckinEmail(opts: {
 </body>
 </html>
     `,
-  });
+  };
+}
+
+export async function sendCheckinEmail(opts: CheckinEmailOpts & { email: string }) {
+  const { subject, html } = buildCheckinEmail(opts);
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  return resend.emails.send({ from: "Gladwin & Gayan at ExpoLead OS <hello@expoleados.com>", to: opts.email, subject, html });
 }
