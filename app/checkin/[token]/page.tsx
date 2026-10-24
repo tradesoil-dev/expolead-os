@@ -1,13 +1,43 @@
+import type { Metadata } from "next";
 import { createHash } from "crypto";
 import { createServiceClient } from "@/lib/supabase/service";
 import SurveyFlow from "@/components/SurveyFlow";
+import { CAMPAIGNS } from "@/lib/survey-v2";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Your post-show check | ExpoLead OS",
-  robots: { index: false, follow: false },
-};
+// Link preview (WhatsApp, LinkedIn, email apps) for a pilot's personal link:
+// the show's survey card when one exists, so it matches the public survey.
+// Reading the row changes nothing; the link still answers only on a real submit.
+export async function generateMetadata({ params }: { params: Promise<{ token: string }> }): Promise<Metadata> {
+  const { token } = await params;
+  let exhibition = "";
+  let campaign = "";
+  if (token && /^[A-Za-z0-9_-]{20,100}$/.test(token)) {
+    try {
+      const { data: row } = await createServiceClient()
+        .from("feedback_checkins")
+        .select("exhibition_name, campaign")
+        .eq("token_hash", createHash("sha256").update(token).digest("hex"))
+        .maybeSingle();
+      exhibition = row?.exhibition_name ?? "";
+      campaign = row?.campaign ?? "";
+    } catch {
+      /* generic preview */
+    }
+  }
+  const show = Object.values(CAMPAIGNS).find((c) => c.label === campaign || c.exhibition === exhibition);
+  const title = exhibition ? `How did ${exhibition} go? Your post-show check` : "Your post-show check";
+  const description = "A 3 minute post-show check, then your personal post-show report.";
+  const images = show ? [{ url: `https://expoleados.com/og/${show.slug}-survey.png`, width: 1200, height: 627 }] : undefined;
+  return {
+    title: `${title} | ExpoLead OS`,
+    description,
+    robots: { index: false, follow: false },
+    openGraph: { title, description, siteName: "ExpoLead OS", type: "website", ...(images ? { images } : {}) },
+    twitter: { card: "summary_large_image", title, description, ...(images ? { images: images.map((i) => i.url) } : {}) },
+  };
+}
 
 // Pilot check-in survey reached from the check-in email. No sign-in: the token
 // in the URL is matched by its SHA-256 hash. Opening the page changes nothing
