@@ -3,6 +3,7 @@ import { createHash } from "crypto";
 import { createServiceClient } from "@/lib/supabase/service";
 import { CAMPAIGNS, SURVEY_V2, cleanAnswersV2, emailProblem } from "@/lib/survey-v2";
 import { sendSurveyReportEmail } from "@/lib/survey-report-email";
+import { reportEmailAllowed } from "@/lib/report-email-cap";
 
 export const runtime = "nodejs";
 
@@ -86,6 +87,7 @@ export async function POST(req: Request) {
 
   after(async () => {
     try {
+      if (!(await reportEmailAllowed(admin))) return;
       await sendSurveyReportEmail({ email, firstName: name.split(" ")[0], company, exhibition: campaign.exhibition, campaignLabel: campaign.label, answers });
     } catch {
       /* best effort */

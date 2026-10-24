@@ -36,7 +36,7 @@ export async function updateSession(request: NextRequest) {
   // /checkin/<token> and its submit API are the sign-in free pilot survey (the
   // private token in the link is their only credential); /survey/<campaign>
   // and its submit API are the public post-show survey.
-  const isPublicRoute = publicRoutes.includes(path) || path === "/resources" || path.startsWith("/resources/") || path === "/hero-preview" || path.startsWith("/checkin/") || path === "/api/checkin/submit" || path.startsWith("/survey/") || path === "/api/survey/submit";
+  const isPublicRoute = publicRoutes.includes(path) || path === "/resources" || path.startsWith("/resources/") || path === "/hero-preview" || path.startsWith("/checkin/") || path === "/api/checkin/submit" || path.startsWith("/survey/") || path === "/api/survey/submit" || path === "/api/report-chart";
   const isAuthRoute = path === "/login";
 
   if (!user && !isPublicRoute) {

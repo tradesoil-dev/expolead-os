@@ -3,13 +3,17 @@ import type { Answers } from "@/lib/survey-v2";
 
 // Builds the post-show report email (subject + HTML) without sending. Pure,
 // so Admin can preview the exact email in the browser; the sender lives in
-// lib/survey-report-email.ts. Same branded layout as the other
-// ExpoLead emails. Numbers and the 7-day plan only: charts do not render
-// reliably in email clients. All interpolated values are HTML-escaped.
+// lib/survey-report-email.ts. Same branded layout as the other ExpoLead
+// emails and the same sections as the on-screen report. Charts are PNG images
+// from /api/report-chart (email clients do not render the page SVG); their
+// links carry only scores, and each has a text line in case images are
+// blocked. All interpolated values are HTML-escaped.
 
 function esc(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
+
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://expoleados.com";
 
 const LEVEL_BG = { red: "#fff1f2", amber: "#fffbeb", green: "#ecfdf5" } as const;
 const LEVEL_FG = { red: "#be123c", amber: "#b45309", green: "#047857" } as const;
@@ -43,11 +47,45 @@ export function buildSurveyReportEmail(opts: SurveyReportEmailOpts) {
       r.atRisk ? stat("Contacts at risk", r.atRisk.value, r.atRisk.sub) : "",
     ].filter(Boolean);
     middle += stats.length ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;"><tr>${stats.join("")}</tr></table>` : "";
-    if (r.spend) {
-      middle += `<p style="margin:8px 0 18px;font-size:15px;line-height:1.7;color:#475569;"><strong style="color:#0f172a;">Show spend at risk: ${esc(r.spend.value)}.</strong> ${esc(r.spend.sub)}</p>`;
+    const a = opts.answers;
+    const chart = (title: string, sub: string, q: string, w: number, h: number, alt: string, after = "") => `
+            <div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:0 0 14px;">
+              <div style="font-size:15px;font-weight:600;color:#0f172a;">${esc(title)}</div>
+              <div style="font-size:12px;color:#94a3b8;margin:2px 0 10px;line-height:1.5;">${esc(sub)}</div>
+              <img src="${SITE}/api/report-chart?${q}" width="${w}" height="${h}" alt="${esc(alt)}" style="display:block;width:100%;max-width:${w}px;height:auto;border:0;margin:0 auto;" />
+              ${after}
+            </div>`;
+    const scores = r.habits.map((h) => h.score).join("");
+    middle += chart(
+      "Your post-show habits", "Scored from your answers. The fuller the shape, the stronger the habit.",
+      `k=radar&s=${scores}`, 340, 240,
+      `Habit scores: ${r.habits.map((h) => `${h.name} ${h.score} of 3`).join(", ")}`,
+      `<div style="font-size:14px;color:#475569;margin-top:8px;">${r.weak.length ? `Biggest gaps: <strong style="color:#0f172a;">${esc(r.weak.join(", "))}</strong>.` : "No weak spots in your answers. Strong habits."}</div>`,
+    );
+    if (r.funnel) {
+      middle += chart(
+        "Where your contacts stand", "From your own estimate of missed follow-ups.",
+        `k=bars&c=${encodeURIComponent(String(a.count ?? ""))}&l=${encodeURIComponent(String(a.lost ?? ""))}`, 520, 180,
+        `Contacts made: ${r.funnel.made}. May never hear from you: ${r.funnel.lostLabel}.`,
+      );
     }
-    if (r.weak.length) {
-      middle += `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#475569;">Biggest gaps in your post-show habits: <strong style="color:#0f172a;">${esc(r.weak.join(", "))}</strong>.</p>`;
+    middle += chart(
+      "How fast conversations cool", "Illustration: the longer a buyer waits, the less they remember you.",
+      `k=curve&sp=${encodeURIComponent(r.speed?.key ?? "")}`, 300, 200,
+      r.speed ? `Your first follow-up: ${r.speed.label}` : "Cooling curve illustration",
+    );
+    if (r.spend) {
+      middle += `
+            <div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:0 0 18px;">
+              <table cellpadding="0" cellspacing="0" width="100%"><tr>
+                <td width="110" valign="middle"><img src="${SITE}/api/report-chart?k=donut&p=${Math.round(r.spend.share * 100)}&plus=${a.lost === "m" ? 1 : 0}" width="96" height="96" alt="${esc(r.spend.pct)} of show spend at risk" style="display:block;width:96px;height:96px;border:0;" /></td>
+                <td valign="middle" style="padding-left:12px;">
+                  <div style="font-size:15px;font-weight:600;color:#0f172a;">Show spend at risk</div>
+                  <div style="font-size:20px;font-weight:800;color:#0f172a;margin:4px 0;">${esc(r.spend.value)}</div>
+                  <div style="font-size:12px;color:#94a3b8;line-height:1.5;">${esc(r.spend.sub)}</div>
+                </td>
+              </tr></table>
+            </div>`;
     }
     middle += `<p style="margin:0 0 10px;font-size:16px;font-weight:600;color:#0f172a;">Your next 7 days</p>
             <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 12px;">${r.plan

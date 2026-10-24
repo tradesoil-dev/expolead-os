@@ -350,20 +350,12 @@ function QuestionCard({ q, n, a, set, exhibition }: { q: Question; n: number; a:
 
 // Admin preview only: the exact report email this person would receive.
 function EmailPreview({ mode, a, c, exhibition, campaignLabel, firstName }: { mode: SurveyMode; a: Answers; c: Contact; exhibition: string; campaignLabel: string; firstName: string }) {
-  if (mode === "pilot") {
-    return (
-      <div className="mt-6 rounded-2xl border border-dashed border-amber-300 bg-amber-50 p-5 text-sm leading-relaxed text-amber-900">
-        <p className="font-semibold">Email copy for pilots</p>
-        Pilots do not get a report email yet. That is item 2 of the planned email changes. Today they see this report on screen only.
-      </div>
-    );
-  }
   const email = buildSurveyReportEmail({ firstName: c.name.trim().split(" ")[0] || firstName, company: c.company, exhibition, campaignLabel, answers: a });
   return (
     <div className="mt-6">
       <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">The email they receive</p>
       <p className="mb-3 mt-1 text-sm text-slate-600">
-        To <strong>{c.email || "their business email"}</strong> · From Gladwin &amp; Gayan at ExpoLead OS &lt;hello@expoleados.com&gt; · Subject: <strong>{email.subject}</strong>
+        To <strong>{mode === "pilot" ? "their account email" : c.email || "their business email"}</strong> · From Gladwin &amp; Gayan at ExpoLead OS &lt;hello@expoleados.com&gt; · Subject: <strong>{email.subject}</strong>
       </p>
       <iframe title="Report email preview" srcDoc={email.html} className="h-[1100px] w-full rounded-2xl border border-slate-200 bg-white" />
     </div>

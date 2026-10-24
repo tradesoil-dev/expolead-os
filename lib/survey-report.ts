@@ -36,14 +36,23 @@ const COST: Record<string, [number | null, number | null]> = {
 // Share of contacts the person says never get a proper follow-up.
 const LOST: Record<string, [number, number | null]> = { q: [0.25, 0.25], h: [0.5, 0.5], m: [0.5, null] };
 
-const nice = (n: number) => (n < 100 ? Math.round(n / 5) * 5 : n < 1000 ? Math.round(n / 10) * 10 : Math.round(n / 50) * 50);
-const money = (n: number) => "$" + nice(n).toLocaleString("en-US");
-const whole = (n: number) => String(Math.round(n));
+// Honest rounding: a lower bound never rounds down and an upper bound never
+// rounds up, so a range never claims more than the answers support
+// (e.g. $25,000 / 200 = $125 shows "up to $125", never "$130").
+type Fmt = { step: (n: number) => number; show: (n: number) => string };
+const MONEY: Fmt = { step: (n) => (n < 1000 ? 5 : 50), show: (n) => "$" + n.toLocaleString("en-US") };
+const WHOLE: Fmt = { step: () => 1, show: (n) => String(n) };
+const up = (n: number, f: Fmt) => Math.ceil(n / f.step(n)) * f.step(n);
+const down = (n: number, f: Fmt) => Math.floor(n / f.step(n)) * f.step(n);
+const near = (n: number, f: Fmt) => Math.round(n / f.step(n)) * f.step(n);
 
-function rangeText(lo: number | null, hi: number | null, fmt: (n: number) => string) {
-  if (lo != null && hi != null) return fmt(lo) === fmt(hi) ? `about ${fmt(lo)}` : `${fmt(lo)} to ${fmt(hi)}`;
-  if (lo != null) return `at least ${fmt(lo)}`;
-  if (hi != null) return `up to ${fmt(hi)}`;
+function rangeText(lo: number | null, hi: number | null, f: Fmt) {
+  if (lo != null && hi != null) {
+    const l = up(lo, f), h = down(hi, f);
+    return l >= h ? `about ${f.show(near((lo + hi) / 2, f))}` : `${f.show(l)} to ${f.show(h)}`;
+  }
+  if (lo != null) return `at least ${f.show(up(lo, f))}`;
+  if (hi != null) return `up to ${f.show(down(hi, f))}`;
   return "";
 }
 
@@ -89,13 +98,13 @@ export function buildReport(a: Answers, exhibition: string): SurveyReportData {
 
   let perContact: ExhibitorReport["perContact"] = null;
   if (c && cost) {
-    const v = rangeText(cost[0] != null && c[1] != null ? cost[0] / c[1] : null, cost[1] != null && c[0] != null ? cost[1] / c[0] : null, money);
+    const v = rangeText(cost[0] != null && c[1] != null ? cost[0] / c[1] : null, cost[1] != null && c[0] != null ? cost[1] / c[0] : null, MONEY);
     if (v) perContact = { value: v, sub: `${optionLabel("cost", a.cost)} divided by ${countLabel} contacts` };
   }
 
   let atRisk: ExhibitorReport["atRisk"] = null;
   if (c && lost) {
-    const v = rangeText(c[0] != null ? Math.max(1, c[0] * lost[0]) : null, c[1] != null && lost[1] != null ? c[1] * lost[1] : null, whole);
+    const v = rangeText(c[0] != null ? Math.max(1, c[0] * lost[0]) : null, c[1] != null && lost[1] != null ? c[1] * lost[1] : null, WHOLE);
     if (v) atRisk = { value: v, sub: `${optionLabel("lost", a.lost)} of ${countLabel} contacts, your own estimate` };
   } else if (a.lost === "few") atRisk = { value: "Very few", sub: "You follow up almost everyone. Well done" };
   else if (a.lost === "dk") atRisk = { value: "Unknown", sub: "Not knowing is itself the risk" };
@@ -121,7 +130,7 @@ export function buildReport(a: Answers, exhibition: string): SurveyReportData {
 
   let spend: ExhibitorReport["spend"] = null;
   if (cost && lost) {
-    const v = rangeText(cost[0] != null ? cost[0] * lost[0] : null, cost[1] != null && lost[1] != null ? cost[1] * lost[1] : null, money);
+    const v = rangeText(cost[0] != null ? cost[0] * lost[0] : null, cost[1] != null && lost[1] != null ? cost[1] * lost[1] : null, MONEY);
     if (v) spend = { value: v, share: lost[0], pct: a.lost === "m" ? "50%+" : `${Math.round(lost[0] * 100)}%`, sub: `Of your ${optionLabel("cost", a.cost).toLowerCase()} ${short} budget, tied to contacts that may never get a proper follow-up.` };
   }
 
