@@ -49,11 +49,11 @@ export const SECTIONS: Section[] = [
     modes: ["public"],
     questions: [
       {
-        id: "role_show", kind: "single", title: "At {exhibition} you were", label: "At the show they were", hint: pick,
+        id: "role_show", kind: "single", title: "At {exhibition} you were", label: "At the show they were",
+        hint: "Pick one. If you had a stand and also walked the show, choose Exhibiting",
         options: [
           { id: "exhibit", label: "Exhibiting" },
           { id: "visit", label: "Visiting (buying or sourcing)" },
-          { id: "both", label: "Both" },
         ],
       },
     ],
@@ -248,6 +248,15 @@ export const SECTIONS: Section[] = [
       },
       {
         id: "v_followed", kind: "single", title: "So far, how many of the exhibitors you met have followed up with you?", label: "Exhibitors who followed up", hint: pick,
+        options: [
+          { id: "most", label: "Most of them" },
+          { id: "half", label: "About half" },
+          { id: "few", label: "Only a few" },
+          { id: "none", label: "None yet" },
+        ],
+      },
+      {
+        id: "v_did", kind: "single", title: "So far, how many of the exhibitors you met have you followed up with?", label: "Exhibitors the visitor followed up", hint: pick,
         options: [
           { id: "most", label: "Most of them" },
           { id: "half", label: "About half" },

@@ -62,15 +62,34 @@ const str = (a: Answers, k: string) => (typeof a[k] === "string" ? (a[k] as stri
 export function buildReport(a: Answers, exhibition: string): SurveyReportData {
   const short = exhibition.split(" ")[0] || exhibition;
   if (a.role_show === "visit") {
-    const quiet = a.v_followed === "few" || a.v_followed === "none";
+    // Both sides of the follow-up: exhibitors to the visitor, and the visitor to exhibitors.
+    const theyQuiet = a.v_followed === "few" || a.v_followed === "none";
+    const youQuiet = a.v_did === "few" || a.v_did === "none";
+    if (theyQuiet && youQuiet) {
+      return {
+        kind: "visitor", level: "red", badge: "Going cold",
+        head: "Conversations are going cold on both sides",
+        body: `Few exhibitors have followed up with you, and you have followed up with few of them yourself. The good conversations you had at ${exhibition} are quietly going cold on both sides.`,
+      };
+    }
+    if (theyQuiet) {
+      return {
+        kind: "visitor", level: "amber", badge: "Gone quiet",
+        head: "You are doing your part, most exhibitors are not",
+        body: `You have been following up, but most of the exhibitors you met at ${exhibition} have gone quiet. That is exactly the gap we are researching: good conversations at the booth that never turn into business.`,
+      };
+    }
+    if (youQuiet) {
+      return {
+        kind: "visitor", level: "amber", badge: "Your move",
+        head: "Exhibitors are following up. Are you?",
+        body: `Exhibitors from ${exhibition} are reaching out, but you have followed up with few of them so far. A short reply now keeps the best suppliers warm.`,
+      };
+    }
     return {
-      kind: "visitor",
-      level: quiet ? "amber" : "green",
-      badge: quiet ? "Gone quiet" : "Following up",
-      head: quiet ? "Most suppliers have not followed up yet" : "Suppliers are following up well",
-      body: quiet
-        ? `You met real suppliers at ${exhibition}, and many have gone quiet. That is exactly the gap we are researching: good conversations at the booth that never turn into business.`
-        : "Good to hear. Fast follow-ups make choosing a supplier much easier.",
+      kind: "visitor", level: "green", badge: "Following up",
+      head: "Both sides are following up well",
+      body: "Good to hear. Fast follow-ups on both sides make choosing a supplier much easier.",
     };
   }
 
