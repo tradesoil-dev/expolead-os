@@ -24,12 +24,16 @@ const SKY = "#38bdf8";
 
 const cache = { "Cache-Control": "public, max-age=31536000, immutable" };
 
-function radar(sp: URLSearchParams) {
-  const raw = (sp.get("s") || "22222").replace(/[^1-3]/g, "").padEnd(5, "2").slice(0, 5);
+function radar(sp: URLSearchParams, visitor = false) {
+  // Exhibitor: 5 habits. Visitor: 4-point sourcing snapshot (long labels top and bottom).
+  const names = visitor ? ["You follow up", "Reach", "They follow up", "Tracking"] : ["Capture", "Notes", "Speed", "Team", "Results"];
+  const n = names.length;
+  const raw = (sp.get("s") || "").replace(/[^1-3]/g, "").padEnd(n, "2").slice(0, n);
   const scores = raw.split("").map(Number);
-  const names = ["Capture", "Notes", "Speed", "Team", "Results"];
-  const S = 2, ox = 20; // viewBox -20 0 340 240, drawn at 2x
-  const cx = 150, cy = 128, R = 92, n = 5;
+  const S = 2, ox = 20; // viewBox -20 0 340 H, drawn at 2x
+  const VH = n === 4 ? 260 : 240;
+  const W = 680, H = VH * S;
+  const cx = 150, cy = 128, R = 92;
   const pt = (i: number, r: number): [number, number] => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
     return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
@@ -39,8 +43,8 @@ function radar(sp: URLSearchParams) {
   const dot = ["", ROSE, "#d97706", EMERALD];
   return new ImageResponse(
     (
-      <div style={{ display: "flex", position: "relative", width: 680, height: 480, background: "#ffffff" }}>
-        <svg width={680} height={480} viewBox="-20 0 340 240">
+      <div style={{ display: "flex", position: "relative", width: W, height: H, background: "#ffffff" }}>
+        <svg width={W} height={H} viewBox={`-20 0 340 ${VH}`}>
           {[1, 2, 3].map((lv) => <polygon key={lv} points={ring(lv)} fill="none" stroke={lv === 3 ? "#cbd5e1" : "#e2e8f0"} strokeWidth={1} />)}
           {scores.map((_, i) => { const [x, y] = pt(i, R); return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="#e2e8f0" strokeWidth={1} />; })}
           <polygon points={shape} fill="rgba(5,150,105,0.18)" stroke={EMERALD} strokeWidth={2} strokeLinejoin="round" />
@@ -59,7 +63,7 @@ function radar(sp: URLSearchParams) {
         })}
       </div>
     ),
-    { width: 680, height: 480, headers: cache },
+    { width: W, height: H, headers: cache },
   );
 }
 
@@ -184,6 +188,7 @@ export function GET(req: Request) {
   const sp = new URL(req.url).searchParams;
   const k = sp.get("k");
   if (k === "radar") return radar(sp);
+  if (k === "vradar") return radar(sp, true);
   if (k === "bars") return bars(sp);
   if (k === "vbars") return vbars(sp);
   if (k === "curve") return curve(sp);

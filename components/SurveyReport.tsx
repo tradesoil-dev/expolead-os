@@ -86,7 +86,7 @@ function ExhibitorBody({ r }: { r: ExhibitorReport }) {
         </div>
       )}
       <div className="grid gap-3 md:grid-cols-2">
-        <Radar r={r} />
+        <Radar title="Your post-show habits" caption="Scored from your answers. The fuller the shape, the stronger the habit." axes={r.habits} weak={r.weak} />
         {r.funnel && <Funnel f={r.funnel} />}
         <Cooling speed={r.speed} />
         {r.spend && <Spend s={r.spend} />}
@@ -104,8 +104,9 @@ function VisitorBody({ r }: { r: VisitorReport }) {
         <Num k="How you track suppliers" v={r.tracked} s="Your answer" />
       </div>
       <div className="grid gap-3 md:grid-cols-2">
+        <Radar title="Your sourcing snapshot" caption="Scored from your answers. The fuller the shape, the stronger your follow-through." axes={r.habits} weak={r.weak} />
         <BothSides r={r} />
-        <Cooling speed={null} caption="Illustration: the longer a conversation waits, the less either side remembers." />
+        <div className="md:col-span-2"><Cooling speed={null} /></div>
       </div>
       <Plan plan={r.plan} nextTip={r.nextTip} />
     </>
@@ -164,9 +165,10 @@ function Num({ k, v, s }: { k: string; v: string; s: string }) {
   );
 }
 
-function Radar({ r }: { r: ExhibitorReport }) {
-  const s = r.habits;
+function Radar({ title, caption, axes, weak }: { title: string; caption: string; axes: { name: string; score: 1 | 2 | 3 }[]; weak: string[] }) {
+  const s = axes;
   const cx = 150, cy = 128, R = 92, n = s.length;
+  const vbH = n === 4 ? 260 : 240; // a 4-point chart has a label straight below
   const pt = (i: number, rad: number): [number, number] => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
     return [cx + rad * Math.cos(a), cy + rad * Math.sin(a)];
@@ -176,9 +178,9 @@ function Radar({ r }: { r: ExhibitorReport }) {
   const dot = { 1: "#e11d48", 2: "#d97706", 3: "#059669" } as const;
   return (
     <div className={card}>
-      <p className="font-semibold text-slate-900">Your post-show habits</p>
-      <p className={capText}>Scored from your answers. The fuller the shape, the stronger the habit.</p>
-      <svg viewBox="-20 0 340 240" className="mx-auto block h-auto w-full max-w-[420px]" role="img" aria-label="Habit radar">
+      <p className="font-semibold text-slate-900">{title}</p>
+      <p className={capText}>{caption}</p>
+      <svg viewBox={`-20 0 340 ${vbH}`} className="mx-auto block h-auto w-full max-w-[420px]" role="img" aria-label={title}>
         {[1, 2, 3].map((lv) => <polygon key={lv} points={ring(lv)} fill="none" stroke={lv === 3 ? "#cbd5e1" : "#e2e8f0"} />)}
         {s.map((_, i) => { const [x, y] = pt(i, R); return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="#e2e8f0" />; })}
         <polygon points={shape} fill="rgba(5,150,105,.18)" stroke="#059669" strokeWidth={2} strokeLinejoin="round" />
@@ -190,7 +192,7 @@ function Radar({ r }: { r: ExhibitorReport }) {
         })}
       </svg>
       <p className="mt-1.5 text-sm text-slate-600">
-        {r.weak.length ? <>Biggest gaps: <strong>{r.weak.join(", ")}</strong>.</> : "No weak spots in your answers. Strong habits."}
+        {weak.length ? <>Biggest gaps: <strong>{weak.join(", ")}</strong>.</> : "No weak spots in your answers. Strong habits."}
       </p>
     </div>
   );
@@ -225,15 +227,15 @@ function Funnel({ f }: { f: NonNullable<ExhibitorReport["funnel"]> }) {
   );
 }
 
-function Cooling({ speed, caption = "Illustration: the longer a buyer waits, the less they remember you." }: { speed: ExhibitorReport["speed"]; caption?: string }) {
+function Cooling({ speed }: { speed: ExhibitorReport["speed"] }) {
   const X: Record<string, number> = { "0": 40, "2": 92, "7": 150, "14": 208, "30": 270 };
   const markX = speed ? ({ "2d": 92, "1w": 150, "4w": 238, later: 270 } as Record<string, number>)[speed.key] : null;
   const curve = "M40,34 C70,40 88,52 112,72 S170,118 208,136 S250,152 270,156";
   const small = { font: "500 10px Inter, sans-serif" };
   return (
     <div className={card}>
-      <p className="font-semibold text-slate-900">How fast conversations cool</p>
-      <p className={capText}>{caption}</p>
+      <p className="font-semibold text-slate-900">How quickly conversations go cold</p>
+      <p className={capText}>Illustration: the longer you wait to follow up, the more interest fades.</p>
       <svg viewBox="0 0 300 200" className="mx-auto block h-auto w-full max-w-[420px]" role="img" aria-label="Cooling curve">
         <defs>
           <linearGradient id="srWarm" x1="0" x2="1">

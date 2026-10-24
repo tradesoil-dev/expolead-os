@@ -70,7 +70,7 @@ export function buildSurveyReportEmail(opts: SurveyReportEmailOpts) {
       );
     }
     middle += chart(
-      "How fast conversations cool", "Illustration: the longer a buyer waits, the less they remember you.",
+      "How quickly conversations go cold", "Illustration: the longer you wait to follow up, the more interest fades.",
       `k=curve&sp=${encodeURIComponent(r.speed?.key ?? "")}`, 300, 200,
       r.speed ? `Your first follow-up: ${r.speed.label}` : "Cooling curve illustration",
     );
@@ -103,12 +103,19 @@ export function buildSurveyReportEmail(opts: SurveyReportEmailOpts) {
               <div style="font-size:12px;color:#94a3b8;margin:2px 0 10px;line-height:1.5;">${esc(sub)}</div>
               <img src="${SITE}/api/report-chart?${q}" width="${w}" height="${h}" alt="${esc(alt)}" style="display:block;width:100%;max-width:${w}px;height:auto;border:0;margin:0 auto;" />
             </div>`;
+    middle += `
+            <div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:0 0 14px;">
+              <div style="font-size:15px;font-weight:600;color:#0f172a;">Your sourcing snapshot</div>
+              <div style="font-size:12px;color:#94a3b8;margin:2px 0 10px;line-height:1.5;">Scored from your answers. The fuller the shape, the stronger your follow-through.</div>
+              <img src="${SITE}/api/report-chart?k=vradar&s=${r.habits.map((h) => h.score).join("")}" width="340" height="260" alt="${esc(r.habits.map((h) => `${h.name} ${h.score} of 3`).join(", "))}" style="display:block;width:100%;max-width:340px;height:auto;border:0;margin:0 auto;" />
+              <div style="font-size:14px;color:#475569;margin-top:8px;">${r.weak.length ? `Biggest gaps: <strong style="color:#0f172a;">${esc(r.weak.join(", "))}</strong>.` : "No weak spots in your answers. Strong habits."}</div>
+            </div>`;
     middle += box(
       "Follow-ups on both sides", "From your answers. Both sides need to follow up for a deal to happen.",
       `k=vbars&t=${encodeURIComponent(r.theirs.key)}&y=${encodeURIComponent(r.yours.key)}`, 520, 130,
       `Exhibitors who followed up with you: ${r.theirs.label}. Exhibitors you followed up with: ${r.yours.label}.`,
     );
-    middle += box("How fast conversations cool", "Illustration: the longer a conversation waits, the less either side remembers.", "k=curve", 300, 200, "Cooling curve illustration");
+    middle += box("How quickly conversations go cold", "Illustration: the longer you wait to follow up, the more interest fades.", "k=curve", 300, 200, "Illustration of interest fading after the show");
     middle += `<p style="margin:0 0 10px;font-size:16px;font-weight:600;color:#0f172a;">Your next 7 days</p>
             <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 12px;">${r.plan
               .map(([d, t]) => `<tr><td width="64" valign="top" style="padding:0 0 10px;font-size:13px;font-weight:700;color:#047857;">${esc(d)}</td><td style="padding:0 0 10px;font-size:14px;line-height:1.6;color:#475569;">${esc(t)}</td></tr>`)

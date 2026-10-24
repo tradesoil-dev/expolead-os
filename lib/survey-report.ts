@@ -36,6 +36,9 @@ export type VisitorReport = {
   // bar length for a word answer ("Most of them" shows as a long bar).
   theirs: { key: string; label: string; pct: number };
   yours: { key: string; label: string; pct: number };
+  // Four-point "sourcing snapshot" scored 1 to 3 from their answers.
+  habits: Habit[];
+  weak: string[];
   plan: [string, string][];
   nextTip: string;
 };
@@ -196,6 +199,14 @@ function visitorReport(a: Answers, exhibition: string): VisitorReport {
   }
   const track = (a.v_track as string[] | undefined) ?? [];
   const memoryOnly = track.length > 0 && track.every((v) => v === "memory");
+  const follow = { most: 3, half: 2, few: 1, none: 1 } as Record<string, 1 | 2 | 3>;
+  // Order keeps the long labels top and bottom so they fit the chart.
+  const habits: Habit[] = [
+    { name: "You follow up", long: "following up yourself", score: follow[str(a, "v_did")] ?? 2 },
+    { name: "Reach", long: "how many suppliers you met", score: ({ lt5: 1, "5_15": 2, "15_30": 3, gt30: 3 } as Record<string, 1 | 2 | 3>)[str(a, "v_talks")] ?? 2 },
+    { name: "They follow up", long: "suppliers following up", score: follow[str(a, "v_followed")] ?? 2 },
+    { name: "Tracking", long: "keeping track of suppliers", score: !track.length ? 2 : memoryOnly ? 1 : track.some((v) => v === "excel" || v === "phone") ? 3 : 2 },
+  ];
   const plan: [string, string][] = [
     ["Today", `List the ${short} suppliers that matter most to you, and what each one offered.`],
     ["Day 2", youQuiet ? "Send each of them a short follow-up with what you need next: specs, quantities or a price." : "Chase anyone on your list you have not heard back from yet."],
@@ -211,6 +222,9 @@ function visitorReport(a: Answers, exhibition: string): VisitorReport {
     tracked: optionLabel("v_track", a.v_track),
     theirs: { key: str(a, "v_followed"), label: optionLabel("v_followed", a.v_followed), pct: FOLLOW_PCT[str(a, "v_followed")] ?? 0 },
     yours: { key: str(a, "v_did"), label: optionLabel("v_did", a.v_did), pct: FOLLOW_PCT[str(a, "v_did")] ?? 0 },
+    habits,
+    // "They follow up" is the suppliers' side, so it is never listed as the visitor's gap.
+    weak: habits.filter((h) => h.score === 1 && h.name !== "They follow up").map((h) => h.long),
     plan,
     nextTip,
   };
