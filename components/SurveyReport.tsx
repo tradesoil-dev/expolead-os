@@ -1,4 +1,4 @@
-import type { ExhibitorReport, SurveyReportData, Level } from "@/lib/survey-report";
+import type { ExhibitorReport, VisitorReport, SurveyReportData, Level } from "@/lib/survey-report";
 
 // The post-show mini report shown after the survey. Charts are hand-drawn SVG
 // (no chart library on this public page), capped in width so labels stay
@@ -48,7 +48,7 @@ export default function SurveyReport({
         <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{data.body}</p>
       </div>
 
-      {data.kind === "exhibitor" && <ExhibitorBody r={data} />}
+      {data.kind === "exhibitor" ? <ExhibitorBody r={data} /> : <VisitorBody r={data} />}
 
       <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-5 text-sm leading-relaxed text-slate-600">
         <p className="mb-1.5 font-semibold text-slate-800">You vs other {exhibition} respondents</p>
@@ -91,25 +91,66 @@ function ExhibitorBody({ r }: { r: ExhibitorReport }) {
         <Cooling speed={r.speed} />
         {r.spend && <Spend s={r.spend} />}
       </div>
+      <Plan plan={r.plan} nextTip={r.nextTip} />
+    </>
+  );
+}
+
+function VisitorBody({ r }: { r: VisitorReport }) {
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-3">
+        <Num k="Exhibitors you had serious talks with" v={r.talks} s="Your answer" />
+        <Num k="How you track suppliers" v={r.tracked} s="Your answer" />
+      </div>
+      <div className="grid gap-3 md:grid-cols-2">
+        <BothSides r={r} />
+        <Cooling speed={null} caption="Illustration: the longer a conversation waits, the less either side remembers." />
+      </div>
+      <Plan plan={r.plan} nextTip={r.nextTip} />
+    </>
+  );
+}
+
+function BothSides({ r }: { r: VisitorReport }) {
+  const Row = ({ name, pct, color, text }: { name: string; pct: number; color: string; text: string }) => (
+    <div>
+      <div className="mb-1.5 flex justify-between gap-2.5 text-[13px] text-slate-600"><span>{name}</span><b className="text-right font-semibold text-slate-900">{text}</b></div>
+      <div className="h-3 overflow-hidden rounded-full bg-slate-100"><i className="block h-full rounded-full" style={{ width: `${Math.max(3, pct)}%`, background: color }} /></div>
+    </div>
+  );
+  return (
+    <div className={`${card} flex flex-col`}>
+      <p className="font-semibold text-slate-900">Follow-ups on both sides</p>
+      <p className={capText}>From your answers. Both sides need to follow up for a deal to happen.</p>
+      <div className="flex flex-1 flex-col justify-evenly gap-4">
+        <Row name="Exhibitors who followed up with you" pct={r.theirs.pct} color="#38bdf8" text={r.theirs.label} />
+        <Row name="Exhibitors you followed up with" pct={r.yours.pct} color="#059669" text={r.yours.label} />
+      </div>
+    </div>
+  );
+}
+
+function Plan({ plan, nextTip }: { plan: [string, string][]; nextTip: string }) {
+  return (
       <div className={card}>
         <p className="font-semibold text-slate-900">Your next 7 days</p>
         <div className="mt-3">
-          {r.plan.map(([d, t], i) => (
-            <div key={d} className={`relative grid grid-cols-[62px_1fr] gap-2.5 pl-4 ${i < r.plan.length - 1 ? "border-l-2 border-emerald-100 pb-3.5" : "border-l-2 border-transparent"}`}>
+          {plan.map(([d, t], i) => (
+            <div key={d} className={`relative grid grid-cols-[62px_1fr] gap-2.5 pl-4 ${i < plan.length - 1 ? "border-l-2 border-emerald-100 pb-3.5" : "border-l-2 border-transparent"}`}>
               <span className="absolute -left-[7px] top-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-600 ring-1 ring-emerald-100" />
               <span className="pt-px text-xs font-bold text-emerald-700">{d}</span>
               <span className="text-sm leading-relaxed text-slate-600">{t}</span>
             </div>
           ))}
         </div>
-        {r.nextTip && (
+        {nextTip && (
           <div className="mt-3.5 rounded-xl bg-yellow-100 px-3.5 py-3 text-sm leading-relaxed text-yellow-900">
             <span className="mb-0.5 block text-xs font-bold uppercase tracking-wide">For your next show</span>
-            {r.nextTip}
+            {nextTip}
           </div>
         )}
       </div>
-    </>
   );
 }
 
@@ -117,7 +158,7 @@ function Num({ k, v, s }: { k: string; v: string; s: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4">
       <p className="text-xs font-semibold text-slate-400">{k}</p>
-      <p className="mt-1 text-xl font-extrabold leading-tight text-slate-900">{v}</p>
+      <p className={`mt-1 font-extrabold leading-tight text-slate-900 ${v.length > 18 ? "text-[15px] leading-snug" : "text-xl"}`}>{v}</p>
       <p className="mt-0.5 text-xs leading-snug text-slate-400">{s}</p>
     </div>
   );
@@ -184,7 +225,7 @@ function Funnel({ f }: { f: NonNullable<ExhibitorReport["funnel"]> }) {
   );
 }
 
-function Cooling({ speed }: { speed: ExhibitorReport["speed"] }) {
+function Cooling({ speed, caption = "Illustration: the longer a buyer waits, the less they remember you." }: { speed: ExhibitorReport["speed"]; caption?: string }) {
   const X: Record<string, number> = { "0": 40, "2": 92, "7": 150, "14": 208, "30": 270 };
   const markX = speed ? ({ "2d": 92, "1w": 150, "4w": 238, later: 270 } as Record<string, number>)[speed.key] : null;
   const curve = "M40,34 C70,40 88,52 112,72 S170,118 208,136 S250,152 270,156";
@@ -192,7 +233,7 @@ function Cooling({ speed }: { speed: ExhibitorReport["speed"] }) {
   return (
     <div className={card}>
       <p className="font-semibold text-slate-900">How fast conversations cool</p>
-      <p className={capText}>Illustration: the longer a buyer waits, the less they remember you.</p>
+      <p className={capText}>{caption}</p>
       <svg viewBox="0 0 300 200" className="mx-auto block h-auto w-full max-w-[420px]" role="img" aria-label="Cooling curve">
         <defs>
           <linearGradient id="srWarm" x1="0" x2="1">

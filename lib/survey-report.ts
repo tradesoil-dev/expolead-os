@@ -24,7 +24,24 @@ export type ExhibitorReport = {
   nextTip: string;
 };
 
-export type VisitorReport = { kind: "visitor"; level: Level; badge: string; head: string; body: string };
+export type VisitorReport = {
+  kind: "visitor";
+  level: Level;
+  badge: string;
+  head: string;
+  body: string;
+  talks: string; // e.g. "5 to 15"
+  tracked: string; // e.g. "Their business cards, From memory"
+  // Both sides of the follow-up, as the person answered them. pct is only the
+  // bar length for a word answer ("Most of them" shows as a long bar).
+  theirs: { key: string; label: string; pct: number };
+  yours: { key: string; label: string; pct: number };
+  plan: [string, string][];
+  nextTip: string;
+};
+
+// Bar length for a word answer about follow-ups. Visual only; the label shows the answer.
+export const FOLLOW_PCT: Record<string, number> = { most: 75, half: 50, few: 20, none: 3 };
 export type SurveyReportData = ExhibitorReport | VisitorReport;
 
 const CONTACTS: Record<string, [number | null, number | null]> = {
@@ -61,37 +78,7 @@ const str = (a: Answers, k: string) => (typeof a[k] === "string" ? (a[k] as stri
 
 export function buildReport(a: Answers, exhibition: string): SurveyReportData {
   const short = exhibition.split(" ")[0] || exhibition;
-  if (a.role_show === "visit") {
-    // Both sides of the follow-up: exhibitors to the visitor, and the visitor to exhibitors.
-    const theyQuiet = a.v_followed === "few" || a.v_followed === "none";
-    const youQuiet = a.v_did === "few" || a.v_did === "none";
-    if (theyQuiet && youQuiet) {
-      return {
-        kind: "visitor", level: "red", badge: "Going cold",
-        head: "Conversations are going cold on both sides",
-        body: `Few exhibitors have followed up with you, and you have followed up with few of them yourself. The good conversations you had at ${exhibition} are quietly going cold on both sides.`,
-      };
-    }
-    if (theyQuiet) {
-      return {
-        kind: "visitor", level: "amber", badge: "Gone quiet",
-        head: "You are doing your part, most exhibitors are not",
-        body: `You have been following up, but most of the exhibitors you met at ${exhibition} have gone quiet. That is exactly the gap we are researching: good conversations at the booth that never turn into business.`,
-      };
-    }
-    if (youQuiet) {
-      return {
-        kind: "visitor", level: "amber", badge: "Your move",
-        head: "Exhibitors are following up. Are you?",
-        body: `Exhibitors from ${exhibition} are reaching out, but you have followed up with few of them so far. A short reply now keeps the best suppliers warm.`,
-      };
-    }
-    return {
-      kind: "visitor", level: "green", badge: "Following up",
-      head: "Both sides are following up well",
-      body: "Good to hear. Fast follow-ups on both sides make choosing a supplier much easier.",
-    };
-  }
+  if (a.role_show === "visit") return visitorReport(a, exhibition);
 
   // Status points from the answers.
   let pts = 0;
@@ -182,6 +169,48 @@ export function buildReport(a: Answers, exhibition: string): SurveyReportData {
     funnel,
     speed: speedLabels[str(a, "speed")] ? { key: str(a, "speed"), label: speedLabels[str(a, "speed")] } : null,
     spend,
+    plan,
+    nextTip,
+  };
+}
+
+// Visitors (buyers and sourcing teams): their tracking, both sides of the
+// follow-up, and a 7-day plan, all from their own answers.
+function visitorReport(a: Answers, exhibition: string): VisitorReport {
+  const short = exhibition.split(" ")[0] || exhibition;
+  const theyQuiet = a.v_followed === "few" || a.v_followed === "none";
+  const youQuiet = a.v_did === "few" || a.v_did === "none";
+  let level: Level, badge: string, head: string, body: string;
+  if (theyQuiet && youQuiet) {
+    level = "red"; badge = "Going cold"; head = "Conversations are going cold on both sides";
+    body = `Few exhibitors have followed up with you, and you have followed up with few of them yourself. The good conversations you had at ${exhibition} are quietly going cold on both sides.`;
+  } else if (theyQuiet) {
+    level = "amber"; badge = "Gone quiet"; head = "You are doing your part, most exhibitors are not";
+    body = `You have been following up, but most of the exhibitors you met at ${exhibition} have gone quiet. That is exactly the gap we are researching: good conversations at the booth that never turn into business.`;
+  } else if (youQuiet) {
+    level = "amber"; badge = "Your move"; head = "Exhibitors are following up. Are you?";
+    body = `Exhibitors from ${exhibition} are reaching out, but you have followed up with few of them so far. A short reply now keeps the best suppliers warm.`;
+  } else {
+    level = "green"; badge = "Following up"; head = "Both sides are following up well";
+    body = "Good to hear. Fast follow-ups on both sides make choosing a supplier much easier.";
+  }
+  const track = (a.v_track as string[] | undefined) ?? [];
+  const memoryOnly = track.length > 0 && track.every((v) => v === "memory");
+  const plan: [string, string][] = [
+    ["Today", `List the ${short} suppliers that matter most to you, and what each one offered.`],
+    ["Day 2", youQuiet ? "Send each of them a short follow-up with what you need next: specs, quantities or a price." : "Chase anyone on your list you have not heard back from yet."],
+    ["Day 4", theyQuiet ? "Give the quiet suppliers one more nudge. A slow reply now often means slow service later." : "Ask your best suppliers for samples or a firm quotation."],
+    ["Day 7", "Compare the offers side by side and shortlist the suppliers you want to work with."],
+  ];
+  const nextTip = memoryOnly || track.includes("brochures")
+    ? "At your next show, snap each supplier\u2019s card and add a 20 second voice note on what they offered, while it is fresh."
+    : "At your next show, note each supplier\u2019s offer and your next step right after the conversation.";
+  return {
+    kind: "visitor", level, badge, head, body,
+    talks: optionLabel("v_talks", a.v_talks),
+    tracked: optionLabel("v_track", a.v_track),
+    theirs: { key: str(a, "v_followed"), label: optionLabel("v_followed", a.v_followed), pct: FOLLOW_PCT[str(a, "v_followed")] ?? 0 },
+    yours: { key: str(a, "v_did"), label: optionLabel("v_did", a.v_did), pct: FOLLOW_PCT[str(a, "v_did")] ?? 0 },
     plan,
     nextTip,
   };

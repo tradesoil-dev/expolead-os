@@ -94,6 +94,28 @@ export function buildSurveyReportEmail(opts: SurveyReportEmailOpts) {
     if (r.nextTip) {
       middle += `<div style="background:#fef9c3;border-radius:10px;padding:12px 14px;margin:0 0 20px;font-size:14px;line-height:1.6;color:#713f12;"><strong>For your next show:</strong> ${esc(r.nextTip)}</div>`;
     }
+  } else {
+    // Visitors: same structure, built from their own answers.
+    middle += `<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;"><tr>${stat("Exhibitors you had serious talks with", r.talks, "Your answer")}${stat("How you track suppliers", r.tracked, "Your answer")}</tr></table>`;
+    const box = (title: string, sub: string, q: string, w: number, h: number, alt: string) => `
+            <div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:0 0 14px;">
+              <div style="font-size:15px;font-weight:600;color:#0f172a;">${esc(title)}</div>
+              <div style="font-size:12px;color:#94a3b8;margin:2px 0 10px;line-height:1.5;">${esc(sub)}</div>
+              <img src="${SITE}/api/report-chart?${q}" width="${w}" height="${h}" alt="${esc(alt)}" style="display:block;width:100%;max-width:${w}px;height:auto;border:0;margin:0 auto;" />
+            </div>`;
+    middle += box(
+      "Follow-ups on both sides", "From your answers. Both sides need to follow up for a deal to happen.",
+      `k=vbars&t=${encodeURIComponent(r.theirs.key)}&y=${encodeURIComponent(r.yours.key)}`, 520, 130,
+      `Exhibitors who followed up with you: ${r.theirs.label}. Exhibitors you followed up with: ${r.yours.label}.`,
+    );
+    middle += box("How fast conversations cool", "Illustration: the longer a conversation waits, the less either side remembers.", "k=curve", 300, 200, "Cooling curve illustration");
+    middle += `<p style="margin:0 0 10px;font-size:16px;font-weight:600;color:#0f172a;">Your next 7 days</p>
+            <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 12px;">${r.plan
+              .map(([d, t]) => `<tr><td width="64" valign="top" style="padding:0 0 10px;font-size:13px;font-weight:700;color:#047857;">${esc(d)}</td><td style="padding:0 0 10px;font-size:14px;line-height:1.6;color:#475569;">${esc(t)}</td></tr>`)
+              .join("")}</table>`;
+    if (r.nextTip) {
+      middle += `<div style="background:#fef9c3;border-radius:10px;padding:12px 14px;margin:0 0 20px;font-size:14px;line-height:1.6;color:#713f12;"><strong>For your next show:</strong> ${esc(r.nextTip)}</div>`;
+    }
   }
 
   return {

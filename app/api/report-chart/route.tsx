@@ -94,6 +94,35 @@ function bars(sp: URLSearchParams) {
   );
 }
 
+// Visitor: both sides of the follow-up. Bar length is visual only; the label is the answer.
+function vbars(sp: URLSearchParams) {
+  const pct: Record<string, number> = { most: 75, half: 50, few: 20, none: 3 };
+  const t = sp.get("t") || "";
+  const y = sp.get("y") || "";
+  const rows = [
+    { name: "Exhibitors who followed up with you", text: optionLabel("v_followed", t), pct: pct[t] ?? 0, color: SKY },
+    { name: "Exhibitors you followed up with", text: optionLabel("v_did", y), pct: pct[y] ?? 0, color: EMERALD },
+  ];
+  return new ImageResponse(
+    (
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", width: 1040, height: 260, background: "#ffffff", padding: "20px 8px" }}>
+        {rows.map((r) => (
+          <div key={r.name} style={{ display: "flex", flexDirection: "column", marginBottom: 28 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 26, color: MUTED, marginBottom: 10 }}>
+              <span>{r.name}</span>
+              <span style={{ color: INK }}>{r.text}</span>
+            </div>
+            <div style={{ display: "flex", width: "100%", height: 24, borderRadius: 12, background: "#f1f5f9" }}>
+              <div style={{ display: "flex", width: `${Math.max(3, r.pct)}%`, height: 24, borderRadius: 12, background: r.color }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    ),
+    { width: 1040, height: 260, headers: cache },
+  );
+}
+
 function curve(sp: URLSearchParams) {
   const key = sp.get("sp") || "";
   const mark = ({ "2d": [92, "Within 2 days"], "1w": [150, "Within a week"], "4w": [238, "2 to 4 weeks"], later: [270, "Later"] } as Record<string, [number, string]>)[key];
@@ -156,6 +185,7 @@ export function GET(req: Request) {
   const k = sp.get("k");
   if (k === "radar") return radar(sp);
   if (k === "bars") return bars(sp);
+  if (k === "vbars") return vbars(sp);
   if (k === "curve") return curve(sp);
   if (k === "donut") return donut(sp);
   return new Response("Unknown chart", { status: 400 });
