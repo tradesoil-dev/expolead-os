@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import PageHeader from "@/components/PageHeader";
-import FeedbackDashboard, { type FeedbackRow } from "@/components/FeedbackDashboard";
+import FeedbackDashboard, { type FeedbackRow, type FeedbackTab } from "@/components/FeedbackDashboard";
 import { CAMPAIGNS } from "@/lib/survey-v2";
 
 export const metadata = { title: "Admin Feedback" };
@@ -11,7 +11,8 @@ export const metadata = { title: "Admin Feedback" };
 // Both tables are server-only, so they are read with the service role after
 // the is_admin check below. Each source fails safe on its own: if one table is
 // missing (migration not run yet) the other still shows.
-export default async function AdminFeedbackPage() {
+export default async function AdminFeedbackPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const { tab } = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -110,14 +111,14 @@ export default async function AdminFeedbackPage() {
 
   return (
     <>
-      <PageHeader title="Feedback" subtitle="Pilot check-ins and public survey answers, and what exhibitors tell us" />
+      <PageHeader title="Feedback" subtitle="Public survey links and answers, and pilot check-ins" />
       <main className="flex-1 space-y-4 p-6 md:p-8">
         {missing.length > 0 && (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
             Not set up yet: {missing.join(", ")}. Run the migration in the Supabase SQL editor, then reload this page.
           </div>
         )}
-        <FeedbackDashboard rows={rows} />
+        <FeedbackDashboard rows={rows} initialTab={(tab === "pilot" ? "pilot" : "public") as FeedbackTab} />
       </main>
     </>
   );

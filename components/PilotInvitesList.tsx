@@ -228,7 +228,8 @@ export default function PilotInvitesList({
           <p className="text-sm font-semibold text-ink-900">Invited pilots</p>
           <p className="text-[11px] text-ink-400">Everyone you have given pilot access, with status</p>
         </div>
-        <span className="ml-auto rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{rows.length}</span>
+        <a href="/admin/feedback?tab=pilot" className="ml-auto text-xs font-semibold text-emerald-700 hover:underline">View pilot feedback</a>
+        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{rows.length}</span>
       </div>
 
       {rows.length === 0 ? (
