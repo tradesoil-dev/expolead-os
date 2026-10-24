@@ -3,7 +3,7 @@ import { createHash, randomBytes } from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { sendCheckinEmail } from "@/lib/checkin-email";
-import { SURVEY_VERSION } from "@/lib/checkin-survey";
+import { SURVEY_V2 } from "@/lib/survey-v2";
 
 export const runtime = "nodejs";
 
@@ -117,7 +117,7 @@ export async function POST(req: Request) {
       exhibition_name: exhibition,
       campaign,
       token_hash: tokenHash,
-      survey_version: SURVEY_VERSION,
+      survey_version: SURVEY_V2,
       sent_by: user.id,
     })
     .select("id")

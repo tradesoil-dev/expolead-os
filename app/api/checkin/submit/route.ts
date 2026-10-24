@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { createServiceClient } from "@/lib/supabase/service";
-import { cleanAnswers } from "@/lib/checkin-survey";
+import { cleanAnswersV2, SURVEY_V2 } from "@/lib/survey-v2";
 
 export const runtime = "nodejs";
 
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "This survey link is not valid." }, { status: 400 });
   }
 
-  const answers = cleanAnswers(raw);
-  if (!answers) return NextResponse.json({ error: "Please answer every question not marked optional." }, { status: 400 });
+  const answers = cleanAnswersV2(raw, "pilot");
+  if (!answers) return NextResponse.json({ error: "Please answer every question." }, { status: 400 });
 
   const tokenHash = createHash("sha256").update(token).digest("hex");
 
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   try {
     const res = await createServiceClient()
       .from("feedback_checkins")
-      .update({ answers, answered_at: new Date().toISOString(), wants_call: answers.call === "yes" })
+      .update({ answers, survey_version: SURVEY_V2, answered_at: new Date().toISOString(), wants_call: answers.call === "yes" })
       .eq("token_hash", tokenHash)
       .is("answered_at", null)
       .select("id");

@@ -14,12 +14,12 @@ function defaultAccessUntil(): string {
   return d.toISOString().slice(0, 10);
 }
 
-export default function InviteCustomer() {
+export default function InviteCustomer({ prefill }: { prefill?: { email: string; name: string; company: string } } = {}) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [companyName, setCompanyName] = useState("");
+  const [open, setOpen] = useState(!!prefill?.email);
+  const [email, setEmail] = useState(prefill?.email ?? "");
+  const [fullName, setFullName] = useState(prefill?.name ?? "");
+  const [companyName, setCompanyName] = useState(prefill?.company ?? "");
   const [accessUntil, setAccessUntil] = useState(defaultAccessUntil());
   const [fullAccess, setFullAccess] = useState(true);
   const [elos, setElos] = useState(true);

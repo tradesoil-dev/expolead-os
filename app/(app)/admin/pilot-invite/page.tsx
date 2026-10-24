@@ -8,7 +8,11 @@ import type { LibraryShow } from "@/components/ExhibitionPicker";
 
 export const metadata = { title: "Pilot invite — Admin" };
 
-export default async function AdminPilotInvitePage() {
+export default async function AdminPilotInvitePage({ searchParams }: { searchParams: Promise<{ email?: string; name?: string; company?: string }> }) {
+  const sp = await searchParams;
+  // Pre-fill from Admin > Feedback "Invite as pilot" (public survey respondent).
+  const clean = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+  const prefill = clean(sp.email, 254) ? { email: clean(sp.email, 254), name: clean(sp.name, 120), company: clean(sp.company, 160) } : undefined;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -64,7 +68,7 @@ export default async function AdminPilotInvitePage() {
         subtitle="Give a customer full access by email, case by case"
       />
       <main className="flex-1 space-y-5 p-6 md:p-8">
-        <InviteCustomer />
+        <InviteCustomer prefill={prefill} />
         <p className="max-w-2xl text-xs leading-relaxed text-ink-400">
           Creates the account, emails a secure set-your-own-password link, and grants full access
           until the date you choose (with ELOS if you enable it). When the date passes the account

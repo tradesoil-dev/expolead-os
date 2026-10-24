@@ -44,7 +44,7 @@ export async function sendCheckinEmail(opts: {
   return resend.emails.send({
     from: "Gladwin & Gayan at ExpoLead OS <hello@expoleados.com>",
     to: opts.email,
-    subject: `How did ${opts.exhibition} go? 2 minutes of your feedback`,
+    subject: `How did ${opts.exhibition} go? 3 minutes of your feedback`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -70,13 +70,13 @@ export async function sendCheckinEmail(opts: {
               ${usageLine}
             </p>
             <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#475569;">
-              It takes about 2 minutes, mostly tapping answers, and no sign in is needed. Your answers will directly shape what we build next.
+              It takes about 3 minutes, mostly tapping answers, and no sign in is needed. At the end you get a personal post-show report. Your answers will directly shape what we build next.
             </p>
 
             <table cellpadding="0" cellspacing="0" style="margin:0 auto 36px;">
               <tr>
                 <td style="border-radius:10px;background:#059669;">
-                  <a href="${opts.surveyUrl}" style="display:inline-block;padding:14px 34px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;">Take the 2 minute survey</a>
+                  <a href="${opts.surveyUrl}" style="display:inline-block;padding:14px 34px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;">Take the 3 minute survey</a>
                 </td>
               </tr>
             </table>
