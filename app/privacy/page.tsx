@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <div className="mx-auto max-w-3xl">
           <Link href="/" className="text-sm text-emerald-600 hover:underline">← Back to home</Link>
 
-          <p className="mt-4 text-sm text-slate-500">Last updated: 23 October 2026</p>
+          <p className="mt-4 text-sm text-slate-500">Last updated: 25 October 2026</p>
 
           <div className="mt-10 space-y-8 text-sm leading-7 text-slate-700">
 
@@ -45,6 +45,7 @@ export default function PrivacyPage() {
                 <li><strong>Account signup:</strong> Your email address and password. Your password is encrypted before storage and we never store or see your plain-text password. You may optionally provide your name.</li>
                 <li><strong>Platform usage:</strong> Any business data you enter, including connections, buyers, suppliers, opportunities, exhibition records, notes, sample details, and follow-up records. This is your business data and you own it at all times.</li>
                 <li><strong>AI features (optional):</strong> If you scan a business card, record a conversation, or ask the ELOS assistant a question, that content is sent to our AI providers to produce the result. We do not store card photos or audio recordings. Only the text you choose to save, such as contact details, a transcript or a summary, is kept in your workspace. Your ELOS conversations are saved in your workspace so you can return to them, and are deleted when you delete your account.</li>
+                <li><strong>Post-show surveys (no account needed):</strong> If you answer one of our public surveys, we collect your name, company, business email, the next trade show you plan to attend, your answers and, only if you give them, your WhatsApp number and LinkedIn profile. We also keep a scrambled code made from your IP address, which only helps us stop spam and cannot be turned back into the address. We use your details to email you your report, to share combined results, and to contact you only in the ways you ticked. Results are only ever shown combined, without names. We never sell your details or share your individual answers.</li>
                 <li><strong>Website visits:</strong> Basic technical information your browser sends automatically, such as your IP address, browser type, and operating system. We use this only for security monitoring and debugging.</li>
                 <li><strong>What we do not collect:</strong> We do not collect sensitive personal data such as health information, financial account numbers, government ID numbers, or political views.</li>
               </ul>
@@ -63,7 +64,7 @@ export default function PrivacyPage() {
                 <li>To store and retrieve the business data you enter</li>
                 <li>To provide the optional AI features you choose to use: business card scanning, conversation transcription and summaries, and the ELOS assistant</li>
                 <li>To send you transactional emails such as account confirmation, welcome email, trial expiry reminders, and security alerts</li>
-                <li>To ask for your feedback on ExpoLead OS, for example a short survey after an exhibition. Answering is always optional</li>
+                <li>To ask for your feedback on ExpoLead OS, for example a short survey after an exhibition, and to send survey participants their report. Answering is always optional</li>
                 <li>To monitor for security issues and prevent fraud</li>
                 <li>To respond to your support requests</li>
                 <li>To comply with legal obligations if required</li>
@@ -114,6 +115,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-base font-bold text-slate-900 mb-2">9. How long we keep your data</h2>
               <p>We keep your data for as long as your account is active. When you delete your account from within the app, your personal data and business records are removed from our live systems immediately, and in any case within 30 days. We may retain certain information for longer only if required by law.</p>
+              <p className="mt-3">Survey answers and contact details are kept for up to 24 months, then deleted. You can ask us to delete them sooner at any time at <a href="mailto:hello@expoleados.com" className="text-emerald-600 hover:underline">hello@expoleados.com</a>.</p>
             </section>
 
             <section>
