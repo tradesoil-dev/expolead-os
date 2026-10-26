@@ -514,7 +514,7 @@ export default function ImportConnections({
 
   // ─── Upload ──────────────────────────────────────────────────────────────
   return (
-    <div className="mx-auto max-w-4xl space-y-5 pb-20">
+    <div className="mx-auto max-w-7xl space-y-5 pb-20">
       {ConfirmUI}
       <BackLink />
 
@@ -536,6 +536,8 @@ export default function ImportConnections({
         </div>
       </div>
 
+      <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,520px)] xl:items-start xl:gap-5">
+      <div className="space-y-5">
       <div className={`${card} divide-y divide-ink-100`}>
         <Step n={1} title="Choose the exhibition">
           <p className="mb-3 text-sm text-ink-500">Every connection in the file is added to this exhibition.</p>
@@ -557,45 +559,8 @@ export default function ImportConnections({
             <Download className="h-4 w-4" /> Download template
           </button>
 
-          <div className="mt-5 overflow-hidden rounded-xl border border-ink-200">
-            <p className="border-b border-ink-200 bg-ink-50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink-500">What to put in each column</p>
-            <div className="divide-y divide-ink-100">
-              <GuideRow name="Company" badge={<span className={`${chip} bg-rose-50 text-rose-700 ring-rose-600/20`}>Required</span>}>
-                The company name. This is the only column every row needs.
-              </GuideRow>
-              <GuideRow name="Interest" hint="Empty is saved as Supplier">
-                <Chips>{INTEREST_TYPES.map((t) => <span key={t.value} className={`${chip} ${INTEREST_STYLES[t.value]}`}>{t.label}</span>)}</Chips>
-              </GuideRow>
-              <GuideRow name="Priority" hint="Empty is saved as Medium">
-                <Chips>{PRIORITIES.map((t) => <span key={t.value} className={`${chip} ${PRIORITY_STYLES[t.value]}`}>{t.label}</span>)}</Chips>
-              </GuideRow>
-              <GuideRow name="Follow-up status" hint="Empty is saved as New">
-                <Chips>{FOLLOW_UP_STATUSES.map((t) => <span key={t.value} className={`${chip} ${STATUS_STYLES[t.value]}`}>{t.label}</span>)}</Chips>
-              </GuideRow>
-              <GuideRow name="Visited · Target" hint="Visited: you went to their booth. Target: a company you want to win">
-                <Chips>
-                  <span className={`${chip} bg-emerald-50 text-emerald-700 ring-emerald-600/20`}>Yes</span>
-                  <span className={neutralChip}>No</span>
-                </Chips>
-              </GuideRow>
-              <GuideRow name="Visit date · Follow-up date" hint="The day you met them at the show, and when you plan to follow up. Day first. Leave empty if you are not sure">
-                <Chips>
-                  <span className={neutralChip}>2026-10-20</span>
-                  <span className={neutralChip}>20/10/2026</span>
-                  <span className={neutralChip}>20 Oct 2026</span>
-                </Chips>
-              </GuideRow>
-              <GuideRow name="Contact" hint="Name, Position, Email, Phone, WhatsApp. One main contact per company">
-                <Chips>
-                  <span className={neutralChip}>+33 6 12 34 56 78</span>
-                  <span className="text-xs text-ink-500">Keep the + and country code. If Excel drops them, set the phone columns to Text first.</span>
-                </Chips>
-              </GuideRow>
-              <GuideRow name="Everything else" hint="Country, Website, Hall, Booth number, Stand location, Notes">
-                <span className="text-sm text-ink-600">Optional. Type them as you have them.</span>
-              </GuideRow>
-            </div>
-          </div>
+          <div className="mt-5 xl:hidden"><ColumnGuide /></div>
+          <p className="mt-3 hidden text-xs text-ink-500 xl:block">The guide on the right shows what to put in each column.</p>
           <p className="mt-3 text-xs text-ink-500">A file exported from ExpoLead OS can be imported too.</p>
         </Step>
 
@@ -656,7 +621,54 @@ export default function ImportConnections({
           </div>
         </div>
       )}
+      </div>
+      <aside className="hidden xl:sticky xl:top-6 xl:block"><ColumnGuide stacked /></aside>
+      </div>
     </div>
+  );
+}
+
+function ColumnGuide({ stacked = false }: { stacked?: boolean }) {
+  return (
+      <div className="overflow-hidden rounded-xl border border-ink-200 bg-white">
+        <p className="border-b border-ink-200 bg-ink-50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink-500">What to put in each column</p>
+        <div className="divide-y divide-ink-100">
+          <GuideRow stacked={stacked} name="Company" badge={<span className={`${chip} bg-rose-50 text-rose-700 ring-rose-600/20`}>Required</span>}>
+            The company name. This is the only column every row needs.
+          </GuideRow>
+          <GuideRow stacked={stacked} name="Interest" hint="Empty is saved as Supplier">
+            <Chips>{INTEREST_TYPES.map((t) => <span key={t.value} className={`${chip} ${INTEREST_STYLES[t.value]}`}>{t.label}</span>)}</Chips>
+          </GuideRow>
+          <GuideRow stacked={stacked} name="Priority" hint="Empty is saved as Medium">
+            <Chips>{PRIORITIES.map((t) => <span key={t.value} className={`${chip} ${PRIORITY_STYLES[t.value]}`}>{t.label}</span>)}</Chips>
+          </GuideRow>
+          <GuideRow stacked={stacked} name="Follow-up status" hint="Empty is saved as New">
+            <Chips>{FOLLOW_UP_STATUSES.map((t) => <span key={t.value} className={`${chip} ${STATUS_STYLES[t.value]}`}>{t.label}</span>)}</Chips>
+          </GuideRow>
+          <GuideRow stacked={stacked} name="Visited · Target" hint="Visited: you went to their booth. Target: a company you want to win">
+            <Chips>
+              <span className={`${chip} bg-emerald-50 text-emerald-700 ring-emerald-600/20`}>Yes</span>
+              <span className={neutralChip}>No</span>
+            </Chips>
+          </GuideRow>
+          <GuideRow stacked={stacked} name="Visit date · Follow-up date" hint="The day you met them at the show, and when you plan to follow up. Day first. Leave empty if you are not sure">
+            <Chips>
+              <span className={neutralChip}>2026-10-20</span>
+              <span className={neutralChip}>20/10/2026</span>
+              <span className={neutralChip}>20 Oct 2026</span>
+            </Chips>
+          </GuideRow>
+          <GuideRow stacked={stacked} name="Contact" hint="Name, Position, Email, Phone, WhatsApp. One main contact per company">
+            <Chips>
+              <span className={neutralChip}>+33 6 12 34 56 78</span>
+              <span className="text-xs text-ink-500">Keep the + and country code. If Excel drops them, set the phone columns to Text first.</span>
+            </Chips>
+          </GuideRow>
+          <GuideRow stacked={stacked} name="Everything else" hint="Country, Website, Hall, Booth number, Stand location, Notes">
+            <span className="text-sm text-ink-600">Optional. Type them as you have them.</span>
+          </GuideRow>
+        </div>
+      </div>
   );
 }
 
@@ -672,9 +684,9 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   );
 }
 
-function GuideRow({ name, badge, hint, children }: { name: string; badge?: React.ReactNode; hint?: string; children: React.ReactNode }) {
+function GuideRow({ name, badge, hint, stacked, children }: { name: string; badge?: React.ReactNode; hint?: string; stacked?: boolean; children: React.ReactNode }) {
   return (
-    <div className="grid gap-2 px-4 py-3 sm:grid-cols-[190px_1fr] sm:gap-4">
+    <div className={`grid gap-2 px-4 py-3 ${stacked ? "" : "sm:grid-cols-[190px_1fr] sm:gap-4"}`}>
       <div>
         <p className="flex items-center gap-2 text-sm font-semibold text-ink-900">{name}{badge}</p>
         {hint && <p className="mt-0.5 text-xs leading-relaxed text-ink-500">{hint}</p>}
