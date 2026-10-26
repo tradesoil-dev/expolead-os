@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Download, Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Download, Upload, Trash2, Loader2 } from "lucide-react";
+import { useConfirm } from "@/components/useConfirm";
+import { useToast } from "@/components/useToast";
+import { createClient } from "@/lib/supabase/client";
 import { PriorityBadge, StatusBadge, InterestBadge } from "@/components/Badge";
 import Select from "@/components/Select";
 import {
@@ -58,6 +62,69 @@ export default function SuppliersTable({
   const currentPage = Math.min(page, totalPages);
   const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
+  // Bulk selection for delete. Only rows that match the current filters can
+  // stay selected, so a hidden row is never deleted by surprise.
+  const router = useRouter();
+  const { confirm, ConfirmUI } = useConfirm();
+  const { showToast, ToastUI } = useToast();
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
+  useEffect(() => {
+    const visible = new Set(filtered.map((s) => s.id));
+    setSelected((cur) => {
+      const next = new Set([...cur].filter((id) => visible.has(id)));
+      return next.size === cur.size ? cur : next;
+    });
+  }, [filtered]);
+  const pageAllSelected = paged.length > 0 && paged.every((s) => selected.has(s.id));
+  const allFilteredSelected = filtered.length > 0 && selected.size === filtered.length;
+
+  function toggleRow(id: string) {
+    setSelected((cur) => {
+      const next = new Set(cur);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  function togglePage() {
+    setSelected((cur) => {
+      const next = new Set(cur);
+      if (pageAllSelected) paged.forEach((s) => next.delete(s.id));
+      else paged.forEach((s) => next.add(s.id));
+      return next;
+    });
+  }
+
+  async function deleteSelected() {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    const n = ids.length === 1 ? "this connection" : `these ${ids.length} connections`;
+    const ok = await confirm(
+      `This permanently deletes ${n}, with their contacts, notes, meetings and follow-ups. Opportunities linked to them are kept, without the link. This cannot be undone.`,
+      { title: ids.length === 1 ? "Delete 1 connection?" : `Delete ${ids.length} connections?`, confirmLabel: "Yes, delete" },
+    );
+    if (!ok) return;
+    setDeleting(true);
+    const supabase = createClient();
+    let removed = 0;
+    let failed = false;
+    // Chunks keep each request small; RLS limits the delete to the user's own rows.
+    for (let i = 0; i < ids.length; i += 100) {
+      const { data, error } = await supabase.from("suppliers").delete().in("id", ids.slice(i, i + 100)).select("id");
+      if (error) {
+        failed = true;
+        break;
+      }
+      removed += data?.length ?? 0;
+    }
+    setDeleting(false);
+    setSelected(new Set());
+    if (failed) showToast(removed ? `Deleted ${removed}, then something went wrong. Please try the rest again.` : "Could not delete. Please try again.", "error");
+    else showToast(removed === 1 ? "1 connection deleted" : `${removed} connections deleted`);
+    router.refresh();
+  }
+
   // CSV generation and the plan re-check happen server-side. The button hits the
   // gated route with the current filters; the browser only triggers the download.
   const [exporting, setExporting] = useState(false);
@@ -106,6 +173,8 @@ export default function SuppliersTable({
 
     return (
     <div className="space-y-4">
+      {ConfirmUI}
+      {ToastUI}
       <div className="grid gap-3 md:grid-cols-4">
         <div className="rounded-xl border-2 border-emerald-400 bg-white p-4 shadow-card">
           <p className="text-xs font-medium text-ink-500">Total connections</p>
@@ -220,10 +289,41 @@ export default function SuppliersTable({
         </div>
       </div>
 
+      {selected.size > 0 && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-emerald-200 bg-emerald-50/60 px-4 py-2.5 text-sm">
+          <span className="font-semibold text-ink-900">{selected.size} selected</span>
+          {!allFilteredSelected && filtered.length > paged.length && (
+            <button type="button" onClick={() => setSelected(new Set(filtered.map((s) => s.id)))} className="font-medium text-emerald-700 hover:underline">
+              Select all {filtered.length}{filtered.length !== suppliers.length ? " matching" : ""}
+            </button>
+          )}
+          <button type="button" onClick={() => setSelected(new Set())} className="font-medium text-ink-500 hover:underline">Clear</button>
+          <button
+            type="button"
+            onClick={deleteSelected}
+            disabled={deleting}
+            className="ml-auto inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-rose-200 bg-white px-3 text-sm font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50"
+          >
+            {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+            {deleting ? "Deleting…" : "Delete selected"}
+          </button>
+        </div>
+      )}
+
       <div className="overflow-x-auto rounded-xl border border-ink-200 bg-white shadow-card" style={{ WebkitOverflowScrolling: "touch" }}>
         <table className="w-full min-w-[1320px] text-sm whitespace-nowrap">
           <thead>
             <tr className="border-b border-ink-200 bg-ink-50 text-left text-xs font-semibold uppercase tracking-wide text-emerald-700">
+              <th className="w-10 py-2.5 pl-4 pr-0">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-emerald-600"
+                  checked={pageAllSelected}
+                  onChange={togglePage}
+                  disabled={paged.length === 0}
+                  aria-label="Select all rows on this page"
+                />
+              </th>
               <th className="px-4 py-2.5">Company</th>
               <th className="px-4 py-2.5">Exhibition</th>
               <th className="px-4 py-2.5">Booth</th>
@@ -239,7 +339,7 @@ export default function SuppliersTable({
           <tbody className="divide-y divide-ink-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={9} className="px-4 py-12 text-center text-ink-400">
+                <td colSpan={10} className="px-4 py-12 text-center text-ink-400">
                   {suppliers.length === 0
                     ? "No connections yet, add your first one."
                     : "No connections match these filters."}
@@ -247,7 +347,16 @@ export default function SuppliersTable({
               </tr>
             ) : (
               paged.map((s) => (
-                <tr key={s.id} className="hover:bg-ink-50 transition-colors">
+                <tr key={s.id} className={`transition-colors ${selected.has(s.id) ? "bg-emerald-50/50" : "hover:bg-ink-50"}`}>
+                  <td className="w-10 py-3 pl-4 pr-0 align-middle">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 accent-emerald-600"
+                      checked={selected.has(s.id)}
+                      onChange={() => toggleRow(s.id)}
+                      aria-label={`Select ${s.company_name}`}
+                    />
+                  </td>
                   <td className="px-4 py-3 align-middle whitespace-normal min-w-[220px]">
                     <Link href={`/connections/${s.id}`} className="font-medium text-ink-900 hover:text-brand-700">
                       {s.company_name}
