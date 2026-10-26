@@ -133,6 +133,8 @@ export type ImportRow = {
 export type ParsedRow = {
   line: number; // spreadsheet row number (header = row 1)
   row: ImportRow | null; // null when the row has an error
+  // What was typed, so a row with a problem can still be shown in the preview.
+  raw: { company: string; name: string; email: string };
   errors: string[];
   warnings: string[];
 };
@@ -447,7 +449,8 @@ export function parseImportCsv(text: string): ParseResult {
       break;
     }
     const v = validateRecord(rec);
-    rows.push({ line: i + 1, ...v });
+    const raw = { company: clean(rec.company_name), name: clean(rec.full_name), email: clean(rec.email) };
+    rows.push({ line: i + 1, raw, ...v });
   }
   return { rows, missingCompanyColumn, unknownHeaders: unknown, tooManyRows };
 }

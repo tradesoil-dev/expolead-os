@@ -285,7 +285,7 @@ export default function ImportConnections({ exhibitions, remaining }: { exhibiti
             <thead className="bg-ink-50 text-left text-xs font-semibold uppercase tracking-wide text-ink-500">
               <tr>
                 <th className="w-10 px-3 py-2.5"></th>
-                <th className="w-14 px-3 py-2.5">Row</th>
+                <th className="w-20 px-3 py-2.5" title="The row number in your spreadsheet. Row 1 is the column names">Sheet row</th>
                 <th className="px-3 py-2.5">Company</th>
                 <th className="px-3 py-2.5">Contact</th>
                 <th className="px-3 py-2.5">Email</th>
@@ -308,9 +308,9 @@ export default function ImportConnections({ exhibitions, remaining }: { exhibiti
                       />
                     </td>
                     <td className="px-3 py-2.5 align-top text-ink-400">{c.parsed.line}</td>
-                    <td className="px-3 py-2.5 align-top font-medium text-ink-900">{r?.company_name || <span className="text-ink-400">(empty)</span>}</td>
-                    <td className="px-3 py-2.5 align-top text-ink-700">{r?.contact?.full_name ?? ""}</td>
-                    <td className="px-3 py-2.5 align-top text-ink-700">{r?.contact?.email ?? ""}</td>
+                    <td className="px-3 py-2.5 align-top font-medium text-ink-900">{r?.company_name || c.parsed.raw.company || <span className="text-ink-400">(empty)</span>}</td>
+                    <td className="px-3 py-2.5 align-top text-ink-700">{r ? r.contact?.full_name ?? "" : c.parsed.raw.name}</td>
+                    <td className="px-3 py-2.5 align-top text-ink-700">{r ? r.contact?.email ?? "" : c.parsed.raw.email}</td>
                     <td className="px-3 py-2.5 align-top text-xs">
                       {!r ? (
                         <span className="text-rose-700">{c.parsed.errors.join(". ")}</span>
