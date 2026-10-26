@@ -215,6 +215,11 @@ export default function ImportConnections({
         1,
       )[0];
       if (!m) return { parsed: p, dup: null };
+      // A known company with no new person on the row adds nothing new, so it
+      // is a duplicate (re-uploading the same file must not create copies).
+      if (m.kind === "same_company" && !c?.full_name) {
+        return { parsed: p, dup: { kind: "duplicate", note: "Already in your connections (same company, no new contact)", supplierId: m.supplierId } };
+      }
       const why = m.reason === "email" ? "same email" : m.reason === "phone" ? "same phone" : "same company and name";
       return m.kind === "duplicate"
         ? { parsed: p, dup: { kind: "duplicate", note: `Already in your connections (${why})`, supplierId: m.supplierId } }
@@ -326,7 +331,7 @@ export default function ImportConnections({
   if (result) {
     const ok = result.imported > 0;
     return (
-      <div className="mx-auto max-w-2xl space-y-4">
+      <div className="mx-auto max-w-2xl space-y-4 pb-20">
         <BackLink />
         <div className={`${card} p-6`}>
           <div className="flex items-start gap-3">
@@ -382,7 +387,7 @@ export default function ImportConnections({
     ];
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 pb-20">
         <BackLink />
         <div className={`${card} p-4`}>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
@@ -509,7 +514,7 @@ export default function ImportConnections({
 
   // ─── Upload ──────────────────────────────────────────────────────────────
   return (
-    <div className="mx-auto max-w-4xl space-y-5">
+    <div className="mx-auto max-w-4xl space-y-5 pb-20">
       {ConfirmUI}
       <BackLink />
 
