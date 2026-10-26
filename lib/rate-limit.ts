@@ -14,6 +14,8 @@ export const AI_LIMITS = {
   // backstop so no single account can run up the bill; tune here. The true hard
   // ceiling is the monthly budget limit set in the Anthropic console.
   assistant_month: { limit: 300, windowSeconds: 2592000 },
+  // Bulk CSV import of connections (not AI, but the same per-user limiter).
+  import_connections: { limit: 20, windowSeconds: 3600 },
 } as const;
 
 export type RateBucket = keyof typeof AI_LIMITS;
