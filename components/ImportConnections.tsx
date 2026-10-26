@@ -518,7 +518,8 @@ export default function ImportConnections({
       {ConfirmUI}
       <BackLink />
 
-      <div className="grid gap-3 md:grid-cols-2">
+      {/* Same columns as the steps and guide below, so the edges line up. */}
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,520px)] xl:gap-5">
         <div className={`${card} flex gap-3 p-4`}>
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600"><ScanLine className="h-5 w-5" /></span>
           <div className="min-w-0">

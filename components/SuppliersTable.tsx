@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { Download, Upload } from "lucide-react";
 import { PriorityBadge, StatusBadge, InterestBadge } from "@/components/Badge";
 import Select from "@/components/Select";
 import {
@@ -14,7 +15,15 @@ import {
 } from "@/lib/types";
 import { filterSuppliers, type SupplierFilters } from "@/lib/suppliers-filter";
 
-export default function SuppliersTable({ suppliers, canExport }: { suppliers: Supplier[]; canExport: boolean }) {
+export default function SuppliersTable({
+  suppliers,
+  canExport,
+  canImport = true,
+}: {
+  suppliers: Supplier[];
+  canExport: boolean;
+  canImport?: boolean;
+}) {
   const [q, setQ] = useState("");
   const [interest, setInterest] = useState("");
   const [priority, setPriority] = useState("");
@@ -173,20 +182,37 @@ export default function SuppliersTable({ suppliers, canExport }: { suppliers: Su
           />
         </div>
 
-        <div className="flex justify-end">
+        {/* Data tools: import and export side by side. */}
+        <div className="flex justify-end gap-2">
+          {canImport ? (
+            <Link
+              href="/connections/import"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium hover:bg-ink-50 md:flex-none"
+            >
+              <Upload className="h-4 w-4 text-ink-500" /> Import CSV
+            </Link>
+          ) : (
+            <Link
+              href="/upgrade"
+              title="Your trial has ended, upgrade to continue"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium text-ink-400 hover:bg-ink-50 md:flex-none"
+            >
+              🔒 Import CSV
+            </Link>
+          )}
           {canExport ? (
             <button
               onClick={exportCsv}
               disabled={filtered.length === 0 || exporting}
-              className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium hover:bg-ink-50 disabled:opacity-50 md:w-auto"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium hover:bg-ink-50 disabled:opacity-50 md:flex-none"
             >
-              {exporting ? "Exporting…" : "Export CSV"}
+              <Download className="h-4 w-4 text-ink-500" /> {exporting ? "Exporting…" : "Export CSV"}
             </button>
           ) : (
             <Link
               href="/upgrade"
               title="CSV export is available on Starter and Growth"
-              className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-center text-sm font-medium text-ink-400 hover:bg-ink-50 md:w-auto"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium text-ink-400 hover:bg-ink-50 md:flex-none"
             >
               🔒 Export CSV
             </Link>
