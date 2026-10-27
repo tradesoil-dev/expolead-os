@@ -1,27 +1,28 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { CAMPAIGNS } from "@/lib/survey-v2";
+import { getCampaign, campaignImage } from "@/lib/survey-campaigns";
 import SurveyFlow from "@/components/SurveyFlow";
 
 // Public post-show survey for one show, e.g. /survey/sial-paris-2026, shared
 // on LinkedIn and elsewhere. No sign-in. An optional ?src= tag (linkedin,
-// whatsapp...) records where the answer came from.
+// whatsapp...) records where the answer came from. Surveys are created and
+// opened or closed from Admin > Feedback (lib/survey-campaigns.ts).
 
 type Params = { params: Promise<{ campaign: string }>; searchParams: Promise<{ src?: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { campaign } = await params;
-  const c = CAMPAIGNS[campaign];
+  const c = await getCampaign(campaign);
   if (!c) return { title: "Survey not found", robots: { index: false } };
   const title = `${c.label}: post-show check`;
   const description = `A 3 minute survey for everyone who exhibited at or visited ${c.exhibition}. Get your personal post-show report.`;
-  const image = `https://expoleados.com/og/${c.slug}-survey.png`;
+  const image = campaignImage(c);
   return {
     title,
     description,
     robots: { index: false, follow: false },
     alternates: { canonical: `https://expoleados.com/survey/${c.slug}` },
-    openGraph: { title, description, url: `https://expoleados.com/survey/${c.slug}`, siteName: "ExpoLead OS", type: "website", images: [{ url: image, width: 1200, height: 627 }] },
+    openGraph: { title, description, url: `https://expoleados.com/survey/${c.slug}`, siteName: "ExpoLead OS", type: "website", images: [{ url: image, width: 1200, height: c.hasAssets ? 627 : 630 }] },
     twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function SurveyPage({ params, searchParams }: Params) {
   const { campaign } = await params;
   const { src } = await searchParams;
-  const c = CAMPAIGNS[campaign];
+  const c = await getCampaign(campaign);
   if (!c) notFound();
 
   if (!c.open) {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { createHash } from "crypto";
 import { createServiceClient } from "@/lib/supabase/service";
 import SurveyFlow from "@/components/SurveyFlow";
-import { CAMPAIGNS } from "@/lib/survey-v2";
+import { getCampaigns } from "@/lib/survey-campaigns";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
       /* generic preview */
     }
   }
-  const show = Object.values(CAMPAIGNS).find((c) => c.label === campaign || c.exhibition === exhibition);
+  const show = Object.values(await getCampaigns()).find((c) => c.hasAssets && (c.label === campaign || c.exhibition === exhibition));
   const title = exhibition ? `How did ${exhibition} go? Your post-show check` : "Your post-show check";
   const description = "A 3 minute post-show check, then your personal post-show report.";
   const images = show ? [{ url: `https://expoleados.com/og/${show.slug}-survey.png`, width: 1200, height: 627 }] : undefined;

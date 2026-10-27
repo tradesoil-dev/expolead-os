@@ -1,7 +1,8 @@
 import { NextResponse, after } from "next/server";
 import { createHash } from "crypto";
 import { createServiceClient } from "@/lib/supabase/service";
-import { CAMPAIGNS, SURVEY_V2, cleanAnswersV2, emailProblem } from "@/lib/survey-v2";
+import { SURVEY_V2, cleanAnswersV2, emailProblem } from "@/lib/survey-v2";
+import { getCampaign } from "@/lib/survey-campaigns";
 import { sendSurveyReportEmail } from "@/lib/survey-report-email";
 import { reportEmailAllowed } from "@/lib/report-email-cap";
 
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
   // Bot trap: pretend success, store nothing.
   if (clip(body?.website, 200)) return NextResponse.json({ ok: true });
 
-  const campaign = CAMPAIGNS[clip(body?.campaign, 80)];
+  const campaign = await getCampaign(clip(body?.campaign, 80));
   if (!campaign || !campaign.open) return NextResponse.json({ error: "This survey is not open." }, { status: 400 });
 
   const answers = cleanAnswersV2(body?.answers, "public");

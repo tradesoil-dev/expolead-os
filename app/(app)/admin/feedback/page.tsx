@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import PageHeader from "@/components/PageHeader";
 import FeedbackDashboard, { type FeedbackRow, type FeedbackTab } from "@/components/FeedbackDashboard";
-import { CAMPAIGNS } from "@/lib/survey-v2";
+import { getCampaigns } from "@/lib/survey-campaigns";
+import { retentionCutoff } from "@/lib/survey-archive";
 
 export const metadata = { title: "Admin Feedback" };
 
@@ -21,6 +22,8 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
   if (!profile?.is_admin) redirect("/dashboard");
 
   const rows: FeedbackRow[] = [];
+  const campaignMap = await getCampaigns();
+  const campaigns = Object.values(campaignMap);
   const missing: string[] = [];
   let admin: ReturnType<typeof createServiceClient> | null = null;
   try {
@@ -88,7 +91,7 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
         name: r.full_name,
         company: r.company_name,
         email: r.email,
-        campaign: CAMPAIGNS[r.campaign]?.label ?? r.campaign,
+        campaign: campaignMap[r.campaign]?.label ?? r.campaign,
         source: r.source || "direct",
         role: r.role_show,
         date: r.created_at,
@@ -107,6 +110,54 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
     }
   }
 
+  // Archived (anonymised) answers uploaded again by the admin (migration 0058).
+  if (admin) {
+    const { data: arch } = await admin
+      .from("survey_archive")
+      .select("id, campaign, source, role_show, answered_month, answers")
+      .order("answered_month", { ascending: false })
+      .limit(5000);
+    for (const r of arch ?? []) {
+      rows.push({
+        id: `archive-${r.id}`,
+        kind: "public",
+        archived: true,
+        name: "Archived answer",
+        company: "",
+        email: "",
+        campaign: r.campaign,
+        source: r.source || "direct",
+        role: r.role_show,
+        date: `${r.answered_month}-01`,
+        sentAt: null,
+        answeredAt: `${r.answered_month}-01`,
+        version: 2,
+        answers: r.answers,
+        wantsCall: false,
+        wantsTry: false,
+        whatsapp: "",
+        linkedin: "",
+        nextShow: "",
+        consent: false,
+        wantsResults: false,
+      });
+    }
+  }
+
+  // 24-month retention (Privacy Notice section 9): how many live answers are
+  // past it, and how many reach it within the next 30 days.
+  const cutoff = retentionCutoff();
+  const soon = new Date(cutoff);
+  soon.setDate(soon.getDate() + 30);
+  const live = rows.filter((r) => r.kind === "public" && !r.archived && r.answeredAt);
+  const retention = {
+    overdue: live.filter((r) => r.answeredAt! < cutoff.toISOString()).length,
+    dueSoon: live.filter((r) => r.answeredAt! >= cutoff.toISOString() && r.answeredAt! < soon.toISOString()).length,
+    oldest: live.reduce<string | null>((m, r) => (!m || r.answeredAt! < m ? r.answeredAt! : m), null),
+    total: live.length,
+    archived: rows.filter((r) => r.archived).length,
+  };
+
   rows.sort((x, y) => (y.date ?? "").localeCompare(x.date ?? ""));
 
   return (
@@ -119,7 +170,7 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
           </div>
         )}
         <a href="/survey-preview" className="inline-flex min-h-9 items-center rounded-lg border border-emerald-200 bg-white px-3.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-50">Preview surveys and emails</a>
-        <FeedbackDashboard rows={rows} initialTab={(tab === "pilot" ? "pilot" : "public") as FeedbackTab} />
+        <FeedbackDashboard rows={rows} campaigns={campaigns} retention={retention} initialTab={(tab === "pilot" ? "pilot" : "public") as FeedbackTab} />
       </main>
     </>
   );

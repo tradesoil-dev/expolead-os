@@ -3,13 +3,16 @@
 import { Fragment, useMemo, useState } from "react";
 import Link from "next/link";
 import { MessageSquareText, Download, UserPlus, Copy, Check, Share2, Image as ImageIcon } from "lucide-react";
-import { ALL_QUESTIONS, CAMPAIGNS, optionLabel, SURVEY_V2, type Answers } from "@/lib/survey-v2";
+import { ALL_QUESTIONS, optionLabel, SURVEY_V2, type Answers } from "@/lib/survey-v2";
+import type { CampaignRow } from "@/lib/survey-campaigns";
+import { SurveyLinksCard, RetentionCard, type Retention } from "@/components/SurveyAdminCards";
 import { SURVEY_QUESTIONS as V1_QUESTIONS } from "@/lib/checkin-survey";
 import { toCsv } from "@/lib/export/csv";
 
 export type FeedbackRow = {
   id: string;
   kind: "pilot" | "public";
+  archived?: boolean; // anonymised answer uploaded again from the survey archive
   name: string;
   company: string;
   email: string;
@@ -67,7 +70,17 @@ function answerText(r: FeedbackRow, qid: string): string {
 // Admin > Feedback: two tabs. Public survey (share links, answers, charts) and
 // Pilot feedback (check-ins sent from Pilot invite). Each tab's numbers,
 // charts and CSV cover only its own group, so the two never mix.
-export default function FeedbackDashboard({ rows, initialTab = "public" }: { rows: FeedbackRow[]; initialTab?: FeedbackTab }) {
+export default function FeedbackDashboard({
+  rows,
+  campaigns,
+  retention,
+  initialTab = "public",
+}: {
+  rows: FeedbackRow[];
+  campaigns: CampaignRow[];
+  retention: Retention;
+  initialTab?: FeedbackTab;
+}) {
   const [tab, setTab] = useState<FeedbackTab>(initialTab);
   const publicRows = useMemo(() => rows.filter((r) => r.kind === "public"), [rows]);
   const pilotRows = useMemo(() => rows.filter((r) => r.kind === "pilot"), [rows]);
@@ -90,18 +103,27 @@ export default function FeedbackDashboard({ rows, initialTab = "public" }: { row
         {tabBtn("public", "Public survey", publicRows.length)}
         {tabBtn("pilot", "Pilot feedback", pilotRows.length)}
       </div>
-      {tab === "public" ? <PublicPanel rows={publicRows} /> : <PilotPanel rows={pilotRows} />}
+      {tab === "public" ? <PublicPanel rows={publicRows} campaigns={campaigns} retention={retention} /> : <PilotPanel rows={pilotRows} />}
     </div>
   );
 }
 
 /* ---------------------------- Public survey tab ---------------------------- */
 
-function PublicPanel({ rows }: { rows: FeedbackRow[] }) {
-  const campaigns = Object.values(CAMPAIGNS);
+function PublicPanel({ rows: allRows, campaigns, retention }: { rows: FeedbackRow[]; campaigns: CampaignRow[]; retention: Retention }) {
   const [campaign, setCampaign] = useState("all");
   const [source, setSource] = useState("all");
+  const archivedCount = allRows.filter((r) => r.archived).length;
+  const [includeArchive, setIncludeArchive] = useState(true);
+  const rows = includeArchive ? allRows : allRows.filter((r) => !r.archived);
   const sources = useMemo(() => Array.from(new Set(rows.map((r) => r.source))).sort(), [rows]);
+  const liveRows = allRows.filter((r) => !r.archived);
+  const counts = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const r of liveRows) m[r.campaign] = (m[r.campaign] ?? 0) + 1;
+    return m;
+  }, [liveRows]);
+  const campaignOptions = Array.from(new Set([...campaigns.map((c) => c.label), ...rows.map((r) => r.campaign)])).sort();
 
   const shown = rows.filter((r) => (campaign === "all" || r.campaign === campaign) && (source === "all" || r.source === source));
   const tryers = shown.filter((r) => r.wantsTry);
@@ -109,18 +131,25 @@ function PublicPanel({ rows }: { rows: FeedbackRow[] }) {
 
   return (
     <div className="space-y-5">
-      {campaigns.map((c) => <ShareCard key={c.slug} slug={c.slug} label={c.label} exhibition={c.exhibition} rows={rows.filter((r) => r.campaign === c.label)} />)}
+      <SurveyLinksCard campaigns={campaigns} counts={counts} />
+      {campaigns.filter((c) => c.open).map((c) => <ShareCard key={c.slug} slug={c.slug} label={c.label} exhibition={c.exhibition} hasAssets={c.hasAssets} rows={liveRows.filter((r) => r.campaign === c.label)} />)}
 
       <div className="flex flex-wrap items-center gap-2">
         <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-800">
           <option value="all">All campaigns</option>
-          {campaigns.map((c) => <option key={c.slug} value={c.label}>{c.label}</option>)}
+          {campaignOptions.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <select value={source} onChange={(e) => setSource(e.target.value)} className="rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-800">
           <option value="all">All channels</option>
           {sources.map((s) => <option key={s} value={s}>{s === "direct" ? "No tag" : s}</option>)}
         </select>
-        <CsvButton rows={shown} name="public-survey" />
+        <CsvButton rows={shown.filter((r) => !r.archived)} name="public-survey" />
+        {archivedCount > 0 && (
+          <label className="ml-auto inline-flex items-center gap-2 text-sm text-ink-700">
+            <input type="checkbox" checked={includeArchive} onChange={(e) => setIncludeArchive(e.target.checked)} className="h-4 w-4 accent-emerald-600" />
+            Include {archivedCount} archived {archivedCount === 1 ? "answer" : "answers"}
+          </label>
+        )}
       </div>
 
       <Tiles items={[
@@ -162,11 +191,12 @@ function PublicPanel({ rows }: { rows: FeedbackRow[] }) {
           <Quotes rows={shown} />
         </>
       )}
+      <RetentionCard retention={retention} />
     </div>
   );
 }
 
-function ShareCard({ slug, label, exhibition, rows }: { slug: string; label: string; exhibition: string; rows: FeedbackRow[] }) {
+function ShareCard({ slug, label, exhibition, hasAssets, rows }: { slug: string; label: string; exhibition: string; hasAssets: boolean; rows: FeedbackRow[] }) {
   const [copied, setCopied] = useState<string | null>(null);
   const base = `${SITE}/survey/${slug}`;
   const linkFor = (src: string) => `${base}?src=${src}`;
@@ -224,8 +254,8 @@ function ShareCard({ slug, label, exhibition, rows }: { slug: string; label: str
         ))}
       </div>
       <div className="flex flex-wrap items-center gap-2 border-t border-ink-100 px-4 py-3">
-        <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-semibold text-ink-600"><ImageIcon className="h-3.5 w-3.5" /> Post images:</span>
-        {images.map((im) => (
+        {hasAssets ? <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-semibold text-ink-600"><ImageIcon className="h-3.5 w-3.5" /> Post images:</span> : <span className="text-xs text-ink-400">No post images for this survey yet. Ask Claude to make them.</span>}
+        {hasAssets && images.map((im) => (
           <a key={im.file} href={`/survey-assets/${im.file}`} download className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-ink-200 px-2.5 text-xs font-medium text-ink-700 hover:bg-ink-50">
             <Download className="h-3.5 w-3.5" /> {im.label}
           </a>
