@@ -19,7 +19,18 @@ export default async function AdminPeoplePage() {
   if (!profile?.is_admin) redirect("/dashboard");
 
   const { data } = await supabase.rpc("admin_list_signups");
-  const people = (data ?? []) as any[];
+  // Pilot details (invite date, access window, campaign) so Plan shows what the
+  // account really has, not just its original trial dates. Best effort.
+  const pilotById = new Map<string, { pilot_invited_at: string | null; early_access_until: string | null; pilot_campaign: string | null }>();
+  try {
+    const { data: pilots } = await supabase.rpc("admin_list_pilots");
+    for (const p of (pilots ?? []) as any[]) {
+      pilotById.set(p.id, { pilot_invited_at: p.pilot_invited_at ?? null, early_access_until: p.early_access_until ?? null, pilot_campaign: p.pilot_campaign ?? null });
+    }
+  } catch {
+    /* no pilot details */
+  }
+  const people = ((data ?? []) as any[]).map((p) => ({ ...p, ...(pilotById.get(p.id) ?? {}) }));
 
   return (
     <>

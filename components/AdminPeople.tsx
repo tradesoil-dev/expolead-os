@@ -17,6 +17,10 @@ type Person = {
   trial_ends_at: string | null;
   subscription_status: string | null;
   is_admin: boolean;
+  // Merged in from admin_list_pilots() on the page (null = never a pilot).
+  pilot_invited_at?: string | null;
+  early_access_until?: string | null;
+  pilot_campaign?: string | null;
 };
 
 const FREE_DOMAINS = new Set([
@@ -48,15 +52,32 @@ function daysAgo(s: string | null) {
   return (Date.now() - new Date(s).getTime()) / 86400000;
 }
 
+const TRIAL_DAYS = 14;
+
+function daysLeft(until: string | null | undefined) {
+  if (!until) return 0;
+  return Math.ceil((new Date(until).getTime() - Date.now()) / 86400000);
+}
+
+// What the account can do right now. A live pilot window wins over the trial
+// dates, because pilot access is what the app actually grants.
 function planOf(p: Person): { label: string; cls: string } {
   if (p.is_admin) return { label: "Admin", cls: "bg-emerald-100 text-emerald-800" };
-  if (p.subscription_status === "active") return { label: "Active", cls: "bg-emerald-50 text-emerald-700" };
-  if (p.trial_ends_at && new Date(p.trial_ends_at).getTime() > Date.now()) return { label: "Trial", cls: "bg-sky-50 text-sky-700" };
-  return { label: "Expired", cls: "bg-slate-100 text-slate-500" };
+  if (p.subscription_status === "active") return { label: "Paid", cls: "bg-emerald-50 text-emerald-700" };
+  if (p.early_access_until) {
+    const d = daysLeft(p.early_access_until);
+    return d > 0
+      ? { label: `Pilot (${d}d left)`, cls: "bg-violet-50 text-violet-700" }
+      : { label: "Pilot ended", cls: "bg-slate-100 text-slate-500" };
+  }
+  const d = daysLeft(p.trial_ends_at);
+  if (d > 0) return { label: `Trial ${TRIAL_DAYS} days (${d}d left)`, cls: "bg-sky-50 text-sky-700" };
+  return { label: `Trial ${TRIAL_DAYS} days ended`, cls: "bg-slate-100 text-slate-500" };
 }
-function trialWindow(p: Person): string {
+function accessEnds(p: Person): string {
   if (p.is_admin) return "Unlimited";
   if (p.subscription_status === "active") return "Subscribed";
+  if (p.early_access_until) return fmtDate(p.early_access_until);
   if (!p.trial_ends_at) return "—";
   return fmtDate(p.trial_ends_at);
 }
@@ -68,7 +89,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
   const { confirm, ConfirmUI } = useConfirm();
   const { showToast, ToastUI } = useToast();
   const [q, setQ] = useState("");
-  const [filter, setFilter] = useState<"all" | "confirmed" | "pending" | "company" | "never">("all");
+  const [filter, setFilter] = useState<"all" | "confirmed" | "pending" | "company" | "never" | "pilots">("all");
   const [page, setPage] = useState(1);
   const [cleaning, setCleaning] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -164,6 +185,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
       if (filter === "pending" && p.confirmed_at) return false;
       if (filter === "company" && !isCompany(p.email)) return false;
       if (filter === "never" && p.last_sign_in_at) return false;
+      if (filter === "pilots" && !p.early_access_until) return false;
       if (term) {
         const hay = `${p.email} ${p.full_name ?? ""} ${p.company_name ?? ""}`.toLowerCase();
         if (!hay.includes(term)) return false;
@@ -227,7 +249,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
           />
         </div>
         <div className="inline-flex rounded-lg bg-slate-100 p-0.5">
-          {([["all", "All"], ["confirmed", "Confirmed"], ["pending", "Not confirmed"], ["never", "Never signed in"], ["company", "Company"]] as const).map(([k, label]) => (
+          {([["all", "All"], ["confirmed", "Confirmed"], ["pending", "Not confirmed"], ["never", "Never signed in"], ["company", "Company"], ["pilots", "Pilots"]] as const).map(([k, label]) => (
             <button key={k} onClick={() => setFilter(k)} className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${filter === k ? "bg-white text-emerald-700 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>{label}</button>
           ))}
         </div>
@@ -273,16 +295,17 @@ export default function AdminPeople({ people }: { people: Person[] }) {
               <th className="whitespace-nowrap px-4 py-2.5">Type</th>
               <th className="whitespace-nowrap px-4 py-2.5">Country</th>
               <th className="whitespace-nowrap px-4 py-2.5">Signed up</th>
-              <th className="whitespace-nowrap px-4 py-2.5">Trial ends</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Access ends</th>
               <th className="whitespace-nowrap px-4 py-2.5">Last active</th>
               <th className="whitespace-nowrap px-4 py-2.5">Status</th>
               <th className="whitespace-nowrap px-4 py-2.5">Plan</th>
+              <th className="whitespace-nowrap px-4 py-2.5">Pilot</th>
               <th className="w-12 px-4 py-2.5"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-ink-100">
             {paged.length === 0 ? (
-              <tr><td colSpan={11} className="px-4 py-12 text-center text-ink-400">No people match.</td></tr>
+              <tr><td colSpan={12} className="px-4 py-12 text-center text-ink-400">No people match.</td></tr>
             ) : (
               paged.map((p) => {
                 const plan = planOf(p);
@@ -311,7 +334,7 @@ export default function AdminPeople({ people }: { people: Person[] }) {
                       {p.signup_country ? <span>{flag(p.signup_country)} {p.signup_country}</span> : <span className="text-ink-400">—</span>}
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-ink-600">{fmtDate(p.created_at)}</td>
-                    <td className="whitespace-nowrap px-4 py-3 text-ink-600">{trialWindow(p)}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-ink-600">{accessEnds(p)}</td>
                     <td className="whitespace-nowrap px-4 py-3">
                       {p.last_sign_in_at ? (
                         <span className="text-ink-600">{fmtDate(p.last_sign_in_at)}</span>
@@ -326,7 +349,19 @@ export default function AdminPeople({ people }: { people: Person[] }) {
                         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Didn&rsquo;t finish</span>
                       )}
                     </td>
-                    <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${plan.cls}`}>{plan.label}</span></td>
+                    <td className="whitespace-nowrap px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${plan.cls}`}>{plan.label}</span></td>
+                    <td className="whitespace-nowrap px-4 py-3">
+                      {p.early_access_until ? (
+                        <span className="block text-xs text-ink-600">
+                          Invited {fmtDate(p.pilot_invited_at ?? null)}
+                          {p.pilot_campaign && (
+                            <span className="mt-1 block w-fit rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-sky-700 ring-1 ring-inset ring-sky-600/20">{p.pilot_campaign}</span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-ink-400">—</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-right">
                       {!p.is_admin && (
                         <button
