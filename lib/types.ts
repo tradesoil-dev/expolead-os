@@ -221,7 +221,7 @@ export function tradeModelLabel(v: string) {
 // supplier/manufacturer OFFERS these models; anyone else (buyer, trader,
 // distributor, agent, service provider) is LOOKING FOR them.
 export function tradeModelHeading(interest: InterestType): string {
-  return interest === "supplier" ? "What they offer" : "What they're looking for";
+  return interest === "supplier" ? "What are they offering?" : "What are they looking for?";
 }
 export type Opportunity = {
   id: string;

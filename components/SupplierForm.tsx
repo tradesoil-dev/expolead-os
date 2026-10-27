@@ -29,6 +29,7 @@ import {
 } from "@/lib/types";
 import { User, Users, Tag, MapPin, StickyNote, AlertTriangle, X } from "lucide-react";
 import ConversationRecorder from "@/components/ConversationRecorder";
+import { ADD_BUTTON, SECONDARY_BUTTON } from "@/lib/ui";
 
 const SI = { size: 15, strokeWidth: 2 } as const;
 
@@ -486,7 +487,7 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
 
           <div className="sm:col-span-2">
             <span className="mb-1.5 block text-sm font-semibold text-emerald-700">
-              {tradeModelHeading(form.interest_type as InterestType)}:
+              {tradeModelHeading(form.interest_type as InterestType)}
             </span>
             <div className="flex flex-wrap gap-1.5">
               {TRADE_MODELS.map((t) => {
@@ -620,21 +621,13 @@ export default function SupplierForm({ exhibitions }: { exhibitions: Exhibition[
         </div>
       </Section>
 
-      <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors disabled:opacity-60"
-        >
-          {saving ? "Saving…" : "Save connection"}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="text-sm font-medium text-ink-500 hover:text-ink-900"
-        >
+      {/* Cancel on the left, the main action on the right (same green pill as + Add). */}
+      <div className="flex items-center justify-between gap-3">
+        <button type="button" onClick={() => router.back()} className={SECONDARY_BUTTON}>
           Cancel
+        </button>
+        <button type="submit" disabled={saving} className={`${ADD_BUTTON} disabled:opacity-60`}>
+          {saving ? "Saving…" : "Save connection"}
         </button>
       </div>
     </form>

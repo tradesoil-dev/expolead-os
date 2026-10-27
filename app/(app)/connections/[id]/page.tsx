@@ -164,7 +164,7 @@ export default async function SupplierProfile({
           </div>
 
           <div className="pt-3 border-t border-ink-100">
-            <p className="text-sm font-semibold text-emerald-700 mb-1.5">{tradeModelHeading(supplier.interest_type)}:</p>
+            <p className="text-sm font-semibold text-emerald-700 mb-1.5">{tradeModelHeading(supplier.interest_type)}</p>
             <TradeModelUpdater supplierId={supplier.id} current={supplier.trade_models ?? []} />
           </div>
         </div>

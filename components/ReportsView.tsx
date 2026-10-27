@@ -7,6 +7,7 @@ import ReportsPresent from "@/components/ReportsPresent";
 import { formatGroupedVolume } from "@/lib/quantity-units";
 import { TRADE_MODELS } from "@/lib/types";
 import RoiPanel from "@/components/RoiPanel";
+import { ADD_BUTTON } from "@/lib/ui";
 import { pctChange } from "@/components/DeltaChip";
 import { formatMoney } from "@/lib/currencies";
 import { HeadlineStrip, ExhibitionValueBars, OutcomeDonut, LocationCard, BiggestDeals, type Headline } from "@/components/ReportsOverview";
@@ -366,7 +367,8 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
-              className={`rounded-full px-3.5 py-1.5 text-[13px] transition-colors ${tab === t.key ? "bg-white font-semibold text-ink-900 shadow-sm" : "text-ink-500 hover:text-ink-800"}`}
+              aria-pressed={tab === t.key}
+              className={`rounded-full px-3.5 py-1.5 text-[13px] transition-colors ${tab === t.key ? "bg-emerald-600 font-semibold text-white shadow-sm" : "text-ink-500 hover:bg-white hover:text-ink-800"}`}
             >
               {t.label}
             </button>
@@ -380,10 +382,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             { value: "all", label: "All time" },
           ]} /></div>
           {hasData && (
-            <button
-              onClick={() => setPresenting(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
-            >
+            <button onClick={() => setPresenting(true)} className={ADD_BUTTON}>
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h20v14H2z"/><path d="M8 21h8M12 17v4"/></svg>
               Present
             </button>
