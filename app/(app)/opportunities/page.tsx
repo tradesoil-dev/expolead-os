@@ -7,6 +7,20 @@ import { getTrialStatus } from "@/lib/trial";
 import { getQuantityUnit } from "@/lib/quantity-unit";
 import { getCurrency } from "@/lib/currency";
 import { formatGroupedVolume } from "@/lib/quantity-units";
+import { formatMoney } from "@/lib/currencies";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
+import { HeadlineStrip, type Headline } from "@/components/ReportsOverview";
+import { pctChange } from "@/components/DeltaChip";
+
+const STAGES = [
+  { key: "qualified", label: "Qualified", color: "#64748b" },
+  { key: "pricing", label: "Pricing", color: "#f59e0b" },
+  { key: "evaluation", label: "Evaluation", color: "#38bdf8" },
+  { key: "negotiating", label: "Negotiating", color: "#8b5cf6" },
+  { key: "won", label: "Won", color: "#10b981" },
+  { key: "lost", label: "Lost", color: "#fb7185" },
+] as const;
 
 export default async function OpportunitiesPage({
   searchParams,
@@ -14,13 +28,20 @@ export default async function OpportunitiesPage({
   searchParams: Promise<{ exhibition?: string }>;
 }) {
   const { exhibition: selected = "" } = await searchParams;
-  const [allOpportunities, exhibitions, suppliers, trial, quantityUnit, currency] = await Promise.all([
+  const [allOpportunities, exhibitions, suppliers, trial, quantityUnit, currency, closeHistory] = await Promise.all([
     getOpportunities(),
     getExhibitions(),
     getSuppliers(),
     getTrialStatus(),
     getQuantityUnit(),
     getCurrency(),
+    // When deals were marked won or lost, for the win-rate change (best effort).
+    (async () => {
+      if (!isSupabaseConfigured) return [] as { opportunity_id: string; status: string; created_at: string }[];
+      const supabase = await createClient();
+      const { data } = await supabase.from("opportunity_status_history").select("opportunity_id, status, created_at").in("status", ["won", "lost"]);
+      return (data ?? []) as { opportunity_id: string; status: string; created_at: string }[];
+    })(),
   ]);
 
   const connectionOptions = suppliers.map((s) => ({
@@ -79,6 +100,34 @@ export default async function OpportunitiesPage({
     pipelineCounts.evaluation +
     pipelineCounts.negotiating;
 
+  // Headline numbers for the selected show (or all): new in the last 30 days
+  // vs the 30 before, and win rate now vs before the last 30 days.
+  const DAY = 86400000;
+  const now = Date.now();
+  const t = (s: string | null | undefined) => (s ? new Date(s).getTime() : 0);
+  const notLost = opportunities.filter((o) => o.status !== "lost");
+  const new30 = opportunities.filter((o) => t(o.created_at) >= now - 30 * DAY);
+  const newPrev = opportunities.filter((o) => t(o.created_at) >= now - 60 * DAY && t(o.created_at) < now - 30 * DAY);
+  const value = (list: typeof opportunities) => list.reduce((s, o) => s + (Number(o.deal_value) || 0), 0);
+  const openValue = value(activeOpps);
+  const added30 = value(notLost.filter((o) => t(o.created_at) >= now - 30 * DAY));
+  const addedPrev = value(notLost.filter((o) => t(o.created_at) >= now - 60 * DAY && t(o.created_at) < now - 30 * DAY));
+  // Latest won/lost date per deal; deals closed with no recorded date count as before.
+  const closedAt = new Map<string, number>();
+  for (const h of closeHistory) closedAt.set(h.opportunity_id, Math.max(closedAt.get(h.opportunity_id) ?? 0, t(h.created_at)));
+  const closedBefore = opportunities.filter((o) => (o.status === "won" || o.status === "lost") && (closedAt.get(o.id) ?? 0) < now - 30 * DAY);
+  const prevWon = closedBefore.filter((o) => o.status === "won").length;
+  const prevRate = closedBefore.length ? Math.round((prevWon / closedBefore.length) * 100) : null;
+  const winDelta = totalClosed && prevRate !== null && closedBefore.length < totalClosed ? winRate - prevRate : null;
+
+  const headlines: Headline[] = [
+    { label: "Open opportunities", value: String(activeCount), delta: pctChange(new30.length, newPrev.length), sub: `${new30.length} new in 30 days, vs ${newPrev.length} before` },
+    { label: "Open pipeline", value: formatMoney(openValue, currency), delta: pctChange(added30, addedPrev), sub: `+${formatMoney(added30, currency)} added in 30 days` },
+    { label: "Win rate", value: totalClosed ? `${winRate}%` : "—", delta: winDelta, unit: " pts", sub: totalClosed ? `${pipelineCounts.won} won of ${totalClosed} closed` : "No closed deals yet" },
+    { label: "Pipeline volume", value: potentialVolume, delta: null, chip: { text: "Open deals", tone: "neutral" }, sub: "Across all product lines" },
+  ];
+  const stageTotal = opportunities.length;
+
   return (
     <main className="min-h-screen space-y-6 bg-slate-50 p-6">
       <PageHeader
@@ -96,57 +145,27 @@ export default async function OpportunitiesPage({
         selected={selected}
       />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
-        <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-slate-900">{pipelineCounts.qualified}</p>
-          <p className="text-xs text-slate-500">Qualified</p>
+      <HeadlineStrip items={headlines} />
+
+      <div className="rounded-2xl border border-ink-200 bg-white px-4 py-3.5">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-[13.5px] font-semibold text-ink-900">Pipeline by stage</h2>
+          <span className="text-xs text-ink-400">{stageTotal} {stageTotal === 1 ? "opportunity" : "opportunities"}</span>
         </div>
-
-        <div className="rounded-xl border border-amber-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-amber-600">{pipelineCounts.pricing}</p>
-          <p className="text-xs text-slate-500">Pricing</p>
+        <div className="my-2.5 flex h-3 gap-[3px] overflow-hidden rounded-full bg-slate-100">
+          {stageTotal > 0 &&
+            STAGES.map((s) =>
+              pipelineCounts[s.key] > 0 ? <div key={s.key} style={{ flexGrow: pipelineCounts[s.key], flexBasis: 0, background: s.color }} title={`${s.label}: ${pipelineCounts[s.key]}`} /> : null,
+            )}
         </div>
-
-        <div className="rounded-xl border border-sky-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-sky-600">{pipelineCounts.evaluation}</p>
-          <p className="text-xs text-slate-500">Evaluation</p>
-        </div>
-
-        <div className="rounded-xl border border-violet-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-violet-600">{pipelineCounts.negotiating}</p>
-          <p className="text-xs text-slate-500">Negotiating</p>
-        </div>
-
-        <div className="rounded-xl border border-emerald-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-emerald-600">{pipelineCounts.won}</p>
-          <p className="text-xs text-slate-500">Won</p>
-        </div>
-
-        <div className="rounded-xl border border-red-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-red-600">{pipelineCounts.lost}</p>
-          <p className="text-xs text-slate-500">Lost</p>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-slate-900">{winRate}%</p>
-          <p className="text-xs text-slate-500">Win Rate</p>
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-emerald-200 bg-white p-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-              Pipeline Volume
-            </p>
-            <p className="text-2xl font-bold text-emerald-600">
-              {potentialVolume}
-            </p>
-          </div>
-
-          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
-            {activeCount} Active Opportunities
-          </span>
+        <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-[12.5px] text-ink-500">
+          {STAGES.map((s) => (
+            <span key={s.key}>
+              <span className="mr-1.5 inline-block h-2 w-2 rounded-full" style={{ background: s.color }} />
+              {s.label}
+              <b className="ml-1 font-semibold text-ink-900">{pipelineCounts[s.key]}</b>
+            </span>
+          ))}
         </div>
       </div>
 

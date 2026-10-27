@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import DatePicker from "@/components/DatePicker";
+import { ADD_BUTTON } from "@/lib/ui";
 
 type Choice = {
   id: string;
@@ -73,7 +74,7 @@ export default function AddFollowUpButton({ connections }: { connections: Choice
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700"
+        className={ADD_BUTTON}
       >
         <span className="text-base leading-none">+</span> Add follow-up
       </button>

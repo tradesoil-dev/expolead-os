@@ -6,6 +6,7 @@ import AddFollowUpButton from "@/components/AddFollowUpButton";
 import { getSuppliers, getOpportunities } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { HeadlineStrip, type Headline } from "@/components/ReportsOverview";
 
 export const metadata = { title: "Follow-ups — ExpoLead OS" };
 
@@ -95,6 +96,35 @@ export default async function FollowUpsPage() {
 
   const total = items.length;
 
+  // Headline numbers.
+  const DAY = 86400000;
+  const dayMs = (s: string) => startOfDay(new Date(s)).getTime();
+  const overdueThisWeek = overdue.filter((i) => dayMs(i.date) >= today.getTime() - 7 * DAY).length;
+  const oldestLate = overdue.length ? Math.round((today.getTime() - dayMs(overdue[0].date)) / DAY) : 0;
+  const next7 = upcoming.filter((i) => dayMs(i.date) <= today.getTime() + 7 * DAY);
+  const next7Conns = next7.filter((i) => i.kind === "Connection").length;
+  const completed =
+    suppliers.filter((s) => (s as any).follow_up_completed).length + opportunities.filter((o) => o.next_follow_up_completed).length;
+  const donePct = completed + total ? Math.round((completed / (completed + total)) * 100) : null;
+  const headlines: Headline[] = [
+    {
+      label: "Overdue",
+      value: String(overdue.length),
+      valueTone: overdue.length ? "bad" : undefined,
+      delta: null,
+      chip: overdue.length ? (overdueThisWeek ? { text: `${overdueThisWeek} this week`, tone: "bad" } : undefined) : { text: "All clear", tone: "good" },
+      sub: overdue.length ? <>Oldest is <b className="font-semibold text-ink-700">{oldestLate} {oldestLate === 1 ? "day" : "days"}</b> late</> : "Nothing overdue",
+    },
+    { label: "Due today", value: String(dueToday.length), delta: null, chip: dueToday.length ? undefined : { text: "All clear", tone: "good" }, sub: dueToday.length ? "Waiting for you today" : "Nothing waiting for today" },
+    {
+      label: "Next 7 days",
+      value: String(next7.length),
+      delta: null,
+      sub: <><b className="font-semibold text-ink-700">{next7Conns}</b> {next7Conns === 1 ? "connection" : "connections"} · <b className="font-semibold text-ink-700">{next7.length - next7Conns}</b> {next7.length - next7Conns === 1 ? "opportunity" : "opportunities"}</>,
+    },
+    { label: "Completed", value: String(completed), delta: null, chip: donePct !== null ? { text: `${donePct}% done`, tone: "good" } : undefined, sub: "Of all follow-ups you scheduled" },
+  ];
+
   return (
     <>
       <PageHeader
@@ -112,11 +142,7 @@ export default async function FollowUpsPage() {
         }
       />
       <main className="flex-1 space-y-6 p-6 md:p-8">
-        <section className="grid grid-cols-3 gap-4 max-w-2xl">
-          <Stat label="Overdue" value={overdue.length} tone="red" />
-          <Stat label="Due today" value={dueToday.length} tone="amber" />
-          <Stat label="Upcoming" value={upcoming.length} tone="emerald" />
-        </section>
+        <HeadlineStrip items={headlines} />
 
         {/* Guide note — coaches first-time users, mirrors the connection form guide */}
         <div className="w-full max-w-3xl rounded-xl border border-emerald-100 bg-emerald-50 p-5">
@@ -153,16 +179,6 @@ export default async function FollowUpsPage() {
         )}
       </main>
     </>
-  );
-}
-
-function Stat({ label, value, tone }: { label: string; value: number; tone: "red" | "amber" | "emerald" }) {
-  const color = tone === "red" ? "text-rose-600" : tone === "amber" ? "text-amber-600" : "text-emerald-600";
-  return (
-    <div className="rounded-xl border border-ink-200 bg-white p-4">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className={`mt-1 text-2xl font-extrabold ${color}`}>{value}</p>
-    </div>
   );
 }
 

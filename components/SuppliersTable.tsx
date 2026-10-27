@@ -7,6 +7,8 @@ import { Download, Upload, Trash2, Loader2 } from "lucide-react";
 import { useConfirm } from "@/components/useConfirm";
 import { useToast } from "@/components/useToast";
 import { createClient } from "@/lib/supabase/client";
+import { HeadlineStrip, type Headline } from "@/components/ReportsOverview";
+import { canonicalCountry } from "@/lib/geo/country";
 import { PriorityBadge, StatusBadge, InterestBadge } from "@/components/Badge";
 import Select from "@/components/Select";
 import {
@@ -166,35 +168,43 @@ export default function SuppliersTable({
       setExporting(false);
     }
   }
-  const totalSuppliers = suppliers.length;
-  const targetSuppliers = suppliers.filter((s) => s.is_target).length;
-  const followUpsDue = suppliers.filter((s) => s.follow_up_date).length;
-  const countries = new Set(suppliers.map((s) => s.country).filter(Boolean)).size;
+  // Headline numbers over all connections (not the filters below them).
+  const headlines = useMemo((): Headline[] => {
+    const DAY = 86400000;
+    const now = Date.now();
+    const t = (s: string | null | undefined) => (s ? new Date(s).getTime() : 0);
+    const new30 = suppliers.filter((s) => t(s.created_at) >= now - 30 * DAY).length;
+    const newPrev = suppliers.filter((s) => t(s.created_at) >= now - 60 * DAY && t(s.created_at) < now - 30 * DAY).length;
+    const targets = suppliers.filter((s) => s.is_target).length;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const day0 = today.getTime();
+    const scheduled = suppliers.filter((s) => s.follow_up_date && s.follow_up_status !== "closed" && !(s as any).follow_up_completed);
+    const dayOf = (s: string) => { const d = new Date(s); d.setHours(0, 0, 0, 0); return d.getTime(); };
+    const overdue = scheduled.filter((s) => dayOf(s.follow_up_date!) < day0).length;
+    const thisWeek = scheduled.filter((s) => { const d = dayOf(s.follow_up_date!); return d >= day0 && d <= day0 + 7 * DAY; }).length;
+    const firstSeen = new Map<string, number>();
+    for (const s of suppliers) {
+      const raw = (s.country ?? "").trim();
+      if (!raw) continue;
+      const key = canonicalCountry(raw) ?? raw.toLowerCase();
+      firstSeen.set(key, Math.min(firstSeen.get(key) ?? Infinity, t(s.created_at) || Infinity));
+    }
+    const newCountries = Array.from(firstSeen.values()).filter((ms) => ms >= now - 30 * DAY).length;
+    return [
+      { label: "Total connections", value: String(suppliers.length), delta: new30, unit: "", deltaSuffix: "in 30 days", sub: `vs ${newPrev} in the 30 days before` },
+      { label: "Target connections", value: String(targets), delta: null, chip: suppliers.length ? { text: `${Math.round((targets / suppliers.length) * 100)}% of all`, tone: "neutral" } : undefined, sub: "Companies you plan to win" },
+      { label: "Follow-ups scheduled", value: String(scheduled.length), delta: null, chip: overdue ? { text: `${overdue} overdue`, tone: "bad" } : { text: "None overdue", tone: "good" }, sub: `${thisWeek} due in the next 7 days` },
+      { label: "Countries", value: String(firstSeen.size), delta: newCountries || null, unit: "", deltaSuffix: "new", sub: "New means a first connection in the last 30 days" },
+    ];
+  }, [suppliers]);
 
     return (
     <div className="space-y-4">
       {ConfirmUI}
       {ToastUI}
-      <div className="grid gap-3 md:grid-cols-4">
-        <div className="rounded-xl border-2 border-emerald-400 bg-white p-4 shadow-card">
-          <p className="text-xs font-medium text-ink-500">Total connections</p>
-          <p className="mt-2 text-2xl font-semibold text-emerald-600">{totalSuppliers}</p>
-        </div>
-
-        <div className="rounded-xl border-2 border-blue-400 bg-white p-4 shadow-card">
-          <p className="text-xs font-medium text-ink-500">Target connections</p>
-          <p className="mt-2 text-2xl font-semibold text-blue-600">{targetSuppliers}</p>
-        </div>
-
-        <div className="rounded-xl border-2 border-amber-400 bg-white p-4 shadow-card">
-          <p className="text-xs font-medium text-ink-500">Follow-ups</p>
-          <p className="mt-2 text-2xl font-semibold text-amber-600">{followUpsDue}</p>
-        </div>
-
-        <div className="rounded-xl border-2 border-purple-400 bg-white p-4 shadow-card">
-          <p className="text-xs font-medium text-ink-500">Countries</p>
-          <p className="mt-2 text-2xl font-semibold text-purple-600">{countries}</p>
-        </div>
+      <div className="pb-2">
+        <HeadlineStrip items={headlines} />
       </div>
 
       <div className="space-y-2">

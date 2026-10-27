@@ -7,6 +7,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { saveErrorMessage } from "@/lib/errors";
 import type { ExhibitionLibraryItem } from "@/lib/types";
 import DatePicker from "@/components/DatePicker";
+import { ADD_BUTTON, ADD_BUTTON_LOCKED } from "@/lib/ui";
 
 export default function AddExhibitionForm({
   isLocked,
@@ -116,7 +117,7 @@ export default function AddExhibitionForm({
 
   if (isLocked) {
     return (
-      <a href="/upgrade" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended, upgrade to continue">
+      <a href="/upgrade" className={ADD_BUTTON_LOCKED} title="Your trial has ended, upgrade to continue">
         🔒 New exhibition
       </a>
     );
@@ -124,8 +125,8 @@ export default function AddExhibitionForm({
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className="rounded-lg bg-emerald-600 hover:bg-emerald-700 shadow-sm px-3.5 py-2 text-sm font-medium text-white">
-        + New exhibition
+      <button onClick={() => setOpen(true)} className={ADD_BUTTON}>
+        <span className="text-base leading-none">+</span> New exhibition
       </button>
     );
   }

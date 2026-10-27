@@ -53,7 +53,25 @@ const ALERT = "M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 
 
 /* ───────────── Headline numbers ───────────── */
 
-export type Headline = { label: string; value: string; delta: number | null; unit?: "%" | " pts" | ""; goodWhenUp?: boolean; sub: string };
+export type Headline = {
+  label: string;
+  value: string;
+  delta: number | null;
+  unit?: "%" | " pts" | "";
+  goodWhenUp?: boolean;
+  deltaSuffix?: string;
+  // A plain chip instead of a change ("11% of all", "6 overdue", "All clear").
+  chip?: { text: string; tone: "good" | "bad" | "warn" | "neutral" };
+  valueTone?: "bad";
+  sub: React.ReactNode;
+};
+
+const CHIP_TONE = {
+  good: "bg-emerald-50 text-emerald-700",
+  bad: "bg-rose-50 text-rose-600",
+  warn: "bg-amber-50 text-amber-700",
+  neutral: "bg-slate-100 text-slate-600",
+};
 
 export function HeadlineStrip({ items }: { items: Headline[] }) {
   return (
@@ -62,8 +80,12 @@ export function HeadlineStrip({ items }: { items: Headline[] }) {
         <div key={k.label} className={`px-0 lg:px-5 ${i > 0 ? "lg:border-l lg:border-ink-200" : "lg:pl-0"}`}>
           <p className="text-[12.5px] text-ink-500">{k.label}</p>
           <div className="mt-1.5 flex flex-wrap items-center gap-2">
-            <span className="text-[26px] font-semibold tracking-tight tabular-nums text-ink-900">{k.value}</span>
-            <DeltaChip value={k.delta} unit={k.unit ?? "%"} goodWhenUp={k.goodWhenUp ?? true} />
+            <span className={`text-[26px] font-semibold tracking-tight tabular-nums ${k.valueTone === "bad" ? "text-rose-600" : "text-ink-900"}`}>{k.value}</span>
+            {k.chip ? (
+              <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[11.5px] font-semibold ${CHIP_TONE[k.chip.tone]}`}>{k.chip.text}</span>
+            ) : (
+              <DeltaChip value={k.delta} unit={k.unit ?? "%"} goodWhenUp={k.goodWhenUp ?? true} suffix={k.deltaSuffix} />
+            )}
           </div>
           <p className="mt-1 text-[11.5px] text-ink-400">{k.sub}</p>
         </div>

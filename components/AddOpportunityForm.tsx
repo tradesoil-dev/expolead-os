@@ -10,6 +10,7 @@ import Select from "@/components/Select";
 import ConnectionPicker, { type ConnOption } from "@/components/ConnectionPicker";
 import { QUANTITY_UNITS } from "@/lib/quantity-units";
 import type { Exhibition } from "@/lib/types";
+import { ADD_BUTTON, ADD_BUTTON_LOCKED } from "@/lib/ui";
 
 type Line = { product: string; quantity: string; unit: string };
 
@@ -150,19 +151,16 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
 
   if (isLocked) {
     return (
-      <a href="/upgrade" className="inline-flex items-center gap-1.5 rounded-lg bg-ink-100 px-3.5 py-2 text-sm font-medium text-ink-400" title="Your trial has ended, upgrade to continue">
-        🔒 New Opportunity
+      <a href="/upgrade" className={ADD_BUTTON_LOCKED} title="Your trial has ended, upgrade to continue">
+        🔒 New opportunity
       </a>
     );
   }
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-ink-700"
-      >
-        + New Opportunity
+      <button onClick={() => setOpen(true)} className={ADD_BUTTON}>
+        <span className="text-base leading-none">+</span> New opportunity
       </button>
     );
   }
