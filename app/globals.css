@@ -203,3 +203,8 @@ li[id^="fu-"]:target {
 @media (prefers-reduced-motion: reduce) {
   .ls-glow, .ls-active, .ls-fade, .ls-text, .ls-big { animation: none; }
 }
+
+/* World map bubbles (Dashboard + Reports): a soft ring that grows and fades. */
+.map-pulse { transform-box: fill-box; transform-origin: center; animation: map-pulse 2.6s ease-out infinite; }
+@keyframes map-pulse { 0% { transform: scale(.6); opacity: .55; } 70%, 100% { transform: scale(1.9); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .map-pulse { animation: none; opacity: .15; } }

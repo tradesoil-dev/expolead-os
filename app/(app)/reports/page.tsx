@@ -19,6 +19,8 @@ export default async function ReportsPage() {
 
   // Map a connection's trade models so opportunities can inherit them via the link.
   const tmBySupplier = new Map<string, string[]>(suppliers.map((s) => [s.id, (s as any).trade_models ?? []]));
+  // Opportunities are placed on the location map by their linked connection country.
+  const countryBySupplier = new Map<string, string | null>(suppliers.map((s) => [s.id, s.country ?? null]));
 
   const connections = suppliers.map((s) => ({
     id: s.id,
@@ -34,6 +36,9 @@ export default async function ReportsPage() {
 
   const opps = opportunities.map((o: any) => ({
     id: o.id,
+    name: o.name ?? null,
+    supplier_name: o.supplier?.company_name ?? null,
+    country: o.supplier_id ? (countryBySupplier.get(o.supplier_id) ?? null) : null,
     created_at: o.created_at ?? null,
     status: o.status ?? null,
     quantity: Number(o.quantity) || 0,
@@ -51,7 +56,7 @@ export default async function ReportsPage() {
 
   return (
     <>
-      <PageHeader title="Reports" subtitle="How your exhibitions are performing" />
+      <PageHeader title="Reports" subtitle="How your exhibitions turn into revenue" />
       <main className="flex-1 p-6 md:p-8">
         <ReportsView connections={connections} opportunities={opps} quantityUnit={quantityUnit} currency={currency} exhibitionCosts={exhibitionCosts} />
       </main>

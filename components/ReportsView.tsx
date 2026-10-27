@@ -7,6 +7,9 @@ import ReportsPresent from "@/components/ReportsPresent";
 import { formatGroupedVolume } from "@/lib/quantity-units";
 import { TRADE_MODELS } from "@/lib/types";
 import RoiPanel from "@/components/RoiPanel";
+import { pctChange } from "@/components/DeltaChip";
+import { formatMoney } from "@/lib/currencies";
+import { HeadlineStrip, ExhibitionValueBars, OutcomeDonut, LocationCard, BiggestDeals, type Headline } from "@/components/ReportsOverview";
 
 const RANGE_LABELS: Record<string, string> = {
   year: "This year",
@@ -15,7 +18,7 @@ const RANGE_LABELS: Record<string, string> = {
 };
 
 type Conn = { id: string; created_at: string | null; interest_type: string | null; exhibition: string | null; country: string | null; trade_models?: string[]; follow_up_date?: string | null; follow_up_status?: string | null; follow_up_completed?: boolean | null };
-type Opp = { id: string; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null; trade_models?: string[]; products?: { quantity: unknown; quantity_unit?: string | null }[] };
+type Opp = { id: string; name?: string | null; supplier_name?: string | null; country?: string | null; created_at: string | null; status: string | null; deal_value?: number | null; quantity: number; quantity_unit?: string | null; exhibition: string | null; market?: string | null; next_follow_up_date: string | null; next_follow_up_completed: boolean | null; trade_models?: string[]; products?: { quantity: unknown; quantity_unit?: string | null }[] };
 
 const STAGE_ORDER: { key: string; label: string; color: string }[] = [
   { key: "researching", label: "Qualified", color: "#64748b" },
@@ -62,6 +65,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
   const [tMarket, setTMarket] = useState<"bar" | "pie">("bar");
   const [tTm, setTTm] = useState<"bar" | "doughnut">("bar");
   const [presenting, setPresenting] = useState(false);
+  const [tab, setTab] = useState<"overview" | "pipeline" | "exhibitions" | "followups">("overview");
 
   const exhibitionOptions = useMemo(() => {
     const set = new Set<string>();
@@ -228,119 +232,8 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
       .sort((a, b) => b.conns - a.conns);
   }, [fConns, fOpps, quantityUnit]);
 
-  const hasData = connections.length > 0 || opportunities.length > 0;
-
-  return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        {hasData && (
-          <button
-            onClick={() => setPresenting(true)}
-            className="mr-auto inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h20v14H2z"/><path d="M8 21h8M12 17v4"/></svg>
-            Present
-          </button>
-        )}
-        <div className="w-48"><Select value={exhibition} onChange={setExhibition} options={exhibitionOptions} className="py-2" /></div>
-        <div className="w-40"><Select value={range} onChange={setRange} className="py-2" options={[
-          { value: "year", label: "This year" },
-          { value: "lastyear", label: "Last year" },
-          { value: "all", label: "All time" },
-        ]} /></div>
-      </div>
-
-      {presenting && (
-        <ReportsPresent
-          title={exhibition || "All exhibitions"}
-          rangeLabel={RANGE_LABELS[range] ?? "This year"}
-          kpis={{ ...kpis, followUpRate: followUps.rate }}
-          charts={[
-            { key: "stage", heading: "Pipeline by stage", type: "bar", data: stage },
-            { key: "type", heading: "Connections by type", type: "doughnut", data: type },
-            { key: "exh", heading: "Leads by exhibition", type: "bar", data: exh },
-            ...(!exhibition ? [{ key: "time", heading: "Connections added over time", type: "line" as const, data: time }] : []),
-            { key: "country", heading: "Connections by country", type: "bar", data: country },
-            { key: "market", heading: "Opportunities by market", type: "bar", data: market },
-            ...(tradeModel.labels.length > 0 ? [{ key: "tradeModel", heading: "Connections by trade model", type: "bar", data: tradeModel }] : []),
-          ]}
-          funnel={funnel}
-          perExhibition={perExhibition}
-          onClose={() => setPresenting(false)}
-        />
-      )}
-
-      {!hasData ? (
-        <div className="rounded-xl border border-ink-200 bg-white px-4 py-16 text-center">
-          <p className="text-sm font-semibold text-slate-900">No data to report yet</p>
-          <p className="mt-1 text-sm text-slate-500">Capture connections and create opportunities, and your charts will fill in here.</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-            <Kpi label="Connections" value={kpis.connections} />
-            <Kpi label="Active opportunities" value={kpis.active} />
-            <Kpi label="Pipeline volume" value={kpis.volume} />
-            <Kpi label="Win rate" value={kpis.winRate === null ? "—" : `${kpis.winRate}%`} />
-            <Kpi label="Follow-up rate" value={followUps.rate === null ? "—" : `${followUps.rate}%`} />
-            <Kpi label="Exhibitions" value={kpis.exhibitions} />
-          </div>
-
-          <div className="rounded-2xl border border-ink-200 bg-white p-4">
-            <h3 className="mb-3 text-sm font-bold text-emerald-800">Follow-ups</h3>
-            <div className="grid grid-cols-3 gap-3">
-              <FuStat label="Overdue" value={followUps.overdue} tone="red" />
-              <FuStat label="Due today" value={followUps.due} tone="amber" />
-              <FuStat label="Upcoming" value={followUps.upcoming} tone="emerald" />
-            </div>
-          </div>
-
-          <RoiPanel
-            opportunities={fOpps}
-            exhibitionCosts={exhibitionCosts}
-            currency={currency}
-            exhibition={exhibition}
-          />
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Card title="Pipeline by stage" seg={<Seg value={tStage} onChange={(v) => setTStage(v as any)} options={["bar", "line", "pie"]} labels={["Bar", "Line", "Pie"]} />}>
-              <ReportChart type={tStage} labels={stage.labels} data={stage.data} colors={stage.colors} />
-            </Card>
-            <Card title="Connections by type" seg={<Seg value={tType} onChange={(v) => setTType(v as any)} options={["doughnut", "pie", "bar"]} labels={["Donut", "Pie", "Bar"]} />}>
-              <ReportChart type={tType} labels={type.labels} data={type.data} colors={type.colors} />
-            </Card>
-            <Card title="Leads by exhibition" seg={<Seg value={tExh} onChange={(v) => setTExh(v as any)} options={["bar", "line"]} labels={["Bar", "Line"]} />}>
-              <ReportChart type={tExh} labels={exh.labels} data={exh.data} colors={exh.colors} />
-            </Card>
-            {!exhibition && (
-              <Card title="Connections added over time" seg={<Seg value={tTime} onChange={(v) => setTTime(v as any)} options={["line", "bar"]} labels={["Line", "Bar"]} />}>
-                <ReportChart type={tTime} labels={time.labels} data={time.data} colors={time.colors} />
-              </Card>
-            )}
-            {country.labels.length > 0 && (
-              <Card title="Connections by country" seg={<Seg value={tCountry} onChange={(v) => setTCountry(v as any)} options={["bar", "pie"]} labels={["Bar", "Pie"]} />}>
-                <ReportChart type={tCountry} labels={country.labels} data={country.data} colors={country.colors} />
-              </Card>
-            )}
-            {market.labels.length > 0 && (
-              <Card title="Opportunities by market" seg={<Seg value={tMarket} onChange={(v) => setTMarket(v as any)} options={["bar", "pie"]} labels={["Bar", "Pie"]} />}>
-                <ReportChart type={tMarket} labels={market.labels} data={market.data} colors={market.colors} />
-              </Card>
-            )}
-            {tradeModel.labels.length > 0 && (
-              <Card title="Connections by trade model" seg={<Seg value={tTm} onChange={(v) => setTTm(v as any)} options={["bar", "doughnut"]} labels={["Bar", "Donut"]} />}>
-                <ReportChart type={tTm} labels={tradeModel.labels} data={tradeModel.data} colors={tradeModel.colors} />
-              </Card>
-            )}
-          </div>
-
-          <div className="rounded-2xl border border-ink-200 bg-white p-4">
-            <h3 className="mb-3 text-sm font-bold text-emerald-800">Conversion funnel</h3>
-            <FunnelBar label="Connections captured" value={funnel.c} max={funnel.c} color="#10b981" />
-            <FunnelBar label="Opportunities created" value={funnel.o} max={funnel.c} color="#38bdf8" pct={funnel.c ? Math.round((funnel.o / funnel.c) * 100) : null} />
-            <FunnelBar label="Deals won" value={funnel.w} max={funnel.c} color="#8b5cf6" pct={funnel.c ? Math.round((funnel.w / funnel.c) * 100) : null} />
-          </div>
-
+  // Existing performance tables, shown on the Pipeline and Exhibitions tabs.
+  const perExhibitionTable = (
           <div className="rounded-2xl border border-ink-200 bg-white p-4">
             <h3 className="mb-3 text-sm font-bold text-emerald-800">Performance by exhibition</h3>
             <div className="overflow-x-auto">
@@ -374,7 +267,9 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
               </table>
             </div>
           </div>
-
+  );
+  const perTradeModelTable = (
+    <>
           {perTradeModel.length > 0 && (
             <div className="rounded-2xl border border-ink-200 bg-white p-4">
               <h3 className="mb-1 text-sm font-bold text-emerald-800">Performance by trade model</h3>
@@ -406,6 +301,217 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
                 </table>
               </div>
             </div>
+          )}
+    </>
+  );
+
+  const hasData = connections.length > 0 || opportunities.length > 0;
+
+  // Comparison period for the change chips: this year vs last year, last year
+  // vs the year before. "All time" has nothing to compare with.
+  const thisYear = new Date().getFullYear();
+  const curYear = range === "year" ? thisYear : range === "lastyear" ? thisYear - 1 : null;
+  const prevYear = curYear === null ? null : curYear - 1;
+  const inYear = (d: string | null, y: number) => !!d && new Date(d).getFullYear() === y;
+  const prevConns = useMemo(
+    () => (prevYear === null ? [] : connections.filter((c) => (!exhibition || c.exhibition === exhibition) && inYear(c.created_at, prevYear))),
+    [connections, exhibition, prevYear]
+  );
+  const prevOpps = useMemo(
+    () => (prevYear === null ? [] : opportunities.filter((o) => (!exhibition || o.exhibition === exhibition) && inYear(o.created_at, prevYear))),
+    [opportunities, exhibition, prevYear]
+  );
+
+  const headlines = useMemo((): Headline[] => {
+    const openValue = (list: Opp[]) => list.filter((o) => o.status !== "won" && o.status !== "lost").reduce((s, o) => s + (Number(o.deal_value) || 0), 0);
+    const winRate = (list: Opp[]) => {
+      const w = list.filter((o) => o.status === "won").length;
+      const l = list.filter((o) => o.status === "lost").length;
+      return w + l === 0 ? null : Math.round((w / (w + l)) * 100);
+    };
+    // Cost per connection: cost of the shows these connections came from,
+    // divided by the connections from those shows (shows without a cost are left out).
+    const costMap = new Map(exhibitionCosts.filter((e) => e.cost && e.cost > 0).map((e) => [e.name, Number(e.cost)]));
+    const cpc = (list: Conn[]) => {
+      const names = new Set(list.map((c) => c.exhibition).filter((n): n is string => !!n && costMap.has(n)));
+      const n = list.filter((c) => c.exhibition && names.has(c.exhibition)).length;
+      const cost = Array.from(names).reduce((s, name) => s + (costMap.get(name) ?? 0), 0);
+      return n > 0 && cost > 0 ? cost / n : null;
+    };
+    const compare = prevYear !== null;
+    const vs = compare ? (range === "year" ? "vs last year" : `vs ${prevYear}`) : RANGE_LABELS[range] ?? "All time";
+    const cur = { conns: fConns.length, open: openValue(fOpps), win: winRate(fOpps), cpc: cpc(fConns) };
+    const prev = { conns: prevConns.length, open: openValue(prevOpps), win: winRate(prevOpps), cpc: cpc(prevConns) };
+    return [
+      { label: "Connections", value: cur.conns.toLocaleString(), delta: compare ? pctChange(cur.conns, prev.conns) : null, sub: compare ? `${vs} (${prev.conns})` : vs },
+      { label: "Open pipeline", value: formatMoney(cur.open, currency), delta: compare ? pctChange(cur.open, prev.open) : null, sub: `${kpis.active} open ${kpis.active === 1 ? "opportunity" : "opportunities"}` },
+      { label: "Win rate", value: cur.win === null ? "—" : `${cur.win}%`, delta: compare && cur.win !== null && prev.win !== null ? cur.win - prev.win : null, unit: " pts", sub: compare && prev.win !== null ? `${vs} (${prev.win}%)` : "Won out of closed deals" },
+      { label: "Cost per connection", value: cur.cpc === null ? "—" : formatMoney(cur.cpc, currency), delta: compare && cur.cpc !== null && prev.cpc !== null ? pctChange(cur.cpc, prev.cpc) : null, goodWhenUp: false, sub: cur.cpc === null ? "Add show costs on Exhibitions" : "Lower is better" },
+    ];
+  }, [fConns, fOpps, prevConns, prevOpps, prevYear, range, currency, exhibitionCosts, kpis.active]);
+
+  const TABS: { key: typeof tab; label: string }[] = [
+    { key: "overview", label: "Overview" },
+    { key: "pipeline", label: "Pipeline" },
+    { key: "exhibitions", label: "Exhibitions" },
+    { key: "followups", label: "Follow-ups" },
+  ];
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="inline-flex rounded-full bg-slate-100 p-1">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setTab(t.key)}
+              className={`rounded-full px-3.5 py-1.5 text-[13px] transition-colors ${tab === t.key ? "bg-white font-semibold text-ink-900 shadow-sm" : "text-ink-500 hover:text-ink-800"}`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <div className="ml-auto flex flex-wrap items-center gap-2">
+          <div className="w-48"><Select value={exhibition} onChange={setExhibition} options={exhibitionOptions} className="py-2" /></div>
+          <div className="w-40"><Select value={range} onChange={setRange} className="py-2" options={[
+            { value: "year", label: "This year" },
+            { value: "lastyear", label: "Last year" },
+            { value: "all", label: "All time" },
+          ]} /></div>
+          {hasData && (
+            <button
+              onClick={() => setPresenting(true)}
+              className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h20v14H2z"/><path d="M8 21h8M12 17v4"/></svg>
+              Present
+            </button>
+          )}
+        </div>
+      </div>
+
+      {presenting && (
+        <ReportsPresent
+          title={exhibition || "All exhibitions"}
+          rangeLabel={RANGE_LABELS[range] ?? "This year"}
+          kpis={{ ...kpis, followUpRate: followUps.rate }}
+          charts={[
+            { key: "stage", heading: "Pipeline by stage", type: "bar", data: stage },
+            { key: "type", heading: "Connections by type", type: "doughnut", data: type },
+            { key: "exh", heading: "Leads by exhibition", type: "bar", data: exh },
+            ...(!exhibition ? [{ key: "time", heading: "Connections added over time", type: "line" as const, data: time }] : []),
+            { key: "country", heading: "Connections by country", type: "bar", data: country },
+            { key: "market", heading: "Opportunities by market", type: "bar", data: market },
+            ...(tradeModel.labels.length > 0 ? [{ key: "tradeModel", heading: "Connections by trade model", type: "bar", data: tradeModel }] : []),
+          ]}
+          funnel={funnel}
+          perExhibition={perExhibition}
+          onClose={() => setPresenting(false)}
+        />
+      )}
+
+      {!hasData ? (
+        <div className="rounded-xl border border-ink-200 bg-white px-4 py-16 text-center">
+          <p className="text-sm font-semibold text-slate-900">No data to report yet</p>
+          <p className="mt-1 text-sm text-slate-500">Capture connections and create opportunities, and your charts will fill in here.</p>
+        </div>
+      ) : (
+        <>
+          <div className="py-1">
+            <HeadlineStrip items={headlines} />
+          </div>
+
+          {tab === "overview" && (
+            <>
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+                <ExhibitionValueBars opps={fOpps} currency={currency} />
+                <OutcomeDonut opps={fOpps} currency={currency} />
+              </div>
+              <LocationCard conns={fConns} opps={fOpps} currency={currency} />
+              <BiggestDeals opps={fOpps} currency={currency} />
+            </>
+          )}
+
+          {tab === "pipeline" && (
+            <>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <Kpi label="Active opportunities" value={kpis.active} />
+                <Kpi label="Pipeline volume" value={kpis.volume} />
+                <Kpi label="Win rate" value={kpis.winRate === null ? "—" : `${kpis.winRate}%`} />
+                <Kpi label="Connections" value={kpis.connections} />
+              </div>
+              <div className="grid gap-4 lg:grid-cols-2">
+                <Card title="Pipeline by stage" seg={<Seg value={tStage} onChange={(v) => setTStage(v as any)} options={["bar", "line", "pie"]} labels={["Bar", "Line", "Pie"]} />}>
+                  <ReportChart type={tStage} labels={stage.labels} data={stage.data} colors={stage.colors} />
+                </Card>
+                {market.labels.length > 0 && (
+                  <Card title="Opportunities by market" seg={<Seg value={tMarket} onChange={(v) => setTMarket(v as any)} options={["bar", "pie"]} labels={["Bar", "Pie"]} />}>
+                    <ReportChart type={tMarket} labels={market.labels} data={market.data} colors={market.colors} />
+                  </Card>
+                )}
+                {tradeModel.labels.length > 0 && (
+                  <Card title="Connections by trade model" seg={<Seg value={tTm} onChange={(v) => setTTm(v as any)} options={["bar", "doughnut"]} labels={["Bar", "Donut"]} />}>
+                    <ReportChart type={tTm} labels={tradeModel.labels} data={tradeModel.data} colors={tradeModel.colors} />
+                  </Card>
+                )}
+              </div>
+              <div className="rounded-2xl border border-ink-200 bg-white p-4">
+                <h3 className="mb-3 text-sm font-bold text-emerald-800">Conversion funnel</h3>
+                <FunnelBar label="Connections captured" value={funnel.c} max={funnel.c} color="#10b981" />
+                <FunnelBar label="Opportunities created" value={funnel.o} max={funnel.c} color="#38bdf8" pct={funnel.c ? Math.round((funnel.o / funnel.c) * 100) : null} />
+                <FunnelBar label="Deals won" value={funnel.w} max={funnel.c} color="#8b5cf6" pct={funnel.c ? Math.round((funnel.w / funnel.c) * 100) : null} />
+              </div>
+              {perTradeModelTable}
+            </>
+          )}
+
+          {tab === "exhibitions" && (
+            <>
+              <RoiPanel
+                opportunities={fOpps}
+                exhibitionCosts={exhibitionCosts}
+                currency={currency}
+                exhibition={exhibition}
+              />
+              <div className="grid gap-4 lg:grid-cols-2">
+                <Card title="Leads by exhibition" seg={<Seg value={tExh} onChange={(v) => setTExh(v as any)} options={["bar", "line"]} labels={["Bar", "Line"]} />}>
+                  <ReportChart type={tExh} labels={exh.labels} data={exh.data} colors={exh.colors} />
+                </Card>
+                {!exhibition && (
+                  <Card title="Connections added over time" seg={<Seg value={tTime} onChange={(v) => setTTime(v as any)} options={["line", "bar"]} labels={["Line", "Bar"]} />}>
+                    <ReportChart type={tTime} labels={time.labels} data={time.data} colors={time.colors} />
+                  </Card>
+                )}
+                <Card title="Connections by type" seg={<Seg value={tType} onChange={(v) => setTType(v as any)} options={["doughnut", "pie", "bar"]} labels={["Donut", "Pie", "Bar"]} />}>
+                  <ReportChart type={tType} labels={type.labels} data={type.data} colors={type.colors} />
+                </Card>
+                {country.labels.length > 0 && (
+                  <Card title="Connections by country" seg={<Seg value={tCountry} onChange={(v) => setTCountry(v as any)} options={["bar", "pie"]} labels={["Bar", "Pie"]} />}>
+                    <ReportChart type={tCountry} labels={country.labels} data={country.data} colors={country.colors} />
+                  </Card>
+                )}
+              </div>
+              {perExhibitionTable}
+            </>
+          )}
+
+          {tab === "followups" && (
+            <>
+              <div className="rounded-2xl border border-ink-200 bg-white p-4">
+                <h3 className="mb-3 text-sm font-bold text-emerald-800">Follow-ups</h3>
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                  <FuStat label="Overdue" value={followUps.overdue} tone="red" />
+                  <FuStat label="Due today" value={followUps.due} tone="amber" />
+                  <FuStat label="Upcoming" value={followUps.upcoming} tone="emerald" />
+                  <div className="rounded-xl border border-ink-200 bg-white p-4 text-center">
+                    <p className="text-2xl font-extrabold tabular-nums text-ink-900">{followUps.rate === null ? "—" : `${followUps.rate}%`}</p>
+                    <p className="mt-0.5 text-xs text-slate-500">Follow-ups completed</p>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs text-slate-500">Follow-ups show what is due right now, so they follow the exhibition filter but not the period.</p>
+              </div>
+            </>
           )}
         </>
       )}
