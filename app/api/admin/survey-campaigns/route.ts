@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-guard";
 import { slugify } from "@/lib/survey-campaigns";
+import { CAMPAIGNS } from "@/lib/survey-v2";
 
 // Admin: create a public survey link for a show, and open or close it.
 // Writes the server-only survey_campaigns table (migration 0058).
@@ -32,6 +33,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Could not create the survey." }, { status: 500 });
   }
   return NextResponse.json({ ok: true, slug });
+}
+
+// Delete a survey link for good. Only a closed survey with no answers, so a
+// live link or collected answers can never be lost by a mis-click. The
+// built-in SIAL Paris survey (also defined in code) cannot be deleted.
+export async function DELETE(req: NextRequest) {
+  const g = await requireAdmin();
+  if (!g.ok) return g.response;
+  const slug = clip(req.nextUrl.searchParams.get("slug"), 80);
+  if (!slug) return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  if (CAMPAIGNS[slug]) return NextResponse.json({ error: "This is a built-in survey and cannot be deleted. Close it instead." }, { status: 400 });
+
+  const { data: row } = await g.admin.from("survey_campaigns").select("slug, open").eq("slug", slug).maybeSingle();
+  if (!row) return NextResponse.json({ error: "Survey not found." }, { status: 404 });
+  if (row.open) return NextResponse.json({ error: "Close the survey before deleting it." }, { status: 400 });
+
+  const { count } = await g.admin.from("survey_responses").select("id", { count: "exact", head: true }).eq("campaign", slug);
+  if ((count ?? 0) > 0) {
+    return NextResponse.json({ error: `This survey has ${count} ${count === 1 ? "answer" : "answers"}. Keep it closed, or archive and delete the answers first.` }, { status: 409 });
+  }
+
+  const { error } = await g.admin.from("survey_campaigns").delete().eq("slug", slug);
+  if (error) return NextResponse.json({ error: "Could not delete the survey." }, { status: 500 });
+  return NextResponse.json({ ok: true });
 }
 
 export async function PATCH(req: NextRequest) {

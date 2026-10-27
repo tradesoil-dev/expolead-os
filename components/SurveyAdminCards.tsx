@@ -35,6 +35,7 @@ function Head({ icon, title, sub, right }: { icon: React.ReactNode; title: strin
 
 export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[]; counts: Record<string, number> }) {
   const router = useRouter();
+  const { confirm, ConfirmUI } = useConfirm();
   const [open, setOpen] = useState(false);
   const [exhibition, setExhibition] = useState("");
   const [label, setLabel] = useState("");
@@ -66,6 +67,30 @@ export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[
     }
   }
 
+  async function remove(c: CampaignRow) {
+    const ok = await confirm(
+      `This deletes the survey link ${SITE}/survey/${c.slug} for good. Anyone who opens it will see "not found". This cannot be undone.`,
+      { title: `Delete ${c.label}?`, confirmLabel: "Yes, delete" },
+    );
+    if (!ok) return;
+    setBusy(c.slug);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/admin/survey-campaigns?slug=${encodeURIComponent(c.slug)}`, { method: "DELETE" });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(d.error || "Could not delete the survey.");
+      setMsg({ text: `${c.label} deleted.` });
+      router.refresh();
+    } catch (err) {
+      setMsg({ text: err instanceof Error ? err.message : "Could not delete the survey.", bad: true });
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  // Open surveys first, closed ones below; newest first within each group.
+  const sorted = [...campaigns].sort((a, b) => Number(b.open) - Number(a.open) || (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
+
   async function toggle(c: CampaignRow) {
     setBusy(c.slug);
     setMsg(null);
@@ -87,6 +112,7 @@ export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[
 
   return (
     <div className={card}>
+      {ConfirmUI}
       <Head
         icon={<Link2 className="h-4 w-4" />}
         title="Survey links"
@@ -119,7 +145,7 @@ export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[
       )}
       {msg && <p className={`mx-4 mt-3 rounded-lg px-3 py-2 text-sm ${msg.bad ? "bg-rose-50 text-rose-700" : "bg-emerald-50 text-emerald-800"}`}>{msg.text}</p>}
       <div className="divide-y divide-ink-100">
-        {campaigns.map((c) => (
+        {sorted.map((c) => (
           <div key={c.slug} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-sm">
             <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${c.open ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{c.open ? "Open" : "Closed"}</span>
             <div className="min-w-0 flex-1">
@@ -134,6 +160,11 @@ export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[
               {busy === c.slug && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {c.open ? "Close survey" : "Reopen"}
             </button>
+            {!c.open && (counts[c.label] ?? 0) === 0 && c.slug !== "sial-paris-2026" && (
+              <button type="button" onClick={() => remove(c)} disabled={busy === c.slug} className={`${btn} border-rose-200 bg-white text-rose-700 hover:bg-rose-50`} aria-label={`Delete ${c.label}`}>
+                <Trash2 className="h-3.5 w-3.5" /> Delete
+              </button>
+            )}
           </div>
         ))}
       </div>
