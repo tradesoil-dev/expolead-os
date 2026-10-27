@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, Loader2, Send, MessageSquareText, X, Copy, Check } from "lucide-react";
+import { Users, Loader2, Send, MessageSquareText, X, Copy, Check, Search, Download } from "lucide-react";
+import { toCsv } from "@/lib/export/csv";
 import { useConfirm } from "@/components/useConfirm";
 import { useToast } from "@/components/useToast";
 import ExhibitionPicker, { campaignFor, type LibraryShow } from "@/components/ExhibitionPicker";
@@ -48,6 +49,8 @@ function Activity({ r }: { r: PilotRow }) {
   );
 }
 
+const NO_CAMPAIGN = "__none__";
+
 export type LatestCheckin = { campaign: string; sent_at: string; answered_at: string | null };
 
 function fmt(s: string | null) {
@@ -88,6 +91,51 @@ export default function PilotInvitesList({
   // After sending: the pilot's survey link, shown once so it can also go on WhatsApp.
   const [sentLink, setSentLink] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Search, campaign filter and CSV, so a long list (100+ invites) stays easy to work.
+  const [q, setQ] = useState("");
+  const [campaignFilter, setCampaignFilter] = useState("");
+  const campaigns = useMemo(
+    () => [...new Set(rows.map((r) => r.pilot_campaign).filter((c): c is string => !!c))].sort(),
+    [rows],
+  );
+  const shown = useMemo(() => {
+    const k = q.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (campaignFilter === NO_CAMPAIGN && r.pilot_campaign) return false;
+      if (campaignFilter && campaignFilter !== NO_CAMPAIGN && r.pilot_campaign !== campaignFilter) return false;
+      if (!k) return true;
+      return [r.full_name, r.email, r.company_name].some((v) => (v ?? "").toLowerCase().includes(k));
+    });
+  }, [rows, q, campaignFilter]);
+
+  function downloadCsv() {
+    const iso = (v: string | null | undefined) => (v ? v.slice(0, 10) : "");
+    const headers = [
+      "Name", "Email", "Company", "Campaign", "Invited", "Access until", "Status", "ELOS", "Accepted",
+      "Connections", "Opportunities", "ELOS chats", "Last added", "Last sign-in",
+      "Check-in campaign", "Check-in sent", "Check-in answered",
+    ];
+    const data = shown.map((r) => {
+      const ck = checkins[r.id];
+      const accepted = !!r.email_confirmed_at || !!r.last_sign_in_at;
+      return [
+        r.full_name ?? "", r.email, r.company_name ?? "", r.pilot_campaign ?? "",
+        iso(r.pilot_invited_at), iso(r.early_access_until), accessStatus(r.early_access_until).label,
+        r.elos_enabled ? "On" : "Off", accepted ? iso(r.email_confirmed_at ?? r.last_sign_in_at) || "Yes" : "Pending",
+        r.connections_count ?? "", r.opportunities_count ?? "", r.elos_chats_count ?? "",
+        iso(r.last_activity_at), iso(r.last_sign_in_at),
+        ck?.campaign ?? "", iso(ck?.sent_at), iso(ck?.answered_at),
+      ];
+    });
+    const blob = new Blob([toCsv(headers, data)], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `expolead-pilots-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   function openCheckin(r: PilotRow) {
     setExhibition("");
@@ -318,7 +366,7 @@ export default function PilotInvitesList({
           </div>
         </div>
       )}
-      <div className="flex items-center gap-2 border-b border-ink-100 px-4 py-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-ink-100 px-4 py-3">
         <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
           <Users className="h-4 w-4" />
         </span>
@@ -330,16 +378,54 @@ export default function PilotInvitesList({
         <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{rows.length}</span>
       </div>
 
+      {rows.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 border-b border-ink-100 px-4 py-2.5">
+          <div className="relative min-w-[220px] flex-1 sm:max-w-xs">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search name, email, company"
+              className="w-full rounded-lg border border-ink-200 bg-white py-2 pl-8 pr-3 text-sm outline-none focus:border-emerald-500"
+            />
+          </div>
+          {campaigns.length > 0 && (
+            <select
+              value={campaignFilter}
+              onChange={(e) => setCampaignFilter(e.target.value)}
+              className="rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-700 outline-none focus:border-emerald-500"
+              aria-label="Filter by campaign"
+            >
+              <option value="">All campaigns</option>
+              {campaigns.map((c) => <option key={c} value={c}>{c}</option>)}
+              <option value={NO_CAMPAIGN}>No campaign</option>
+            </select>
+          )}
+          {shown.length !== rows.length && <span className="text-xs text-ink-500">{shown.length} of {rows.length}</span>}
+          <button
+            type="button"
+            onClick={downloadCsv}
+            disabled={shown.length === 0}
+            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium text-ink-700 hover:bg-ink-50 disabled:opacity-50"
+          >
+            <Download className="h-4 w-4 text-ink-500" /> Download CSV
+          </button>
+        </div>
+      )}
+
       {rows.length === 0 ? (
         <p className="px-4 py-10 text-center text-sm text-ink-400">
           No pilots yet. Send an invite above and it will appear here.
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1000px] text-sm">
+          <table className="w-full min-w-[1500px] whitespace-nowrap text-sm">
             <thead>
               <tr className="border-b border-ink-100 bg-ink-50 text-left text-xs font-medium text-ink-500">
-                <th className="px-4 py-2.5">Customer</th>
+                <th className="sticky left-0 z-10 bg-ink-50 px-4 py-2.5">Name</th>
+                <th className="px-4 py-2.5">Email</th>
+                <th className="px-4 py-2.5">Company</th>
+                <th className="px-4 py-2.5">Campaign</th>
                 <th className="px-4 py-2.5">Invited</th>
                 <th className="px-4 py-2.5">Access until</th>
                 <th className="px-4 py-2.5">Status</th>
@@ -347,58 +433,67 @@ export default function PilotInvitesList({
                 <th className="px-4 py-2.5">Accepted</th>
                 <th className="px-4 py-2.5">Activity</th>
                 <th className="px-4 py-2.5">Last sign-in</th>
+                <th className="px-4 py-2.5">Check-in</th>
                 <th className="px-4 py-2.5"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-100">
-              {rows.map((r) => {
+              {shown.length === 0 && (
+                <tr><td colSpan={13} className="px-4 py-8 text-center text-sm text-ink-400">No pilots match.</td></tr>
+              )}
+              {shown.map((r) => {
                 const status = accessStatus(r.early_access_until);
                 const accepted = !!r.email_confirmed_at || !!r.last_sign_in_at;
+                const ck = checkins[r.id];
                 return (
-                  <tr key={r.id} className="hover:bg-ink-50">
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-ink-900">{r.email}</span>
-                      {(r.full_name || r.company_name) && (
-                        <span className="block text-xs text-ink-400">
-                          {[r.full_name, r.company_name].filter(Boolean).join(" · ")}
-                        </span>
-                      )}
-                      {r.pilot_campaign && (
-                        <span className="mt-1 inline-block rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-sky-700 ring-1 ring-inset ring-sky-600/20">
-                          {r.pilot_campaign}
-                        </span>
-                      )}
-                      {checkins[r.id] && (
-                        <span className="mt-0.5 block text-[11px] font-medium text-emerald-700">
-                          Check-in sent {fmt(checkins[r.id].sent_at)}
-                          {checkins[r.id].answered_at ? `, answered ${fmt(checkins[r.id].answered_at)}` : ", waiting"}
-                        </span>
+                  <tr key={r.id} className="group hover:bg-ink-50">
+                    <td className="sticky left-0 z-10 bg-white px-4 py-2.5 font-medium text-ink-900 group-hover:bg-ink-50">
+                      {r.full_name || <span className="text-ink-400">—</span>}
+                    </td>
+                    <td className="px-4 py-2.5 text-ink-700">{r.email}</td>
+                    <td className="px-4 py-2.5 text-ink-600">{r.company_name || <span className="text-ink-400">—</span>}</td>
+                    <td className="px-4 py-2.5">
+                      {r.pilot_campaign ? (
+                        <span className="rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-sky-700 ring-1 ring-inset ring-sky-600/20">{r.pilot_campaign}</span>
+                      ) : (
+                        <span className="text-ink-400">—</span>
                       )}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-ink-600">{fmt(r.pilot_invited_at)}</td>
-                    <td className="whitespace-nowrap px-4 py-3 text-ink-600">{fmt(r.early_access_until)}</td>
-                    <td className="whitespace-nowrap px-4 py-3">
+                    <td className="px-4 py-2.5 text-ink-600">{fmt(r.pilot_invited_at)}</td>
+                    <td className="px-4 py-2.5 text-ink-600">{fmt(r.early_access_until)}</td>
+                    <td className="px-4 py-2.5">
                       <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${status.cls}`}>{status.label}</span>
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3">
+                    <td className="px-4 py-2.5">
                       {r.elos_enabled ? (
                         <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">On</span>
                       ) : (
                         <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">Off</span>
                       )}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3">
+                    <td className="px-4 py-2.5">
                       {accepted ? (
                         <span className="text-emerald-700">Yes · {fmt(r.email_confirmed_at ?? r.last_sign_in_at)}</span>
                       ) : (
                         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Pending</span>
                       )}
                     </td>
-                    <td className="min-w-[190px] px-4 py-3 text-ink-600"><Activity r={r} /></td>
-                    <td className="whitespace-nowrap px-4 py-3 text-ink-600">
+                    <td className="px-4 py-2.5 text-ink-600"><Activity r={r} /></td>
+                    <td className="px-4 py-2.5 text-ink-600">
                       {r.last_sign_in_at ? fmt(r.last_sign_in_at) : <span className="text-ink-400">Never</span>}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right">
+                    <td className="px-4 py-2.5">
+                      {ck ? (
+                        ck.answered_at ? (
+                          <span className="text-emerald-700">Answered {fmt(ck.answered_at)}</span>
+                        ) : (
+                          <span className="text-ink-600">Sent {fmt(ck.sent_at)} <span className="text-amber-700">· waiting</span></span>
+                        )
+                      ) : (
+                        <span className="text-ink-400">Not sent</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
                       {accepted && status.label !== "Expired" && (
                         <button
                           type="button"

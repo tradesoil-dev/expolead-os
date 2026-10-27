@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { Bot, X, Send, Plus, Loader2, Sparkles, Minus, Clock, History, ChevronLeft, MessageSquare } from "lucide-react";
+import { Bot, X, Send, Plus, Loader2, Sparkles, Minus, Clock, History, ChevronLeft, ChevronRight, MessageSquare } from "lucide-react";
 import AiMarkdown from "@/components/AiMarkdown";
 
 type Citation = { type: "connection" | "exhibition"; id: string; label: string };
@@ -20,6 +20,20 @@ type Usage = { remaining: number; limit: number };
 // the emerald app chrome.
 export default function AssistantWidget() {
   const [open, setOpen] = useState(false);
+  // The floating button can be tucked into a small tab at the screen edge so it
+  // never covers page controls (pagination, Import buttons). Remembered per browser.
+  const [tucked, setTucked] = useState(false);
+  useEffect(() => {
+    try {
+      setTucked(localStorage.getItem("elos-tucked") === "1");
+    } catch { /* storage unavailable */ }
+  }, []);
+  function setTuck(v: boolean) {
+    setTucked(v);
+    try {
+      localStorage.setItem("elos-tucked", v ? "1" : "0");
+    } catch { /* storage unavailable */ }
+  }
   const [view, setView] = useState<"chat" | "history">("chat");
   const [exhibitions, setExhibitions] = useState<Exh[]>([]);
   const [exhibitionId, setExhibitionId] = useState("");
@@ -177,14 +191,37 @@ export default function AssistantWidget() {
 
   return (
     <>
-      {!open && (
+      {!open && !tucked && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center rounded-full bg-emerald-600 text-white shadow-lg">
+          <button
+            type="button"
+            onClick={() => setTuck(true)}
+            aria-label="Hide the Ask ELOS button"
+            title="Hide"
+            className="grid h-11 w-9 place-items-center rounded-l-full border-r border-white/20 transition-colors hover:bg-emerald-700"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Open ELOS assistant"
+            className="inline-flex h-11 items-center gap-2 rounded-r-full pl-3 pr-4 text-sm font-semibold transition-colors hover:bg-emerald-700"
+          >
+            <Bot className="h-5 w-5" /> Ask ELOS
+          </button>
+        </div>
+      )}
+      {!open && tucked && (
         <button
           type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Open ELOS assistant"
-          className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-emerald-700"
+          onClick={() => setTuck(false)}
+          aria-label="Show the Ask ELOS button"
+          title="Show Ask ELOS"
+          className="fixed bottom-5 right-0 z-50 inline-flex h-11 items-center gap-1 rounded-l-full bg-emerald-600 pl-2.5 pr-2 text-white shadow-lg transition-colors hover:bg-emerald-700"
         >
-          <Bot className="h-5 w-5" /> Ask ELOS
+          <ChevronLeft className="h-4 w-4" />
+          <Bot className="h-4 w-4" />
         </button>
       )}
 
