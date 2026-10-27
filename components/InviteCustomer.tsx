@@ -134,19 +134,20 @@ export default function InviteCustomer({
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-xs font-medium text-ink-600">Campaign (optional)</span>
+              <span className="mb-1 block text-xs font-medium text-ink-600">Campaign (required)</span>
               <input
+                required
                 value={campaign}
                 onChange={(e) => setCampaign(e.target.value)}
                 maxLength={80}
                 list="pilot-campaigns"
-                placeholder="e.g. Gulfood 2027 outreach"
+                placeholder="e.g. SIAL Paris 2026 or Gulfood 2027 outreach"
                 className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500"
               />
               <datalist id="pilot-campaigns">
                 {campaigns.map((c) => <option key={c} value={c} />)}
               </datalist>
-              <span className="mt-1 block text-[11px] text-ink-400">Groups pilots by outreach, so you can see which campaign brings active users.</span>
+              <span className="mt-1 block text-[11px] text-ink-400">The show or outreach this pilot came from, so you can see which campaign brings active users.</span>
             </label>
           </div>
 

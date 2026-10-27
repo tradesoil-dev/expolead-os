@@ -40,6 +40,9 @@ export async function POST(req: Request) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
   }
+  if (!campaign) {
+    return NextResponse.json({ error: "Add the campaign this invite belongs to, e.g. SIAL Paris 2026." }, { status: 400 });
+  }
   if (fullAccess && !accessUntil) {
     return NextResponse.json({ error: "Pick an access-until date." }, { status: 400 });
   }
@@ -107,14 +110,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Account created but access was not set: ${upErr.message}` }, { status: 500 });
   }
 
-  // Campaign tag (migration 0057). Separate and best-effort, so an invite
-  // never fails over a label (e.g. before the migration is applied).
-  if (campaign) {
-    try {
-      await admin.from("profiles").update({ pilot_campaign: campaign }).eq("id", userId);
-    } catch {
-      /* label only */
-    }
+  // Campaign tag (migration 0057, required on the form). Saved separately and
+  // best-effort, so a label problem never undoes an access grant.
+  try {
+    await admin.from("profiles").update({ pilot_campaign: campaign }).eq("id", userId);
+  } catch {
+    /* label only */
   }
 
   // Only brand-new accounts receive a set-your-own-password link. Existing
