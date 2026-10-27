@@ -85,8 +85,11 @@ function LoginForm() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        // One navigation only. The (app) layout and dashboard are dynamic and
+        // Next 15 keeps no client cache for dynamic pages, so this request
+        // already carries the new session cookie. A router.refresh() here used
+        // to render the dashboard a second time.
         router.push("/dashboard");
-        router.refresh();
       } else {
         // Bot traps. If the hidden field is filled, or the form is submitted
         // implausibly fast after the page loaded, treat it as a bot: show the
@@ -110,7 +113,6 @@ function LoginForm() {
           // Signed in immediately (no email confirmation). The welcome email
           // fires from the app layout on first authenticated load.
           router.push("/dashboard");
-          router.refresh();
         } else {
           // Email confirmation required. Do NOT send the welcome email here —
           // it fires only after the user confirms and lands in the app.

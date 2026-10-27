@@ -21,6 +21,8 @@ function UpdatePasswordForm() {
   const [verifying, setVerifying] = useState(true);
   const [linkError, setLinkError] = useState<string | null>(null);
   const [inviteExpired, setInviteExpired] = useState(false);
+  // Invite links (first time) say "Set your password"; reset links say "new".
+  const [isInvite, setIsInvite] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
   // A token_hash link waits for a real click before it is used, so email
@@ -47,6 +49,7 @@ function UpdatePasswordForm() {
     const hashParams = new URLSearchParams(
       typeof window !== "undefined" ? window.location.hash.replace(/^#/, "") : "",
     );
+    if (searchParams.get("type") === "invite" || hashParams.get("type") === "invite") setIsInvite(true);
 
     // 1. Error returned in the hash (expired / already used).
     if (hashParams.get("error") || hashParams.get("error_code")) {
@@ -174,10 +177,12 @@ function UpdatePasswordForm() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-emerald-50/60 to-sky-50 px-6">
       <div className="w-full max-w-md">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-          Set new password
+          {isInvite ? "Set your password" : "Set new password"}
         </h1>
         <p className="mt-3 text-sm text-slate-500">
-          Choose a strong password for your ExpoLead OS account.
+          {isInvite
+            ? "Choose a strong password to finish setting up your ExpoLead OS account."
+            : "Choose a strong password for your ExpoLead OS account."}
         </p>
 
         {verifying ? (
