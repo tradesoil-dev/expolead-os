@@ -5,7 +5,7 @@ import { getTrialStatus } from "@/lib/trial";
 import { getPricing } from "@/lib/pricing";
 import UpgradeFlow from "@/components/UpgradeFlow";
 
-export const metadata = { title: "Upgrade — ExpoLead OS" };
+export const metadata = { title: "Upgrade | ExpoLead OS" };
 
 // Trial caps, mirrored from migration 0022 so the page can show usage
 // against them. Keep in step if the caps ever change.

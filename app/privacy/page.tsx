@@ -2,7 +2,7 @@ import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 
 export const metadata = {
-  title: "Privacy Notice — ExpoLead OS",
+  title: "Privacy Notice | ExpoLead OS",
   description: "How ExpoLead OS collects, uses and protects your personal data. We do not sell your data, use advertising cookies, or share your business records with third parties.",
   alternates: { canonical: "https://expoleados.com/privacy" },
 };

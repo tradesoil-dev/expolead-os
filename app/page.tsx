@@ -90,7 +90,7 @@ const translations = {
       steps: [
         {
           title: "Capture at the booth",
-          desc: "Log connections, buyer signals, booth location and first impressions on the spot — no paper, no chaos.",
+          desc: "Log connections, buyer signals, booth location and first impressions on the spot. No paper, no chaos.",
         },
         {
           title: "Qualify and pipeline",
@@ -158,7 +158,7 @@ const translations = {
     upcoming: {
       label: "Plan your year",
       title: "The shows you attend, ready on day one",
-      sub: "ExpoLead OS comes pre-loaded with major trade exhibitions — correct dates and venues already filled in.",
+      sub: "ExpoLead OS comes pre-loaded with major trade exhibitions, with the correct dates and venues already filled in.",
       cta: "Browse upcoming shows",
     },
     security: {

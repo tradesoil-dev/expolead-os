@@ -2,8 +2,8 @@ import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 
 export const metadata = {
-  title: "Terms of Service — ExpoLead OS",
-  description: "Terms and conditions for using ExpoLead OS. 14-day free trial, no credit card required. Your data is yours — export it anytime. Cancel anytime.",
+  title: "Terms of Service | ExpoLead OS",
+  description: "Terms and conditions for using ExpoLead OS. 14-day free trial, no credit card required. Your data is yours. Export it anytime. Cancel anytime.",
   alternates: { canonical: "https://expoleados.com/terms" },
 };
 
@@ -34,7 +34,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-bold text-slate-900 mb-2">3. Free trial</h2>
-            <p>New accounts receive a 14-day free trial. The trial covers one exhibition, up to 25 connections and up to 25 opportunities, and does not include CSV export, which is a paid feature. No payment is required during the trial. At the end of the trial you keep full access to view and edit everything you captured, but you cannot add new records unless you subscribe to a paid plan. We do not automatically charge you — you must actively choose to subscribe.</p>
+            <p>New accounts receive a 14-day free trial. The trial covers one exhibition, up to 25 connections and up to 25 opportunities, and does not include CSV export, which is a paid feature. No payment is required during the trial. At the end of the trial you keep full access to view and edit everything you captured, but you cannot add new records unless you subscribe to a paid plan. We do not automatically charge you. You must actively choose to subscribe.</p>
           </section>
 
           <section>

@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getExhibitionLibrary } from "@/lib/data";
 import AdminLibraryManager from "@/components/AdminLibraryManager";
 
-export const metadata = { title: "Exhibition Library — Admin" };
+export const metadata = { title: "Exhibition Library | Admin" };
 
 export default async function AdminLibraryPage() {
   const supabase = await createClient();

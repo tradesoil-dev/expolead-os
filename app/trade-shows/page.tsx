@@ -6,9 +6,9 @@ import SiteFooter from "@/components/SiteFooter";
 import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
-  title: "Upcoming Trade Exhibitions Directory — ExpoLead OS",
+  title: "Upcoming Trade Exhibitions Directory | ExpoLead OS",
   description:
-    "Browse major B2B trade exhibitions by industry — dates, venues and sectors. Food & beverage, chemicals, coatings, fertilizer, private label and more. Track the shows you attend in ExpoLead OS.",
+    "Browse major B2B trade exhibitions by industry, with dates, venues and sectors. Food & beverage, chemicals, coatings, fertilizer, private label and more. Track the shows you attend in ExpoLead OS.",
   alternates: { canonical: "https://expoleados.com/trade-shows" },
 };
 

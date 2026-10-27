@@ -6,7 +6,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { getPricing } from "@/lib/pricing";
 
 export const metadata: Metadata = {
-  title: "Pricing — ExpoLead OS",
+  title: "Pricing | ExpoLead OS",
   description: "Free 14-day trial, no credit card. Simple monthly or annual plans. One recovered exhibition lead pays for ExpoLead OS for years. No contracts, no sales calls.",
   alternates: { canonical: "https://expoleados.com/pricing" },
 };

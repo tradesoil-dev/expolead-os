@@ -6,7 +6,7 @@ import InviteCustomer from "@/components/InviteCustomer";
 import PilotInvitesList, { type PilotRow, type LatestCheckin } from "@/components/PilotInvitesList";
 import type { LibraryShow } from "@/components/ExhibitionPicker";
 
-export const metadata = { title: "Pilot invite — Admin" };
+export const metadata = { title: "Pilot invite | Admin" };
 
 export default async function AdminPilotInvitePage({ searchParams }: { searchParams: Promise<{ email?: string; name?: string; company?: string }> }) {
   const sp = await searchParams;

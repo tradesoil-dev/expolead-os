@@ -4,7 +4,7 @@ import PublicHeader from "@/components/PublicHeader";
 import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata = {
-  title: "Resources — The exhibition lead playbook | ExpoLead OS",
+  title: "Resources: The exhibition lead playbook | ExpoLead OS",
   description:
     "Practical guides on capturing, qualifying, and following up on leads from trade shows and exhibitions. Written for product exporters and traders.",
   alternates: { canonical: "https://expoleados.com/resources" },

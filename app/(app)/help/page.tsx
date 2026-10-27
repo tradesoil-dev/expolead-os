@@ -2,7 +2,7 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import { HELP_ARTICLES } from "@/lib/help-articles";
 
-export const metadata = { title: "Help Center — ExpoLead OS" };
+export const metadata = { title: "Help Center | ExpoLead OS" };
 
 export default function HelpPage() {
   return (

@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import AdminPaymentsTest from "@/components/AdminPaymentsTest";
 import { isPaymentsConfigured } from "@/lib/payments/paymentslk";
 
-export const metadata = { title: "Payments sandbox — Admin" };
+export const metadata = { title: "Payments sandbox | Admin" };
 
 export default async function AdminPaymentsPage() {
   const supabase = await createClient();

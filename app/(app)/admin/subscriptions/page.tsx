@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/PageHeader";
 import AdminSubscriptions, { type UpgradeRow } from "@/components/AdminSubscriptions";
 
-export const metadata = { title: "Subscriptions — Admin" };
+export const metadata = { title: "Subscriptions | Admin" };
 
 export default async function AdminSubscriptionsPage() {
   const supabase = await createClient();

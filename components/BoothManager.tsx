@@ -108,7 +108,7 @@ export default function BoothManager({
             <Select
               value={form.exhibition_id}
               onChange={(v) => set("exhibition_id", v)}
-              options={[{ value: "", label: "— None —" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
+              options={[{ value: "", label: "None" }, ...exhibitions.map((ex) => ({ value: ex.id, label: ex.name }))]}
             />
           </div>
 

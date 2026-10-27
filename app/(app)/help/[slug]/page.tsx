@@ -11,7 +11,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const article = getHelpArticle(slug);
-  return { title: article ? `${article.title} — Help — ExpoLead OS` : "Help — ExpoLead OS" };
+  return { title: article ? `${article.title} | Help | ExpoLead OS` : "Help | ExpoLead OS" };
 }
 
 export default async function HelpArticlePage({ params }: { params: Promise<{ slug: string }> }) {

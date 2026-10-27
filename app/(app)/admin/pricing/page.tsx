@@ -4,7 +4,7 @@ import { getPricing } from "@/lib/pricing";
 import PageHeader from "@/components/PageHeader";
 import AdminPricing from "@/components/AdminPricing";
 
-export const metadata = { title: "Pricing — Admin" };
+export const metadata = { title: "Pricing | Admin" };
 
 export default async function AdminPricingPage() {
   const supabase = await createClient();

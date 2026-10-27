@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { HeadlineStrip, type Headline } from "@/components/ReportsOverview";
 
-export const metadata = { title: "Follow-ups — ExpoLead OS" };
+export const metadata = { title: "Follow-ups | ExpoLead OS" };
 
 type Item = {
   key: string;

@@ -3,7 +3,7 @@ import PublicHeader from "@/components/PublicHeader";
 import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata = {
-  title: "About — ExpoLead OS",
+  title: "About | ExpoLead OS",
   description: "Why ExpoLead OS exists, who it is for, and the people behind it.",
   alternates: { canonical: "https://expoleados.com/about" },
 };

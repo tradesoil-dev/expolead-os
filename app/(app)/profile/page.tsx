@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ProfileForm, { type ProfileInitial } from "@/components/ProfileForm";
 
-export const metadata = { title: "Profile — ExpoLead OS" };
+export const metadata = { title: "Profile | ExpoLead OS" };
 
 const EMPTY: ProfileInitial = {
   full_name: null,

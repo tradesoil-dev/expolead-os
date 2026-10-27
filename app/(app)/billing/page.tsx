@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTrialStatus } from "@/lib/trial";
 import { PLAN_LABELS, type PlanId } from "@/lib/plans";
 
-export const metadata = { title: "Billing — ExpoLead OS" };
+export const metadata = { title: "Billing | ExpoLead OS" };
 
 function money(n: number) {
   return `USD ${Number(n).toFixed(2)}`;

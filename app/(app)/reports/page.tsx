@@ -4,7 +4,7 @@ import { getSuppliers, getOpportunities, getExhibitions } from "@/lib/data";
 import { getQuantityUnit } from "@/lib/quantity-unit";
 import { getCurrency } from "@/lib/currency";
 
-export const metadata = { title: "Reports — ExpoLead OS" };
+export const metadata = { title: "Reports | ExpoLead OS" };
 
 export default async function ReportsPage() {
   const [suppliers, opportunities, exhibitions, quantityUnit, currency] = await Promise.all([

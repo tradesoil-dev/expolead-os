@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Set new password — ExpoLead OS",
+  title: "Set new password | ExpoLead OS",
   robots: { index: false, follow: false },
 };
 

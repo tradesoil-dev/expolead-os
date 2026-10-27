@@ -56,7 +56,7 @@ export default function AddOpportunityForm({ exhibitions, connections = [], isLo
       ...f,
       exhibition: f.exhibition || (c.exhibition_name ?? ""),
       booth: c.visited_their_booth ? (f.booth || (c.booth_number ?? "")) : "",
-      name: f.name || (c.exhibition_name ? `${c.company_name} — ${c.exhibition_name}` : c.company_name),
+      name: f.name || (c.exhibition_name ? `${c.company_name} · ${c.exhibition_name}` : c.company_name),
     }));
     // Pull the connection's captured products in as ready-to-fill lines.
     if (c.products.length > 0) {

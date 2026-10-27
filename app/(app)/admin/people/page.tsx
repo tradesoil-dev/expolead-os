@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/PageHeader";
 import AdminPeople from "@/components/AdminPeople";
 
-export const metadata = { title: "People — Admin" };
+export const metadata = { title: "People | Admin" };
 
 export default async function AdminPeoplePage() {
   const supabase = await createClient();
