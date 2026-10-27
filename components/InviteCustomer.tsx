@@ -14,12 +14,17 @@ function defaultAccessUntil(): string {
   return d.toISOString().slice(0, 10);
 }
 
-export default function InviteCustomer({ prefill }: { prefill?: { email: string; name: string; company: string } } = {}) {
+export default function InviteCustomer({
+  prefill,
+  campaigns = [],
+}: { prefill?: { email: string; name: string; company: string }; campaigns?: string[] } = {}) {
   const router = useRouter();
   const [open, setOpen] = useState(!!prefill?.email);
   const [email, setEmail] = useState(prefill?.email ?? "");
   const [fullName, setFullName] = useState(prefill?.name ?? "");
   const [companyName, setCompanyName] = useState(prefill?.company ?? "");
+  // Kept after each invite, so a batch of invites shares one campaign.
+  const [campaign, setCampaign] = useState("");
   const [accessUntil, setAccessUntil] = useState(defaultAccessUntil());
   const [fullAccess, setFullAccess] = useState(true);
   const [elos, setElos] = useState(true);
@@ -43,6 +48,7 @@ export default function InviteCustomer({ prefill }: { prefill?: { email: string;
           access_until: accessUntil,
           full_access: fullAccess,
           elos,
+          campaign,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -126,6 +132,21 @@ export default function InviteCustomer({ prefill }: { prefill?: { email: string;
                 placeholder="Acme Foods"
                 className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500"
               />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="mb-1 block text-xs font-medium text-ink-600">Campaign (optional)</span>
+              <input
+                value={campaign}
+                onChange={(e) => setCampaign(e.target.value)}
+                maxLength={80}
+                list="pilot-campaigns"
+                placeholder="e.g. Gulfood 2027 outreach"
+                className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-500"
+              />
+              <datalist id="pilot-campaigns">
+                {campaigns.map((c) => <option key={c} value={c} />)}
+              </datalist>
+              <span className="mt-1 block text-[11px] text-ink-400">Groups pilots by outreach, so you can see which campaign brings active users.</span>
             </label>
           </div>
 

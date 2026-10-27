@@ -17,7 +17,36 @@ export type PilotRow = {
   elos_enabled: boolean;
   email_confirmed_at: string | null;
   last_sign_in_at: string | null;
+  // From migration 0057; undefined until it is applied.
+  pilot_campaign?: string | null;
+  connections_count?: number | string | null;
+  opportunities_count?: number | string | null;
+  elos_chats_count?: number | string | null;
+  last_activity_at?: string | null;
 };
+
+// Real usage for the Activity column ("Last sign-in" alone misleads: sessions
+// last for weeks, so a busy pilot can show an old sign-in date).
+function Activity({ r }: { r: PilotRow }) {
+  if (r.connections_count === undefined) return <span className="text-ink-400">—</span>;
+  const c = Number(r.connections_count ?? 0);
+  const o = Number(r.opportunities_count ?? 0);
+  const e = Number(r.elos_chats_count ?? 0);
+  if (c + o + e === 0) {
+    return <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">No activity yet</span>;
+  }
+  const parts = [
+    `${c} ${c === 1 ? "connection" : "connections"}`,
+    o ? `${o} ${o === 1 ? "opportunity" : "opportunities"}` : null,
+    e ? `${e} ELOS ${e === 1 ? "chat" : "chats"}` : null,
+  ].filter(Boolean);
+  return (
+    <span className="block">
+      <span className="font-medium text-ink-800">{parts.join(" · ")}</span>
+      {r.last_activity_at && <span className="block text-[11px] text-ink-400">Last added {fmt(r.last_activity_at)}</span>}
+    </span>
+  );
+}
 
 export type LatestCheckin = { campaign: string; sent_at: string; answered_at: string | null };
 
@@ -316,7 +345,8 @@ export default function PilotInvitesList({
                 <th className="px-4 py-2.5">Status</th>
                 <th className="px-4 py-2.5">ELOS</th>
                 <th className="px-4 py-2.5">Accepted</th>
-                <th className="px-4 py-2.5">Last active</th>
+                <th className="px-4 py-2.5">Activity</th>
+                <th className="px-4 py-2.5">Last sign-in</th>
                 <th className="px-4 py-2.5"></th>
               </tr>
             </thead>
@@ -331,6 +361,11 @@ export default function PilotInvitesList({
                       {(r.full_name || r.company_name) && (
                         <span className="block text-xs text-ink-400">
                           {[r.full_name, r.company_name].filter(Boolean).join(" · ")}
+                        </span>
+                      )}
+                      {r.pilot_campaign && (
+                        <span className="mt-1 inline-block rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-sky-700 ring-1 ring-inset ring-sky-600/20">
+                          {r.pilot_campaign}
                         </span>
                       )}
                       {checkins[r.id] && (
@@ -359,6 +394,7 @@ export default function PilotInvitesList({
                         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Pending</span>
                       )}
                     </td>
+                    <td className="min-w-[190px] px-4 py-3 text-ink-600"><Activity r={r} /></td>
                     <td className="whitespace-nowrap px-4 py-3 text-ink-600">
                       {r.last_sign_in_at ? fmt(r.last_sign_in_at) : <span className="text-ink-400">Never</span>}
                     </td>

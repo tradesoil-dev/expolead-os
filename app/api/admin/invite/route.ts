@@ -33,6 +33,7 @@ export async function POST(req: Request) {
   const fullName = typeof body?.full_name === "string" ? body.full_name.trim() : "";
   const companyName = typeof body?.company_name === "string" ? body.company_name.trim() : "";
   const accessUntil = typeof body?.access_until === "string" ? body.access_until : ""; // yyyy-mm-dd
+  const campaign = typeof body?.campaign === "string" ? body.campaign.replace(/s+/g, " ").trim().slice(0, 80) : "";
   const fullAccess = body?.full_access !== false; // default true
   const elos = !!body?.elos;
 
@@ -104,6 +105,16 @@ export async function POST(req: Request) {
   const { error: upErr } = await admin.from("profiles").update(profileUpdate).eq("id", userId);
   if (upErr) {
     return NextResponse.json({ error: `Account created but access was not set: ${upErr.message}` }, { status: 500 });
+  }
+
+  // Campaign tag (migration 0057). Separate and best-effort, so an invite
+  // never fails over a label (e.g. before the migration is applied).
+  if (campaign) {
+    try {
+      await admin.from("profiles").update({ pilot_campaign: campaign }).eq("id", userId);
+    } catch {
+      /* label only */
+    }
   }
 
   // Only brand-new accounts receive a set-your-own-password link. Existing

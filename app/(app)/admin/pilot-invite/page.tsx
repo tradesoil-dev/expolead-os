@@ -68,7 +68,10 @@ export default async function AdminPilotInvitePage({ searchParams }: { searchPar
         subtitle="Give a customer full access by email, case by case"
       />
       <main className="flex-1 space-y-5 p-6 md:p-8">
-        <InviteCustomer prefill={prefill} />
+        <InviteCustomer
+          prefill={prefill}
+          campaigns={[...new Set(pilots.map((p) => p.pilot_campaign).filter((c): c is string => !!c))]}
+        />
         <p className="max-w-2xl text-xs leading-relaxed text-ink-400">
           Creates the account, emails a secure set-your-own-password link, and grants full access
           until the date you choose (with ELOS if you enable it). When the date passes the account
