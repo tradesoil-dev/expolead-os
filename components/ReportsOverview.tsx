@@ -31,7 +31,7 @@ const num = (v: unknown) => (Number.isFinite(Number(v)) ? Number(v) : 0);
 // "USD 21k" style, for tight table cells.
 function compactMoney(v: number, currency: string) {
   const a = Math.abs(v);
-  const s = a >= 1_000_000 ? `${(v / 1_000_000).toFixed(1).replace(/.0$/, "")}M` : a >= 1000 ? `${(v / 1000).toFixed(a >= 10000 ? 0 : 1).replace(/.0$/, "")}k` : String(Math.round(v));
+  const s = a >= 1_000_000 ? `${(v / 1_000_000).toFixed(1).replace(/\.0$/, "")}M` : a >= 1000 ? `${(v / 1000).toFixed(a >= 10000 ? 0 : 1).replace(/\.0$/, "")}k` : String(Math.round(v));
   return `${currency} ${s}`;
 }
 const isOpen = (o: OvOpp) => o.status !== "won" && o.status !== "lost";
