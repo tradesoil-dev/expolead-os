@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import MarkerField from "@/components/MarkerField";
 import {
   ArrowRight,
   Globe2,
@@ -485,8 +486,14 @@ export default function HomePage() {
       </PublicHeader>
 
       {/* HERO — light redesign, text-forward like the Lovable concept */}
-      <section className="bg-[#f8f7f3] px-8 pb-24 pt-20 lg:px-16 lg:pb-32 lg:pt-28">
-        <div className="mx-auto max-w-6xl">
+      <section
+        className="relative overflow-hidden bg-[#f8f7f3] px-8 pb-24 pt-20 lg:px-16 lg:pb-32 lg:pt-28"
+        style={{ backgroundImage: "radial-gradient(120% 120% at 85% 20%, rgba(16,185,129,0.10), transparent 60%)" }}
+      >
+        {/* Cursor-reactive marker field behind the copy. The text lets the
+            cursor through; the buttons below turn pointer events back on. */}
+        <MarkerField variant="light" />
+        <div className="pointer-events-none relative z-10 mx-auto max-w-6xl">
           <p className="anim-hero-badge mb-6 font-mono text-xs font-semibold uppercase tracking-[0.22em] text-emerald-600">{t.hero.badge}</p>
           <h1 className="anim-hero-title max-w-[15ch] text-5xl font-extrabold leading-[1.03] tracking-tight text-slate-950 md:text-6xl lg:text-7xl">
             {t.hero.h1a}<br /><span className="italic text-emerald-600 whitespace-nowrap">{t.hero.h1b}</span>
@@ -499,7 +506,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <div className="anim-hero-btn mt-12 flex flex-col gap-4 sm:flex-row">
+          <div className="anim-hero-btn pointer-events-auto mt-12 flex flex-col gap-4 sm:flex-row">
             <Link href="/login?mode=signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">
               {t.hero.cta}
               <ArrowRight className="h-4 w-4" />
