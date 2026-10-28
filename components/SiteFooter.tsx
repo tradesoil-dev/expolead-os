@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+// Facebook page link: the icon shows once this is filled in.
+const FACEBOOK_URL = "";
+
 /**
  * Shared public footer for the redesign (light look). Deliberately honest:
  * only real locations (Sri Lanka, Australia) and only claims we can stand
@@ -45,6 +48,26 @@ export default function SiteFooter() {
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM8 8h3.83v2.19h.05c.53-1 1.84-2.19 3.79-2.19 4.05 0 4.8 2.67 4.8 6.14V24h-4v-7.03c0-1.68-.03-3.84-2.34-3.84-2.34 0-2.7 1.83-2.7 3.72V24H8V8z" /></svg>
               </a>
+              <a
+                href="https://www.instagram.com/expoleados/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="ExpoLead OS on Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-emerald-600 hover:bg-emerald-600 hover:text-white"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.4" cy="6.6" r="0.6" fill="currentColor" stroke="none" /></svg>
+              </a>
+              {FACEBOOK_URL && (
+                <a
+                  href={FACEBOOK_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="ExpoLead OS on Facebook"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-emerald-600 hover:bg-emerald-600 hover:text-white"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M14 8h3V4h-3c-2.76 0-5 2.24-5 5v2H6v4h3v9h4v-9h3l1-4h-4V9c0-.55.45-1 1-1z" /></svg>
+                </a>
+              )}
             </div>
           </div>
 
