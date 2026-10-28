@@ -731,6 +731,7 @@ export default function HomePage() {
           @keyframes expoScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
           .expo-track { display: flex; gap: 12px; width: max-content; animation: expoScroll 30s linear infinite; }
           .expo-track:hover { animation-play-state: paused; }
+          @media (prefers-reduced-motion: reduce) { .expo-track { animation: none; } }
         `}</style>
         <div className="mb-8 px-8 text-center lg:px-16">
           <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-emerald-600">{t.upcoming.label}</p>
@@ -744,7 +745,9 @@ export default function HomePage() {
             maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
           }}
         >
-          <div className="expo-track">
+          {/* Speed follows the number of cards (about 5 seconds per card), so the
+              strip stays calm however many shows the library holds. */}
+          <div className="expo-track" style={{ animationDuration: `${Math.max(30, marqueeShows.length * 5)}s` }}>
             {[...marqueeShows, ...marqueeShows].map((s, i) => (
               <div key={i} className="w-[180px] shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="mb-1.5 flex items-baseline gap-1.5">
