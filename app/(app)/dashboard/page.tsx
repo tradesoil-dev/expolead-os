@@ -9,6 +9,7 @@ import { getSuppliers, getOpportunities, getExhibitions } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_CURRENCY, formatMoney } from "@/lib/currencies";
+import { DEFAULT_QUANTITY_UNIT, formatGroupedVolume } from "@/lib/quantity-units";
 import { canonicalCountry } from "@/lib/geo/country";
 import { ADD_BUTTON } from "@/lib/ui";
 import { opportunityStatusLabel } from "@/lib/types";
@@ -46,7 +47,7 @@ export default async function DashboardPage() {
       if (!user) return { profile: null, wins: [] };
       const since = new Date(Date.now() - 60 * DAY).toISOString();
       const [{ data: profile }, { data: wins }] = await Promise.all([
-        supabase.from("profiles").select("full_name, currency").eq("id", user.id).single(),
+        supabase.from("profiles").select("full_name, currency, quantity_unit").eq("id", user.id).single(),
         // When deals were marked won, for "Won in the last 30 days" (best effort).
         supabase.from("opportunity_status_history").select("opportunity_id, created_at").eq("status", "won").gte("created_at", since),
       ]);
@@ -56,6 +57,7 @@ export default async function DashboardPage() {
 
   const firstName = (extra.profile?.full_name ?? "").trim().split(" ")[0] ?? "";
   const currency = extra.profile?.currency || DEFAULT_CURRENCY;
+  const quantityUnit = extra.profile?.quantity_unit || DEFAULT_QUANTITY_UNIT;
   const now = Date.now();
   const start30 = now - 30 * DAY;
   const start60 = now - 60 * DAY;
@@ -83,7 +85,6 @@ export default async function DashboardPage() {
     return { n: list.length, value: list.reduce((s, o) => s + num(o!.deal_value), 0) };
   };
   const won30 = wonIn(start30, now + 1);
-  const wonPrev = wonIn(start60, start30);
   const closed = opportunities.filter((o) => o.status === "won" || o.status === "lost");
   const winRate = closed.length ? Math.round((closed.filter((o) => o.status === "won").length / closed.length) * 100) : null;
 
@@ -106,11 +107,34 @@ export default async function DashboardPage() {
   const later = fus.filter((f) => dayOf(f.date) > todayMs + 7 * DAY);
   const nextDue = [...dueToday, ...thisWeek].sort((a, b) => a.date - b.date)[0];
 
-  const headlines: Headline[] = [
-    { label: "Connections captured", value: String(conns30), delta: pctChange(conns30, connsPrev), sub: `Last 30 days, vs ${connsPrev} before` },
-    { label: "Open pipeline", value: formatMoney(openValue, currency), delta: pctChange(addedValue30, addedValuePrev), sub: `+${added30.length} ${added30.length === 1 ? "opportunity" : "opportunities"}, +${formatMoney(addedValue30, currency)} in 30 days` },
-    { label: "Follow-ups due", value: String(overdue.length + dueToday.length), delta: null, sub: `${overdue.length} overdue · ${dueToday.length} due today` },
-    { label: "Won in 30 days", value: formatMoney(won30.value, currency), delta: pctChange(won30.value, wonPrev.value), sub: `${won30.n} ${won30.n === 1 ? "deal" : "deals"}${winRate !== null ? ` · win rate ${winRate}%` : ""}` },
+  /* ── Deal value card: total, open, won, lost (all time) ── */
+  const wonOpps = opportunities.filter((o) => o.status === "won");
+  const lostOpps = opportunities.filter((o) => o.status === "lost");
+  const wonValue = wonOpps.reduce((s, o) => s + num(o.deal_value), 0);
+  const lostValue = lostOpps.reduce((s, o) => s + num(o.deal_value), 0);
+  const totalValue = openValue + wonValue;
+  const barTotal = openValue + wonValue + lostValue;
+  const share = (v: number) => (barTotal ? Math.round((v / barTotal) * 100) : 0);
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+  const dealHeadlines: Headline[] = [
+    { label: "Total deal value", value: formatMoney(totalValue, currency), delta: null, sub: "Open and won, lost left out" },
+    { label: "Open pipeline", value: formatMoney(openValue, currency), delta: null, chip: { text: `${openOpps.length} open`, tone: "neutral" }, sub: `+${formatMoney(addedValue30, currency)} added in 30 days` },
+    { label: "Won", value: formatMoney(wonValue, currency), valueTone: wonValue ? "good" : undefined, delta: null, chip: { text: plural(wonOpps.length, "deal", "deals"), tone: "good" }, sub: winRate !== null ? `Win rate ${winRate}% · ${formatMoney(won30.value, currency)} in 30 days` : "No closed deals yet" },
+    { label: "Lost", value: formatMoney(lostValue, currency), valueTone: lostValue ? "bad" : undefined, delta: null, chip: lostOpps.length ? { text: plural(lostOpps.length, "deal", "deals"), tone: "bad" } : undefined, sub: lostOpps.length ? "Worth a look back" : "Nothing lost" },
+  ];
+
+  /* ── Activity row ── */
+  const activeExhibitions = new Set(suppliers.map((s) => s.exhibition_id).filter(Boolean)).size;
+  const visited = suppliers.filter((s) => s.visited).length;
+  const notVisited = suppliers.filter((s) => s.exhibition_id && !s.visited).length;
+  const volume = formatGroupedVolume(openOpps.flatMap((o) => o.products ?? []), quantityUnit);
+  const activity: Headline[] = [
+    { label: "Connections", value: String(suppliers.length), delta: null, chip: { text: `${conns30} in 30 days`, tone: conns30 >= connsPrev ? "good" : "bad" }, sub: `${connsPrev} the 30 days before` },
+    { label: "Active exhibitions", value: String(activeExhibitions), delta: null, sub: "Shows with connections" },
+    { label: "Active opportunities", value: String(openOpps.length), delta: null, sub: "Not yet won or lost" },
+    { label: "Follow-ups due", value: String(overdue.length + dueToday.length), delta: null, chip: overdue.length ? { text: `${overdue.length} overdue`, tone: "bad" } : { text: "None overdue", tone: "good" }, sub: `${dueToday.length} due today` },
+    { label: "Booths visited", value: String(visited), delta: null, chip: notVisited ? { text: `${notVisited} not yet`, tone: "warn" } : undefined, sub: "Connections marked visited" },
+    { label: "Pipeline volume", value: volume, delta: null, sub: "Open deals" },
   ];
 
   /* ── Pipeline growth: running total of deal value, last 30 days vs previous ── */
@@ -226,7 +250,29 @@ export default async function DashboardPage() {
 
       {isNew && <WelcomeCard />}
 
-      <HeadlineStrip items={headlines} />
+      <section className="rounded-2xl border border-ink-200 bg-white px-5 py-4">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-400">Deal value</p>
+        <HeadlineStrip items={dealHeadlines} />
+        {barTotal > 0 && (
+          <>
+            <div className="mt-4 flex h-2.5 gap-[3px] overflow-hidden rounded-full bg-slate-100" aria-hidden>
+              {openValue > 0 && <div style={{ flexGrow: openValue, flexBasis: 0, background: "#0f172a" }} />}
+              {wonValue > 0 && <div style={{ flexGrow: wonValue, flexBasis: 0, background: "#10b981" }} />}
+              {lostValue > 0 && <div style={{ flexGrow: lostValue, flexBasis: 0, background: "#fb7185" }} />}
+            </div>
+            <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[12px] text-ink-500">
+              <span><span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-slate-900" />Open {share(openValue)}%</span>
+              <span><span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-emerald-500" />Won {share(wonValue)}%</span>
+              <span><span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-rose-400" />Lost {share(lostValue)}%</span>
+            </div>
+          </>
+        )}
+      </section>
+
+      <section>
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-400">Activity</p>
+        <HeadlineStrip items={activity} cols={6} />
+      </section>
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <div className={card}>

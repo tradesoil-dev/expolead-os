@@ -62,7 +62,7 @@ export type Headline = {
   deltaSuffix?: string;
   // A plain chip instead of a change ("11% of all", "6 overdue", "All clear").
   chip?: { text: string; tone: "good" | "bad" | "warn" | "neutral" };
-  valueTone?: "bad";
+  valueTone?: "bad" | "good";
   sub: React.ReactNode;
 };
 
@@ -73,14 +73,22 @@ const CHIP_TONE = {
   neutral: "bg-slate-100 text-slate-600",
 };
 
-export function HeadlineStrip({ items }: { items: Headline[] }) {
+export function HeadlineStrip({ items, cols = 4 }: { items: Headline[]; cols?: 4 | 6 }) {
+  const six = cols === 6;
   return (
-    <div className="grid grid-cols-2 gap-y-5 lg:grid-cols-4">
+    <div className={`grid grid-cols-2 gap-y-5 ${six ? "md:grid-cols-3 xl:grid-cols-6" : "lg:grid-cols-4"}`}>
       {items.map((k, i) => (
-        <div key={k.label} className={`px-0 lg:px-5 ${i > 0 ? "lg:border-l lg:border-ink-200" : "lg:pl-0"}`}>
+        <div
+          key={k.label}
+          className={`min-w-0 px-0 ${six ? `xl:px-4 ${i > 0 ? "xl:border-l xl:border-ink-200" : "xl:pl-0"}` : `lg:px-5 ${i > 0 ? "lg:border-l lg:border-ink-200" : "lg:pl-0"}`}`}
+        >
           <p className="text-[12.5px] text-ink-500">{k.label}</p>
           <div className="mt-1.5 flex flex-wrap items-center gap-2">
-            <span className={`text-[26px] font-semibold tracking-tight tabular-nums ${k.valueTone === "bad" ? "text-rose-600" : "text-ink-900"}`}>{k.value}</span>
+            <span
+              className={`${six ? "text-[22px]" : "text-[26px]"} font-semibold tracking-tight tabular-nums ${k.valueTone === "bad" ? "text-rose-600" : k.valueTone === "good" ? "text-emerald-600" : "text-ink-900"}`}
+            >
+              {k.value}
+            </span>
             {k.chip ? (
               <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[11.5px] font-semibold ${CHIP_TONE[k.chip.tone]}`}>{k.chip.text}</span>
             ) : (

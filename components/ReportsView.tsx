@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReportChart from "@/components/ReportChart";
 import Select from "@/components/Select";
-import ReportsPresent from "@/components/ReportsPresent";
 import { formatGroupedVolume } from "@/lib/quantity-units";
 import { TRADE_MODELS } from "@/lib/types";
 import RoiPanel from "@/components/RoiPanel";
-import { ADD_BUTTON } from "@/lib/ui";
+import { ADD_BUTTON, SECONDARY_BUTTON } from "@/lib/ui";
 import { pctChange } from "@/components/DeltaChip";
 import { formatMoney } from "@/lib/currencies";
 import { HeadlineStrip, ExhibitionValueBars, OutcomeDonut, LocationCard, BiggestDeals, type Headline } from "@/components/ReportsOverview";
@@ -67,6 +66,38 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
   const [tTm, setTTm] = useState<"bar" | "doughnut">("bar");
   const [presenting, setPresenting] = useState(false);
   const [tab, setTab] = useState<"overview" | "pipeline" | "exhibitions" | "followups">("overview");
+
+  // Present mode: the whole report full screen. Uses the browser's full screen
+  // when it is allowed (it needs the click), and stays a full-window layer
+  // either way. Leaving browser full screen (Esc) also closes Present.
+  const presentRef = useRef<HTMLDivElement>(null);
+  function openPresent() {
+    setPresenting(true);
+    try {
+      const el = presentRef.current ?? document.documentElement;
+      const p = el.requestFullscreen?.();
+      if (p) p.catch(() => {});
+    } catch {
+      /* full-window layer only */
+    }
+  }
+  function closePresent() {
+    setPresenting(false);
+    if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+  }
+  useEffect(() => {
+    if (!presenting) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closePresent(); };
+    const onFs = () => { if (!document.fullscreenElement) setPresenting(false); };
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("fullscreenchange", onFs);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("fullscreenchange", onFs);
+      document.body.style.overflow = "";
+    };
+  }, [presenting]);
 
   const exhibitionOptions = useMemo(() => {
     const set = new Set<string>();
@@ -359,7 +390,22 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
   ];
 
   return (
-    <div className="space-y-5">
+    // Present = this same report, full screen (browser full screen where
+    // allowed, otherwise a full-window layer above the app). Close or Esc
+    // returns to the normal Reports page.
+    <div ref={presentRef} className={presenting ? "fixed inset-0 z-[9999] overflow-y-auto bg-slate-50 px-6 py-6 md:px-10 md:py-8" : ""}>
+    <div className={`space-y-5 ${presenting ? "mx-auto max-w-7xl" : ""}`}>
+      {presenting && (
+        <div className="flex flex-wrap items-center gap-3 border-b border-ink-200 pb-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-700">ExpoLead OS report</p>
+            <h2 className="truncate text-2xl font-semibold tracking-tight text-ink-900">{exhibition || "All exhibitions"} · {RANGE_LABELS[range] ?? "This year"}</h2>
+          </div>
+          <button type="button" onClick={closePresent} className={SECONDARY_BUTTON} aria-label="Exit presentation">
+            Close <span className="text-xs text-ink-400">Esc</span>
+          </button>
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-2">
         <div className="inline-flex rounded-full bg-slate-100 p-1">
           {TABS.map((t) => (
@@ -381,34 +427,14 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
             { value: "lastyear", label: "Last year" },
             { value: "all", label: "All time" },
           ]} /></div>
-          {hasData && (
-            <button onClick={() => setPresenting(true)} className={ADD_BUTTON}>
+          {hasData && !presenting && (
+            <button onClick={openPresent} className={ADD_BUTTON}>
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h20v14H2z"/><path d="M8 21h8M12 17v4"/></svg>
               Present
             </button>
           )}
         </div>
       </div>
-
-      {presenting && (
-        <ReportsPresent
-          title={exhibition || "All exhibitions"}
-          rangeLabel={RANGE_LABELS[range] ?? "This year"}
-          kpis={{ ...kpis, followUpRate: followUps.rate }}
-          charts={[
-            { key: "stage", heading: "Pipeline by stage", type: "bar", data: stage },
-            { key: "type", heading: "Connections by type", type: "doughnut", data: type },
-            { key: "exh", heading: "Leads by exhibition", type: "bar", data: exh },
-            ...(!exhibition ? [{ key: "time", heading: "Connections added over time", type: "line" as const, data: time }] : []),
-            { key: "country", heading: "Connections by country", type: "bar", data: country },
-            { key: "market", heading: "Opportunities by market", type: "bar", data: market },
-            ...(tradeModel.labels.length > 0 ? [{ key: "tradeModel", heading: "Connections by trade model", type: "bar", data: tradeModel }] : []),
-          ]}
-          funnel={funnel}
-          perExhibition={perExhibition}
-          onClose={() => setPresenting(false)}
-        />
-      )}
 
       {!hasData ? (
         <div className="rounded-xl border border-ink-200 bg-white px-4 py-16 text-center">
@@ -514,6 +540,7 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
           )}
         </>
       )}
+    </div>
     </div>
   );
 }
