@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import MarkerField from "@/components/MarkerField";
+import SecurityLock from "@/components/SecurityLock";
 import {
   ArrowRight,
   Globe2,
@@ -819,30 +820,7 @@ export default function HomePage() {
 
             {/* Right: shield + lock illustration */}
             <div className="shrink-0 w-full lg:w-[220px] flex justify-center">
-              <div className="relative w-[220px] h-[240px] rounded-2xl flex items-center justify-center overflow-hidden"
-                style={{ background: "linear-gradient(145deg, #064e3b, #065f46, #047857)" }}>
-                <div className="absolute w-40 h-40 rounded-full" style={{ background: "rgba(16,185,129,0.18)" }} />
-                <div className="absolute w-56 h-56 rounded-full" style={{ background: "rgba(16,185,129,0.07)" }} />
-                <div className="absolute top-4 right-5 w-1.5 h-1.5 rounded-full bg-emerald-300 opacity-80" />
-                <div className="absolute bottom-6 left-5 w-1 h-1 rounded-full bg-emerald-200 opacity-60" />
-                <div className="absolute top-12 left-5 w-1 h-1 rounded-full bg-emerald-400 opacity-50" />
-                <svg width="140" height="158" viewBox="0 0 140 158" fill="none">
-                  <path d="M70 8 L124 30 L124 78 C124 114 100 138 70 152 C40 138 16 114 16 78 L16 30 Z"
-                    fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.6)" strokeWidth="2"/>
-                  <path d="M70 22 L110 38 L110 78 C110 106 92 126 70 138 C48 126 30 106 30 78 L30 38 Z"
-                    fill="rgba(16,185,129,0.10)" stroke="rgba(52,211,153,0.4)" strokeWidth="1.5"/>
-                  <rect x="46" y="80" width="48" height="38" rx="8" fill="rgba(16,185,129,0.25)" stroke="#34d399" strokeWidth="2"/>
-                  <path d="M56 80 L56 64 C56 54 84 54 84 64 L84 80" fill="none" stroke="#34d399" strokeWidth="3.5" strokeLinecap="round"/>
-                  <path d="M60 80 L60 66 C60 59 80 59 80 66 L80 80" fill="none" stroke="rgba(167,243,208,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
-                  <circle cx="70" cy="97" r="5" fill="#065f46" stroke="#34d399" strokeWidth="1.5"/>
-                  <rect x="68" y="100" width="4" height="7" rx="1" fill="#34d399"/>
-                  <line x1="46" y1="93" x2="94" y2="93" stroke="rgba(52,211,153,0.2)" strokeWidth="1"/>
-                </svg>
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border px-3 py-1"
-                  style={{ background: "rgba(6,78,59,0.85)", borderColor: "rgba(52,211,153,0.4)" }}>
-                  <p className="text-[10px] font-bold text-emerald-300 tracking-wide">{t.security.badge}</p>
-                </div>
-              </div>
+              <SecurityLock badge={t.security.badge} />
             </div>
           </div>
         </div>
