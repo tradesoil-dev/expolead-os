@@ -57,7 +57,7 @@ export default async function ReportsPage() {
   return (
     <>
       <PageHeader title="Reports" subtitle="How your exhibitions turn into revenue" />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <ReportsView connections={connections} opportunities={opps} quantityUnit={quantityUnit} currency={currency} exhibitionCosts={exhibitionCosts} />
       </main>
     </>

@@ -21,7 +21,7 @@ export default async function AdminLibraryPage() {
   const shows = await getExhibitionLibrary();
 
   return (
-    <main className="flex-1 p-6 md:p-8">
+    <main className="flex-1 p-4 sm:p-6 md:p-8">
       <AdminLibraryManager shows={shows} />
     </main>
   );

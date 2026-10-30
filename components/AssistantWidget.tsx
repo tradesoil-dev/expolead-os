@@ -198,7 +198,7 @@ export default function AssistantWidget() {
             onClick={() => setTuck(true)}
             aria-label="Hide the Ask ELOS button"
             title="Hide"
-            className="grid h-11 w-9 place-items-center rounded-l-full border-r border-white/20 transition-colors hover:bg-emerald-700"
+            className="grid h-10 w-8 place-items-center rounded-l-full sm:h-11 sm:w-9 border-r border-white/20 transition-colors hover:bg-emerald-700"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -206,9 +206,9 @@ export default function AssistantWidget() {
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Open ELOS assistant"
-            className="inline-flex h-11 items-center gap-2 rounded-r-full pl-3 pr-4 text-sm font-semibold transition-colors hover:bg-emerald-700"
+            className="inline-flex h-10 items-center gap-2 rounded-r-full pl-2.5 pr-3 text-sm font-semibold transition-colors hover:bg-emerald-700 sm:h-11 sm:pl-3 sm:pr-4"
           >
-            <Bot className="h-5 w-5" /> Ask ELOS
+            <Bot className="h-5 w-5" /> <span className="hidden sm:inline">Ask ELOS</span>
           </button>
         </div>
       )}

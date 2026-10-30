@@ -6,6 +6,7 @@ import { MessageSquareText, Download, UserPlus, Copy, Check, Share2, Image as Im
 import { ALL_QUESTIONS, optionLabel, SURVEY_V2, type Answers } from "@/lib/survey-v2";
 import type { CampaignRow } from "@/lib/survey-campaigns";
 import { SurveyLinksCard, RetentionCard, type Retention } from "@/components/SurveyAdminCards";
+import { HeadlineStrip } from "@/components/ReportsOverview";
 import { SURVEY_QUESTIONS as V1_QUESTIONS } from "@/lib/checkin-survey";
 import { toCsv } from "@/lib/export/csv";
 
@@ -135,11 +136,11 @@ function PublicPanel({ rows: allRows, campaigns, retention }: { rows: FeedbackRo
       {campaigns.filter((c) => c.open).map((c) => <ShareCard key={c.slug} slug={c.slug} label={c.label} exhibition={c.exhibition} hasAssets={c.hasAssets} rows={liveRows.filter((r) => r.campaign === c.label)} />)}
 
       <div className="flex flex-wrap items-center gap-2">
-        <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-800">
+        <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="h-9 rounded-full border border-ink-200 bg-white px-3 text-[13px] text-ink-800">
           <option value="all">All campaigns</option>
           {campaignOptions.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select value={source} onChange={(e) => setSource(e.target.value)} className="rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-800">
+        <select value={source} onChange={(e) => setSource(e.target.value)} className="h-9 rounded-full border border-ink-200 bg-white px-3 text-[13px] text-ink-800">
           <option value="all">All channels</option>
           {sources.map((s) => <option key={s} value={s}>{s === "direct" ? "No tag" : s}</option>)}
         </select>
@@ -226,15 +227,15 @@ function ShareCard({ slug, label, exhibition, hasAssets, rows }: { slug: string;
         <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600"><Share2 className="h-4 w-4" /></span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-ink-900">Share links · {label}</p>
-          <p className="text-[11px] text-ink-400">Use the link for each channel, so you can see where answers come from</p>
+          <p className="hidden text-[11px] text-ink-400 sm:block">Use the link for each channel, so you can see where answers come from</p>
         </div>
         <a
           href={`https://wa.me/?text=${encodeURIComponent(message)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 text-xs font-semibold text-white hover:bg-emerald-700"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-xs font-semibold text-white hover:bg-emerald-700"
         >
-          Share on WhatsApp
+          <span className="sm:hidden">Share</span><span className="hidden sm:inline">Share on WhatsApp</span>
         </a>
       </div>
       <div className="divide-y divide-ink-100">
@@ -242,11 +243,11 @@ function ShareCard({ slug, label, exhibition, hasAssets, rows }: { slug: string;
           <div key={ch.src} className="flex items-center gap-3 px-4 py-2.5 text-sm">
             <span className="min-w-0 flex-1 font-medium text-ink-800 sm:w-24 sm:flex-none">{ch.label}</span>
             <code className="hidden min-w-0 flex-1 truncate rounded-md bg-ink-50 px-2 py-1 text-xs text-ink-600 sm:block">{linkFor(ch.src)}</code>
-            <span className="w-20 shrink-0 text-right text-xs text-ink-500">{count(ch.src)} {count(ch.src) === 1 ? "answer" : "answers"}</span>
+            <span className="shrink-0 text-right text-xs tabular-nums text-ink-500">{count(ch.src)}<span className="hidden sm:inline"> {count(ch.src) === 1 ? "answer" : "answers"}</span></span>
             <button
               type="button"
               onClick={() => copy(ch.src)}
-              className="inline-flex min-h-8 w-[84px] shrink-0 items-center justify-center gap-1.5 rounded-lg border border-emerald-200 text-xs font-semibold text-emerald-700 hover:bg-emerald-50"
+              className="inline-flex h-8 w-[76px] shrink-0 items-center justify-center gap-1.5 rounded-full border border-emerald-200 text-xs font-semibold text-emerald-700 hover:bg-emerald-50"
             >
               {copied === ch.src ? <><Check className="h-3.5 w-3.5" /> Copied</> : <><Copy className="h-3.5 w-3.5" /> Copy</>}
             </button>
@@ -256,7 +257,7 @@ function ShareCard({ slug, label, exhibition, hasAssets, rows }: { slug: string;
       <div className="flex flex-wrap items-center gap-2 border-t border-ink-100 px-4 py-3">
         {hasAssets ? <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-semibold text-ink-600"><ImageIcon className="h-3.5 w-3.5" /> Post images:</span> : <span className="text-xs text-ink-400">No post images for this survey yet. Ask Claude to make them.</span>}
         {hasAssets && images.map((im) => (
-          <a key={im.file} href={`/survey-assets/${im.file}`} download className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-ink-200 px-2.5 text-xs font-medium text-ink-700 hover:bg-ink-50">
+          <a key={im.file} href={`/survey-assets/${im.file}`} download className="inline-flex h-8 items-center gap-1.5 rounded-full border border-ink-200 px-3 text-xs font-medium text-ink-700 hover:bg-ink-50">
             <Download className="h-3.5 w-3.5" /> {im.label}
           </a>
         ))}
@@ -277,13 +278,13 @@ function PilotPanel({ rows }: { rows: FeedbackRow[] }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2">
-        <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-800">
+        <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="h-9 rounded-full border border-ink-200 bg-white px-3 text-[13px] text-ink-800">
           <option value="all">All campaigns</option>
           {campaigns.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <CsvButton rows={shown} name="pilot-feedback" />
-        <Link href="/admin/pilot-invite" className="ml-auto inline-flex min-h-9 items-center rounded-lg border border-emerald-200 bg-white px-3.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-50">
-          Send a check-in from Pilot invite
+        <Link href="/admin/pilot-invite" className="ml-auto inline-flex h-9 items-center text-[13px] font-semibold text-emerald-700 hover:underline">
+          Send a check-in ›
         </Link>
       </div>
 
@@ -329,15 +330,10 @@ function Empty({ text }: { text: string }) {
 
 function Tiles({ items }: { items: { k: string; v: string; sub?: string; tone?: "amber" | "green" }[] }) {
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      {items.map((t) => (
-        <div key={t.k} className={`${card} p-4`}>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-400">{t.k}</p>
-          <p className={`mt-1.5 text-2xl font-bold ${t.tone === "amber" ? "text-amber-700" : t.tone === "green" ? "text-emerald-700" : "text-ink-900"}`}>
-            {t.v} {t.sub && <span className="text-sm font-medium text-ink-400">{t.sub}</span>}
-          </p>
-        </div>
-      ))}
+    <div className="py-1">
+      <HeadlineStrip
+        items={items.map((t) => ({ label: t.k, value: t.v, delta: null, valueTone: t.tone === "green" ? "good" : undefined, sub: t.sub ?? "" }))}
+      />
     </div>
   );
 }
@@ -362,7 +358,7 @@ function CsvButton({ rows, name }: { rows: FeedbackRow[]; name: string }) {
     URL.revokeObjectURL(url);
   }
   return (
-    <button type="button" onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 disabled:opacity-50">
+    <button type="button" onClick={exportCsv} disabled={!rows.length} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3 text-[13px] font-semibold text-emerald-700 hover:bg-emerald-50 disabled:opacity-50">
       <Download className="h-4 w-4" /> Export CSV
     </button>
   );

@@ -26,7 +26,7 @@ export default async function AdminSubscriptionsPage() {
         title="Subscriptions"
         subtitle="Who wants to pay, who has paid, and what is still owed"
       />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <AdminSubscriptions rows={(data ?? []) as UpgradeRow[]} />
       </main>
     </>

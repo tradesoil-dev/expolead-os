@@ -53,7 +53,7 @@ export default async function BillingPage() {
   const isPaid = trial.subscriptionStatus === "active" || trial.subscriptionStatus === "early_access";
 
   return (
-    <main className="flex-1 p-6 md:p-8">
+    <main className="flex-1 p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-2xl">
         <h1 className="text-2xl font-black tracking-tight text-ink-900">Billing</h1>
         <p className="mt-1 text-sm text-ink-500">Your plan, payments and what is due next.</p>

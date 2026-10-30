@@ -56,7 +56,7 @@ export default async function ImportConnectionsPage() {
   return (
     <>
       <PageHeader title="Import connections" subtitle="Add many connections at once from the ExpoLead template" />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <ImportConnections
           exhibitions={exhibitions.map((e) => ({ id: e.id, name: e.name }))}
           remaining={remaining}

@@ -227,7 +227,7 @@ export default async function DashboardPage() {
   const isNew = suppliers.length === 0 && opportunities.length === 0;
 
   return (
-    <main className="flex-1 space-y-6 p-6 md:p-8">
+    <main className="flex-1 space-y-6 p-4 sm:p-6 md:p-8">
       {!isSupabaseConfigured && <SetupNotice />}
 
       <div className="flex flex-wrap items-start gap-3">

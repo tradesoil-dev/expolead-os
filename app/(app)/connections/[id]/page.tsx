@@ -88,7 +88,7 @@ export default async function SupplierProfile({
         }
       />
 
-      <main className="flex-1 p-6 md:p-8 space-y-6 max-w-3xl">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 space-y-6 max-w-3xl">
         {priorMeets.length > 0 && (
           <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
             <div className="mb-1 flex items-center gap-2">

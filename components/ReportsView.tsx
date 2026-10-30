@@ -407,28 +407,28 @@ export default function ReportsView({ connections, opportunities, quantityUnit =
         </div>
       )}
       <div className="flex flex-wrap items-center gap-2">
-        <div className="inline-flex rounded-full bg-slate-100 p-1">
+        <div className="flex max-w-full overflow-x-auto rounded-full bg-slate-100 p-1">
           {TABS.map((t) => (
             <button
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
               aria-pressed={tab === t.key}
-              className={`rounded-full px-3.5 py-1.5 text-[13px] transition-colors ${tab === t.key ? "bg-emerald-600 font-semibold text-white shadow-sm" : "text-ink-500 hover:bg-white hover:text-ink-800"}`}
+              className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] transition-colors sm:px-3.5 ${tab === t.key ? "bg-emerald-600 font-semibold text-white shadow-sm" : "text-ink-500 hover:bg-white hover:text-ink-800"}`}
             >
               {t.label}
             </button>
           ))}
         </div>
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          <div className="w-48"><Select value={exhibition} onChange={setExhibition} options={exhibitionOptions} className="py-2" /></div>
-          <div className="w-40"><Select value={range} onChange={setRange} className="py-2" options={[
+        <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
+          <div className="min-w-0 flex-1 sm:w-48 sm:flex-none"><Select value={exhibition} onChange={setExhibition} options={exhibitionOptions} className="py-2" /></div>
+          <div className="min-w-0 flex-1 sm:w-40 sm:flex-none"><Select value={range} onChange={setRange} className="py-2" options={[
             { value: "year", label: "This year" },
             { value: "lastyear", label: "Last year" },
             { value: "all", label: "All time" },
           ]} /></div>
           {hasData && !presenting && (
-            <button onClick={openPresent} className={ADD_BUTTON}>
+            <button onClick={openPresent} className={`${ADD_BUTTON} hidden sm:inline-flex`}>
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h20v14H2z"/><path d="M8 21h8M12 17v4"/></svg>
               Present
             </button>

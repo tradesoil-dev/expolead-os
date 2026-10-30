@@ -74,7 +74,7 @@ export default async function ExhibitionDetailPage({
         subtitle={exhibition.location ?? "Exhibition"}
       />
 
-      <main className="flex-1 p-6 md:p-8 space-y-6">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 space-y-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="rounded-xl border-2 border-emerald-400 bg-white p-4 text-center">
             <p className="text-2xl font-bold text-emerald-600">{suppliers.length}</p>

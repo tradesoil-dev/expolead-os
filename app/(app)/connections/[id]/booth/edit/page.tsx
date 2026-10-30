@@ -36,7 +36,7 @@ export default async function EditBoothPage({
         subtitle={supplier.company_name}
       />
 
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <BoothManager
           supplierId={supplier.id}
           exhibitions={exhibitions}

@@ -18,7 +18,7 @@ export default async function ExhibitionsPage() {
   return (
     <>
       <PageHeader title="Exhibitions" subtitle="The shows you attend" />
-      <main className="flex-1 p-6 md:p-8 space-y-6">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 space-y-6">
         <AddExhibitionForm isLocked={trial.isExpired} library={library} currency={currency} />
         <ExhibitionsSearch exhibitions={exhibitions} suppliers={suppliers} opportunities={opportunities.map((o: any) => ({ exhibition: o.exhibition ?? null, status: o.status ?? null, deal_value: o.deal_value ?? null }))} currency={currency} />
       </main>

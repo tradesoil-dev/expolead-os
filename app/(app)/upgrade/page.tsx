@@ -21,7 +21,7 @@ export default async function UpgradePage() {
   // Already paying or on early access: nothing to sell them.
   if (trial.subscriptionStatus === "active" || trial.subscriptionStatus === "early_access") {
     return (
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <div className="mx-auto max-w-lg rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
           <p className="text-lg font-bold text-emerald-900">Your account is already unlocked</p>
           <p className="mt-2 text-sm text-emerald-800">
@@ -43,7 +43,7 @@ export default async function UpgradePage() {
   ]);
 
   return (
-    <main className="flex-1 p-6 md:p-8">
+    <main className="flex-1 p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-lg">
         <Link href="/dashboard" className="text-sm text-emerald-700 hover:underline">
           &larr; Back to dashboard

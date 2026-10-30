@@ -8,7 +8,7 @@ export default function HelpPage() {
   return (
     <>
       <PageHeader title="Help Center" subtitle="Short guides for getting the most out of ExpoLead OS" />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
           {HELP_ARTICLES.map((a) => (
             <Link

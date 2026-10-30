@@ -27,7 +27,7 @@ export default async function AdminPricingPage() {
         title="Pricing"
         subtitle="Set base prices and the introductory offer, live across the site"
       />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <AdminPricing pricing={pricing} />
       </main>
     </>

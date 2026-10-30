@@ -27,7 +27,7 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ sl
         </Link>
       </div>
       <PageHeader title={article.title} subtitle={article.summary} />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <article className="max-w-2xl space-y-4">
           {article.body.map((block, i) => (
             <BlockView key={i} block={block} />

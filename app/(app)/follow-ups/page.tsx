@@ -141,7 +141,7 @@ export default async function FollowUpsPage() {
           />
         }
       />
-      <main className="flex-1 space-y-6 p-6 md:p-8">
+      <main className="flex-1 space-y-6 p-4 sm:p-6 md:p-8">
         <HeadlineStrip items={headlines} />
 
         {/* Guide note — coaches first-time users, mirrors the connection form guide */}

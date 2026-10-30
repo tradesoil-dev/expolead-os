@@ -30,7 +30,7 @@ export default async function EditCompanyPage({
     <>
       <PageHeader title="Edit company details" subtitle={supplier.company_name} />
 
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <CompanyManager
           supplierId={supplier.id}
           initialData={{

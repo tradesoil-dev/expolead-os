@@ -12,7 +12,7 @@ export default async function NewSupplierPage() {
   return (
     <>
       <PageHeader title="Add connection" subtitle="Capture a company you met or want to target" />
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-4 sm:p-6 md:p-8">
         <SupplierForm exhibitions={exhibitions} />
       </main>
     </>

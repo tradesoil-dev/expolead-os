@@ -14,7 +14,7 @@ import type { CampaignRow } from "@/lib/survey-campaigns";
 
 const card = "rounded-2xl border border-ink-200 bg-white shadow-card";
 const SITE = "https://expoleados.com";
-const btn = "inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-3 text-sm font-semibold disabled:opacity-50";
+const btn = "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold disabled:opacity-50";
 
 function slugPreview(label: string) {
   return label.normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
@@ -22,11 +22,11 @@ function slugPreview(label: string) {
 
 function Head({ icon, title, sub, right }: { icon: React.ReactNode; title: string; sub: string; right?: React.ReactNode }) {
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-ink-100 px-4 py-3">
-      <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600">{icon}</span>
+    <div className="flex items-center gap-2 border-b border-ink-100 px-4 py-3">
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">{icon}</span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-ink-900">{title}</p>
-        <p className="text-[11px] text-ink-400">{sub}</p>
+        <p className="hidden text-[11px] text-ink-400 sm:block">{sub}</p>
       </div>
       {right}
     </div>
@@ -118,7 +118,7 @@ export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[
         title="Survey links"
         sub="One survey per show. Create a new one for your next campaign, close it when you are done"
         right={
-          <button type="button" onClick={() => setOpen((o) => !o)} className="inline-flex h-9 items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 text-sm font-semibold text-white hover:bg-emerald-700">
+          <button type="button" onClick={() => setOpen((o) => !o)} className="inline-flex h-8 shrink-0 items-center gap-1 rounded-full bg-emerald-600 px-3 text-[13px] font-semibold text-white hover:bg-emerald-700">
             <Plus className="h-4 w-4" /> New survey
           </button>
         }
@@ -146,16 +146,16 @@ export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[
       {msg && <p className={`mx-4 mt-3 rounded-lg px-3 py-2 text-sm ${msg.bad ? "bg-rose-50 text-rose-700" : "bg-emerald-50 text-emerald-800"}`}>{msg.text}</p>}
       <div className="divide-y divide-ink-100">
         {sorted.map((c) => (
-          <div key={c.slug} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-sm">
-            <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${c.open ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{c.open ? "Open" : "Closed"}</span>
-            <div className="min-w-0 flex-1">
-              <p className="font-medium text-ink-900">{c.label}</p>
-              <a href={`/survey/${c.slug}`} target="_blank" className="inline-flex items-center gap-1 truncate text-xs text-emerald-700 hover:underline">
-                {SITE}/survey/{c.slug} <ExternalLink className="h-3 w-3" />
-              </a>
+          <div key={c.slug} className="px-4 py-3 text-sm">
+            <div className="flex items-center gap-2">
+              <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${c.open ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{c.open ? "Open" : "Closed"}</span>
+              <p className="min-w-0 flex-1 truncate font-medium text-ink-900">{c.label}</p>
+              <span className="shrink-0 text-xs tabular-nums text-ink-500">{counts[c.label] ?? 0} {(counts[c.label] ?? 0) === 1 ? "answer" : "answers"}</span>
             </div>
-            <span className="text-xs text-ink-500">{counts[c.label] ?? 0} {(counts[c.label] ?? 0) === 1 ? "answer" : "answers"}</span>
-            {!c.hasAssets && <span className="text-[11px] text-ink-400">Share image: site default</span>}
+            <div className="mt-1.5 flex items-center gap-2">
+              <a href={`/survey/${c.slug}`} target="_blank" className="flex min-w-0 flex-1 items-center gap-1 text-xs text-emerald-700 hover:underline">
+                <span className="truncate">{SITE}/survey/{c.slug}</span> <ExternalLink className="h-3 w-3 shrink-0" />
+              </a>
             <button type="button" onClick={() => toggle(c)} disabled={busy === c.slug} className={`${btn} ${c.open ? "border-ink-200 bg-white text-ink-700 hover:bg-ink-50" : "border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-50"}`}>
               {busy === c.slug && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {c.open ? "Close survey" : "Reopen"}
@@ -165,6 +165,8 @@ export function SurveyLinksCard({ campaigns, counts }: { campaigns: CampaignRow[
                 <Trash2 className="h-3.5 w-3.5" /> Delete
               </button>
             )}
+            </div>
+            {!c.hasAssets && <p className="mt-1 text-[11px] text-ink-400">Share image: site default</p>}
           </div>
         ))}
       </div>

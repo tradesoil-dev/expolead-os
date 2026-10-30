@@ -51,7 +51,7 @@ export default function GettingStartedPage() {
         title="Getting Started"
         subtitle="Everything you need to know to capture your first exhibition lead"
       />
-      <main className="flex-1 p-6 md:p-8 max-w-4xl space-y-6">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-4xl space-y-6">
 
         {/* Intro */}
         <div className="rounded-2xl bg-emerald-50 border border-emerald-100 px-6 py-5">

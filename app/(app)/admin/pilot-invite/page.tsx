@@ -67,7 +67,7 @@ export default async function AdminPilotInvitePage({ searchParams }: { searchPar
         title="Pilot invite"
         subtitle="Give a customer full access by email, case by case"
       />
-      <main className="flex-1 space-y-5 p-6 md:p-8">
+      <main className="flex-1 space-y-5 p-4 sm:p-6 md:p-8">
         <InviteCustomer
           prefill={prefill}
           campaigns={[...new Set(pilots.map((p) => p.pilot_campaign).filter((c): c is string => !!c))]}

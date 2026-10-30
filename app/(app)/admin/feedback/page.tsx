@@ -163,13 +163,13 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
   return (
     <>
       <PageHeader title="Feedback" subtitle="Public survey links and answers, and pilot check-ins" />
-      <main className="flex-1 space-y-4 p-6 md:p-8">
+      <main className="flex-1 space-y-4 p-4 sm:p-6 md:p-8">
         {missing.length > 0 && (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
             Not set up yet: {missing.join(", ")}. Run the migration in the Supabase SQL editor, then reload this page.
           </div>
         )}
-        <a href="/survey-preview" className="inline-flex min-h-9 items-center rounded-lg border border-emerald-200 bg-white px-3.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-50">Preview surveys and emails</a>
+        <a href="/survey-preview" className="inline-flex h-9 items-center rounded-full border border-emerald-200 bg-white px-3.5 text-[13px] font-semibold text-emerald-700 hover:bg-emerald-50">Preview surveys and emails</a>
         <FeedbackDashboard rows={rows} campaigns={campaigns} retention={retention} initialTab={(tab === "pilot" ? "pilot" : "public") as FeedbackTab} />
       </main>
     </>
