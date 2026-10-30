@@ -107,7 +107,7 @@ export default function SiteFooter() {
 
         <div className="mt-10 border-t border-slate-200 pt-6">
           <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-slate-400">
-            © 2026 ExpoLead OS · HTTPS/TLS encrypted · Export anytime
+            © {new Date().getFullYear()} ExpoLead OS. All rights reserved · HTTPS encrypted · Your data stays yours
           </p>
         </div>
       </div>
